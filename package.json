@@ -13,7 +13,8 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
-    "check": "prettier --check ."
+    "check": "prettier --check .",
+    "fix": "eslint . --ext .ts,.tsx --fix && prettier --write ."
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
