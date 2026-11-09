@@ -1,57 +1,176 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "cn"
+import * as React from "react";
+import { Loader2 } from "lucide-react";
+import { cn } from "#/lib/utils";
 
-const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
-        outline:
-          "border-border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
-        ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default:
-          "h-9 gap-1.5 px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),8px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5",
-        lg: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        icon: "size-9",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
-        "icon-lg": "size-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
+export type ButtonVariant =
+  "primary" | "accent" | "secondary" | "ghost" | "danger" | "outline";
+export type ButtonSize = "md" | "sm";
+export type ButtonState = "default" | "hover" | "loading" | "disabled";
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+  loadingText?: string;
+  forcedState?: ButtonState;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export { Button, buttonVariants }
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      isLoading = false,
+      loadingText = "Menyimpan...",
+      forcedState,
+      leftIcon,
+      rightIcon,
+      children = "Simpan Donasi",
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
+    const effectiveState: ButtonState =
+      forcedState ??
+      (disabled ? "disabled" : isLoading ? "loading" : "default");
+
+    const isActuallyDisabled = effectiveState === "disabled";
+    const isActuallyLoading = effectiveState === "loading";
+
+    // Base sizing and typography
+    const sizeClasses =
+      size === "sm"
+        ? "h-[36px] px-[16px] py-[8px] gap-[6px] text-[14px] leading-[20px]"
+        : "h-[44px] px-[20px] py-[12px] gap-[8px] text-[14px] leading-[20px]";
+
+    // Variant styling mapped to Figma tokens
+    let stateStyle = "";
+    if (effectiveState === "disabled") {
+      if (variant === "secondary") {
+        stateStyle =
+          "bg-[var(--color-bg-disabled,#eef1f2)] border border-[var(--color-border-default,#e2e7e8)] text-[var(--color-text-disabled,#9aa5a8)] shadow-none";
+      } else if (variant === "ghost") {
+        stateStyle =
+          "bg-transparent text-[var(--color-text-disabled,#9aa5a8)] shadow-none";
+      } else {
+        stateStyle =
+          "bg-[var(--color-bg-disabled,#eef1f2)] text-[var(--color-text-disabled,#9aa5a8)] shadow-none border-transparent";
+      }
+    } else if (effectiveState === "hover") {
+      switch (variant) {
+        case "primary":
+          stateStyle =
+            "bg-[var(--color-bg-brand-hover,#005e64)] text-white shadow-none";
+          break;
+        case "accent":
+          stateStyle =
+            "bg-[var(--color-bg-accent-hover,#ffce2e)] text-[var(--color-text-on-accent,#142023)] border-[1.5px] border-[var(--color-border-ink,#142023)] shadow-none";
+          break;
+        case "secondary":
+          stateStyle =
+            "bg-[var(--color-bg-subtle,#eef1f2)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)]";
+          break;
+        case "ghost":
+          stateStyle =
+            "bg-[var(--color-bg-brand-subtle,#e6f5f6)] text-[var(--color-text-brand,#007d85)]";
+          break;
+        case "danger":
+          stateStyle = "bg-[var(--color-bg-danger-hover,#b91c1c)] text-white";
+          break;
+        case "outline":
+          stateStyle =
+            "bg-[var(--color-bg-subtle,#eef1f2)] border border-[var(--color-border-ink,#142023)] text-[var(--color-text-primary,#142023)]";
+          break;
+      }
+    } else {
+      // Default & Loading
+      switch (variant) {
+        case "primary":
+          stateStyle =
+            "bg-[var(--color-bg-brand,#007d85)] text-white drop-shadow-[0px_2px_0px_#142023] hover:bg-[var(--color-bg-brand-hover,#005e64)] hover:drop-shadow-none";
+          break;
+        case "accent":
+          stateStyle =
+            "bg-[var(--color-bg-accent,#ffda57)] border-[1.5px] border-[var(--color-border-ink,#142023)] text-[var(--color-text-on-accent,#142023)] drop-shadow-[0px_2px_0px_#142023] hover:bg-[var(--color-bg-accent-hover,#ffce2e)] hover:drop-shadow-none";
+          break;
+        case "secondary":
+          stateStyle =
+            "bg-[var(--color-bg-surface,white)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+          break;
+        case "ghost":
+          stateStyle =
+            "bg-transparent text-[var(--color-text-brand,#007d85)] hover:bg-[var(--color-bg-brand-subtle,#e6f5f6)]";
+          break;
+        case "danger":
+          stateStyle =
+            "bg-[var(--color-bg-danger,#dc2626)] text-white hover:bg-[var(--color-bg-danger-hover,#b91c1c)]";
+          break;
+        case "outline":
+          stateStyle =
+            "bg-[var(--color-bg-surface,white)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+          break;
+      }
+    }
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        disabled={isActuallyDisabled || isActuallyLoading}
+        className={cn(
+          "inline-flex flex-row items-center justify-center font-['Inter'] font-semibold select-none rounded-[var(--radius-full,999px)] transition-all duration-150 outline-none shrink-0 whitespace-nowrap [&>svg]:shrink-0 [&_svg]:shrink-0",
+          !isActuallyDisabled &&
+            !isActuallyLoading &&
+            "cursor-pointer active:translate-x-[1px] active:translate-y-[1px]",
+          isActuallyDisabled && "cursor-not-allowed pointer-events-none",
+          sizeClasses,
+          stateStyle,
+          className,
+        )}
+        {...props}
+      >
+        {isActuallyLoading ? (
+          <>
+            <Loader2
+              className={cn(
+                "animate-spin shrink-0",
+                size === "sm" ? "size-[16px]" : "size-[20px]",
+              )}
+            />
+            <span>{loadingText}</span>
+          </>
+        ) : (
+          <>
+            {leftIcon && (
+              <span
+                className={cn(
+                  "shrink-0 inline-flex items-center justify-center",
+                  size === "sm" ? "size-[16px]" : "size-[20px]",
+                )}
+              >
+                {leftIcon}
+              </span>
+            )}
+            {children}
+            {rightIcon && (
+              <span
+                className={cn(
+                  "shrink-0 inline-flex items-center justify-center",
+                  size === "sm" ? "size-[16px]" : "size-[20px]",
+                )}
+              >
+                {rightIcon}
+              </span>
+            )}
+          </>
+        )}
+      </button>
+    );
+  },
+);
+
+Button.displayName = "Button";

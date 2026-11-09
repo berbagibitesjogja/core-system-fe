@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
+import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -6,27 +8,24 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <div
-      style={{
-        padding: "3rem",
-        textAlign: "center",
-        fontFamily: "system-ui, sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f9fafb",
-        color: "#111827",
-      }}
-    >
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
+    <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-6 text-center">
+      <div className="size-16 rounded-3xl bg-brand text-white flex items-center justify-center font-display font-bold text-3xl shadow-pop-md border-2 border-neutral-900 mb-6">
+        B
+      </div>
+      <h1 className="font-display-xl text-neutral-900 mb-3">
         Berbagi Bites Jogja
       </h1>
-      <p style={{ fontSize: "1.25rem", color: "#4b5563" }}>
-        Core System Frontend berhasil diinisialisasi menggunakan{" "}
-        <strong>TanStack Start</strong>.
+      <p className="font-body-l text-neutral-600 max-w-lg mb-8">
+        Sistem manajemen donasi makanan surplus berbasis komunitas. Selamat
+        datang di portal admin BBJ.
       </p>
+      <div className="flex items-center gap-3">
+        <Link to="/design">
+          <Button variant="primary" size="md">
+            <Sparkles className="size-4" /> Buka Katalog Design System (/design)
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }
