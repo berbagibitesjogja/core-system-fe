@@ -13,3 +13,4 @@ export * from "./icon-button";
 export * from "./tooltip";
 export * from "./menu";
 export * from "./toast";
+export * from "./hydration-fix";

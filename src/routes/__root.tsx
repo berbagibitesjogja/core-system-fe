@@ -1,11 +1,23 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import {
+  HeadContent,
+  Link,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { Toaster } from "#/components/ui/toast";
+import { HydrationFixScript } from "#/components/ui/hydration-fix";
+import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
+import type { QueryClient } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
 
-export const Route = createRootRoute({
+interface MyRouterContext {
+  queryClient: QueryClient;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
@@ -39,16 +51,30 @@ export const Route = createRootRoute({
       },
     ],
   }),
+  notFoundComponent: () => {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background text-foreground font-sans">
+        <h1 className="text-4xl font-bold">404</h1>
+        <p className="text-muted-foreground">
+          Halaman yang Anda cari tidak ditemukan.
+        </p>
+        <Link to="/" className="text-primary hover:underline">
+          Kembali ke Beranda
+        </Link>
+      </div>
+    );
+  },
   shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <HydrationFixScript />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Toaster position="top-right" richColors closeButton theme="dark" />
         <TanStackDevtools
@@ -60,6 +86,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               name: "Tanstack Router",
               render: <TanStackRouterDevtoolsPanel />,
             },
+            TanStackQueryDevtools,
           ]}
         />
         <Scripts />
