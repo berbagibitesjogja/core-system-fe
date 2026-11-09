@@ -1,2 +1,3 @@
 allowBuilds:
   unrs-resolver: false
+  zot: set this to true or false
