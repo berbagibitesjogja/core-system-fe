@@ -1,0 +1,127 @@
+import * as React from "react";
+import { cn } from "#/lib/utils";
+
+export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  title: string;
+  value: string | number;
+  unit?: string;
+  icon?: React.ReactNode;
+  trend?: {
+    value: string;
+    isPositive?: boolean;
+    label?: string;
+  };
+  styleVariant?: "default" | "brand" | "accent";
+}
+
+export function StatCard({
+  title,
+  value,
+  unit,
+  icon,
+  trend,
+  styleVariant = "default",
+  className,
+  ...props
+}: StatCardProps) {
+  const variantClasses = {
+    default: "bg-white border-neutral-200 shadow-xs text-neutral-900",
+    brand: "bg-brand text-white border-transparent",
+    accent:
+      "bg-accent border-[1.5px] border-neutral-900 shadow-pop-sm text-neutral-900",
+  }[styleVariant];
+
+  const iconBgClasses = {
+    default: "bg-bondi-50 text-brand",
+    brand: "bg-[#005e64] text-white",
+    accent: "bg-white border-[1.5px] border-neutral-900 text-neutral-900",
+  }[styleVariant];
+
+  const labelClasses = {
+    default: "text-neutral-600",
+    brand: "text-white",
+    accent: "text-neutral-900",
+  }[styleVariant];
+
+  const unitClasses = {
+    default: "text-neutral-600",
+    brand: "text-white",
+    accent: "text-neutral-900",
+  }[styleVariant];
+
+  const valueClasses = {
+    default: "text-neutral-900",
+    brand: "text-white",
+    accent: "text-neutral-900",
+  }[styleVariant];
+
+  return (
+    <div
+      className={cn(
+        "relative rounded-2xl border p-5 transition-all duration-150 overflow-hidden",
+        variantClasses,
+        className,
+      )}
+      {...props}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <span className={cn("font-label text-sm font-semibold", labelClasses)}>
+          {title}
+        </span>
+        {icon && (
+          <div
+            className={cn(
+              "size-10 rounded-xl flex items-center justify-center shrink-0",
+              iconBgClasses,
+            )}
+          >
+            {icon}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-3 flex items-baseline gap-1.5">
+        <span className={cn("font-number-xl", valueClasses)}>{value}</span>
+        {unit && (
+          <span
+            className={cn("font-label font-semibold text-base", unitClasses)}
+          >
+            {unit}
+          </span>
+        )}
+      </div>
+
+      {trend && (
+        <div className="mt-2 flex items-center gap-1.5 text-xs font-sans">
+          <span
+            className={cn(
+              "font-semibold",
+              styleVariant === "brand"
+                ? "text-white"
+                : styleVariant === "accent"
+                  ? "text-neutral-900"
+                  : trend.isPositive
+                    ? "text-green-700"
+                    : "text-red-700",
+            )}
+          >
+            {trend.value}
+          </span>
+          {trend.label && (
+            <span
+              className={
+                styleVariant === "brand"
+                  ? "text-white/80"
+                  : styleVariant === "accent"
+                    ? "text-neutral-800"
+                    : "text-neutral-500"
+              }
+            >
+              {trend.label}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
