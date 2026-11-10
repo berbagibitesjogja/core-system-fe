@@ -31,12 +31,16 @@ export function Avatar({
 
   const shapeClasses = shape === "circle" ? "rounded-full" : "rounded-xl";
 
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  const trimmedName = name.trim();
+  const initials = (
+    trimmedName.includes(" ")
+      ? trimmedName
+          .split(/\s+/)
+          .map((n) => n[0])
+          .slice(0, 2)
+          .join("")
+      : trimmedName.slice(0, 2)
+  ).toUpperCase();
 
   return (
     <div

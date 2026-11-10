@@ -1,7 +1,13 @@
-import { Clock, Heart } from "lucide-react";
+import { Calendar, Heart } from "lucide-react";
 import blobStageSvg from "#/assets/illustrations/login-blob-stage.svg";
 import heroImg from "#/assets/illustrations/login-hero.png";
 import iconLeafSvg from "#/assets/icons/icon-leaf.svg";
+import avatar1Svg from "#/assets/illustrations/avatars/avatar-1.svg";
+import avatar2Svg from "#/assets/illustrations/avatars/avatar-2.svg";
+import avatar3Svg from "#/assets/illustrations/avatars/avatar-3.svg";
+import avatar4Svg from "#/assets/illustrations/avatars/avatar-4.svg";
+import avatar5Svg from "#/assets/illustrations/avatars/avatar-5.svg";
+import avatar6Svg from "#/assets/illustrations/avatars/avatar-6.svg";
 import {
   Avatar,
   Carousel,
@@ -98,11 +104,11 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                {/* Floating Card 1: Makanan Diselamatkan (Skala Persentase Lebih Besar) */}
+                {/* Floating Card 1: Makanan Diselamatkan (Skala Persentase Lebih Besar & Lebih ke Kiri) */}
                 <div
                   data-node-id="95:433"
                   data-name="Float / Food Saved"
-                  className="absolute left-[-2%] sm:left-[0%] lg:left-[2%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
+                  className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
                 >
                   <div
                     className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
@@ -123,7 +129,7 @@ export function LoginShowcase() {
                       </span>
                       <div className="flex items-baseline gap-1">
                         <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                          3.077
+                          3.400
                         </span>
                         <span className="font-label text-[11px] sm:text-xs font-semibold leading-4 text-neutral-600">
                           Kg
@@ -133,18 +139,18 @@ export function LoginShowcase() {
                   </div>
                 </div>
 
-                {/* Floating Card 2: Heroes Terbantu (Skala Persentase Lebih Besar) */}
+                {/* Floating Card 2: Heroes Terbantu (Skala Persentase Lebih Besar & Lebih ke Kanan) */}
                 <div
                   data-node-id="95:441"
                   data-name="Float / Heroes"
-                  className="absolute right-[-2%] sm:right-[0%] lg:right-[2%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
+                  className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
                 >
                   <div
                     className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
                     role="status"
                     aria-label="Statistik heroes terbantu: 14.933 orang"
                   >
-                    {/* Avatar Stack dengan Initials 2 Karakter (FR, AN, DS) */}
+                    {/* Avatar Stack dengan Ilustrasi Karakter Warna-Warni */}
                     <div
                       className="flex items-center -space-x-2"
                       aria-hidden="true"
@@ -152,20 +158,26 @@ export function LoginShowcase() {
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="F R"
-                        className="border-2 border-white bg-bondi-100 text-bondi-800 font-bold shadow-xs"
+                        src={avatar1Svg}
+                        name="Fajar Ramadhan"
+                        alt="Ilustrasi Relawan 1"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="A N"
-                        className="border-2 border-white bg-bondi-100 text-bondi-800 font-bold shadow-xs"
+                        src={avatar2Svg}
+                        name="Anisa Nurul"
+                        alt="Ilustrasi Relawan 2"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="D S"
-                        className="border-2 border-white bg-bondi-100 text-bondi-800 font-bold shadow-xs"
+                        src={avatar3Svg}
+                        name="Dimas Saputra"
+                        alt="Ilustrasi Relawan 3"
+                        className="border-2 border-white shadow-xs"
                       />
                     </div>
 
@@ -174,7 +186,7 @@ export function LoginShowcase() {
                         Heroes terbantu
                       </span>
                       <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        14.933
+                        15.400
                       </span>
                     </div>
                   </div>
@@ -224,24 +236,29 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                <div className="absolute left-[-2%] sm:left-[0%] lg:left-[2%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
-                  <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
+                <div className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
+                  <div
+                    className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
+                    role="status"
+                    aria-label="Statistik perjalanan aksi: lebih dari 2 tahun"
+                  >
                     <div className="bg-amber-600 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white">
-                      <Clock className="size-4 sm:size-5" />
+                      <Calendar className="size-4 sm:size-5" />
                     </div>
                     <div className="flex flex-col text-left">
                       <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Waktu Penyelamatan
+                        Perjalanan Aksi
                       </span>
                       <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        &lt; 2 Jam
+                        &gt; 2 Tahun
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute right-[-2%] sm:right-[0%] lg:right-[2%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
+                <div className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
+                    {/* Avatar Stack Mitra Donatur Warna-Warni */}
                     <div
                       className="flex items-center -space-x-2"
                       aria-hidden="true"
@@ -249,20 +266,26 @@ export function LoginShowcase() {
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="R A"
-                        className="border-2 border-white bg-amber-100 text-amber-800 font-bold shadow-xs"
+                        src={avatar4Svg}
+                        name="Rina Astuti"
+                        alt="Ilustrasi Mitra 1"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="M T"
-                        className="border-2 border-white bg-amber-100 text-amber-800 font-bold shadow-xs"
+                        src={avatar5Svg}
+                        name="Made Tirta"
+                        alt="Ilustrasi Mitra 2"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="K P"
-                        className="border-2 border-white bg-amber-100 text-amber-800 font-bold shadow-xs"
+                        src={avatar6Svg}
+                        name="Kevin Pratama"
+                        alt="Ilustrasi Mitra 3"
+                        className="border-2 border-white shadow-xs"
                       />
                     </div>
 
@@ -271,7 +294,7 @@ export function LoginShowcase() {
                         Mitra Donatur
                       </span>
                       <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        180+ Mitra
+                        20+ Mitra
                       </span>
                     </div>
                   </div>
@@ -311,7 +334,7 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                <div className="absolute left-[-2%] sm:left-[0%] lg:left-[2%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
+                <div className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
                     <div className="bg-emerald-600 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white">
                       <Heart className="size-4 sm:size-5" />
@@ -327,8 +350,9 @@ export function LoginShowcase() {
                   </div>
                 </div>
 
-                <div className="absolute right-[-2%] sm:right-[0%] lg:right-[2%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
+                <div className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
+                    {/* Avatar Stack Relawan Aktif Warna-Warni */}
                     <div
                       className="flex items-center -space-x-2"
                       aria-hidden="true"
@@ -336,20 +360,26 @@ export function LoginShowcase() {
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="B B"
-                        className="border-2 border-white bg-emerald-100 text-emerald-800 font-bold shadow-xs"
+                        src={avatar2Svg}
+                        name="Bunga Berlian"
+                        alt="Ilustrasi Relawan 1"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="Y K"
-                        className="border-2 border-white bg-emerald-100 text-emerald-800 font-bold shadow-xs"
+                        src={avatar1Svg}
+                        name="Yoga Kurnia"
+                        alt="Ilustrasi Relawan 2"
+                        className="border-2 border-white shadow-xs"
                       />
                       <Avatar
                         size="sm"
                         shape="circle"
-                        name="I D"
-                        className="border-2 border-white bg-emerald-100 text-emerald-800 font-bold shadow-xs"
+                        src={avatar3Svg}
+                        name="Intan Dewi"
+                        alt="Ilustrasi Relawan 3"
+                        className="border-2 border-white shadow-xs"
                       />
                     </div>
 
@@ -358,7 +388,7 @@ export function LoginShowcase() {
                         Relawan Aktif
                       </span>
                       <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        2.400+ Relawan
+                        100+ Relawan
                       </span>
                     </div>
                   </div>
