@@ -57,7 +57,8 @@ export function Avatar({
           src={src}
           alt={alt || name}
           onError={() => setImageError(true)}
-          className="size-full object-cover"
+          draggable={false}
+          className="size-full object-cover pointer-events-none select-none"
         />
       ) : (
         <span>{initials || "?"}</span>

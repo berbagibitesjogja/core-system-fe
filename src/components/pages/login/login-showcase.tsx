@@ -22,7 +22,7 @@ export function LoginShowcase() {
       data-node-id="95:429"
       data-name="Showcase"
       aria-label="Informasi Komunitas BBJ"
-      className="relative size-full min-h-[580px] xl:min-h-[720px] rounded-[32px] bg-[#e6f5f6] overflow-hidden flex flex-col justify-between p-6 sm:p-8 xl:p-10 select-none shadow-sm animate-showcase-enter"
+      className="relative size-full min-h-[580px] xl:min-h-[720px] rounded-[32px] bg-[#e6f5f6] overflow-hidden flex flex-col justify-between py-6 sm:py-8 xl:py-10 select-none shadow-sm animate-showcase-enter"
     >
       {/* Decorative Vector Loop dengan Path Tunggal Kontinu (Mulai dari Bawah ke Atas) */}
       <div
@@ -81,7 +81,7 @@ export function LoginShowcase() {
               <div
                 data-node-id="95:431"
                 data-name="Blob / Stage"
-                className="relative w-[94%] sm:w-[88%] md:w-[82%] max-w-[560px] aspect-[564/492] flex items-center justify-center"
+                className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center"
               >
                 {/* Background Blob SVG */}
                 <img
@@ -104,11 +104,11 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                {/* Floating Card 1: Makanan Diselamatkan (Skala Persentase Lebih Besar & Lebih ke Kiri) */}
+                {/* Floating Card 1: Makanan Diselamatkan (Lebih ke Kiri di Desktop & Responsif ke Tengah Saat Mengecil) */}
                 <div
                   data-node-id="95:433"
                   data-name="Float / Food Saved"
-                  className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
+                  className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
                 >
                   <div
                     className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
@@ -139,11 +139,11 @@ export function LoginShowcase() {
                   </div>
                 </div>
 
-                {/* Floating Card 2: Heroes Terbantu (Skala Persentase Lebih Besar & Lebih ke Kanan) */}
+                {/* Floating Card 2: Heroes Terbantu (Lebih ke Kanan di Desktop & Responsif ke Tengah Saat Mengecil) */}
                 <div
                   data-node-id="95:441"
                   data-name="Float / Heroes"
-                  className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
+                  className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
                 >
                   <div
                     className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
@@ -220,7 +220,7 @@ export function LoginShowcase() {
           {/* Slide 2: Distribusi Cepat & Tepat Sasaran */}
           <CarouselItem className="size-full flex flex-col justify-between">
             <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
-              <div className="relative w-[94%] sm:w-[88%] md:w-[82%] max-w-[560px] aspect-[564/492] flex items-center justify-center">
+              <div className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center">
                 <img
                   src={blobStageSvg}
                   alt=""
@@ -236,7 +236,7 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                <div className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
+                <div className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
                   <div
                     className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
                     role="status"
@@ -256,7 +256,7 @@ export function LoginShowcase() {
                   </div>
                 </div>
 
-                <div className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
+                <div className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
                     {/* Avatar Stack Mitra Donatur Warna-Warni */}
                     <div
@@ -318,7 +318,7 @@ export function LoginShowcase() {
           {/* Slide 3: Kolaborasi Komunitas */}
           <CarouselItem className="size-full flex flex-col justify-between">
             <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
-              <div className="relative w-[94%] sm:w-[88%] md:w-[82%] max-w-[560px] aspect-[564/492] flex items-center justify-center">
+              <div className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center">
                 <img
                   src={blobStageSvg}
                   alt=""
@@ -334,7 +334,7 @@ export function LoginShowcase() {
                   />
                 </div>
 
-                <div className="absolute left-[-10%] sm:left-[-20%] xl:left-[-25%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
+                <div className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
                     <div className="bg-emerald-600 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white">
                       <Heart className="size-4 sm:size-5" />
@@ -350,7 +350,7 @@ export function LoginShowcase() {
                   </div>
                 </div>
 
-                <div className="absolute right-[-10%] sm:right-[-20%] xl:right-[-25%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
+                <div className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
                   <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
                     {/* Avatar Stack Relawan Aktif Warna-Warni */}
                     <div

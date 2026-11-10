@@ -17,6 +17,10 @@ interface CarouselContextProps {
   carouselRef: React.RefObject<HTMLDivElement | null>;
   api: CarouselApi;
   selectedIndex: number;
+  currentIndex: number;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  isAnimating: boolean;
+  setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>;
   slideCount: number;
   scrollPrev: () => void;
   scrollNext: () => void;
@@ -24,6 +28,7 @@ interface CarouselContextProps {
   canScrollPrev: boolean;
   canScrollNext: boolean;
   orientation?: "horizontal" | "vertical";
+  loop?: boolean;
 }
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
@@ -41,6 +46,7 @@ export interface CarouselProps extends React.HTMLAttributes<HTMLDivElement> {
   setApi?: (api: CarouselApi) => void;
   autoPlay?: boolean;
   autoPlayInterval?: number;
+  loop?: boolean;
 }
 
 export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
@@ -50,6 +56,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       setApi,
       autoPlay = false,
       autoPlayInterval = 5000,
+      loop = true,
       className,
       children,
       ...props
@@ -57,29 +64,47 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
     ref,
   ) => {
     const carouselRef = React.useRef<HTMLDivElement | null>(null);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [slideCount, setSlideCount] = React.useState(0);
+    // Saat loop aktif, posisi awal ada pada indeks 1 (slide riil pertama)
+    const [currentIndex, setCurrentIndex] = React.useState(1);
+    const [isAnimating, setIsAnimating] = React.useState(true);
     const [isPaused, setIsPaused] = React.useState(false);
 
-    const canScrollPrev = selectedIndex > 0;
-    const canScrollNext = selectedIndex < slideCount - 1;
+    // Indeks slide logis aktif (0 s/d slideCount - 1) untuk dots dan eksternal
+    const selectedIndex = React.useMemo(() => {
+      if (slideCount <= 0) return 0;
+      if (!loop) return Math.max(0, Math.min(currentIndex, slideCount - 1));
+      return (currentIndex - 1 + slideCount) % slideCount;
+    }, [currentIndex, slideCount, loop]);
+
+    const canScrollPrev = loop ? true : currentIndex > 0;
+    const canScrollNext = loop ? true : currentIndex < slideCount - 1;
+
+    const scrollNext = React.useCallback(() => {
+      if (slideCount <= 1) return;
+      setIsAnimating(true);
+      setCurrentIndex((prev) => prev + 1);
+    }, [slideCount]);
+
+    const scrollPrev = React.useCallback(() => {
+      if (slideCount <= 1) return;
+      setIsAnimating(true);
+      setCurrentIndex((prev) => prev - 1);
+    }, [slideCount]);
 
     const scrollTo = React.useCallback(
       (index: number) => {
         if (slideCount <= 0) return;
-        const target = Math.max(0, Math.min(index, slideCount - 1));
-        setSelectedIndex(target);
+        setIsAnimating(true);
+        if (loop) {
+          const target = Math.max(0, Math.min(index, slideCount - 1));
+          setCurrentIndex(target + 1);
+        } else {
+          setCurrentIndex(Math.max(0, Math.min(index, slideCount - 1)));
+        }
       },
-      [slideCount],
+      [slideCount, loop],
     );
-
-    const scrollPrev = React.useCallback(() => {
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : slideCount - 1));
-    }, [slideCount]);
-
-    const scrollNext = React.useCallback(() => {
-      setSelectedIndex((prev) => (prev < slideCount - 1 ? prev + 1 : 0));
-    }, [slideCount]);
 
     const api: CarouselApi = React.useMemo(
       () => ({
@@ -108,7 +133,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       }
     }, [api, setApi]);
 
-    // Auto Play Timer
+    // Timer Auto Play (berjalan searah terus secara infinite)
     React.useEffect(() => {
       if (!autoPlay || slideCount <= 1 || isPaused) return;
 
@@ -125,6 +150,10 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           carouselRef,
           api,
           selectedIndex,
+          currentIndex,
+          setCurrentIndex,
+          isAnimating,
+          setIsAnimating,
           slideCount,
           scrollPrev,
           scrollNext,
@@ -132,6 +161,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           canScrollPrev,
           canScrollNext,
           orientation,
+          loop,
         }}
       >
         <div
@@ -170,33 +200,227 @@ export const CarouselContent = React.forwardRef<
   HTMLDivElement,
   CarouselContentProps
 >(({ className, children, onCountChange, ...props }, ref) => {
-  const { selectedIndex, orientation } = useCarousel();
-  const count = React.Children.count(children);
+  const {
+    selectedIndex,
+    currentIndex,
+    setCurrentIndex,
+    isAnimating,
+    setIsAnimating,
+    orientation,
+    scrollPrev,
+    scrollNext,
+    loop,
+  } = useCarousel();
+
+  const rawChildren = React.Children.toArray(children);
+  const totalSlides = rawChildren.length;
 
   React.useEffect(() => {
     if (onCountChange) {
-      onCountChange(count);
+      onCountChange(totalSlides);
     }
-  }, [count, onCountChange]);
+  }, [totalSlides, onCountChange]);
 
   const isHorizontal = orientation === "horizontal";
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const shouldLoop = Boolean(loop && totalSlides > 1);
+
+  // Duplikasi slide untuk ilusi loop infinite yang seamless
+  const slides = React.useMemo(() => {
+    if (!shouldLoop) return rawChildren;
+
+    const first = rawChildren[0];
+    const last = rawChildren[totalSlides - 1];
+
+    const cloneLast = React.isValidElement(last)
+      ? React.cloneElement(last, {
+          key: "carousel-clone-last",
+          "aria-hidden": "true",
+          tabIndex: -1,
+        } as React.HTMLAttributes<HTMLElement>)
+      : last;
+
+    const cloneFirst = React.isValidElement(first)
+      ? React.cloneElement(first, {
+          key: "carousel-clone-first",
+          "aria-hidden": "true",
+          tabIndex: -1,
+        } as React.HTMLAttributes<HTMLElement>)
+      : first;
+
+    return [cloneLast, ...rawChildren, cloneFirst];
+  }, [shouldLoop, rawChildren, totalSlides]);
+
+  // State geser mouse / pointer drag
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [dragOffset, setDragOffset] = React.useState(0);
+  const isPointerDownRef = React.useRef(false);
+  const startPosRef = React.useRef(0);
+  const hasMovedRef = React.useRef(false);
+
+  const activeTrackIndex = shouldLoop ? currentIndex : selectedIndex;
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 || totalSlides <= 1) return;
+
+    // Jika sedang berada pada posisi clone sebelum reset transitionEnd, reset instan terlebih dahulu
+    if (shouldLoop) {
+      if (currentIndex >= totalSlides + 1) {
+        setIsAnimating(false);
+        setCurrentIndex(1);
+      } else if (currentIndex <= 0) {
+        setIsAnimating(false);
+        setCurrentIndex(totalSlides);
+      }
+    }
+
+    isPointerDownRef.current = true;
+    hasMovedRef.current = false;
+    startPosRef.current = isHorizontal ? e.clientX : e.clientY;
+    setDragOffset(0);
+
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Ignore fallback
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current) return;
+
+    const currentPos = isHorizontal ? e.clientX : e.clientY;
+    let diff = currentPos - startPosRef.current;
+
+    // Resistance hanya jika TIDAK loop
+    if (!shouldLoop) {
+      if (
+        (selectedIndex === 0 && diff > 0) ||
+        (selectedIndex === totalSlides - 1 && diff < 0)
+      ) {
+        diff *= 0.35;
+      }
+    }
+
+    if (Math.abs(diff) > 4) {
+      if (!isDragging) setIsDragging(true);
+      hasMovedRef.current = true;
+      setDragOffset(diff);
+    }
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
+
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch {
+      // Ignore fallback
+    }
+
+    const currentPos = isHorizontal ? e.clientX : e.clientY;
+    const diff = currentPos - startPosRef.current;
+    const container = containerRef.current;
+    const containerDimension = container
+      ? isHorizontal
+        ? container.offsetWidth
+        : container.offsetHeight
+      : 400;
+
+    const threshold = Math.max(40, containerDimension * 0.12);
+
+    if (diff < -threshold) {
+      scrollNext();
+    } else if (diff > threshold) {
+      scrollPrev();
+    }
+
+    setIsDragging(false);
+    setDragOffset(0);
+
+    setTimeout(() => {
+      hasMovedRef.current = false;
+    }, 60);
+  };
+
+  // Callback saat transisi animasi selesai untuk reset posisi virtual clone
+  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget || e.propertyName !== "transform") return;
+
+    if (shouldLoop && totalSlides > 1) {
+      if (currentIndex >= totalSlides + 1) {
+        setIsAnimating(false);
+        setCurrentIndex(1);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setIsAnimating(true);
+          });
+        });
+      } else if (currentIndex <= 0) {
+        setIsAnimating(false);
+        setCurrentIndex(totalSlides);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setIsAnimating(true);
+          });
+        });
+      }
+    }
+  };
+
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (hasMovedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
 
   return (
-    <div ref={ref} className="overflow-hidden size-full">
+    <div
+      ref={(node) => {
+        containerRef.current = node;
+        if (typeof ref === "function") {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }}
+      className={cn(
+        "overflow-hidden size-full select-none",
+        isDragging ? "cursor-grabbing" : "cursor-grab",
+      )}
+      style={{
+        touchAction: isHorizontal ? "pan-y" : "pan-x",
+      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onClickCapture={handleClickCapture}
+      onDragStart={(e) => e.preventDefault()}
+      {...props}
+    >
       <div
         className={cn(
-          "flex transition-transform duration-500 ease-out size-full",
+          "flex size-full",
+          isDragging || !isAnimating
+            ? "transition-none"
+            : "transition-transform duration-500 ease-out",
           isHorizontal ? "flex-row" : "flex-col",
           className,
         )}
         style={{
           transform: isHorizontal
-            ? `translateX(-${selectedIndex * 100}%)`
-            : `translateY(-${selectedIndex * 100}%)`,
+            ? `translateX(calc(-${activeTrackIndex * 100}% + ${dragOffset}px))`
+            : `translateY(calc(-${activeTrackIndex * 100}% + ${dragOffset}px))`,
         }}
-        {...props}
+        onTransitionEnd={handleTransitionEnd}
       >
-        {children}
+        {slides}
       </div>
     </div>
   );
@@ -212,7 +436,10 @@ export const CarouselItem = React.forwardRef<
       ref={ref}
       role="group"
       aria-roledescription="slide"
-      className={cn("min-w-0 shrink-0 grow-0 basis-full size-full", className)}
+      className={cn(
+        "min-w-0 shrink-0 grow-0 basis-full size-full overflow-hidden",
+        className,
+      )}
       {...props}
     />
   );
