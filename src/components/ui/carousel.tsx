@@ -212,7 +212,10 @@ export const CarouselItem = React.forwardRef<
       ref={ref}
       role="group"
       aria-roledescription="slide"
-      className={cn("min-w-0 shrink-0 grow-0 basis-full size-full", className)}
+      className={cn(
+        "min-w-0 shrink-0 grow-0 basis-full size-full overflow-hidden",
+        className,
+      )}
       {...props}
     />
   );
