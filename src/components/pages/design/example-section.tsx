@@ -2,9 +2,6 @@ import * as React from "react";
 import {
   Building,
   Calendar,
-  Check,
-  Copy,
-  ExternalLink,
   Eye,
   Heart,
   Home,
@@ -36,6 +33,7 @@ import {
 import { FilterChip, NavItem, Pagination } from "#/components/shared";
 import { toast } from "#/components/ui/toast";
 import { EXAMPLE_DONATION_ROWS } from "./design-data";
+import { DocBlock } from "./doc-block";
 
 export function ExampleSection() {
   const [activeNav, setActiveNav] = React.useState("donasi");
@@ -66,11 +64,11 @@ export function ExampleSection() {
 
   const [donations, setDonations] = React.useState(EXAMPLE_DONATION_ROWS);
 
-  const handleCopy = (text: string, id: string) => {
+  const handleCopy = (text: string, id?: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedToken(id);
+    if (id) setCopiedToken(id);
     toast.success("Kode berhasil disalin!");
-    setTimeout(() => setCopiedToken(null), 1800);
+    if (id) setTimeout(() => setCopiedToken(null), 1800);
   };
 
   // Filtered & Sorted donations
@@ -142,118 +140,41 @@ export function ExampleSection() {
   };
 
   return (
-    <section className="space-y-8 animate-in fade-in duration-200">
-      {/* Header Documentation Card */}
-      <div className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-xs space-y-4">
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-neutral-100 pb-5">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <span className="font-label text-xs font-bold uppercase tracking-wider text-brand">
-                Node 23:334
-              </span>
-              <span className="text-neutral-300">•</span>
-              <span className="font-label text-xs font-semibold text-neutral-500">
-                Penerapan Berbasis Komponen Reusable
-              </span>
-            </div>
-            <h2 className="font-heading-h1 text-2xl font-bold text-neutral-900 sm:text-3xl">
-              Contoh Layar Admin: Daftar Donasi
-            </h2>
-            <p className="font-body-m max-w-3xl text-sm text-neutral-600">
-              Layar administratif utuh yang dibangun 100% menggunakan susunan
-              komponen reusable yang telah dibuat (bukan markup HTML mentah):
-              komponen{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;NavItem&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Button&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;FilterChip&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Input&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Table&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Badge&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;IconButton&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Pagination&gt;
-              </code>
-              ,{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                &lt;Dialog&gt;
-              </code>
-              , dan sistem notifikasi{" "}
-              <code className="text-xs bg-neutral-100 px-1 py-0.5 rounded text-neutral-800">
-                toast
-              </code>
-              .
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() =>
-                handleCopy(`<ExampleDaftarDonasi />`, "example-page-code")
-              }
-            >
-              {copiedToken === "example-page-code" ? (
-                <Check className="size-3.5 text-green-600" />
-              ) : (
-                <Copy className="size-3.5" />
-              )}
-              Salin Contoh Kode
-            </Button>
-            <a
-              href="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=23-334"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 hover:bg-neutral-100 transition-colors"
-              title="Buka di Figma"
-            >
-              <ExternalLink className="size-4" />
-            </a>
-          </div>
-        </div>
-
-        {/* Feature Badges */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-1">
-          <Badge tone="brand" styleVariant="soft" dot>
-            &lt;NavItem&gt; Sidebar Desktop 240px
-          </Badge>
-          <Badge tone="accent" styleVariant="soft" dot>
-            &lt;FilterChip&gt; Toolbar Pilihan
-          </Badge>
-          <Badge tone="success" styleVariant="soft" dot>
-            &lt;Table&gt; Komponen Standar BBJ
-          </Badge>
-          <Badge tone="neutral" styleVariant="soft" dot>
-            &lt;Dialog&gt; + &lt;Toast&gt; Interaktif
-          </Badge>
-        </div>
+    <DocBlock
+      id="doc-example-admin"
+      nodeId="Node 23:334"
+      overline="Live Interactive Prototype"
+      title="Contoh Layar Admin: Daftar Donasi"
+      subtitle="Figma Node 23:334 · Implementasi Penuh 100% Komponen Reusable BBJ"
+      description="Layar administratif utuh yang dibangun 100% menggunakan susunan komponen reusable yang telah dibuat (bukan markup HTML mentah): NavItem, Button, FilterChip, Input, Table, Badge, IconButton, Pagination, Dialog, dan sistem notifikasi toast."
+      copyCode={`<div className="flex flex-col lg:flex-row min-h-[760px] bg-[#f5f7f7] rounded-[24px] border border-neutral-200">
+  {/* Sidebar NavItem, Main Content Table, Pagination, Dialog */}
+</div>`}
+      copyTokenKey="example-page-code"
+      copiedToken={copiedToken}
+      onCopy={handleCopy}
+      figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=23-334"
+    >
+      {/* Feature Badges */}
+      <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pb-4">
+        <Badge tone="brand" styleVariant="soft" dot>
+          &lt;NavItem&gt; Sidebar Desktop 240px
+        </Badge>
+        <Badge tone="accent" styleVariant="soft" dot>
+          &lt;FilterChip&gt; Toolbar Pilihan
+        </Badge>
+        <Badge tone="success" styleVariant="soft" dot>
+          &lt;Table&gt; Komponen Standar BBJ
+        </Badge>
+        <Badge tone="neutral" styleVariant="soft" dot>
+          &lt;Dialog&gt; + &lt;Toast&gt; Interaktif
+        </Badge>
       </div>
 
       {/* =========================================================================
           LIVE MOCKUP: Contoh Layar Admin (Figma Node 23:334)
       ========================================================================= */}
-      <div className="rounded-[24px] border border-neutral-200 bg-[#f5f7f7] shadow-sm overflow-hidden flex flex-col lg:flex-row min-h-[760px]">
+      <div className="rounded-[20px] sm:rounded-[24px] border border-neutral-200 bg-[#f5f7f7] shadow-sm overflow-hidden flex flex-col lg:flex-row min-h-[720px] w-full">
         {/* SIDEBAR DESKTOP */}
         <aside className="w-full lg:w-[240px] bg-white border-b lg:border-b-0 lg:border-r border-[#e2e7e8] flex flex-col justify-between shrink-0 p-4 select-none">
           <div className="space-y-4">
@@ -330,7 +251,7 @@ export function ExampleSection() {
         </aside>
 
         {/* MAIN CONTENT AREA */}
-        <main className="flex-1 p-6 sm:p-8 lg:p-10 space-y-6 flex flex-col justify-between overflow-x-auto">
+        <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-10 space-y-6 flex flex-col justify-between">
           <div className="space-y-6">
             {/* Page Header (Node 23:432) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -348,7 +269,7 @@ export function ExampleSection() {
                 variant="primary"
                 size="md"
                 onClick={() => setIsAddDialogOpen(true)}
-                className="shadow-pop-sm shrink-0"
+                className="w-full sm:w-auto shrink-0"
               >
                 <Plus className="size-5" />
                 Tambah Donasi
@@ -533,7 +454,7 @@ export function ExampleSection() {
           </div>
 
           {/* Reusable Pagination Component */}
-          <div className="pt-4 border-t border-neutral-200/60">
+          <div className="pt-4 border-t border-neutral-200/60 overflow-x-auto">
             <Pagination
               currentPage={currentPage}
               totalPages={40}
@@ -611,6 +532,6 @@ export function ExampleSection() {
         isConfirmLoading={isSubmitting}
         onConfirm={handleDeleteConfirm}
       />
-    </section>
+    </DocBlock>
   );
 }

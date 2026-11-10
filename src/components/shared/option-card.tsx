@@ -46,7 +46,7 @@ export function OptionCard({
         }
       }}
       className={cn(
-        "relative flex flex-col gap-3 p-4 rounded-[12px] transition-all duration-150 select-none cursor-pointer outline-none text-left w-full sm:w-[220px]",
+        "relative flex flex-col gap-3 p-4 rounded-[12px] transition-all duration-150 select-none cursor-pointer outline-none text-left w-full",
         isError
           ? "bg-white border-2 border-[#ef4444]"
           : isSelected
