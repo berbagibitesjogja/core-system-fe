@@ -10,8 +10,7 @@ import { Toaster } from "#/components/ui/toast";
 import { HydrationFixScript } from "#/components/ui/hydration-fix";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import type { QueryClient } from "@tanstack/react-query";
-
-import appCss from "../styles.css?url";
+import "../styles.css";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -46,8 +45,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: "https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap",
       },
       {
-        rel: "stylesheet",
-        href: appCss,
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/bbj-logo.svg",
       },
     ],
   }),
