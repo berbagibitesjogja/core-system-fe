@@ -5,8 +5,7 @@ import {
   Navigation,
   XCircle,
 } from "lucide-react";
-import { toast } from "sonner";
-import { Button, Toast } from "#/components/ui";
+import { Button, Toast, toast } from "#/components/ui";
 import { DocBlock } from "./doc-block";
 
 export interface ToastBlockProps {

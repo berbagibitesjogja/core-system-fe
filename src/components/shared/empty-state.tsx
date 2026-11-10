@@ -1,6 +1,31 @@
 import * as React from "react";
 import { Inbox } from "lucide-react";
 import { cn } from "#/lib/utils";
+import cariKosongSvg from "#/assets/illustrations/cari-kosong.svg";
+
+export interface IllustrationCariKosongProps {
+  className?: string;
+  alt?: string;
+}
+
+/**
+ * IllustrationCariKosong: Komponen visual ilustrasi SVG resmi BBJ (Figma Node 130:578 / 128:43).
+ */
+export function IllustrationCariKosong({
+  className,
+  alt = "Ilustrasi data kosong",
+}: IllustrationCariKosongProps) {
+  return (
+    <img
+      src={cariKosongSvg}
+      alt={alt}
+      className={cn(
+        "size-full object-contain pointer-events-none select-none",
+        className,
+      )}
+    />
+  );
+}
 
 export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -51,11 +76,7 @@ export function EmptyState({
         )}
       >
         {isIllustration
-          ? illustration || (
-              <div className="flex size-full items-center justify-center bg-bondi-50/70 text-brand">
-                <Inbox className={isCompact ? "size-10" : "size-16"} />
-              </div>
-            )
+          ? illustration || <IllustrationCariKosong />
           : icon || <Inbox className={isCompact ? "size-7" : "size-10"} />}
       </div>
 

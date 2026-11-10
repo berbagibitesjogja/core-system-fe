@@ -1,6 +1,5 @@
 import { Box, Edit2, MoreVertical, Plus, Search, Trash2 } from "lucide-react";
-import { toast } from "sonner";
-import { IconButton } from "#/components/ui";
+import { IconButton, toast } from "#/components/ui";
 import { DocBlock } from "./doc-block";
 
 export interface ActionIconButtonBlockProps {

@@ -1,5 +1,5 @@
 import { Box } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "#/components/ui";
 import { BeneficiaryCard } from "#/components/shared";
 import { DocBlock } from "./doc-block";
 

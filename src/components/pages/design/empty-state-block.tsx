@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Inbox, Package, RotateCcw, Search, Users } from "lucide-react";
+import { Package, RotateCcw, Search } from "lucide-react";
 import { Button } from "#/components/ui";
 import { EmptyState } from "#/components/shared";
 import { cn } from "#/lib/utils";
@@ -83,43 +83,27 @@ export function EmptyStateBlock({ onCopy, copiedToken }: EmptyStateBlockProps) {
         {/* Variant 3: Default + Illustration */}
         <div className="flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-neutral-50/50 p-6">
           <span className="font-label text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
-            3. Size: Default · Visual: Illustration (200px)
+            3. Size: Default · Visual: Illustration (Node 130:578 · 200px)
           </span>
           <EmptyState
-            title="Daftar Relawan Kosong"
-            description="Belum ada pendaftaran relawan gelombang baru untuk batch akhir pekan ini."
+            title="Daftar Donasi Kosong"
+            description="Belum ada pendaftaran donasi surplus makanan untuk batch akhir pekan ini."
             size="default"
             visual="illustration"
-            illustration={
-              <div className="flex size-full flex-col items-center justify-center bg-gradient-to-br from-bondi-50 to-sunny-50 text-brand p-4">
-                <Users className="size-16 text-brand mb-1" />
-                <span className="text-[11px] font-semibold text-neutral-600">
-                  Ilustrasi Relawan BBJ
-                </span>
-              </div>
-            }
-            action={<Button variant="primary">Buka Pendaftaran</Button>}
+            action={<Button variant="primary">Tambah Donasi</Button>}
           />
         </div>
 
         {/* Variant 4: Compact + Illustration */}
         <div className="flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-neutral-50/50 p-6">
           <span className="font-label text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
-            4. Size: Compact · Visual: Illustration (140px)
+            4. Size: Compact · Visual: Illustration (Node 130:590 · 140px)
           </span>
           <EmptyState
-            title="Notifikasi Kosong"
-            description="Semua aktivitas donasi telah selesai ditinjau."
+            title="Pencarian Tidak Ditemukan"
+            description="Coba gunakan kata kunci lain untuk menemukan donasi surplus."
             size="compact"
             visual="illustration"
-            illustration={
-              <div className="flex size-full flex-col items-center justify-center bg-bondi-50 text-brand p-3">
-                <Inbox className="size-10 text-brand mb-1" />
-                <span className="text-[10px] font-semibold text-neutral-600">
-                  Semua Terbaca
-                </span>
-              </div>
-            }
           />
         </div>
       </div>

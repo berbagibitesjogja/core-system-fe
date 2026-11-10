@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Box, Plus, Sparkles, Trash2 } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "#/components/ui";
+import { Button, toast } from "#/components/ui";
 import { DocBlock } from "./doc-block";
 
 export interface ButtonBlockProps {

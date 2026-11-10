@@ -1,7 +1,6 @@
 import * as React from "react";
 import { AlertTriangle, HelpCircle, Navigation } from "lucide-react";
-import { toast } from "sonner";
-import { Button, Dialog } from "#/components/ui";
+import { Button, Dialog, toast } from "#/components/ui";
 import { DocBlock } from "./doc-block";
 
 export interface ModalBlockProps {

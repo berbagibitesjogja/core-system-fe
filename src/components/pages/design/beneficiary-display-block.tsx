@@ -1,7 +1,6 @@
 import * as React from "react";
 import { RotateCcw } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "#/components/ui";
+import { Button, toast } from "#/components/ui";
 import { BeneficiaryCard } from "#/components/shared";
 import { DocBlock } from "./doc-block";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "#/components/ui";
 import { GoogleSignInButton } from "#/components/shared";
 import { DocBlock } from "./doc-block";
 
