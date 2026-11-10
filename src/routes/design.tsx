@@ -85,15 +85,15 @@ function DesignShowcasePage() {
   return (
     <div
       suppressHydrationWarning
-      className="min-h-screen bg-canvas font-sans antialiased text-neutral-900 p-6 md:p-12 space-y-16"
+      className="min-h-screen bg-canvas font-sans antialiased text-neutral-900 p-3.5 sm:p-6 md:p-10 lg:p-12 space-y-10 sm:space-y-16 w-full max-w-full overflow-x-hidden"
     >
       {/* Top Breadcrumb & Hero Header (WP4 Style) */}
-      <header className="border-b border-neutral-200 pb-8 space-y-6 max-w-[1600px] mx-auto">
+      <header className="border-b border-neutral-200 pb-6 sm:pb-8 space-y-4 sm:space-y-6 max-w-[1600px] mx-auto w-full">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs font-semibold text-brand hover:text-brand-hover transition-colors group cursor-pointer"
         >
-          <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
+          <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform shrink-0" />
           <span>Kembali ke Beranda Utama</span>
         </Link>
 
@@ -102,10 +102,10 @@ function DesignShowcasePage() {
             <p className="font-overline text-brand tracking-widest uppercase text-xs font-bold">
               Berbagi Bites Jogja · Admin Design System &amp; UI Components
             </p>
-            <h1 className="font-display-xl text-neutral-900 tracking-tight text-3xl sm:text-4xl lg:text-5xl">
+            <h1 className="font-display-xl text-neutral-900 tracking-tight text-2xl sm:text-4xl lg:text-5xl">
               Design System Showcase &amp; Component Docs
             </h1>
-            <p className="font-body-m text-neutral-600 leading-relaxed text-sm sm:text-base">
+            <p className="font-body-m text-neutral-600 leading-relaxed text-xs sm:text-base">
               Dokumentasi sistem desain terpadu dalam 1 halaman utuh: token
               fondasi (Figma 12:141), 13 komponen aksi &amp; form (Figma 16:273
               - 138:11319), 9 komponen data display &amp; tabel (Figma 17:197 -
@@ -115,7 +115,7 @@ function DesignShowcasePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
             <Badge tone="brand" styleVariant="soft" dot>
               Tailwind CSS v4 &amp; TanStack Start
             </Badge>
@@ -132,43 +132,50 @@ function DesignShowcasePage() {
         </div>
 
         {/* Sticky Anchor Quick Jump Bar */}
-        <div className="sticky top-0 z-30 -mx-6 md:-mx-12 px-6 md:px-12 py-3.5 bg-canvas/90 backdrop-blur-md border-y border-neutral-200/80 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider font-label mr-2 hidden sm:inline">
-            Lompat Cepat:
-          </span>
-          <FilterChip
-            selected={activeSection === "foundations"}
-            onClick={() => scrollToSection("foundations")}
-          >
-            🎨 1. Fondasi &amp; Token (12:141)
-          </FilterChip>
-          <FilterChip
-            selected={activeSection === "actions"}
-            onClick={() => scrollToSection("actions")}
-            count={13}
-          >
-            ⚡ 2. Actions &amp; Form (16:273)
-          </FilterChip>
-          <FilterChip
-            selected={activeSection === "datadisplay"}
-            onClick={() => scrollToSection("datadisplay")}
-            count={9}
-          >
-            📊 3. Data Display (17:197)
-          </FilterChip>
-          <FilterChip
-            selected={activeSection === "navfeedback"}
-            onClick={() => scrollToSection("navfeedback")}
-            count={7}
-          >
-            🧭 4. Nav &amp; Feedback (19:220)
-          </FilterChip>
-          <FilterChip
-            selected={activeSection === "example"}
-            onClick={() => scrollToSection("example")}
-          >
-            📋 5. Contoh Layar Admin (23:334)
-          </FilterChip>
+        <div className="sticky top-0 z-30 -mx-3.5 sm:-mx-6 md:-mx-12 px-3.5 sm:px-6 md:px-12 py-2.5 sm:py-3.5 bg-canvas/90 backdrop-blur-md border-y border-neutral-200/80">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 touch-pan-x">
+            <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider font-label mr-2 shrink-0 hidden sm:inline">
+              Lompat Cepat:
+            </span>
+            <FilterChip
+              selected={activeSection === "foundations"}
+              onClick={() => scrollToSection("foundations")}
+              className="shrink-0"
+            >
+              🎨 1. Fondasi &amp; Token (12:141)
+            </FilterChip>
+            <FilterChip
+              selected={activeSection === "actions"}
+              onClick={() => scrollToSection("actions")}
+              count={13}
+              className="shrink-0"
+            >
+              ⚡ 2. Actions &amp; Form (16:273)
+            </FilterChip>
+            <FilterChip
+              selected={activeSection === "datadisplay"}
+              onClick={() => scrollToSection("datadisplay")}
+              count={9}
+              className="shrink-0"
+            >
+              📊 3. Data Display (17:197)
+            </FilterChip>
+            <FilterChip
+              selected={activeSection === "navfeedback"}
+              onClick={() => scrollToSection("navfeedback")}
+              count={7}
+              className="shrink-0"
+            >
+              🧭 4. Nav &amp; Feedback (19:220)
+            </FilterChip>
+            <FilterChip
+              selected={activeSection === "example"}
+              onClick={() => scrollToSection("example")}
+              className="shrink-0"
+            >
+              📋 5. Contoh Layar Admin (23:334)
+            </FilterChip>
+          </div>
         </div>
       </header>
 

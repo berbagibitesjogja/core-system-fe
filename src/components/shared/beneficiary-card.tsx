@@ -41,7 +41,7 @@ export function BeneficiaryCard({
   return (
     <div
       className={cn(
-        "w-full sm:w-[352px] rounded-[16px] border border-[#e2e7e8] bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
+        "w-full max-w-[352px] rounded-[16px] border border-[#e2e7e8] bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
         className,
       )}
     >
