@@ -1,12 +1,15 @@
 import * as React from "react";
 import { cn } from "#/lib/utils";
 
+export type AvatarSize = "sm" | "md" | "lg";
+export type AvatarShape = "circle" | "rounded";
+
 export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
   name?: string;
-  size?: "sm" | "md" | "lg";
-  shape?: "circle" | "rounded";
+  size?: AvatarSize;
+  shape?: AvatarShape;
 }
 
 export function Avatar({

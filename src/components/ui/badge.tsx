@@ -102,10 +102,17 @@ const badgeVariants = cva(
   },
 );
 
+export type BadgeTone =
+  "neutral" | "brand" | "accent" | "success" | "warning" | "danger" | "info";
+
+export type BadgeStyleVariant = "soft" | "solid";
+
 export interface BadgeProps
   extends
     React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {
+  tone?: BadgeTone;
+  styleVariant?: BadgeStyleVariant;
   dot?: boolean;
 }
 
@@ -134,17 +141,12 @@ export function Badge({
   children,
   ...props
 }: BadgeProps) {
-  const resolvedTone = tone || "brand";
-  const resolvedStyle = styleVariant || "soft";
-  const dotKey = `${resolvedTone}-${resolvedStyle}`;
+  const dotKey = `${tone}-${styleVariant}`;
   const dotColorClass = dotColors[dotKey] || "bg-current";
 
   return (
     <div
-      className={cn(
-        badgeVariants({ tone: resolvedTone, styleVariant: resolvedStyle }),
-        className,
-      )}
+      className={cn(badgeVariants({ tone, styleVariant }), className)}
       {...props}
     >
       {dot && (

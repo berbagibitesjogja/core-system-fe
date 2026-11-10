@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react";
-import { toast as sonnerToast } from "sonner";
+import { toast as sonnerToast, Toaster as SonnerToaster } from "sonner";
+import type { ToasterProps as SonnerToasterProps } from "sonner";
 import { cn } from "#/lib/utils";
 
 export type ToastTone = "success" | "error" | "warning" | "info";
@@ -30,7 +31,7 @@ export function Toast({
     <div
       role="status"
       className={cn(
-        "bg-[#142023] text-white flex items-center gap-3 px-4 py-3 rounded-md w-[380px] max-w-full shadow-[0px_8px_16px_rgba(20,32,35,0.18)] transition-all select-none",
+        "bg-[#142023] text-white flex items-center gap-3 px-4 py-3 rounded-md w-[380px] max-w-full shadow-[0px_8px_16px_rgba(20,32,35,0.18)] transition-all select-none pointer-events-auto",
         className,
       )}
     >
@@ -131,6 +132,7 @@ function createCustomToast(
     {
       id: options?.id,
       duration,
+      unstyled: true,
       onDismiss: options?.onDismiss,
       onAutoClose: options?.onAutoClose,
     },
@@ -153,4 +155,29 @@ export const toast = Object.assign(
   },
 );
 
-export { Toaster } from "sonner";
+export interface ToasterProps extends SonnerToasterProps {}
+
+/**
+ * Toaster: Kontainer notifikasi pop-up BBJ
+ * Menimpa gaya kartu bawaan Sonner sehingga seluruh notifikasi merender kartu BBJ #142023.
+ */
+export function Toaster({
+  position = "top-right",
+  className,
+  toastOptions,
+  ...props
+}: ToasterProps) {
+  return (
+    <SonnerToaster
+      position={position}
+      className={cn("toaster group", className)}
+      toastOptions={{
+        unstyled: true,
+        className:
+          "w-auto max-w-full !p-0 !border-0 !bg-transparent !shadow-none flex justify-end",
+        ...toastOptions,
+      }}
+      {...props}
+    />
+  );
+}

@@ -1,6 +1,8 @@
 import * as React from "react";
 import { cn } from "#/lib/utils";
 
+export type StatCardStyleVariant = "default" | "brand" | "accent";
+
 export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   value: string | number;
@@ -11,7 +13,7 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
     isPositive?: boolean;
     label?: string;
   };
-  styleVariant?: "default" | "brand" | "accent";
+  styleVariant?: StatCardStyleVariant;
 }
 
 export function StatCard({
