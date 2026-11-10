@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none">
+  <!-- Background Circle (Soft Lavender) -->
+  <circle cx="50" cy="50" r="50" fill="#EDE9FE" />
+
+  <!-- Curly / Cloud Hair Outline -->
+  <circle cx="34" cy="36" r="14" fill="#3B2519" />
+  <circle cx="50" cy="28" r="15" fill="#3B2519" />
+  <circle cx="66" cy="36" r="14" fill="#3B2519" />
+  <circle cx="28" cy="48" r="12" fill="#3B2519" />
+  <circle cx="72" cy="48" r="12" fill="#3B2519" />
+
+  <!-- Shoulders / Clothes (Emerald Green Sweater) -->
+  <path d="M19 96 C21 75 35 68 50 68 C65 68 79 75 81 96 Z" fill="#059669" />
+  <!-- Collar -->
+  <path d="M42 68 C42 74 58 74 58 68 Z" fill="#D1FAE5" />
+
+  <!-- Neck -->
+  <rect x="44" y="55" width="12" height="15" rx="5" fill="#C28867" />
+
+  <!-- Head -->
+  <ellipse cx="50" cy="48" rx="19" ry="21" fill="#DDB092" />
+
+  <!-- Ears -->
+  <circle cx="31" cy="49" r="3.5" fill="#C28867" />
+  <circle cx="69" cy="49" r="3.5" fill="#C28867" />
+
+  <!-- Inner Hair curls front -->
+  <circle cx="39" cy="34" r="7" fill="#2E1C13" />
+  <circle cx="50" cy="32" r="8" fill="#2E1C13" />
+  <circle cx="61" cy="34" r="7" fill="#2E1C13" />
+
+  <!-- Eyebrows -->
+  <path d="M38 41 C40 40 44 40 45 42" stroke="#2E1C13" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M55 42 C56 40 60 40 62 41" stroke="#2E1C13" stroke-width="1.8" stroke-linecap="round" />
+
+  <!-- Eyes (Happy / Smiling Crescent) -->
+  <path d="M39 47 C41 49 44 49 46 47" stroke="#1E293B" stroke-width="2.2" stroke-linecap="round" />
+  <path d="M54 47 C56 49 59 49 61 47" stroke="#1E293B" stroke-width="2.2" stroke-linecap="round" />
+
+  <!-- Smile -->
+  <path d="M44 55 C46 59 54 59 56 55" stroke="#854D0E" stroke-width="2.2" stroke-linecap="round" fill="#FFFFFF" />
+
+  <!-- Cheeks Blush -->
+  <circle cx="35" cy="52" r="3" fill="#F43F5E" opacity="0.3" />
+  <circle cx="65" cy="52" r="3" fill="#F43F5E" opacity="0.3" />
+</svg>
