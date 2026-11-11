@@ -1,9 +1,48 @@
 import * as React from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { ChevronDown, HelpCircle, LogOut, Settings, User } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { Menu, MenuItem } from "#/components/ui/menu";
 import { cn } from "#/lib/utils";
+
+export interface UserProfileMenuItemConfig {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  to?: string;
+  isDanger?: boolean;
+  action?: "logout" | "navigation" | "custom";
+}
+
+export const defaultProfileMenuItems: UserProfileMenuItemConfig[] = [
+  {
+    id: "profile",
+    label: "Lihat Profil",
+    icon: User,
+    to: "/admin/profile",
+    action: "navigation",
+  },
+  {
+    id: "settings",
+    label: "Pengaturan Akun",
+    icon: Settings,
+    action: "custom",
+  },
+  {
+    id: "help",
+    label: "Pusat Bantuan",
+    icon: HelpCircle,
+    action: "custom",
+  },
+  {
+    id: "logout",
+    label: "Keluar",
+    icon: LogOut,
+    isDanger: true,
+    action: "logout",
+  },
+];
 
 export interface UserProfileMenuProps {
   name?: string;
@@ -12,6 +51,7 @@ export interface UserProfileMenuProps {
   avatarSrc?: string;
   initials?: string;
   email?: string;
+  menuItems?: UserProfileMenuItemConfig[];
   onLogout?: () => void;
   className?: string;
 }
@@ -25,9 +65,11 @@ export function UserProfileMenu({
   division = "Divisi Operasional",
   avatarSrc,
   email = "dian.pratiwi@bbj.org",
+  menuItems = defaultProfileMenuItems,
   onLogout,
   className,
 }: UserProfileMenuProps) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -115,35 +157,41 @@ export function UserProfileMenu({
               </p>
             </div>
 
-            {/* Menu Navigasi Profil */}
-            <MenuItem
-              label="Lihat Profil"
-              icon={<User className="size-4" />}
-              onSelect={() => setIsOpen(false)}
-            />
-            <MenuItem
-              label="Pengaturan Akun"
-              icon={<Settings className="size-4" />}
-              onSelect={() => setIsOpen(false)}
-            />
-            <MenuItem
-              label="Pusat Bantuan"
-              icon={<HelpCircle className="size-4" />}
-              onSelect={() => setIsOpen(false)}
-            />
-
-            <div className="my-1 border-t border-neutral-100" />
-
-            {/* Aksi Keluar */}
-            <MenuItem
-              label="Keluar"
-              icon={<LogOut className="size-4 text-red-600" />}
-              className="text-red-600 hover:bg-red-50 hover:text-red-700"
-              onSelect={() => {
-                setIsOpen(false);
-                onLogout?.();
-              }}
-            />
+            {/* Menu Navigasi Profil Dinamis */}
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <React.Fragment key={item.id}>
+                  {item.isDanger && (
+                    <div className="my-1 border-t border-neutral-100" />
+                  )}
+                  <MenuItem
+                    label={item.label}
+                    icon={
+                      <Icon
+                        className={cn(
+                          "size-4",
+                          item.isDanger && "text-red-600",
+                        )}
+                      />
+                    }
+                    className={
+                      item.isDanger
+                        ? "text-red-600 hover:bg-red-50 hover:text-red-700"
+                        : undefined
+                    }
+                    onSelect={() => {
+                      setIsOpen(false);
+                      if (item.action === "logout") {
+                        onLogout?.();
+                      } else if (item.to) {
+                        navigate({ to: item.to });
+                      }
+                    }}
+                  />
+                </React.Fragment>
+              );
+            })}
           </Menu>
         </div>
       )}

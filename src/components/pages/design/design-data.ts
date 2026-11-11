@@ -435,3 +435,60 @@ export const EXAMPLE_DONATION_ROWS = [
     statusTone: "success" as const,
   },
 ];
+
+export interface DesignNavSection {
+  id: string;
+  label: string;
+  count?: number;
+}
+
+export const DESIGN_NAV_SECTIONS: DesignNavSection[] = [
+  { id: "foundations", label: "🎨 1. Fondasi & Token (12:141)" },
+  { id: "actions", label: "⚡ 2. Actions & Form (16:273)", count: 13 },
+  { id: "datadisplay", label: "📊 3. Data Display (17:197)", count: 9 },
+  {
+    id: "navfeedback",
+    label: "🧭 4. Nav, Feedback & Layout (19:220)",
+    count: 10,
+  },
+  { id: "example", label: "📋 5. Contoh Layar Admin (23:334)" },
+];
+
+export interface MockupSidebarItem {
+  id: string;
+  label: string;
+  iconName:
+    "home" | "package" | "users" | "heart" | "building" | "user" | "wallet";
+  hasChildren?: boolean;
+}
+
+export const MOCKUP_SIDEBAR_ITEMS: MockupSidebarItem[] = [
+  { id: "home", label: "Home", iconName: "home" },
+  { id: "donasi", label: "Donasi", iconName: "package" },
+  { id: "beneficiaries", label: "Beneficiaries", iconName: "users" },
+  { id: "heroes", label: "Heroes", iconName: "heart" },
+  { id: "partner", label: "Partner", iconName: "building" },
+  { id: "volunteer", label: "Volunteer", iconName: "user" },
+  {
+    id: "reimburse",
+    label: "Reimburse",
+    iconName: "wallet",
+    hasChildren: true,
+  },
+];
+
+export const MOCKUP_FILTER_CHIPS: Array<"Semua" | "Food Rescue" | "CSR"> = [
+  "Semua",
+  "Food Rescue",
+  "CSR",
+];
+
+export const PALETTE_RAMP_GROUPS = [
+  { title: "Bondi (Brand)", shades: BONDI_RAMP },
+  { title: "Sunny (Aksen Fun)", shades: SUNNY_RAMP },
+  { title: "Green (Sukses)", shades: GREEN_RAMP },
+  { title: "Orange (Peringatan)", shades: ORANGE_RAMP },
+  { title: "Red (Bahaya)", shades: RED_RAMP },
+  { title: "Blue (Info)", shades: BLUE_RAMP },
+  { title: "Neutral (Tinta & Kanvas)", shades: NEUTRAL_RAMP },
+];

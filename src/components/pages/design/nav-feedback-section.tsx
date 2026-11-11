@@ -17,9 +17,25 @@ export interface NavFeedbackSectionProps {
   copiedToken: string | null;
 }
 
+const NAV_FEEDBACK_BLOCKS: Array<{
+  id: string;
+  Component: React.ComponentType<NavFeedbackSectionProps>;
+}> = [
+  { id: "nav-item", Component: NavItemBlock },
+  { id: "bottom-nav", Component: BottomNavBlock },
+  { id: "menu", Component: MenuBlock },
+  { id: "modal", Component: ModalBlock },
+  { id: "toast", Component: ToastBlock },
+  { id: "alert", Component: AlertBlock },
+  { id: "tooltip", Component: TooltipBlock },
+  { id: "user-profile-menu", Component: UserProfileMenuBlock },
+  { id: "header", Component: HeaderBlock },
+  { id: "sidebar", Component: SidebarBlock },
+];
+
 /**
  * NavFeedbackSection: Orchestrator untuk komponen navigasi, feedback & layout shell BBJ (10 blok).
- * Dimodularisasi menjadi blok independen berbasis DocBlock.
+ * Dimodularisasi dan dirender dinamis berbasis data-driven blok.
  */
 export function NavFeedbackSection({
   onCopy,
@@ -69,16 +85,9 @@ export function NavFeedbackSection({
       </div>
 
       <div className="space-y-8">
-        <NavItemBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <BottomNavBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <MenuBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <ModalBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <ToastBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <AlertBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <TooltipBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <UserProfileMenuBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <HeaderBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <SidebarBlock onCopy={onCopy} copiedToken={copiedToken} />
+        {NAV_FEEDBACK_BLOCKS.map(({ id, Component }) => (
+          <Component key={id} onCopy={onCopy} copiedToken={copiedToken} />
+        ))}
       </div>
     </div>
   );

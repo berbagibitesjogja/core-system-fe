@@ -1,31 +1,28 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
+import {
+  CHART_Y_GRID_LABELS,
+  DEFAULT_FOOD_CHART_DATA,
+  DEFAULT_HEROES_CHART_DATA,
+  FOOD_CHART_Y_GRID_LABELS,
+} from "./dashboard-data";
+import type { FoodChartPoint, HeroesChartPoint } from "./dashboard-data";
+
+export interface DashboardChartsRowProps {
+  heroesData?: HeroesChartPoint[];
+  foodData?: FoodChartPoint[];
+}
 
 /**
- * DashboardChartsRow: Dua kartu grafik interaktif: Statistik Heroes (Area/Line) & Statistik Makanan (Bar).
+ * DashboardChartsRow: Dua kartu grafik interaktif berbasis data konfigurasi terpisah: Statistik Heroes (Area/Line) & Statistik Makanan (Bar).
  */
-export function DashboardChartsRow() {
+export function DashboardChartsRow({
+  heroesData = DEFAULT_HEROES_CHART_DATA,
+  foodData = DEFAULT_FOOD_CHART_DATA,
+}: DashboardChartsRowProps) {
   const [selectedPoint, setSelectedPoint] = React.useState<number | null>(5); // Default: Nov (index 5)
   const [selectedBar, setSelectedBar] = React.useState<number | null>(5); // Default: Nov (index 5)
-
-  const heroesData = [
-    { month: "Jun", value: 1650, display: "1.650 heroes", yPct: 58.75 },
-    { month: "Jul", value: 1980, display: "1.980 heroes", yPct: 50.5 },
-    { month: "Agu", value: 2150, display: "2.150 heroes", yPct: 46.25 },
-    { month: "Sep", value: 2500, display: "2.500 heroes", yPct: 37.5 },
-    { month: "Okt", value: 2760, display: "2.760 heroes", yPct: 31 },
-    { month: "Nov", value: 3020, display: "3.020 heroes", yPct: 24.5 },
-  ];
-
-  const foodData = [
-    { month: "Jun", value: 350, display: "350 Kg", heightPct: 43.75 },
-    { month: "Jul", value: 410, display: "410 Kg", heightPct: 51.25 },
-    { month: "Agu", value: 390, display: "390 Kg", heightPct: 48.75 },
-    { month: "Sep", value: 480, display: "480 Kg", heightPct: 60 },
-    { month: "Okt", value: 540, display: "540 Kg", heightPct: 67.5 },
-    { month: "Nov", value: 624, display: "624 Kg", heightPct: 78 },
-  ];
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -74,13 +71,7 @@ export function DashboardChartsRow() {
           <div className="relative h-52 sm:h-56 w-full pt-4 select-none">
             {/* Grid Garis Horizontal & Label Y */}
             <div className="absolute inset-0 flex flex-col justify-between pb-6 pl-10 pr-2 pointer-events-none">
-              {[
-                { label: "4rb", y: "0%" },
-                { label: "3rb", y: "25%" },
-                { label: "2rb", y: "50%" },
-                { label: "1rb", y: "75%" },
-                { label: "0", y: "100%" },
-              ].map((grid, idx) => (
+              {CHART_Y_GRID_LABELS.map((grid, idx) => (
                 <div key={idx} className="flex items-center w-full">
                   <span className="-ml-10 w-8 text-right font-sans text-xs text-neutral-400">
                     {grid.label}
@@ -221,13 +212,7 @@ export function DashboardChartsRow() {
           <div className="relative h-52 sm:h-56 w-full pt-4 select-none">
             {/* Grid Garis Horizontal & Label Y */}
             <div className="absolute inset-0 flex flex-col justify-between pb-6 pl-10 pr-2 pointer-events-none">
-              {[
-                { label: "800", y: "0%" },
-                { label: "600", y: "25%" },
-                { label: "400", y: "50%" },
-                { label: "200", y: "75%" },
-                { label: "0", y: "100%" },
-              ].map((grid, idx) => (
+              {FOOD_CHART_Y_GRID_LABELS.map((grid, idx) => (
                 <div key={idx} className="flex items-center w-full">
                   <span className="-ml-10 w-8 text-right font-sans text-xs text-neutral-400">
                     {grid.label}

@@ -11,6 +11,7 @@ import {
   NavFeedbackSection,
   FoundationsSection,
   ExampleSection,
+  DESIGN_NAV_SECTIONS,
 } from "#/components/pages/design";
 
 export const Route = createFileRoute("/design")({
@@ -54,14 +55,6 @@ function DesignShowcasePage() {
 
   // Track active section via IntersectionObserver on scroll
   React.useEffect(() => {
-    const sectionIds = [
-      "foundations",
-      "actions",
-      "datadisplay",
-      "navfeedback",
-      "example",
-    ];
-
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -74,8 +67,8 @@ function DesignShowcasePage() {
       { rootMargin: "-20% 0px -65% 0px" },
     );
 
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
+    DESIGN_NAV_SECTIONS.forEach((sec) => {
+      const el = document.getElementById(sec.id);
       if (el) observer.observe(el);
     });
 
@@ -137,44 +130,17 @@ function DesignShowcasePage() {
             <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider font-label mr-2 shrink-0 hidden sm:inline">
               Lompat Cepat:
             </span>
-            <FilterChip
-              selected={activeSection === "foundations"}
-              onClick={() => scrollToSection("foundations")}
-              className="shrink-0"
-            >
-              🎨 1. Fondasi &amp; Token (12:141)
-            </FilterChip>
-            <FilterChip
-              selected={activeSection === "actions"}
-              onClick={() => scrollToSection("actions")}
-              count={13}
-              className="shrink-0"
-            >
-              ⚡ 2. Actions &amp; Form (16:273)
-            </FilterChip>
-            <FilterChip
-              selected={activeSection === "datadisplay"}
-              onClick={() => scrollToSection("datadisplay")}
-              count={9}
-              className="shrink-0"
-            >
-              📊 3. Data Display (17:197)
-            </FilterChip>
-            <FilterChip
-              selected={activeSection === "navfeedback"}
-              onClick={() => scrollToSection("navfeedback")}
-              count={10}
-              className="shrink-0"
-            >
-              🧭 4. Nav, Feedback &amp; Layout (19:220)
-            </FilterChip>
-            <FilterChip
-              selected={activeSection === "example"}
-              onClick={() => scrollToSection("example")}
-              className="shrink-0"
-            >
-              📋 5. Contoh Layar Admin (23:334)
-            </FilterChip>
+            {DESIGN_NAV_SECTIONS.map((sec) => (
+              <FilterChip
+                key={sec.id}
+                selected={activeSection === sec.id}
+                onClick={() => scrollToSection(sec.id)}
+                count={sec.count}
+                className="shrink-0"
+              >
+                {sec.label}
+              </FilterChip>
+            ))}
           </div>
         </div>
       </header>

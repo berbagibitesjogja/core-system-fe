@@ -7,6 +7,150 @@ export interface DashboardMetric {
   isPrimary?: boolean;
 }
 
+export interface ImpactStatItem {
+  id: string;
+  title: string;
+  value: string;
+  unit: string;
+  styleVariant: "brand" | "default";
+  iconName: "package" | "leaf" | "users";
+  trend: {
+    value: string;
+    label: string;
+    isPositive: boolean;
+  };
+  illustrationKey: "fast-food" | "organic-food" | "charity-heroes";
+  className?: string;
+}
+
+export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
+  {
+    id: "stat-food-rescue",
+    title: "Food Rescue",
+    value: "372",
+    unit: "Aksi",
+    styleVariant: "brand",
+    iconName: "package",
+    trend: {
+      value: "+18 aksi",
+      label: "bulan ini",
+      isPositive: true,
+    },
+    illustrationKey: "fast-food",
+    className: "relative min-h-[148px]",
+  },
+  {
+    id: "stat-food-saved",
+    title: "Makanan Diselamatkan",
+    value: "3.077",
+    unit: "Kg",
+    styleVariant: "default",
+    iconName: "leaf",
+    trend: {
+      value: "+624 Kg",
+      label: "bulan ini",
+      isPositive: true,
+    },
+    illustrationKey: "organic-food",
+    className: "relative min-h-[148px] bg-white",
+  },
+  {
+    id: "stat-total-heroes",
+    title: "Total Heroes",
+    value: "14.933",
+    unit: "Orang",
+    styleVariant: "default",
+    iconName: "users",
+    trend: {
+      value: "+3.020 orang",
+      label: "bulan ini",
+      isPositive: true,
+    },
+    illustrationKey: "charity-heroes",
+    className: "relative min-h-[148px] bg-white md:col-span-2 lg:col-span-1",
+  },
+];
+
+export interface QuickActionItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  href: string;
+  iconName: "plus" | "wallet" | "users";
+}
+
+export const DEFAULT_QUICK_ACTIONS: QuickActionItem[] = [
+  {
+    id: "add-donation",
+    title: "Tambah Donasi",
+    subtitle: "Catat aksi food rescue baru",
+    iconName: "plus",
+    href: "/admin/donation",
+  },
+  {
+    id: "request-reimburse",
+    title: "Ajukan Reimburse",
+    subtitle: "Klaim biaya operasional",
+    iconName: "wallet",
+    href: "/admin/reimburse/request",
+  },
+  {
+    id: "add-volunteer",
+    title: "Tambah Volunteer",
+    subtitle: "Daftarkan relawan baru",
+    iconName: "users",
+    href: "/admin/volunteer",
+  },
+];
+
+export interface HeroesChartPoint {
+  month: string;
+  value: number;
+  display: string;
+  yPct: number;
+}
+
+export interface FoodChartPoint {
+  month: string;
+  value: number;
+  display: string;
+  heightPct: number;
+}
+
+export const DEFAULT_HEROES_CHART_DATA: HeroesChartPoint[] = [
+  { month: "Jun", value: 1650, display: "1.650 heroes", yPct: 58.75 },
+  { month: "Jul", value: 1980, display: "1.980 heroes", yPct: 50.5 },
+  { month: "Agu", value: 2150, display: "2.150 heroes", yPct: 46.25 },
+  { month: "Sep", value: 2500, display: "2.500 heroes", yPct: 37.5 },
+  { month: "Okt", value: 2760, display: "2.760 heroes", yPct: 31 },
+  { month: "Nov", value: 3020, display: "3.020 heroes", yPct: 24.5 },
+];
+
+export const DEFAULT_FOOD_CHART_DATA: FoodChartPoint[] = [
+  { month: "Jun", value: 350, display: "350 Kg", heightPct: 43.75 },
+  { month: "Jul", value: 410, display: "410 Kg", heightPct: 51.25 },
+  { month: "Agu", value: 390, display: "390 Kg", heightPct: 48.75 },
+  { month: "Sep", value: 480, display: "480 Kg", heightPct: 60 },
+  { month: "Okt", value: 540, display: "540 Kg", heightPct: 67.5 },
+  { month: "Nov", value: 624, display: "624 Kg", heightPct: 78 },
+];
+
+export const CHART_Y_GRID_LABELS = [
+  { label: "4rb", y: "0%" },
+  { label: "3rb", y: "25%" },
+  { label: "2rb", y: "50%" },
+  { label: "1rb", y: "75%" },
+  { label: "0", y: "100%" },
+];
+
+export const FOOD_CHART_Y_GRID_LABELS = [
+  { label: "800", y: "0%" },
+  { label: "600", y: "25%" },
+  { label: "400", y: "50%" },
+  { label: "200", y: "75%" },
+  { label: "0", y: "100%" },
+];
+
 export interface ActivityItem {
   id: string;
   actor: string;

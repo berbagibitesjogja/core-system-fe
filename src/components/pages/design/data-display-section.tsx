@@ -14,9 +14,24 @@ export interface DataDisplaySectionProps {
   copiedToken: string | null;
 }
 
+const DATA_DISPLAY_BLOCKS: Array<{
+  id: string;
+  Component: React.ComponentType<DataDisplaySectionProps>;
+}> = [
+  { id: "badge", Component: BadgeBlock },
+  { id: "avatar", Component: AvatarBlock },
+  { id: "stat-card", Component: StatCardBlock },
+  { id: "table-header", Component: TableHeaderBlock },
+  { id: "table-cell", Component: TableCellBlock },
+  { id: "pagination", Component: PaginationBlock },
+  { id: "empty-state", Component: EmptyStateBlock },
+  { id: "skeleton", Component: SkeletonBlock },
+  { id: "beneficiary-display", Component: BeneficiaryDisplayBlock },
+];
+
 /**
  * DataDisplaySection: Orchestrator untuk seluruh komponen penyajian data BBJ (9 blok).
- * Dimodularisasi menjadi blok independen berbasis DocBlock.
+ * Dimodularisasi dan dirender dinamis berbasis data-driven blok.
  */
 export function DataDisplaySection({
   onCopy,
@@ -64,15 +79,9 @@ export function DataDisplaySection({
       </div>
 
       <div className="space-y-8">
-        <BadgeBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <AvatarBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <StatCardBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <TableHeaderBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <TableCellBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <PaginationBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <EmptyStateBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <SkeletonBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <BeneficiaryDisplayBlock onCopy={onCopy} copiedToken={copiedToken} />
+        {DATA_DISPLAY_BLOCKS.map(({ id, Component }) => (
+          <Component key={id} onCopy={onCopy} copiedToken={copiedToken} />
+        ))}
       </div>
     </div>
   );

@@ -18,9 +18,28 @@ export interface ActionsFormSectionProps {
   copiedToken: string | null;
 }
 
+const ACTION_FORM_BLOCKS: Array<{
+  id: string;
+  Component: React.ComponentType<ActionsFormSectionProps>;
+}> = [
+  { id: "button", Component: ButtonBlock },
+  { id: "action-icon-button", Component: ActionIconButtonBlock },
+  { id: "input", Component: InputBlock },
+  { id: "textarea", Component: TextareaBlock },
+  { id: "checkbox", Component: CheckboxBlock },
+  { id: "switch", Component: SwitchBlock },
+  { id: "filter-chip", Component: FilterChipBlock },
+  { id: "tag", Component: TagBlock },
+  { id: "option-card", Component: OptionCardBlock },
+  { id: "file-upload", Component: FileUploadBlock },
+  { id: "google-sign-in", Component: GoogleSignInBlock },
+  { id: "beneficiary-card", Component: BeneficiaryCardBlock },
+  { id: "progress-bar", Component: ProgressBarBlock },
+];
+
 /**
  * ActionsFormSection: Orchestrator untuk seluruh komponen aksi & formulir BBJ (13 blok).
- * Setiap komponen kini dimodularisasi menjadi blok independen berbasis DocBlock.
+ * Dimodularisasi dan dirender dinamis berbasis data-driven blok.
  */
 export function ActionsFormSection({
   onCopy,
@@ -49,19 +68,9 @@ export function ActionsFormSection({
       </div>
 
       <div className="space-y-8">
-        <ButtonBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <ActionIconButtonBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <InputBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <TextareaBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <CheckboxBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <SwitchBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <FilterChipBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <TagBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <OptionCardBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <FileUploadBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <GoogleSignInBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <BeneficiaryCardBlock onCopy={onCopy} copiedToken={copiedToken} />
-        <ProgressBarBlock onCopy={onCopy} copiedToken={copiedToken} />
+        {ACTION_FORM_BLOCKS.map(({ id, Component }) => (
+          <Component key={id} onCopy={onCopy} copiedToken={copiedToken} />
+        ))}
       </div>
     </section>
   );
