@@ -1,17 +1,31 @@
 import * as React from "react";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { Header } from "#/components/shared/header";
+import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
+
+export interface AdminLayoutContextType {
+  setHeaderOverride: (props: Partial<HeaderProps> | null) => void;
+}
+
+export const AdminLayoutContext =
+  React.createContext<AdminLayoutContextType | null>(null);
+
+export function useAdminLayout(): AdminLayoutContextType | null {
+  return React.useContext(AdminLayoutContext);
+}
 
 export const Route = createFileRoute("/admin/_auth")({
   component: AdminLayout,
 });
 
-const routeTitles: Record<string, string> = {
+const routeTitles: Partial<Record<string, string>> = {
   "/admin/dashboard": "Dashboard",
   "/admin": "Dashboard",
   "/admin/": "Dashboard",
   "/admin/donation": "Donasi",
+  "/admin/donation/add": "Tambah Donasi",
+  "/admin/donation/edit": "Edit Donasi",
   "/admin/beneficiary": "Beneficiaries",
   "/admin/hero": "Heroes",
   "/admin/partner": "Partner",
@@ -22,8 +36,10 @@ const routeTitles: Record<string, string> = {
   "/admin/logs": "Logs Sistem",
 };
 
-const routeSubtitles: Record<string, string> = {
+const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/donation": "Kelola aksi food rescue dan CSR beserta kuota heroes-nya",
+  "/admin/donation/add": "Buat aksi food rescue baru",
+  "/admin/donation/edit": "Perbarui informasi aksi donasi",
 };
 
 /**
@@ -33,9 +49,20 @@ const routeSubtitles: Record<string, string> = {
  */
 function AdminLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+  const [headerOverride, setHeaderOverride] =
+    React.useState<Partial<HeaderProps> | null>(null);
   const location = useLocation();
 
-  const currentTitle = routeTitles[location.pathname] ?? "Dashboard";
+  const currentTitle =
+    headerOverride?.title ?? routeTitles[location.pathname] ?? "Dashboard";
+  const currentSubtitle =
+    headerOverride?.subtitle ?? routeSubtitles[location.pathname];
+
+  // Memoize context value agar tidak memicu infinite render loop pada child routes
+  const contextValue = React.useMemo<AdminLayoutContextType>(
+    () => ({ setHeaderOverride }),
+    [],
+  );
 
   return (
     <div className="flex min-h-screen bg-canvas font-sans antialiased text-neutral-900">
@@ -55,12 +82,18 @@ function AdminLayout() {
         {/* Header di dalam main tanpa background sesuai Figma 112:522 */}
         <Header
           title={currentTitle}
-          subtitle={routeSubtitles[location.pathname]}
+          subtitle={currentSubtitle}
           onMenuToggle={() => setMobileSidebarOpen(true)}
+          onBack={headerOverride?.onBack}
+          backHref={headerOverride?.backHref}
+          backLabel={headerOverride?.backLabel}
+          actions={headerOverride?.actions}
         />
-        <div className="flex-1 w-full">
-          <Outlet />
-        </div>
+        <AdminLayoutContext.Provider value={contextValue}>
+          <div className="flex-1 w-full">
+            <Outlet />
+          </div>
+        </AdminLayoutContext.Provider>
       </main>
     </div>
   );

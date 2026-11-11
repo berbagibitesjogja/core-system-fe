@@ -53,6 +53,7 @@ export interface UserProfileMenuProps {
   email?: string;
   menuItems?: UserProfileMenuItemConfig[];
   onLogout?: () => void;
+  compactOnMobile?: boolean;
   className?: string;
 }
 
@@ -67,6 +68,7 @@ export function UserProfileMenu({
   email = "dian.pratiwi@bbj.org",
   menuItems = defaultProfileMenuItems,
   onLogout,
+  compactOnMobile = true,
   className,
 }: UserProfileMenuProps) {
   const navigate = useNavigate();
@@ -95,15 +97,23 @@ export function UserProfileMenu({
 
   return (
     <div ref={containerRef} className={cn("relative inline-block", className)}>
-      {/* Trigger Chip */}
+      {/* Trigger Chip (Responsif: Foto Profil saja pada Mobile) */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
+        aria-label={name ? `Menu profil ${name}` : "Menu profil pengguna"}
         className={cn(
-          "flex items-center gap-3 rounded-full border border-neutral-200 bg-white py-1.5 pl-1.5 pr-3.5 text-left transition-all duration-150 shadow-xs hover:border-neutral-300 hover:bg-neutral-50/80 focus:outline-none focus:ring-2 focus:ring-brand/30 cursor-pointer select-none",
-          isOpen && "border-brand ring-2 ring-brand/20 bg-neutral-50/90",
+          "flex items-center rounded-full text-left transition-all duration-150 cursor-pointer select-none",
+          compactOnMobile
+            ? "p-0 border-0 bg-transparent sm:gap-3 sm:py-1.5 sm:pl-1.5 sm:pr-3.5 sm:border sm:border-neutral-200 sm:bg-white sm:shadow-xs"
+            : "gap-3 py-1.5 pl-1.5 pr-3.5 border border-neutral-200 bg-white shadow-xs",
+          "hover:border-neutral-300 hover:bg-neutral-50/80 focus:outline-none focus:ring-2 focus:ring-brand/30",
+          isOpen &&
+            (compactOnMobile
+              ? "ring-2 ring-brand/30 sm:border-brand sm:ring-2 sm:ring-brand/20 sm:bg-neutral-50/90"
+              : "border-brand ring-2 ring-brand/20 bg-neutral-50/90"),
         )}
       >
         <Avatar
@@ -111,10 +121,15 @@ export function UserProfileMenu({
           name={name}
           size="md"
           shape="circle"
-          className="bg-bondi-50 border-bondi-200 text-bondi-900"
+          className="bg-bondi-50 border-bondi-200 text-bondi-900 shrink-0"
         />
 
-        <div className="flex flex-col truncate">
+        <div
+          className={cn(
+            "flex-col truncate",
+            compactOnMobile ? "hidden sm:flex" : "flex",
+          )}
+        >
           <span className="font-label text-sm font-semibold text-neutral-900 leading-tight truncate">
             {name}
           </span>
@@ -126,6 +141,7 @@ export function UserProfileMenu({
         <ChevronDown
           className={cn(
             "size-4 shrink-0 text-neutral-400 transition-transform duration-200",
+            compactOnMobile ? "hidden sm:block" : "block",
             isOpen && "rotate-180 text-brand",
           )}
         />

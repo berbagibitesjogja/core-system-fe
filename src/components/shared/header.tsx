@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Menu as MenuIcon } from "lucide-react";
+import { ArrowLeft, Menu as MenuIcon } from "lucide-react";
 import { UserProfileMenu } from "./user-profile-menu";
 import type { UserProfileMenuProps } from "./user-profile-menu";
 import { Tooltip } from "#/components/ui/tooltip";
@@ -11,6 +11,9 @@ export interface HeaderProps {
   onMenuToggle?: () => void;
   user?: UserProfileMenuProps;
   actions?: React.ReactNode;
+  onBack?: () => void;
+  backHref?: string;
+  backLabel?: string;
   className?: string;
 }
 
@@ -38,6 +41,9 @@ export function Header({
   onMenuToggle,
   user,
   actions,
+  onBack,
+  backHref,
+  backLabel = "Kembali",
   className,
 }: HeaderProps) {
   // Tanggal interaktif saat ini dengan fallback statis untuk keamanan SSR
@@ -54,6 +60,14 @@ export function Header({
 
   const displaySubtitle = subtitle ?? currentDate;
 
+  const handleBackClick = () => {
+    if (onBack) {
+      onBack();
+    } else if (backHref && typeof window !== "undefined") {
+      window.location.href = backHref;
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -61,7 +75,7 @@ export function Header({
         className,
       )}
     >
-      {/* Sisi Kiri: Tombol Menu Mobile & Judul Halaman */}
+      {/* Sisi Kiri: Tombol Menu Mobile, Tombol Kembali, & Judul Halaman */}
       <div className="flex items-center gap-3 min-w-0">
         {onMenuToggle && (
           <Tooltip content="Buka menu navigasi">
@@ -77,6 +91,17 @@ export function Header({
         )}
 
         <div className="flex flex-col min-w-0">
+          {(onBack || backHref) && (
+            <button
+              type="button"
+              onClick={handleBackClick}
+              className="inline-flex items-center gap-1.5 px-3 py-1 -ml-3 mb-0.5 rounded-full text-xs font-semibold text-brand hover:bg-bondi-50 transition-colors cursor-pointer w-fit select-none"
+            >
+              <ArrowLeft className="size-3.5 stroke-[2.5]" />
+              <span>{backLabel}</span>
+            </button>
+          )}
+
           <h1 className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7 truncate">
             {title}
           </h1>
@@ -88,9 +113,11 @@ export function Header({
         </div>
       </div>
 
-      {/* Sisi Kanan: Aksi Tambahan & Profile Chip */}
+      {/* Sisi Kanan: Aksi Tambahan & Profile Chip (Responsif: Foto Profil saja pada Mobile) */}
       <div className="flex items-center gap-3 shrink-0">
-        {actions}
+        {actions && (
+          <div className="hidden sm:flex items-center gap-2">{actions}</div>
+        )}
         <UserProfileMenu {...user} />
       </div>
     </div>
