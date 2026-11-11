@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PerPageSelector } from "./per-page-selector";
+import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
 
 export interface PaginationProps {
@@ -64,15 +65,17 @@ export function Pagination({
         )}
 
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage <= 1}
-            className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-            aria-label="Halaman Sebelumnya"
-          >
-            <ChevronLeft className="size-4" />
-          </button>
+          <Tooltip content="Halaman Sebelumnya">
+            <button
+              type="button"
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+              disabled={currentPage <= 1}
+              className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              aria-label="Halaman Sebelumnya"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+          </Tooltip>
 
           <div className="hidden sm:flex items-center gap-1">
             {pages.map((p, idx) => {
@@ -111,15 +114,19 @@ export function Pagination({
             Hal {currentPage} / {totalPages}
           </span>
 
-          <button
-            type="button"
-            onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage >= totalPages}
-            className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-            aria-label="Halaman Selanjutnya"
-          >
-            <ChevronRight className="size-4" />
-          </button>
+          <Tooltip content="Halaman Selanjutnya">
+            <button
+              type="button"
+              onClick={() =>
+                onPageChange(Math.min(totalPages, currentPage + 1))
+              }
+              disabled={currentPage >= totalPages}
+              className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              aria-label="Halaman Selanjutnya"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </Tooltip>
         </div>
       </div>
     </nav>

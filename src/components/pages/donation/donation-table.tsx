@@ -187,6 +187,7 @@ export function DonationTable({
               <IconButton
                 size="sm"
                 variant="ghost"
+                tooltip="Lihat detail donasi"
                 aria-label={`Lihat detail donasi ${item.donorName}`}
                 onClick={() => onViewItem?.(item)}
               >
@@ -196,6 +197,7 @@ export function DonationTable({
               <IconButton
                 size="sm"
                 variant="ghost"
+                tooltip="Edit data donasi"
                 aria-label={`Edit data donasi ${item.donorName}`}
                 onClick={() => onEditItem?.(item)}
               >
@@ -206,6 +208,7 @@ export function DonationTable({
                 <IconButton
                   size="sm"
                   variant="danger"
+                  tooltip="Hapus donasi"
                   aria-label={`Hapus donasi ${item.donorName}`}
                   onClick={() => onDeleteItem?.(item)}
                 >

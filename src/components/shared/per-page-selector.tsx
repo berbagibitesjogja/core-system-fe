@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
+import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
 
 export interface PerPageSelectorProps {
@@ -129,21 +130,23 @@ export function PerPageSelector({
         />
 
         {/* Tombol Pembuka Dropdown Menu */}
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          className="p-0.5 text-neutral-600 hover:text-neutral-900 cursor-pointer focus:outline-none flex items-center justify-center transition-colors"
-          aria-label="Buka opsi jumlah baris per halaman"
-          aria-expanded={isOpen}
-          aria-haspopup="listbox"
-        >
-          <ChevronDown
-            className={cn(
-              "size-3.5 stroke-[2.2] transition-transform duration-150",
-              isOpen && "rotate-180 text-brand",
-            )}
-          />
-        </button>
+        <Tooltip content="Pilih opsi per halaman">
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="p-0.5 text-neutral-600 hover:text-neutral-900 cursor-pointer focus:outline-none flex items-center justify-center transition-colors"
+            aria-label="Buka opsi jumlah baris per halaman"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+          >
+            <ChevronDown
+              className={cn(
+                "size-3.5 stroke-[2.2] transition-transform duration-150",
+                isOpen && "rotate-180 text-brand",
+              )}
+            />
+          </button>
+        </Tooltip>
 
         {/* Popover Dropdown Menu Opsi Pilihan */}
         {isOpen && (
