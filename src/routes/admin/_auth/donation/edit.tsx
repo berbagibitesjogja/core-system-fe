@@ -33,6 +33,7 @@ function DonationEditPage() {
   const navigate = useNavigate();
   const { id } = Route.useSearch();
   const adminLayout = useAdminLayout();
+  const setHeaderOverride = adminLayout?.setHeaderOverride;
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
@@ -74,15 +75,17 @@ function DonationEditPage() {
 
   // Hubungkan tombol Kembali di Header Top Bar dengan dialog konfirmasi
   React.useEffect(() => {
-    adminLayout?.setHeaderOverride({
+    if (!setHeaderOverride) return;
+
+    setHeaderOverride({
       title: "Edit Donasi",
       subtitle: "Perbarui informasi aksi donasi",
       onBack: handleBackTrigger,
       backLabel: "Kembali",
     });
 
-    return () => adminLayout?.setHeaderOverride(null);
-  }, [adminLayout, handleBackTrigger]);
+    return () => setHeaderOverride(null);
+  }, [setHeaderOverride, handleBackTrigger]);
 
   const handleSubmit = async (data: DonationFormData) => {
     setIsSubmitting(true);

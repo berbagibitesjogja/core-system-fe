@@ -58,6 +58,12 @@ function AdminLayout() {
   const currentSubtitle =
     headerOverride?.subtitle ?? routeSubtitles[location.pathname];
 
+  // Memoize context value agar tidak memicu infinite render loop pada child routes
+  const contextValue = React.useMemo<AdminLayoutContextType>(
+    () => ({ setHeaderOverride }),
+    [],
+  );
+
   return (
     <div className="flex min-h-screen bg-canvas font-sans antialiased text-neutral-900">
       {/* Sidebar Navigasi Admin (Desktop Sticky + Mobile Drawer) */}
@@ -83,7 +89,7 @@ function AdminLayout() {
           backLabel={headerOverride?.backLabel}
           actions={headerOverride?.actions}
         />
-        <AdminLayoutContext.Provider value={{ setHeaderOverride }}>
+        <AdminLayoutContext.Provider value={contextValue}>
           <div className="flex-1 w-full">
             <Outlet />
           </div>

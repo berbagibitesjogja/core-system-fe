@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
+import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Switch } from "#/components/ui/switch";
 import { Tag } from "#/components/shared/tag";
@@ -106,7 +107,7 @@ export function DonationForm({
   // Reset pencarian beneficiary saat dropdown ditutup
   React.useEffect(() => {
     if (!beneficiaryDropdownOpen) {
-      setBeneficiarySearchQuery("");
+      setBeneficiarySearchQuery((prev) => (prev ? "" : prev));
     }
   }, [beneficiaryDropdownOpen]);
 
@@ -299,10 +300,12 @@ export function DonationForm({
               aria-haspopup="listbox"
               disabled={isSubmitting}
               className={cn(
-                "h-11 px-3.5 rounded-md border bg-white flex items-center justify-between text-left text-sm transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand/30",
+                "h-11 px-3.5 rounded-md bg-white flex items-center justify-between text-left text-sm transition-all cursor-pointer outline-none",
                 errors.donorName
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
+                  ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca]"
+                  : sponsorDropdownOpen
+                    ? "border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3]"
+                    : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
                 !formData.donorName && "text-neutral-500",
               )}
             >
@@ -317,11 +320,7 @@ export function DonationForm({
               />
             </button>
 
-            {errors.donorName && (
-              <p className="font-caption text-xs text-red-600 mt-0.5">
-                {errors.donorName}
-              </p>
-            )}
+            <FieldHelper error={errors.donorName} />
 
             {/* Menu Popover Dropdown Pilihan Sponsor */}
             {sponsorDropdownOpen && (
@@ -457,10 +456,10 @@ export function DonationForm({
                     }
                   }}
                   className={cn(
-                    "w-full h-11 px-3 text-center text-sm font-sans rounded-md border bg-white focus:outline-none focus:ring-2 focus:ring-brand/30",
+                    "w-full h-11 px-3 text-center text-sm font-sans rounded-md bg-white transition-all outline-none",
                     errors.pickupHour
-                      ? "border-red-500 focus:border-red-500 text-red-900"
-                      : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
+                      ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] text-red-900"
+                      : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
                   )}
                   aria-label="Jam pengambilan"
                 />
@@ -488,20 +487,16 @@ export function DonationForm({
                     }
                   }}
                   className={cn(
-                    "w-full h-11 px-3 text-center text-sm font-sans rounded-md border bg-white focus:outline-none focus:ring-2 focus:ring-brand/30",
+                    "w-full h-11 px-3 text-center text-sm font-sans rounded-md bg-white transition-all outline-none",
                     errors.pickupMinute
-                      ? "border-red-500 focus:border-red-500 text-red-900"
-                      : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
+                      ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] text-red-900"
+                      : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
                   )}
                   aria-label="Menit pengambilan"
                 />
               </div>
             </div>
-            {(errors.pickupHour || errors.pickupMinute) && (
-              <p className="font-caption text-xs text-red-600">
-                {errors.pickupHour || errors.pickupMinute}
-              </p>
-            )}
+            <FieldHelper error={errors.pickupHour || errors.pickupMinute} />
           </div>
 
           {/* Durasi Pengambilan */}
@@ -596,12 +591,12 @@ export function DonationForm({
               }
             }}
             className={cn(
-              "min-h-[46px] p-2 pl-3 pr-10 rounded-md border bg-white flex flex-wrap gap-2 items-center relative transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand/30 w-full",
-              beneficiaryDropdownOpen
-                ? "border-2 border-brand"
-                : errors.beneficiaries
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
+              "min-h-[46px] p-2 pl-3 pr-10 rounded-md bg-white flex flex-wrap gap-2 items-center relative transition-all cursor-pointer outline-none w-full",
+              errors.beneficiaries
+                ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca]"
+                : beneficiaryDropdownOpen
+                  ? "border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3]"
+                  : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
             )}
           >
             {formData.beneficiaryIds.length === 0 ? (
@@ -637,15 +632,10 @@ export function DonationForm({
             />
           </div>
 
-          <p className="font-caption text-xs text-neutral-500">
-            {errors.beneficiaries ? (
-              <span className="text-red-600 font-medium">
-                {errors.beneficiaries}
-              </span>
-            ) : (
-              "Pilih satu atau lebih kelompok penerima manfaat."
-            )}
-          </p>
+          <FieldHelper
+            error={errors.beneficiaries}
+            helperText="Pilih satu atau lebih kelompok penerima manfaat."
+          />
 
           {/* Menu Dropdown Checklist Beneficiaries dengan Fitur Pencarian sesuai Figma Node 122:4132 */}
           {beneficiaryDropdownOpen && (

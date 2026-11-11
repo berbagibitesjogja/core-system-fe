@@ -20,6 +20,7 @@ export const Route = createFileRoute("/admin/_auth/donation/add")({
 function DonationAddPage() {
   const navigate = useNavigate();
   const adminLayout = useAdminLayout();
+  const setHeaderOverride = adminLayout?.setHeaderOverride;
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
@@ -37,15 +38,17 @@ function DonationAddPage() {
 
   // Hubungkan tombol Kembali di Header Top Bar dengan dialog konfirmasi
   React.useEffect(() => {
-    adminLayout?.setHeaderOverride({
+    if (!setHeaderOverride) return;
+
+    setHeaderOverride({
       title: "Tambah Donasi",
       subtitle: "Buat aksi food rescue baru",
       onBack: handleBackTrigger,
       backLabel: "Kembali",
     });
 
-    return () => adminLayout?.setHeaderOverride(null);
-  }, [adminLayout, handleBackTrigger]);
+    return () => setHeaderOverride(null);
+  }, [setHeaderOverride, handleBackTrigger]);
 
   const handleSubmit = async (data: DonationFormData) => {
     setIsSubmitting(true);
