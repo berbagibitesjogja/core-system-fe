@@ -11,6 +11,7 @@ export interface PaginationProps {
   perPage?: number;
   onPerPageChange?: (perPage: number) => void;
   perPageOptions?: number[];
+  perPageDirection?: "up" | "down";
 }
 
 export function Pagination({
@@ -22,6 +23,7 @@ export function Pagination({
   perPage,
   onPerPageChange,
   perPageOptions,
+  perPageDirection = "up",
 }: PaginationProps) {
   // Generate pages array
   const pages: Array<number | "..."> = [];
@@ -57,6 +59,7 @@ export function Pagination({
             perPage={perPage}
             onPerPageChange={onPerPageChange}
             options={perPageOptions}
+            direction={perPageDirection}
           />
         )}
 

@@ -14,6 +14,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -24,6 +25,15 @@ import {
 } from "#/components/shared/empty-state";
 import { Pagination } from "#/components/shared/pagination";
 import type { DonationItem } from "./donation-data";
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta<TFeatures, TData, TValue> {
+    className?: string;
+    align?: "left" | "right" | "center";
+    sort?: "asc" | "desc" | "none";
+    onSort?: () => void;
+  }
+}
 
 export interface DonationColumnMeta {
   className?: string;
@@ -226,9 +236,9 @@ export function DonationTable({
   });
 
   return (
-    <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col shadow-xs overflow-hidden w-full">
+    <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col shadow-xs w-full">
       {/* Container Tabel dengan Scroll Horizontal pada Layar Kecil */}
-      <div className="overflow-x-auto w-full">
+      <div className="overflow-x-auto w-full rounded-t-2xl">
         <Table
           containerClassName="border-none shadow-none rounded-none"
           className="border-none shadow-none rounded-none w-full"
@@ -317,7 +327,7 @@ export function DonationTable({
 
       {/* Bagian Bawah: Paginasi Data */}
       {totalCount > 0 && (
-        <div className="border-t border-neutral-100 px-5 py-4 w-full">
+        <TableFooter>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -326,7 +336,7 @@ export function DonationTable({
             onPerPageChange={onPerPageChange}
             rangeText={`${startRange} - ${endRange} dari ${totalCount}`}
           />
-        </div>
+        </TableFooter>
       )}
     </div>
   );

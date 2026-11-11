@@ -9,6 +9,7 @@ export interface PerPageSelectorProps {
   min?: number;
   max?: number;
   label?: string;
+  direction?: "up" | "down";
   className?: string;
 }
 
@@ -23,6 +24,7 @@ export function PerPageSelector({
   min = 1,
   max = 500,
   label = "Per halaman:",
+  direction = "up",
   className,
 }: PerPageSelectorProps) {
   const [inputVal, setInputVal] = React.useState<string>(String(perPage));
@@ -90,6 +92,7 @@ export function PerPageSelector({
       ref={containerRef}
       className={cn(
         "relative inline-flex items-center gap-2 text-xs font-sans select-none",
+        isOpen && "z-30",
         className,
       )}
     >
@@ -99,7 +102,12 @@ export function PerPageSelector({
       </span>
 
       {/* Kontrol Input Manual + Trigger Dropdown */}
-      <div className="relative inline-flex items-center gap-1 bg-white border border-neutral-300 rounded-lg px-2.5 py-1 shadow-2xs hover:border-neutral-900 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all">
+      <div
+        className={cn(
+          "relative inline-flex items-center gap-1 bg-white border border-neutral-300 rounded-sm px-2 py-0.5 shadow-2xs hover:border-neutral-900 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all",
+          isOpen && "z-30",
+        )}
+      >
         {/* Input Angka Manual */}
         <input
           type="number"
@@ -141,7 +149,10 @@ export function PerPageSelector({
         {isOpen && (
           <div
             role="listbox"
-            className="absolute right-0 bottom-full mb-1.5 sm:bottom-auto sm:top-full sm:mt-1.5 min-w-[6.5rem] p-1 bg-white border border-neutral-200 rounded-xl shadow-[0px_8px_16px_rgba(20,32,35,0.12)] z-30 animate-in fade-in zoom-in-95 duration-100"
+            className={cn(
+              "absolute right-0 min-w-[6.5rem] p-1 bg-white border border-neutral-200 rounded-sm shadow-[0px_8px_20px_rgba(20,32,35,0.18)] z-50 animate-in fade-in zoom-in-95 duration-100",
+              direction === "up" ? "bottom-full mb-1.5" : "top-full mt-1.5",
+            )}
           >
             {options.map((option) => {
               const isSelected = perPage === option;
@@ -153,7 +164,7 @@ export function PerPageSelector({
                   aria-selected={isSelected}
                   onClick={() => handleSelectOption(option)}
                   className={cn(
-                    "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors",
+                    "flex items-center justify-between px-2.5 py-1.5 rounded-xs text-xs cursor-pointer transition-colors",
                     isSelected
                       ? "bg-bondi-50 text-brand-dark font-bold"
                       : "text-neutral-700 hover:bg-neutral-100 font-medium",

@@ -123,3 +123,17 @@ export function TableCell({
     />
   );
 }
+
+export interface TableFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function TableFooter({ className, ...props }: TableFooterProps) {
+  return (
+    <div
+      className={cn(
+        "border-t border-neutral-100 px-5 py-4 w-full rounded-b-2xl relative z-20 bg-white",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
