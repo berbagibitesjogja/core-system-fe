@@ -124,6 +124,8 @@ export function StatCard({
           )}
         </div>
       )}
+
+      {props.children}
     </div>
   );
 }
