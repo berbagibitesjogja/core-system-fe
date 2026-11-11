@@ -42,6 +42,7 @@ export * from "./modal-block";
 export * from "./toast-block";
 export * from "./alert-block";
 export * from "./tooltip-block";
+export * from "./layout-shell-blocks";
 
 // Section Orchestrators
 export * from "./foundations-section";

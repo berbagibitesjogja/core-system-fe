@@ -126,7 +126,7 @@ function DesignShowcasePage() {
               9 Data Display Items
             </Badge>
             <Badge tone="brand" styleVariant="soft" dot>
-              7 Nav &amp; Feedback Items
+              10 Nav, Feedback &amp; Layout
             </Badge>
           </div>
         </div>
@@ -163,10 +163,10 @@ function DesignShowcasePage() {
             <FilterChip
               selected={activeSection === "navfeedback"}
               onClick={() => scrollToSection("navfeedback")}
-              count={7}
+              count={10}
               className="shrink-0"
             >
-              🧭 4. Nav &amp; Feedback (19:220)
+              🧭 4. Nav, Feedback &amp; Layout (19:220)
             </FilterChip>
             <FilterChip
               selected={activeSection === "example"}
