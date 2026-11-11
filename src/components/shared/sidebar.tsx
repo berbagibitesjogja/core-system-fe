@@ -20,9 +20,142 @@ import { cn } from "#/lib/utils";
 import bbjLogoSvg from "#/assets/illustrations/bbj-logo.svg";
 import { NavItem } from "./nav-item";
 
+export interface SidebarSubItem {
+  id: string;
+  label: string;
+  to: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+export interface SidebarItemConfig {
+  id: string;
+  label: string;
+  to?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  disabled?: boolean;
+  badge?: string;
+  hasChildren?: boolean;
+  children?: SidebarSubItem[];
+  exactMatch?: boolean;
+}
+
+export interface SidebarGroupConfig {
+  id: string;
+  title: string;
+  requiredRole?: "super_admin" | "staff" | "core";
+  items: SidebarItemConfig[];
+}
+
+export const defaultSidebarGroups: SidebarGroupConfig[] = [
+  {
+    id: "utama",
+    title: "UTAMA",
+    items: [
+      {
+        id: "home",
+        label: "Home",
+        to: "/admin/dashboard",
+        icon: Home,
+        exactMatch: true,
+      },
+      {
+        id: "gallery",
+        label: "Gallery",
+        icon: ImageIcon,
+        disabled: true,
+        badge: "Segera",
+      },
+    ],
+  },
+  {
+    id: "data",
+    title: "DATA",
+    items: [
+      {
+        id: "donation",
+        label: "Donasi",
+        to: "/admin/donation",
+        icon: Package,
+      },
+      {
+        id: "beneficiary",
+        label: "Beneficiaries",
+        to: "/admin/beneficiary",
+        icon: Building,
+      },
+      {
+        id: "hero",
+        label: "Heroes",
+        to: "/admin/hero",
+        icon: Heart,
+      },
+      {
+        id: "partner",
+        label: "Partner",
+        to: "/admin/partner",
+        icon: Utensils,
+      },
+    ],
+  },
+  {
+    id: "tim",
+    title: "TIM",
+    items: [
+      {
+        id: "reimburse",
+        label: "Reimburse",
+        icon: Wallet,
+        hasChildren: true,
+        children: [
+          {
+            id: "reimburse-request",
+            label: "Ajukan Reimburse",
+            to: "/admin/reimburse/request",
+            icon: Upload,
+          },
+          {
+            id: "reimburse-data",
+            label: "Data Reimburse",
+            to: "/admin/reimburse/data",
+            icon: ClipboardCheck,
+          },
+        ],
+      },
+      {
+        id: "presensi",
+        label: "Presensi",
+        icon: MapPin,
+        disabled: true,
+        badge: "Segera",
+      },
+      {
+        id: "volunteer",
+        label: "Volunteer",
+        to: "/admin/volunteer",
+        icon: Users,
+      },
+    ],
+  },
+  {
+    id: "sistem",
+    title: "SISTEM",
+    requiredRole: "super_admin",
+    items: [
+      {
+        id: "logs",
+        label: "Logs",
+        to: "/admin/logs",
+        icon: FileText,
+        hasChildren: true,
+      },
+    ],
+  },
+];
+
 export interface SidebarProps {
   activePath?: string;
   userRole?: "super_admin" | "staff" | "core";
+  groups?: SidebarGroupConfig[];
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
   onLogout?: () => void;
@@ -31,17 +164,28 @@ export interface SidebarProps {
 
 /**
  * Sidebar: Navigasi utama admin BBJ (Figma 112:319) dengan sudut rounded-md (12px)
- * dan icon Lucide resmi sesuai spesifikasi desain.
+ * dan data modular terpisah yang dirender otomatis.
  */
 export function Sidebar({
   activePath = "/admin/dashboard",
   userRole = "super_admin",
+  groups = defaultSidebarGroups,
   isMobileOpen = false,
   onCloseMobile,
   onLogout,
   className,
 }: SidebarProps) {
-  const [reimburseOpen, setReimburseOpen] = React.useState(false);
+  const isReimburseActive = Boolean(
+    activePath && activePath.startsWith("/admin/reimburse"),
+  );
+  const [reimburseOpen, setReimburseOpen] = React.useState(isReimburseActive);
+
+  // Otomatis buka accordion Reimburse jika user membuka atau berada pada halaman anak Reimburse
+  React.useEffect(() => {
+    if (isReimburseActive) {
+      setReimburseOpen(true);
+    }
+  }, [isReimburseActive]);
 
   // TODO: ketika integrasi api: sembunyikan grup SISTEM / Logs ketika user role bukan super admin
   const isSuperAdmin = userRole === "super_admin";
@@ -71,174 +215,99 @@ export function Sidebar({
 
         {/* Navigation Sections */}
         <nav className="space-y-5">
-          {/* Kelompok: UTAMA */}
-          <div className="space-y-1">
-            <div className="px-3 pb-1">
-              <span className="font-label text-[11px] font-bold uppercase tracking-[0.66px] text-neutral-500">
-                UTAMA
-              </span>
-            </div>
-
-            {/* Nav: Home (Lucide: Home) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Home"
-              icon={<Home className="size-5" />}
-              isActive={
-                activePath === "/admin/dashboard" || activePath === "/admin"
-              }
-            />
-
-            {/* Nav: Gallery (Lucide: Image) */}
-            <NavItem
-              label="Gallery"
-              icon={<ImageIcon className="size-5" />}
-              disabled
-              badge={
-                <Badge
-                  tone="neutral"
-                  styleVariant="soft"
-                  className="text-[10px] h-5 px-2"
-                >
-                  Segera
-                </Badge>
-              }
-            />
-          </div>
-
-          {/* Kelompok: DATA */}
-          <div className="space-y-1">
-            <div className="px-3 pb-1">
-              <span className="font-label text-[11px] font-bold uppercase tracking-[0.66px] text-neutral-500">
-                DATA
-              </span>
-            </div>
-
-            {/* Nav: Donasi (Lucide: Package) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Donasi"
-              icon={<Package className="size-5" />}
-              isActive={activePath === "/admin/donasi"}
-            />
-
-            {/* Nav: Beneficiaries (Lucide: Building) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Beneficiaries"
-              icon={<Building className="size-5" />}
-              isActive={activePath === "/admin/beneficiaries"}
-            />
-
-            {/* Nav: Heroes (Lucide: Heart) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Heroes"
-              icon={<Heart className="size-5" />}
-              isActive={activePath === "/admin/heroes"}
-            />
-
-            {/* Nav: Partner (Lucide: Utensils) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Partner"
-              icon={<Utensils className="size-5" />}
-              isActive={activePath === "/admin/partner"}
-            />
-          </div>
-
-          {/* Kelompok: TIM */}
-          <div className="space-y-1">
-            <div className="px-3 pb-1">
-              <span className="font-label text-[11px] font-bold uppercase tracking-[0.66px] text-neutral-500">
-                TIM
-              </span>
-            </div>
-
-            {/* Nav: Reimburse (Lucide: Wallet) */}
-            <div>
-              <NavItem
-                label="Reimburse"
-                icon={<Wallet className="size-5" />}
-                hasChildren
-                isOpen={reimburseOpen}
-                onClick={() => setReimburseOpen(!reimburseOpen)}
-              />
-
-              {/* Submenu Reimburse (pl-7) */}
-              {reimburseOpen && (
-                <div className="mt-1 space-y-1 pl-7">
-                  {/* Ajukan Reimburse (Lucide: Upload) */}
-                  <NavItem
-                    to="/admin/dashboard"
-                    onClick={onCloseMobile}
-                    label="Ajukan Reimburse"
-                    icon={<Upload className="size-5" />}
-                  />
-
-                  {/* Data Reimburse (Lucide: ClipboardCheck) */}
-                  <NavItem
-                    to="/admin/dashboard"
-                    onClick={onCloseMobile}
-                    label="Data Reimburse"
-                    icon={<ClipboardCheck className="size-5" />}
-                  />
+          {groups
+            .filter(
+              (group) =>
+                !group.requiredRole ||
+                (group.requiredRole === "super_admin" && isSuperAdmin),
+            )
+            .map((group) => (
+              <div key={group.id} className="space-y-1">
+                <div className="px-3 pb-1">
+                  <span className="font-label text-[11px] font-bold uppercase tracking-[0.66px] text-neutral-500">
+                    {group.title}
+                  </span>
                 </div>
-              )}
-            </div>
 
-            {/* Nav: Presensi (Lucide: MapPin) */}
-            <NavItem
-              label="Presensi"
-              icon={<MapPin className="size-5" />}
-              disabled
-              badge={
-                <Badge
-                  tone="neutral"
-                  styleVariant="soft"
-                  className="text-[10px] h-5 px-2"
-                >
-                  Segera
-                </Badge>
-              }
-            />
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const isItemActive = item.to
+                    ? item.exactMatch
+                      ? activePath === item.to ||
+                        activePath === "/admin" ||
+                        activePath === "/admin/"
+                      : activePath === item.to || activePath.startsWith(item.to)
+                    : false;
 
-            {/* Nav: Volunteer (Lucide: Users) */}
-            <NavItem
-              to="/admin/dashboard"
-              onClick={onCloseMobile}
-              label="Volunteer"
-              icon={<Users className="size-5" />}
-              isActive={activePath === "/admin/volunteer"}
-            />
-          </div>
+                  if (item.children) {
+                    const isParentActive = Boolean(
+                      item.children.some(
+                        (child) =>
+                          activePath === child.to ||
+                          activePath.startsWith(child.to),
+                      ),
+                    );
 
-          {/* Kelompok: SISTEM (Khusus Super Admin) */}
-          {/* TODO: ketika integrasi api: sembunyikan grup SISTEM / Logs ketika user role bukan super admin */}
-          {isSuperAdmin && (
-            <div className="space-y-1">
-              <div className="px-3 pb-1">
-                <span className="font-label text-[11px] font-bold uppercase tracking-[0.66px] text-neutral-500">
-                  SISTEM
-                </span>
+                    return (
+                      <div key={item.id}>
+                        <NavItem
+                          label={item.label}
+                          icon={<Icon className="size-5" />}
+                          hasChildren
+                          isOpen={reimburseOpen}
+                          isActive={isParentActive}
+                          onClick={() => setReimburseOpen(!reimburseOpen)}
+                        />
+
+                        {reimburseOpen && (
+                          <div className="mt-1 space-y-1 pl-7">
+                            {item.children.map((child) => {
+                              const ChildIcon = child.icon;
+                              const isChildActive = activePath === child.to;
+
+                              return (
+                                <NavItem
+                                  key={child.id}
+                                  to={child.to}
+                                  onClick={onCloseMobile}
+                                  label={child.label}
+                                  icon={<ChildIcon className="size-5" />}
+                                  isActive={isChildActive}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <NavItem
+                      key={item.id}
+                      to={item.to}
+                      onClick={onCloseMobile}
+                      label={item.label}
+                      icon={<Icon className="size-5" />}
+                      isActive={isItemActive}
+                      disabled={item.disabled}
+                      hasChildren={item.hasChildren}
+                      badge={
+                        item.badge ? (
+                          <Badge
+                            tone="neutral"
+                            styleVariant="soft"
+                            className="text-[10px] h-5 px-2"
+                          >
+                            {item.badge}
+                          </Badge>
+                        ) : undefined
+                      }
+                    />
+                  );
+                })}
               </div>
-
-              {/* Nav: Logs (Lucide: FileText) */}
-              <NavItem
-                to="/admin/dashboard"
-                onClick={onCloseMobile}
-                label="Logs"
-                icon={<FileText className="size-5" />}
-                hasChildren
-                isActive={activePath === "/admin/logs"}
-              />
-            </div>
-          )}
+            ))}
         </nav>
       </div>
 

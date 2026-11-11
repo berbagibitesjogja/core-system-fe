@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { ChevronDown, HelpCircle, LogOut, Settings, User } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
@@ -28,6 +29,7 @@ export function UserProfileMenu({
   onLogout,
   className,
 }: UserProfileMenuProps) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -119,7 +121,10 @@ export function UserProfileMenu({
             <MenuItem
               label="Lihat Profil"
               icon={<User className="size-4" />}
-              onSelect={() => setIsOpen(false)}
+              onSelect={() => {
+                setIsOpen(false);
+                navigate({ to: "/admin/profile" });
+              }}
             />
             <MenuItem
               label="Pengaturan Akun"

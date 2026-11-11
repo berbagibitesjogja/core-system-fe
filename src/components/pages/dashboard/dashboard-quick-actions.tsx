@@ -23,19 +23,19 @@ export function DashboardQuickActions({
       title: "Tambah Donasi",
       subtitle: "Catat aksi food rescue baru",
       icon: <Plus className="size-5 text-brand" />,
-      href: "/admin/dashboard",
+      href: "/admin/donation",
     },
     {
       title: "Ajukan Reimburse",
       subtitle: "Klaim biaya operasional",
       icon: <Wallet className="size-5 text-brand" />,
-      href: "/admin/dashboard",
+      href: "/admin/reimburse/request",
     },
     {
       title: "Tambah Volunteer",
       subtitle: "Daftarkan relawan baru",
       icon: <Users className="size-5 text-brand" />,
-      href: "/admin/dashboard",
+      href: "/admin/volunteer",
     },
   ];
 
