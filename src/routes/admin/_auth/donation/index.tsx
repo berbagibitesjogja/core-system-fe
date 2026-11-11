@@ -17,18 +17,18 @@ import type { DonationItem } from "#/components/pages/donation";
 
 // Skema validasi Search Params URL tipe-aman Zod sesuai standar WP4 & GEMINI.md
 const donationSearchSchema = z.object({
-  page: z.coerce.number().int().positive().catch(1),
-  per_page: z.coerce.number().int().positive().catch(10),
-  search: z.string().catch(""),
-  program: z.enum(["all", "food-rescue", "csr"]).catch("all"),
-  from: z.string().catch(""),
-  to: z.string().catch(""),
-  sort: z.enum(["asc", "desc"]).catch("desc"),
+  page: z.coerce.number().int().positive().optional().catch(1),
+  per_page: z.coerce.number().int().positive().optional().catch(10),
+  search: z.string().optional().catch(""),
+  program: z.enum(["all", "food-rescue", "csr"]).optional().catch("all"),
+  from: z.string().optional().catch(""),
+  to: z.string().optional().catch(""),
+  sort: z.enum(["asc", "desc"]).optional().catch("desc"),
 });
 
 export type DonationSearchParams = z.infer<typeof donationSearchSchema>;
 
-export const Route = createFileRoute("/admin/_auth/donation")({
+export const Route = createFileRoute("/admin/_auth/donation/")({
   validateSearch: (search: Record<string, unknown>) => {
     return donationSearchSchema.parse({
       ...search,
@@ -52,21 +52,26 @@ export const Route = createFileRoute("/admin/_auth/donation")({
 function DonationPage() {
   const navigate = useNavigate();
 
-  // DEV ONLY: Simulasi loading skeleton selama 5 detik setiap kali berpindah atau membuka halaman ini.
-  // PENTING: Saat integrasi API/backend nanti, HAPUS timer simulasi ini dan ganti dengan status isLoading/isFetching bawaan TanStack Query (misal: donationsQuery.isLoading).
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
   // 1. Mengambil parameter kontrol langsung dari URL via Route.useSearch()
   const searchParams = Route.useSearch();
-  const { page, per_page, search, program, from, to, sort } = searchParams;
+  const page = searchParams.page ?? 1;
+  const per_page = searchParams.per_page ?? 10;
+  const search = searchParams.search ?? "";
+  const program = searchParams.program ?? "all";
+  const from = searchParams.from ?? "";
+  const to = searchParams.to ?? "";
+  const sort = searchParams.sort ?? "desc";
 
   // Helper untuk memperbarui URL query params secara tipe-aman
   const updateSearch = React.useCallback(
@@ -161,7 +166,10 @@ function DonationPage() {
   };
 
   const handleEdit = (item: DonationItem) => {
-    toast.info(`Mengubah data donasi: ${item.donorName}`);
+    navigate({
+      to: "/admin/donation/edit",
+      search: { id: item.id },
+    });
   };
 
   const handleDeleteTrigger = (item: DonationItem) => {
@@ -193,7 +201,7 @@ function DonationPage() {
   };
 
   const handleAddDonation = () => {
-    toast.info("Formulir penambahan donasi baru akan segera hadir.");
+    navigate({ to: "/admin/donation/add" });
   };
 
   // Tampilkan skeleton saat loading aktif

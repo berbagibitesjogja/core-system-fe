@@ -217,3 +217,145 @@ export const defaultDonations: DonationItem[] = [
     canDelete: true,
   },
 ];
+
+// ---------------------------------------------------------------------------
+// DATA STRUKTUR FORMULIR DONASI (TAMBAH & EDIT)
+// Sesuai Spesifikasi Figma Node 121:3581, 122:3844, 122:4524
+// ---------------------------------------------------------------------------
+
+export interface DonationFormData {
+  id?: string;
+  donorName: string;
+  quota: string | number;
+  pickupDate: string; // YYYY-MM-DD
+  pickupHour: string; // HH
+  pickupMinute: string; // MM
+  duration: string | number; // Menit
+  location: string;
+  mapsUrl: string;
+  beneficiaryIds: string[];
+  notes: string;
+  isCsr: boolean;
+  shouldAnnounce: boolean;
+}
+
+export interface SponsorOption {
+  id: string;
+  name: string;
+  initials: string;
+  category?: string;
+}
+
+export const defaultSponsorOptions: SponsorOption[] = [
+  {
+    id: "sp-1",
+    name: "Holland Bakery",
+    initials: "HB",
+    category: "Bakery & Pastry",
+  },
+  {
+    id: "sp-2",
+    name: "Sheraton Mustika Yogyakarta",
+    initials: "SM",
+    category: "Hotel & Resort",
+  },
+  {
+    id: "sp-3",
+    name: "Royal Ambarukmo",
+    initials: "RA",
+    category: "Hotel & Convention",
+  },
+  {
+    id: "sp-4",
+    name: "The Phoenix Hotel",
+    initials: "PH",
+    category: "Boutique Hotel",
+  },
+  { id: "sp-5", name: "Grand Mercure", initials: "GM", category: "Hotel" },
+  {
+    id: "sp-6",
+    name: "Parsley Bakery",
+    initials: "PB",
+    category: "Bakery & Resto",
+  },
+  {
+    id: "sp-7",
+    name: "Hotel Tentrem",
+    initials: "HT",
+    category: "Hotel & Suites",
+  },
+  { id: "sp-8", name: "Mirota Bakery", initials: "MB", category: "Bakery" },
+  {
+    id: "sp-9",
+    name: "Roti Bakar 88",
+    initials: "RB",
+    category: "Cafe & Eatery",
+  },
+  { id: "sp-10", name: "Swiss-Belboutique", initials: "SB", category: "Hotel" },
+];
+
+export interface BeneficiaryOption {
+  id: string;
+  name: string;
+  category?: string;
+}
+
+export const defaultBeneficiaryOptions: BeneficiaryOption[] = [
+  { id: "ben-1", name: "Universitas Gadjah Mada", category: "Mahasiswa" },
+  { id: "ben-2", name: "Panti Asuhan Sayap Ibu", category: "Panti Asuhan" },
+  { id: "ben-3", name: "Warga Dhuafa Gondokusuman", category: "Masyarakat" },
+  { id: "ben-4", name: "Komunitas Difabel Sleman", category: "Komunitas" },
+  { id: "ben-5", name: "Panti Wreda Hanna", category: "Lansia" },
+  { id: "ben-6", name: "Pekerja Informal Malioboro", category: "Pekerja" },
+];
+
+export interface DonationTipItem {
+  id: string;
+  text: string;
+}
+
+export const defaultDonationTips: DonationTipItem[] = [
+  {
+    id: "tip-1",
+    text: "Kuota menentukan berapa voucher yang bisa diklaim heroes.",
+  },
+  {
+    id: "tip-2",
+    text: 'Aktifkan "Umumkan" agar relawan langsung dapat notifikasi.',
+  },
+  {
+    id: "tip-3",
+    text: "Pastikan link Maps sesuai titik temu supaya heroes tidak tersesat.",
+  },
+];
+
+export const defaultEmptyDonationForm: DonationFormData = {
+  donorName: "",
+  quota: "",
+  pickupDate: "",
+  pickupHour: "14",
+  pickupMinute: "00",
+  duration: "60",
+  location: "Pusat Studi Pancasila UGM",
+  mapsUrl: "https://maps.app.goo.gl/eesnA6CN5fAQrGfP9",
+  beneficiaryIds: [],
+  notes: "",
+  isCsr: false,
+  shouldAnnounce: true,
+};
+
+export const defaultEditDonationData: DonationFormData = {
+  id: "donasi-1",
+  donorName: "Holland Bakery",
+  quota: "30",
+  pickupDate: "2026-11-10",
+  pickupHour: "14",
+  pickupMinute: "30",
+  duration: "60",
+  location: "Pusat Studi Pancasila UGM",
+  mapsUrl: "https://maps.app.goo.gl/eesnA6CN5fAQrGfP9",
+  beneficiaryIds: ["ben-1"],
+  notes: "Bawa wadah sendiri ya!",
+  isCsr: false,
+  shouldAnnounce: true,
+};
