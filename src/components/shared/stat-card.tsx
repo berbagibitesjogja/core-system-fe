@@ -7,6 +7,9 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   value: string | number;
   unit?: string;
+  subtext?: string;
+  illustrationSrc?: string;
+  illustrationAlt?: string;
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   trend?: {
@@ -21,6 +24,9 @@ export function StatCard({
   title,
   value,
   unit,
+  subtext,
+  illustrationSrc,
+  illustrationAlt,
   icon,
   iconPosition = "left",
   trend,
@@ -68,6 +74,16 @@ export function StatCard({
       )}
       {...props}
     >
+      {illustrationSrc && (
+        <div className="absolute right-[-41px] size-[206px] top-[11px] pointer-events-none select-none overflow-hidden">
+          <img
+            src={illustrationSrc}
+            alt={illustrationAlt || ""}
+            className="size-full object-contain pointer-events-none"
+          />
+        </div>
+      )}
+
       {iconPosition === "left" ? (
         <div className="flex items-center gap-3">
           {icon && (
@@ -147,6 +163,17 @@ export function StatCard({
             </span>
           )}
         </div>
+      )}
+
+      {subtext && (
+        <p
+          className={cn(
+            "mt-2 font-sans text-xs leading-4 truncate relative z-10",
+            styleVariant === "brand" ? "text-white" : "text-neutral-500",
+          )}
+        >
+          {subtext}
+        </p>
       )}
 
       {props.children}
