@@ -6,6 +6,7 @@ import {
   defaultDonations,
   defaultEditDonationData,
   DonationForm,
+  DonationFormSkeleton,
   DonationLeaveDialog,
   DonationTipsCard,
 } from "#/components/pages/donation";
@@ -37,6 +38,17 @@ function DonationEditPage() {
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
+
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Ambil data awal donasi berdasarkan parameter ID (atau fallback ke defaultEditDonationData)
   const initialFormData = React.useMemo<DonationFormData>(() => {
@@ -106,6 +118,11 @@ function DonationEditPage() {
       setIsSubmitting(false);
     }
   };
+
+  // Tampilkan skeleton formulir selama 3 detik saat awal memuat data donasi
+  if (isLoading) {
+    return <DonationFormSkeleton />;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-in fade-in duration-200">
