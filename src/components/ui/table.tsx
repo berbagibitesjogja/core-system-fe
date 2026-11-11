@@ -2,12 +2,18 @@ import * as React from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { cn } from "#/lib/utils";
 
-export function Table({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableElement>) {
+export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  containerClassName?: string;
+}
+
+export function Table({ className, containerClassName, ...props }: TableProps) {
   return (
-    <div className="relative w-full overflow-auto rounded-2xl border border-neutral-200 bg-white shadow-xs">
+    <div
+      className={cn(
+        "relative w-full overflow-auto rounded-2xl border border-neutral-200 bg-white shadow-xs",
+        containerClassName,
+      )}
+    >
       <table
         className={cn("w-full caption-bottom text-sm", className)}
         {...props}
