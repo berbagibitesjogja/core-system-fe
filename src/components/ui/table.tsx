@@ -77,7 +77,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "h-11 px-4 text-left font-label text-xs font-semibold text-neutral-600 select-none",
+        "h-11 px-4 text-left font-label text-xs font-semibold text-neutral-600 select-none whitespace-nowrap",
         align === "right" && "text-right",
         onSort && "cursor-pointer hover:text-neutral-900",
         className,
@@ -114,7 +114,7 @@ export function TableCell({
   return (
     <td
       className={cn(
-        "h-16 px-4 align-middle font-sans text-sm text-neutral-900 border-b border-neutral-100",
+        "h-16 px-4 align-middle font-sans text-sm text-neutral-900 border-b border-neutral-100 whitespace-nowrap",
         align === "right" && "text-right",
         align === "center" && "text-center",
         className,

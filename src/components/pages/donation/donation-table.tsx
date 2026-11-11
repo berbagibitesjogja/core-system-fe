@@ -95,7 +95,7 @@ export function DonationTable({
         accessorKey: "date",
         header: "Tanggal",
         meta: {
-          className: "w-[220px]",
+          className: "min-w-[200px] w-[200px]",
           sort: sortDirection,
           onSort: onSortToggle,
         },
@@ -115,7 +115,7 @@ export function DonationTable({
         accessorKey: "donorName",
         header: "Nama Donatur",
         meta: {
-          className: "min-w-[240px]",
+          className: "min-w-[260px]",
         },
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
@@ -123,7 +123,7 @@ export function DonationTable({
               name={row.original.donorName}
               size="sm"
               shape="circle"
-              className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold"
+              className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
             />
             <div className="flex flex-col min-w-0">
               <span className="font-semibold text-neutral-900 text-sm truncate">
@@ -140,7 +140,7 @@ export function DonationTable({
         id: "quota",
         header: "Kuota",
         meta: {
-          className: "w-[140px]",
+          className: "min-w-[130px] w-[130px]",
         },
         cell: ({ row }) => (
           <span className="text-neutral-900 font-normal">
@@ -153,7 +153,7 @@ export function DonationTable({
         accessorKey: "status",
         header: "Status",
         meta: {
-          className: "w-[150px]",
+          className: "min-w-[140px] w-[140px]",
         },
         cell: ({ row }) => {
           const isActive = row.original.status === "Aktif";
@@ -177,7 +177,7 @@ export function DonationTable({
         id: "actions",
         header: "Aksi",
         meta: {
-          className: "w-[150px]",
+          className: "min-w-[140px] w-[140px]",
           align: "right",
         },
         cell: ({ row }) => {
@@ -241,7 +241,7 @@ export function DonationTable({
       <div className="overflow-x-auto w-full rounded-t-2xl">
         <Table
           containerClassName="border-none shadow-none rounded-none"
-          className="border-none shadow-none rounded-none w-full"
+          className="border-none shadow-none rounded-none w-full min-w-[870px]"
         >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
