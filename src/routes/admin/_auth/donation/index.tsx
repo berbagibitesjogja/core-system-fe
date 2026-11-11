@@ -17,10 +17,10 @@ import type { DonationItem } from "#/components/pages/donation";
 
 // Skema validasi Search Params URL tipe-aman Zod sesuai standar WP4 & GEMINI.md
 const donationSearchSchema = z.object({
-  page: z.coerce.number().int().positive().optional().catch(1),
-  per_page: z.coerce.number().int().positive().optional().catch(10),
+  page: z.coerce.number().int().positive().catch(1),
+  per_page: z.coerce.number().int().positive().catch(10),
   search: z.string().optional().catch(""),
-  program: z.enum(["all", "food-rescue", "csr"]).optional().catch("all"),
+  program: z.enum(["all", "food-rescue", "csr"]).catch("all"),
   from: z.string().optional().catch(""),
   to: z.string().optional().catch(""),
   sort: z.enum(["asc", "desc"]).optional().catch("desc"),
@@ -107,8 +107,8 @@ function DonationPage() {
     React.useState<boolean>(false);
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
-  // 2. Pemrosesan Filter & Pencarian Data Berdasarkan URL Search Params
-  const filteredDonations = React.useMemo(() => {
+  // 2. Pemrosesan Filter, Pencarian, Pengurutan, & Paginasi Berdasarkan URL Search Params
+  const { paginatedData, totalItems, totalPages } = React.useMemo(() => {
     let result = [...donations];
 
     // Filter berdasarkan Program (Food Rescue / CSR)
@@ -140,17 +140,18 @@ function DonationPage() {
       return sort === "asc" ? cmp : -cmp;
     });
 
-    return result;
-  }, [donations, program, search, from, to, sort]);
-
-  // Perhitungan Paginasi Berdasarkan URL Params
-  const totalItems = filteredDonations.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / per_page));
-
-  const paginatedData = React.useMemo(() => {
+    // Perhitungan Total dan Slice Paginasi
+    const totalCount = result.length;
+    const pages = Math.max(1, Math.ceil(totalCount / per_page));
     const start = (page - 1) * per_page;
-    return filteredDonations.slice(start, start + per_page);
-  }, [filteredDonations, page, per_page]);
+    const sliced = result.slice(start, start + per_page);
+
+    return {
+      paginatedData: sliced,
+      totalItems: totalCount,
+      totalPages: pages,
+    };
+  }, [donations, program, search, from, to, sort, page, per_page]);
 
   // Handler Aksi Baris Tabel
   const handleSortToggle = () => {
