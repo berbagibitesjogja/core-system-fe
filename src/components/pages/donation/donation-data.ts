@@ -301,12 +301,15 @@ export interface BeneficiaryOption {
 }
 
 export const defaultBeneficiaryOptions: BeneficiaryOption[] = [
-  { id: "ben-1", name: "Universitas Gadjah Mada", category: "Mahasiswa" },
-  { id: "ben-2", name: "Panti Asuhan Sayap Ibu", category: "Panti Asuhan" },
-  { id: "ben-3", name: "Warga Dhuafa Gondokusuman", category: "Masyarakat" },
-  { id: "ben-4", name: "Komunitas Difabel Sleman", category: "Komunitas" },
-  { id: "ben-5", name: "Panti Wreda Hanna", category: "Lansia" },
-  { id: "ben-6", name: "Pekerja Informal Malioboro", category: "Pekerja" },
+  { id: "ben-1", name: "Universitas Gadjah Mada", category: "Universitas" },
+  { id: "ben-2", name: "Masyarakat Umum", category: "Masyarakat" },
+  { id: "ben-3", name: "Yayasan Hamba", category: "Yayasan" },
+  { id: "ben-4", name: "BRSPA", category: "Yayasan" },
+  { id: "ben-5", name: "Panti Asuhan Sayap Ibu", category: "Panti Asuhan" },
+  { id: "ben-6", name: "Warga Dhuafa Gondokusuman", category: "Masyarakat" },
+  { id: "ben-7", name: "Komunitas Difabel Sleman", category: "Komunitas" },
+  { id: "ben-8", name: "Panti Wreda Hanna", category: "Lansia" },
+  { id: "ben-9", name: "Pekerja Informal Malioboro", category: "Pekerja" },
 ];
 
 export interface DonationTipItem {
@@ -354,7 +357,7 @@ export const defaultEditDonationData: DonationFormData = {
   duration: "60",
   location: "Pusat Studi Pancasila UGM",
   mapsUrl: "https://maps.app.goo.gl/eesnA6CN5fAQrGfP9",
-  beneficiaryIds: ["ben-1"],
+  beneficiaryIds: ["ben-1", "ben-2"],
   notes: "Bawa wadah sendiri ya!",
   isCsr: false,
   shouldAnnounce: true,

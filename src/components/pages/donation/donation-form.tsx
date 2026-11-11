@@ -6,6 +6,7 @@ import {
   ExternalLink,
   MapPin,
   Search,
+  X,
 } from "lucide-react";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
@@ -75,6 +76,8 @@ export function DonationForm({
   const [sponsorSearch, setSponsorSearch] = React.useState("");
   const [beneficiaryDropdownOpen, setBeneficiaryDropdownOpen] =
     React.useState(false);
+  const [beneficiarySearchQuery, setBeneficiarySearchQuery] =
+    React.useState("");
 
   const sponsorDropdownRef = React.useRef<HTMLDivElement>(null);
   const beneficiaryDropdownRef = React.useRef<HTMLDivElement>(null);
@@ -100,6 +103,13 @@ export function DonationForm({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Reset pencarian beneficiary saat dropdown ditutup
+  React.useEffect(() => {
+    if (!beneficiaryDropdownOpen) {
+      setBeneficiarySearchQuery("");
+    }
+  }, [beneficiaryDropdownOpen]);
+
   // Filter daftar sponsor berdasarkan pencarian
   const filteredSponsors = React.useMemo(() => {
     if (!sponsorSearch.trim()) return defaultSponsorOptions;
@@ -110,6 +120,17 @@ export function DonationForm({
         (s.category && s.category.toLowerCase().includes(q)),
     );
   }, [sponsorSearch]);
+
+  // Filter daftar beneficiaries berdasarkan pencarian di dropdown sesuai Figma Node 122:4132
+  const filteredBeneficiaries = React.useMemo(() => {
+    if (!beneficiarySearchQuery.trim()) return defaultBeneficiaryOptions;
+    const q = beneficiarySearchQuery.toLowerCase();
+    return defaultBeneficiaryOptions.filter(
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        (b.category && b.category.toLowerCase().includes(q)),
+    );
+  }, [beneficiarySearchQuery]);
 
   // Validasi formulir
   const validate = (): FormErrors => {
@@ -356,8 +377,9 @@ export function DonationForm({
           </div>
 
           {/* Field: Kuota */}
-          <div className="sm:col-span-4 flex flex-col gap-1.5">
+          <div className="sm:col-span-4 flex flex-col gap-1.5 w-full">
             <Input
+              className="w-full max-w-none"
               label="Kuota"
               type="number"
               min={1}
@@ -391,10 +413,11 @@ export function DonationForm({
         </div>
 
         {/* Row 2: Tanggal, Waktu (Jam:Menit), Durasi */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start w-full">
           {/* Tanggal Pengambilan */}
-          <div className="sm:col-span-5 flex flex-col gap-1.5">
+          <div className="sm:col-span-5 flex flex-col gap-1.5 w-full">
             <Input
+              className="w-full max-w-none"
               label="Tanggal Pengambilan"
               type="date"
               leadingIcon={<Calendar className="size-4.5 text-neutral-500" />}
@@ -482,8 +505,9 @@ export function DonationForm({
           </div>
 
           {/* Durasi Pengambilan */}
-          <div className="sm:col-span-3 flex flex-col gap-1.5">
+          <div className="sm:col-span-3 flex flex-col gap-1.5 w-full">
             <Input
+              className="w-full max-w-none"
               label="Durasi (menit)"
               type="number"
               placeholder="Contoh: 60"
@@ -497,9 +521,10 @@ export function DonationForm({
           </div>
         </div>
 
-        {/* Row 3: Lokasi & Link Maps */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+        {/* Row 3: Lokasi & Link Maps (Penuh sesuai Figma 122:3917) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start w-full">
           <Input
+            className="w-full max-w-none"
             label="Lokasi"
             placeholder="Pusat Studi Pancasila UGM"
             leadingIcon={<MapPin className="size-4.5 text-neutral-500" />}
@@ -515,6 +540,7 @@ export function DonationForm({
           />
 
           <Input
+            className="w-full max-w-none"
             label="Link Maps"
             placeholder="maps.app.goo.gl/..."
             leadingIcon={<ExternalLink className="size-4.5 text-neutral-500" />}
@@ -544,10 +570,10 @@ export function DonationForm({
           </p>
         </div>
 
-        {/* Field: Beneficiaries (Multi-select Tags) */}
+        {/* Field: Beneficiaries (Multi-select Tags dengan Fitur Pencarian di Dropdown sesuai Figma Node 122:4132) */}
         <div
           ref={beneficiaryDropdownRef}
-          className="flex flex-col gap-1.5 relative"
+          className="flex flex-col gap-1.5 relative w-full"
         >
           <label
             htmlFor="beneficiary-select-trigger"
@@ -570,10 +596,12 @@ export function DonationForm({
               }
             }}
             className={cn(
-              "min-h-[46px] p-2 pl-3 pr-10 rounded-md border bg-white flex flex-wrap gap-2 items-center relative transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand/30",
-              errors.beneficiaries
-                ? "border-red-500 focus:border-red-500"
-                : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
+              "min-h-[46px] p-2 pl-3 pr-10 rounded-md border bg-white flex flex-wrap gap-2 items-center relative transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand/30 w-full",
+              beneficiaryDropdownOpen
+                ? "border-2 border-brand"
+                : errors.beneficiaries
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-neutral-300 hover:border-neutral-400 focus:border-brand",
             )}
           >
             {formData.beneficiaryIds.length === 0 ? (
@@ -581,22 +609,29 @@ export function DonationForm({
                 Pilih / Tambah Beneficiary...
               </span>
             ) : (
-              formData.beneficiaryIds.map((bId) => {
-                const ben = defaultBeneficiaryOptions.find((b) => b.id === bId);
-                return (
-                  <Tag
-                    key={bId}
-                    label={ben?.name ?? bId}
-                    removable
-                    onRemove={() => handleRemoveBeneficiary(bId)}
-                  />
-                );
-              })
+              <>
+                {formData.beneficiaryIds.map((bId) => {
+                  const ben = defaultBeneficiaryOptions.find(
+                    (b) => b.id === bId,
+                  );
+                  return (
+                    <Tag
+                      key={bId}
+                      label={ben?.name ?? bId}
+                      removable
+                      onRemove={() => handleRemoveBeneficiary(bId)}
+                    />
+                  );
+                })}
+                <span className="text-sm font-sans text-neutral-500 select-none">
+                  Tambah lagi...
+                </span>
+              </>
             )}
 
             <ChevronDown
               className={cn(
-                "absolute right-3.5 top-1/2 -translate-y-1/2 size-4.5 text-neutral-500 transition-transform duration-150 pointer-events-none",
+                "absolute right-3.5 top-1/2 -translate-y-1/2 size-5 text-neutral-500 transition-transform duration-150 pointer-events-none",
                 beneficiaryDropdownOpen && "rotate-180 text-brand",
               )}
             />
@@ -612,47 +647,92 @@ export function DonationForm({
             )}
           </p>
 
-          {/* Menu Dropdown Checklist Beneficiaries */}
+          {/* Menu Dropdown Checklist Beneficiaries dengan Fitur Pencarian sesuai Figma Node 122:4132 */}
           {beneficiaryDropdownOpen && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto flex flex-col p-1.5 animate-in fade-in zoom-in-95 duration-100">
-              {defaultBeneficiaryOptions.map((ben) => {
-                const isSelected = formData.beneficiaryIds.includes(ben.id);
-                return (
+            <div
+              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white border border-neutral-200 rounded-md drop-shadow-[0px_8px_12px_rgba(20,32,35,0.1)] shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Kolom Pencarian Beneficiary di dalam Dropdown */}
+              <div className="bg-[#eef1f2] rounded-lg px-3 py-2 flex items-center gap-2 mb-1">
+                <Search className="size-4 text-neutral-500 shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Cari beneficiary..."
+                  value={beneficiarySearchQuery}
+                  onChange={(e) => setBeneficiarySearchQuery(e.target.value)}
+                  className="w-full bg-transparent text-sm font-sans text-neutral-900 placeholder:text-neutral-500 outline-none"
+                  autoFocus
+                />
+                {beneficiarySearchQuery && (
                   <button
-                    key={ben.id}
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleBeneficiary(ben);
-                    }}
-                    className={cn(
-                      "w-full px-3 py-2 rounded-sm text-left text-xs font-sans flex items-center justify-between transition-colors cursor-pointer",
-                      isSelected
-                        ? "bg-bondi-50 text-brand-dark font-semibold"
-                        : "text-neutral-800 hover:bg-neutral-50",
-                    )}
+                    onClick={() => setBeneficiarySearchQuery("")}
+                    className="text-neutral-400 hover:text-neutral-600 cursor-pointer p-0.5"
+                    aria-label="Bersihkan pencarian"
                   >
-                    <div className="flex flex-col min-w-0">
-                      <span>{ben.name}</span>
-                      {ben.category && (
-                        <span className="text-[11px] text-neutral-500">
-                          {ben.category}
-                        </span>
-                      )}
-                    </div>
-                    {isSelected && (
-                      <Check className="size-4 text-brand shrink-0 ml-2" />
-                    )}
+                    <X className="size-3.5" />
                   </button>
-                );
-              })}
+                )}
+              </div>
+
+              {/* Daftar Pilihan Beneficiary */}
+              <div className="max-h-60 overflow-y-auto flex flex-col gap-0.5">
+                {filteredBeneficiaries.map((ben) => {
+                  const isSelected = formData.beneficiaryIds.includes(ben.id);
+                  return (
+                    <button
+                      key={ben.id}
+                      type="button"
+                      onClick={() => handleToggleBeneficiary(ben)}
+                      className={cn(
+                        "w-full px-3 py-2 rounded-lg text-left flex items-center gap-3 transition-colors cursor-pointer",
+                        isSelected ? "bg-bondi-50/70" : "hover:bg-neutral-100",
+                      )}
+                    >
+                      {/* Kotak Checkbox Figma (18x18px rounded-xs) */}
+                      <div
+                        className={cn(
+                          "size-[18px] rounded-[4px] flex items-center justify-center shrink-0 transition-all",
+                          isSelected
+                            ? "bg-brand text-white"
+                            : "bg-white border-[1.5px] border-neutral-400",
+                        )}
+                      >
+                        {isSelected && (
+                          <Check className="size-3 text-white stroke-[2.5]" />
+                        )}
+                      </div>
+
+                      {/* Teks Nama & Kategori Beneficiary */}
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-[14px] leading-[20px] font-normal text-neutral-900">
+                          {ben.name}
+                        </span>
+                        {ben.category && (
+                          <span className="text-[12px] leading-[16px] text-neutral-500">
+                            {ben.category}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+
+                {filteredBeneficiaries.length === 0 && (
+                  <div className="p-3 text-center text-xs text-neutral-500 font-sans">
+                    Tidak ada beneficiary yang cocok
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
 
-        {/* Field: Pesan Khusus */}
-        <div className="flex flex-col gap-1.5">
+        {/* Field: Pesan Khusus (Penuh sesuai Figma Node 122:3930) */}
+        <div className="flex flex-col gap-1.5 w-full">
           <Input
+            className="w-full max-w-none"
             label="Pesan Khusus"
             placeholder="Contoh: Bawa wadah sendiri ya!"
             value={formData.notes}
