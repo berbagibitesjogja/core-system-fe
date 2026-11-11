@@ -8,6 +8,7 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string | number;
   unit?: string;
   icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
   trend?: {
     value: string;
     isPositive?: boolean;
@@ -21,6 +22,7 @@ export function StatCard({
   value,
   unit,
   icon,
+  iconPosition = "left",
   trend,
   styleVariant = "default",
   className,
@@ -66,21 +68,43 @@ export function StatCard({
       )}
       {...props}
     >
-      <div className="flex items-center justify-between gap-4">
-        <span className={cn("font-label text-sm font-semibold", labelClasses)}>
-          {title}
-        </span>
-        {icon && (
-          <div
-            className={cn(
-              "size-10 rounded-xl flex items-center justify-center shrink-0",
-              iconBgClasses,
-            )}
+      {iconPosition === "left" ? (
+        <div className="flex items-center gap-3">
+          {icon && (
+            <div
+              className={cn(
+                "size-10 rounded-md flex items-center justify-center shrink-0",
+                iconBgClasses,
+              )}
+            >
+              {icon}
+            </div>
+          )}
+          <span
+            className={cn("font-label text-sm font-semibold", labelClasses)}
           >
-            {icon}
-          </div>
-        )}
-      </div>
+            {title}
+          </span>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-4">
+          <span
+            className={cn("font-label text-sm font-semibold", labelClasses)}
+          >
+            {title}
+          </span>
+          {icon && (
+            <div
+              className={cn(
+                "size-10 rounded-md flex items-center justify-center shrink-0",
+                iconBgClasses,
+              )}
+            >
+              {icon}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-3 flex items-baseline gap-1.5">
         <span className={cn("font-number-xl", valueClasses)}>{value}</span>
@@ -124,6 +148,8 @@ export function StatCard({
           )}
         </div>
       )}
+
+      {props.children}
     </div>
   );
 }

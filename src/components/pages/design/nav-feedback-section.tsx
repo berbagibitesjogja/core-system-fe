@@ -6,6 +6,11 @@ import { ModalBlock } from "./modal-block";
 import { ToastBlock } from "./toast-block";
 import { AlertBlock } from "./alert-block";
 import { TooltipBlock } from "./tooltip-block";
+import {
+  UserProfileMenuBlock,
+  HeaderBlock,
+  SidebarBlock,
+} from "./layout-shell-blocks";
 
 export interface NavFeedbackSectionProps {
   onCopy: (text: string, id?: string) => void;
@@ -13,7 +18,7 @@ export interface NavFeedbackSectionProps {
 }
 
 /**
- * NavFeedbackSection: Orchestrator untuk komponen navigasi & feedback antarmuka BBJ (7 blok).
+ * NavFeedbackSection: Orchestrator untuk komponen navigasi, feedback & layout shell BBJ (10 blok).
  * Dimodularisasi menjadi blok independen berbasis DocBlock.
  */
 export function NavFeedbackSection({
@@ -28,24 +33,25 @@ export function NavFeedbackSection({
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="font-label text-xs font-bold uppercase tracking-wider text-brand">
-                Figma Category · Navigation &amp; Feedback (Node 19:220 -
-                20:371)
+                Figma Category · Navigation, Feedback &amp; Layout Shell (Node
+                19:220 - 112:526)
               </span>
               <span className="text-neutral-300">•</span>
               <span className="font-label text-xs font-semibold text-neutral-500">
-                7 Komponen
+                10 Komponen
               </span>
             </div>
             <h2 className="font-heading-h1 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-              Navigation &amp; Feedback Components
+              Navigation, Feedback &amp; Layout Shell Components
             </h2>
             <p className="font-body-m max-w-3xl text-sm text-neutral-600">
-              Spesifikasi resmi sistem navigasi dan respon antarmuka pengguna
-              Bagi-Bagi Jogja: Nav Item sidebar (3 status), Bottom Nav Item
-              mobile (2 status), Menu dropdown multi-pilihan (8 varian), Modal
-              dialog konfirmasi (2 tone), Toast notifikasi tinta gelap BBJ
-              penindih Sonner (4 tone), Alert banner inline (4 tone), dan
-              Tooltip penunjuk aksi (2 placement).
+              Spesifikasi resmi sistem navigasi, respon antarmuka, dan tata
+              letak shell Bagi-Bagi Jogja: Nav Item sidebar (3 status), Bottom
+              Nav Item mobile (2 status), Menu dropdown multi-pilihan (8
+              varian), Modal dialog konfirmasi (2 tone), Toast notifikasi tinta
+              gelap BBJ penindih Sonner (4 tone), Alert banner inline (4 tone),
+              Tooltip penunjuk aksi (2 placement), User Profile Menu, Top Bar
+              Header, serta Sidebar Navigasi Desktop &amp; Mobile.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
@@ -70,6 +76,9 @@ export function NavFeedbackSection({
         <ToastBlock onCopy={onCopy} copiedToken={copiedToken} />
         <AlertBlock onCopy={onCopy} copiedToken={copiedToken} />
         <TooltipBlock onCopy={onCopy} copiedToken={copiedToken} />
+        <UserProfileMenuBlock onCopy={onCopy} copiedToken={copiedToken} />
+        <HeaderBlock onCopy={onCopy} copiedToken={copiedToken} />
+        <SidebarBlock onCopy={onCopy} copiedToken={copiedToken} />
       </div>
     </div>
   );
