@@ -1,10 +1,23 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Plus, Users, Wallet } from "lucide-react";
+import { cn } from "#/lib/utils";
+
+export interface DashboardQuickActionsProps {
+  layout?: "vertical" | "horizontal";
+  className?: string;
+}
 
 /**
  * DashboardQuickActions: Kartu daftar pintasan aksi cepat operasional BBJ.
+ * Mendukung layout "vertical" (berdampingan dengan Aktivitas Terbaru - Figma 112:318)
+ * dan "horizontal" (saat Aktivitas Terbaru disembunyikan/peran Staff & Core - Figma 114:643).
  */
-export function DashboardQuickActions() {
+export function DashboardQuickActions({
+  layout = "vertical",
+  className,
+}: DashboardQuickActionsProps) {
+  const isHorizontal = layout === "horizontal";
+
   const actions = [
     {
       title: "Tambah Donasi",
@@ -27,17 +40,29 @@ export function DashboardQuickActions() {
   ];
 
   return (
-    <div className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6 shadow-xs w-full lg:w-[352px] shrink-0">
+    <div
+      className={cn(
+        "flex flex-col rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6 shadow-xs w-full",
+        isHorizontal ? "w-full" : "lg:w-[352px] shrink-0",
+        className,
+      )}
+    >
       <h4 className="font-heading-h4 text-base sm:text-lg font-semibold text-neutral-900 leading-tight mb-3">
         Aksi Cepat
       </h4>
 
-      <div className="space-y-3">
+      <div
+        className={cn(
+          isHorizontal
+            ? "grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full"
+            : "space-y-3 w-full",
+        )}
+      >
         {actions.map((act, idx) => (
           <Link
             key={idx}
             to={act.href}
-            className="group flex items-center gap-3 rounded-md border border-neutral-200 p-3 transition-all duration-150 hover:border-brand/40 hover:bg-neutral-50/80 hover:shadow-2xs cursor-pointer select-none"
+            className="group flex flex-1 items-center gap-3 rounded-md border border-neutral-200 p-3 transition-all duration-150 hover:border-brand/40 hover:bg-neutral-50/80 hover:shadow-2xs cursor-pointer select-none"
           >
             <div className="flex size-10 items-center justify-center rounded-md bg-bondi-50 shrink-0 group-hover:scale-105 transition-transform">
               {act.icon}

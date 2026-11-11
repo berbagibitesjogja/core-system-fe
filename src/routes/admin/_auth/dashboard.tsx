@@ -38,7 +38,7 @@ function DashboardPage() {
     <div className="space-y-6 w-full">
       {isLoading ? (
         /* State 2: Dashboard Loading Skeleton (Figma 114:835) */
-        <DashboardSkeleton />
+        <DashboardSkeleton isSuperAdmin={isSuperAdmin} />
       ) : (
         /* State 1: Dashboard Super Admin Normal (Figma 112:318) */
         <div className="space-y-6">
@@ -52,14 +52,16 @@ function DashboardPage() {
           <DashboardChartsRow />
 
           {/* 4. Baris Aktivitas Terbaru & Aksi Cepat */}
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
+          <div className="flex flex-col lg:flex-row gap-6 items-start w-full">
             {/* TODO: ketika integrasi api: sembunyikan kartu Aktivitas Terbaru jika role bukan super admin (Staff & Core) */}
             {isSuperAdmin && (
               <DashboardActivityCard className="w-full lg:flex-1" />
             )}
 
-            {/* Aksi Cepat (Pintasan Tambah Donasi, Ajukan Reimburse, dsb.) */}
-            <DashboardQuickActions />
+            {/* Aksi Cepat (Pintasan Tambah Donasi, Ajukan Reimburse, dsb. - Menyesuaikan Horizontal saat Aktivitas disembunyikan: Figma 114:643) */}
+            <DashboardQuickActions
+              layout={isSuperAdmin ? "vertical" : "horizontal"}
+            />
           </div>
         </div>
       )}
