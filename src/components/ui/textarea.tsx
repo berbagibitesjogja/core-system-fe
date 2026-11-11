@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "#/lib/utils";
+import { FieldHelper } from "./field-helper";
 
 export type TextareaState = "default" | "focus" | "error" | "disabled";
 
@@ -68,8 +69,6 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         break;
     }
 
-    const currentHelper = isError && error ? error : helperText;
-
     return (
       <div
         className={cn(
@@ -111,17 +110,11 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
 
-        {showHelper && currentHelper && (
-          <p
-            className={cn(
-              "font-['Inter'] font-normal text-[12px] leading-[16px] whitespace-nowrap",
-              isError
-                ? "text-[var(--color-text-danger,#b91c1c)]"
-                : "text-[var(--color-text-secondary,#4d585b)]",
-            )}
-          >
-            {currentHelper}
-          </p>
+        {showHelper && (
+          <FieldHelper
+            error={isError ? error : undefined}
+            helperText={helperText}
+          />
         )}
       </div>
     );

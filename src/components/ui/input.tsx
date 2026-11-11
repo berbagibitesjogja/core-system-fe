@@ -1,6 +1,6 @@
 import * as React from "react";
-import { AlertTriangle } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { FieldHelper } from "./field-helper";
 
 export type InputState =
   "default" | "hover" | "focus" | "filled" | "error" | "disabled";
@@ -94,8 +94,6 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         break;
     }
 
-    const currentHelperText = isError && error ? error : helperText;
-
     return (
       <div
         className={cn(
@@ -170,22 +168,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {showHelper && currentHelperText && (
-          <div className="flex items-center gap-[4px] min-h-[16px] w-full">
-            {isError && (
-              <AlertTriangle className="size-[14px] text-[var(--color-text-danger,#b91c1c)] shrink-0" />
-            )}
-            <p
-              className={cn(
-                "font-['Inter'] font-normal text-[12px] leading-[16px] whitespace-nowrap",
-                isError
-                  ? "text-[var(--color-text-danger,#b91c1c)]"
-                  : "text-[var(--color-text-secondary,#4d585b)]",
-              )}
-            >
-              {currentHelperText}
-            </p>
-          </div>
+        {showHelper && (
+          <FieldHelper
+            error={isError ? error : undefined}
+            helperText={helperText}
+          />
         )}
       </div>
     );
