@@ -2,6 +2,7 @@ import * as React from "react";
 import { Menu as MenuIcon } from "lucide-react";
 import { UserProfileMenu } from "./user-profile-menu";
 import type { UserProfileMenuProps } from "./user-profile-menu";
+import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
 
 export interface HeaderProps {
@@ -63,14 +64,16 @@ export function Header({
       {/* Sisi Kiri: Tombol Menu Mobile & Judul Halaman */}
       <div className="flex items-center gap-3 min-w-0">
         {onMenuToggle && (
-          <button
-            type="button"
-            onClick={onMenuToggle}
-            aria-label="Buka menu navigasi"
-            className="flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand/30 lg:hidden cursor-pointer shrink-0 shadow-2xs"
-          >
-            <MenuIcon className="size-5" />
-          </button>
+          <Tooltip content="Buka menu navigasi">
+            <button
+              type="button"
+              onClick={onMenuToggle}
+              aria-label="Buka menu navigasi"
+              className="flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand/30 lg:hidden cursor-pointer shrink-0 shadow-2xs"
+            >
+              <MenuIcon className="size-5" />
+            </button>
+          </Tooltip>
         )}
 
         <div className="flex flex-col min-w-0">

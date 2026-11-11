@@ -2,12 +2,18 @@ import * as React from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { cn } from "#/lib/utils";
 
-export function Table({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLTableElement>) {
+export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  containerClassName?: string;
+}
+
+export function Table({ className, containerClassName, ...props }: TableProps) {
   return (
-    <div className="relative w-full overflow-auto rounded-2xl border border-neutral-200 bg-white shadow-xs">
+    <div
+      className={cn(
+        "relative w-full overflow-auto rounded-2xl border border-neutral-200 bg-white shadow-xs",
+        containerClassName,
+      )}
+    >
       <table
         className={cn("w-full caption-bottom text-sm", className)}
         {...props}
@@ -71,7 +77,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "h-11 px-4 text-left font-label text-xs font-semibold text-neutral-600 select-none",
+        "h-11 px-4 text-left font-label text-xs font-semibold text-neutral-600 select-none whitespace-nowrap",
         align === "right" && "text-right",
         onSort && "cursor-pointer hover:text-neutral-900",
         className,
@@ -108,9 +114,23 @@ export function TableCell({
   return (
     <td
       className={cn(
-        "h-16 px-4 align-middle font-sans text-sm text-neutral-900 border-b border-neutral-100",
+        "h-16 px-4 align-middle font-sans text-sm text-neutral-900 border-b border-neutral-100 whitespace-nowrap",
         align === "right" && "text-right",
         align === "center" && "text-center",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export interface TableFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function TableFooter({ className, ...props }: TableFooterProps) {
+  return (
+    <div
+      className={cn(
+        "border-t border-neutral-100 px-5 py-4 w-full rounded-b-2xl relative z-20 bg-white",
         className,
       )}
       {...props}
