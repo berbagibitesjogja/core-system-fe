@@ -1,5 +1,6 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import {
   defaultDonations,
@@ -14,16 +15,43 @@ import {
 } from "#/components/pages/donation";
 import type { DonationItem } from "#/components/pages/donation";
 
+// Skema validasi Search Params URL tipe-aman Zod sesuai standar WP4 & GEMINI.md
+const donationSearchSchema = z.object({
+  page: z.coerce.number().int().positive().catch(1),
+  per_page: z.coerce.number().int().positive().catch(10),
+  search: z.string().catch(""),
+  program: z.enum(["all", "food-rescue", "csr"]).catch("all"),
+  from: z.string().catch(""),
+  to: z.string().catch(""),
+  sort: z.enum(["asc", "desc"]).catch("desc"),
+});
+
+export type DonationSearchParams = z.infer<typeof donationSearchSchema>;
+
 export const Route = createFileRoute("/admin/_auth/donation")({
+  validateSearch: (search: Record<string, unknown>) => {
+    return donationSearchSchema.parse({
+      ...search,
+      page: search.page,
+      per_page: search.per_page ?? search.perpage,
+      search: typeof search.search === "string" ? search.search : "",
+      program: typeof search.program === "string" ? search.program : "all",
+      from: typeof search.from === "string" ? search.from : "",
+      to: typeof search.to === "string" ? search.to : "",
+      sort: search.sort === "asc" ? "asc" : "desc",
+    });
+  },
   component: DonationPage,
 });
 
 /**
  * DonationPage: Halaman manajemen donasi (Food Rescue & CSR) untuk Admin.
- * Mengintegrasikan kartu ringkasan statistik, toolbar pencarian & filter tanggal,
- * tabel donasi interaktif, dialog konfirmasi hapus, dan notifikasi toast resmi.
+ * Mengintegrasikan URL Search Params (search, program, from, to, sort, page) via Zod,
+ * kartu ringkasan statistik, toolbar penyaringan, tabel donasi interaktif, dan notifikasi.
  */
 function DonationPage() {
+  const navigate = useNavigate();
+
   // DEV ONLY: Simulasi loading skeleton selama 5 detik setiap kali berpindah atau membuka halaman ini.
   // PENTING: Saat integrasi API/backend nanti, HAPUS timer simulasi ini dan ganti dengan status isLoading/isFetching bawaan TanStack Query (misal: donationsQuery.isLoading).
   const [isLoading, setIsLoading] = React.useState(true);
@@ -36,17 +64,33 @@ function DonationPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // State Data Donasi & Filter
+  // 1. Mengambil parameter kontrol langsung dari URL via Route.useSearch()
+  const searchParams = Route.useSearch();
+  const { page, per_page, search, program, from, to, sort } = searchParams;
+
+  // Helper untuk memperbarui URL query params secara tipe-aman
+  const updateSearch = React.useCallback(
+    (newParams: Partial<DonationSearchParams>) => {
+      navigate({
+        to: "/admin/donation",
+        search: (prev) => ({
+          page: newParams.page ?? prev.page ?? 1,
+          per_page: newParams.per_page ?? prev.per_page ?? 10,
+          search: newParams.search ?? prev.search ?? "",
+          program: newParams.program ?? prev.program ?? "all",
+          from: newParams.from ?? prev.from ?? "",
+          to: newParams.to ?? prev.to ?? "",
+          sort: newParams.sort ?? prev.sort ?? "desc",
+        }),
+        replace: true,
+      });
+    },
+    [navigate],
+  );
+
+  // State Data Donasi Lokal (untuk operasi hapus di client)
   const [donations, setDonations] =
     React.useState<DonationItem[]>(defaultDonations);
-  const [activeFilterId, setActiveFilterId] = React.useState<string>("all");
-  const [searchQuery, setSearchQuery] = React.useState<string>("");
-  const [dateFrom, setDateFrom] = React.useState<string>("");
-  const [dateTo, setDateTo] = React.useState<string>("");
-  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
-    "desc",
-  );
-  const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   // State Dialog Modal
   const [deleteTarget, setDeleteTarget] = React.useState<DonationItem | null>(
@@ -58,70 +102,58 @@ function DonationPage() {
     React.useState<boolean>(false);
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
-  // Filter Program yang sedang aktif
-  const activeProgramOption = defaultProgramFilterOptions.find(
-    (opt) => opt.id === activeFilterId,
-  );
-
-  // Pemrosesan Filter & Pencarian Data
+  // 2. Pemrosesan Filter & Pencarian Data Berdasarkan URL Search Params
   const filteredDonations = React.useMemo(() => {
     let result = [...donations];
 
     // Filter berdasarkan Program (Food Rescue / CSR)
-    if (activeProgramOption && activeProgramOption.programValue !== "ALL") {
-      result = result.filter(
-        (item) => item.program === activeProgramOption.programValue,
-      );
+    if (program === "food-rescue") {
+      result = result.filter((item) => item.program === "Food Rescue");
+    } else if (program === "csr") {
+      result = result.filter((item) => item.program === "CSR");
     }
 
     // Filter berdasarkan Kata Kunci Pencarian (Nama Donatur)
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
+    if (search.trim()) {
+      const query = search.toLowerCase().trim();
       result = result.filter((item) =>
         item.donorName.toLowerCase().includes(query),
       );
     }
 
     // Filter berdasarkan Rentang Tanggal
-    if (dateFrom) {
-      result = result.filter((item) => item.isoDate >= dateFrom);
+    if (from) {
+      result = result.filter((item) => item.isoDate >= from);
     }
-    if (dateTo) {
-      result = result.filter((item) => item.isoDate <= dateTo);
+    if (to) {
+      result = result.filter((item) => item.isoDate <= to);
     }
 
     // Pengurutan Tanggal (Ascending / Descending)
     result.sort((a, b) => {
       const cmp = a.isoDate.localeCompare(b.isoDate);
-      return sortDirection === "asc" ? cmp : -cmp;
+      return sort === "asc" ? cmp : -cmp;
     });
 
     return result;
-  }, [
-    donations,
-    activeProgramOption,
-    searchQuery,
-    dateFrom,
-    dateTo,
-    sortDirection,
-  ]);
+  }, [donations, program, search, from, to, sort]);
 
-  // Handler Paginasi
+  // Perhitungan Paginasi Berdasarkan URL Params
   const totalItems = filteredDonations.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / 10));
+  const totalPages = Math.max(1, Math.ceil(totalItems / per_page));
 
   const paginatedData = React.useMemo(() => {
-    const start = (currentPage - 1) * 10;
-    return filteredDonations.slice(start, start + 10);
-  }, [filteredDonations, currentPage]);
+    const start = (page - 1) * per_page;
+    return filteredDonations.slice(start, start + per_page);
+  }, [filteredDonations, page, per_page]);
 
   // Handler Aksi Baris Tabel
   const handleSortToggle = () => {
-    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    updateSearch({ sort: sort === "asc" ? "desc" : "asc" });
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
+    updateSearch({ search: "", page: 1 });
   };
 
   const handleView = (item: DonationItem) => {
@@ -174,42 +206,30 @@ function DonationPage() {
       {/* 1. Baris Kartu Statistik Donasi */}
       <DonationStats stats={defaultDonationStats} />
 
-      {/* 2. Toolbar Penyaringan & Pencarian */}
+      {/* 2. Toolbar Penyaringan & Pencarian (Tersinkronisasi dengan URL) */}
       <DonationToolbar
         filterOptions={defaultProgramFilterOptions}
-        activeFilterId={activeFilterId}
-        onFilterChange={(id) => {
-          setActiveFilterId(id);
-          setCurrentPage(1);
-        }}
-        searchQuery={searchQuery}
-        onSearchChange={(query) => {
-          setSearchQuery(query);
-          setCurrentPage(1);
-        }}
-        dateFrom={dateFrom}
-        onDateFromChange={(date) => {
-          setDateFrom(date);
-          setCurrentPage(1);
-        }}
-        dateTo={dateTo}
-        onDateToChange={(date) => {
-          setDateTo(date);
-          setCurrentPage(1);
-        }}
+        activeFilterId={program}
+        onFilterChange={(id) => updateSearch({ program: id as any, page: 1 })}
+        searchQuery={search}
+        onSearchChange={(query) => updateSearch({ search: query, page: 1 })}
+        dateFrom={from}
+        onDateFromChange={(date) => updateSearch({ from: date, page: 1 })}
+        dateTo={to}
+        onDateToChange={(date) => updateSearch({ to: date, page: 1 })}
         onAddDonation={handleAddDonation}
       />
 
-      {/* 3. Tabel Data Donasi & Paginasi */}
+      {/* 3. Tabel Data Donasi & Paginasi (Tersinkronisasi dengan URL) */}
       <DonationTable
         data={paginatedData}
         totalCount={totalItems}
-        currentPage={currentPage}
+        currentPage={page}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        sortDirection={sortDirection}
+        onPageChange={(newPage) => updateSearch({ page: newPage })}
+        sortDirection={sort}
         onSortToggle={handleSortToggle}
-        searchQuery={searchQuery}
+        searchQuery={search}
         onClearSearch={handleClearSearch}
         onViewItem={handleView}
         onEditItem={handleEdit}
