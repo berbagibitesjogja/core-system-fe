@@ -94,9 +94,10 @@ export function HeaderBlock({ onCopy, copiedToken }: LayoutShellBlockProps) {
       {/* Pratinjau Header */}
       <div className="space-y-3">
         <h4 className="font-label text-xs font-bold uppercase tracking-wider text-neutral-500">
-          Pratinjau Nyata Komponen Header
+          Pratinjau Nyata Komponen Header (Di dalam Main, transparan tanpa
+          background)
         </h4>
-        <div className="rounded-2xl border border-neutral-200 overflow-hidden shadow-xs">
+        <div className="rounded-2xl border border-neutral-200 bg-canvas p-4 sm:p-6 shadow-xs">
           <Header
             title="Dashboard"
             subtitle="Minggu, 8 November 2026"

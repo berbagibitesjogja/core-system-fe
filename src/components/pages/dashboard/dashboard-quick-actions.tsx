@@ -37,9 +37,9 @@ export function DashboardQuickActions() {
           <Link
             key={idx}
             to={act.href}
-            className="group flex items-center gap-3 rounded-xl border border-neutral-200 p-3 transition-all duration-150 hover:border-brand/40 hover:bg-neutral-50/80 hover:shadow-2xs cursor-pointer select-none"
+            className="group flex items-center gap-3 rounded-md border border-neutral-200 p-3 transition-all duration-150 hover:border-brand/40 hover:bg-neutral-50/80 hover:shadow-2xs cursor-pointer select-none"
           >
-            <div className="flex size-10 items-center justify-center rounded-xl bg-bondi-50 shrink-0 group-hover:scale-105 transition-transform">
+            <div className="flex size-10 items-center justify-center rounded-md bg-bondi-50 shrink-0 group-hover:scale-105 transition-transform">
               {act.icon}
             </div>
 

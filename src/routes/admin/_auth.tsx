@@ -8,7 +8,9 @@ export const Route = createFileRoute("/admin/_auth")({
 });
 
 /**
- * AdminLayout: Layout route terlindungi untuk dashboard admin BBJ dengan Sidebar & Header terintegrasi.
+ * AdminLayout: Layout route terlindungi untuk dashboard admin BBJ.
+ * Mengikuti arsitektur Figma 112:318 di mana Sidebar berada di kiri dan
+ * Header (Top Bar) berada di dalam elemen <main> tanpa background bar terpisah.
  */
 function AdminLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
@@ -27,13 +29,14 @@ function AdminLayout() {
         }}
       />
 
-      {/* Area Konten Utama */}
-      <div className="flex flex-1 flex-col min-w-0">
+      {/* Area Konten Utama: Main Container dengan Top Bar Header di dalamnya */}
+      <main className="flex-1 flex flex-col min-w-0 px-4 py-6 sm:px-6 md:px-8 gap-6 overflow-x-hidden">
+        {/* Header di dalam main tanpa background sesuai Figma 112:522 */}
         <Header onMenuToggle={() => setMobileSidebarOpen(true)} />
-        <main className="flex-1 overflow-x-hidden">
+        <div className="flex-1 w-full">
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

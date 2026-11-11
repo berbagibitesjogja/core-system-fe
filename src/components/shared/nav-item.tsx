@@ -27,7 +27,7 @@ export function NavItem({
       type="button"
       onClick={onClick}
       className={cn(
-        "group flex h-10 w-full items-center gap-3 rounded-xl px-3 font-label text-sm font-medium transition-all duration-150 outline-none select-none text-left cursor-pointer",
+        "group flex h-10 w-full items-center gap-3 rounded-md px-3 font-label text-sm font-medium transition-all duration-150 outline-none select-none text-left cursor-pointer",
         isActive
           ? "bg-bondi-50 text-bondi-900 font-semibold"
           : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",

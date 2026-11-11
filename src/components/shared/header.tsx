@@ -14,20 +14,49 @@ export interface HeaderProps {
 }
 
 /**
- * Header: Top Bar navigasi admin dengan judul halaman, tanggal dinamis, dan profil menu.
+ * Format tanggal dalam bahasa Indonesia (contoh: "Rabu, 11 November 2026").
+ */
+export function formatIndonesianDate(date: Date = new Date()): string {
+  const formatted = new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+/**
+ * Header: Top Bar navigasi admin di dalam Main (tanpa background & tanpa border) sesuai Figma Node 112:522.
+ * Tanggal terintegrasi secara interaktif menampilkan hari & tanggal saat ini.
  */
 export function Header({
   title = "Dashboard",
-  subtitle = "Minggu, 8 November 2026",
+  subtitle,
   onMenuToggle,
   user,
   actions,
   className,
 }: HeaderProps) {
+  // Tanggal interaktif saat ini dengan fallback statis untuk keamanan SSR
+  const [currentDate, setCurrentDate] = React.useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return formatIndonesianDate();
+    }
+    return "Minggu, 8 November 2026";
+  });
+
+  React.useEffect(() => {
+    setCurrentDate(formatIndonesianDate());
+  }, []);
+
+  const displaySubtitle = subtitle ?? currentDate;
+
   return (
-    <header
+    <div
       className={cn(
-        "flex w-full items-center justify-between gap-4 border-b border-neutral-200/80 bg-white/95 backdrop-blur-xs px-4 py-3.5 sm:px-6 lg:px-8",
+        "flex w-full items-center justify-between gap-4 bg-transparent shrink-0",
         className,
       )}
     >
@@ -38,19 +67,19 @@ export function Header({
             type="button"
             onClick={onMenuToggle}
             aria-label="Buka menu navigasi"
-            className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand/30 lg:hidden cursor-pointer"
+            className="flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand/30 lg:hidden cursor-pointer shrink-0 shadow-2xs"
           >
             <MenuIcon className="size-5" />
           </button>
         )}
 
         <div className="flex flex-col min-w-0">
-          <h1 className="font-heading-h3 text-lg font-semibold text-neutral-900 leading-tight sm:text-xl truncate">
+          <h1 className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7 truncate">
             {title}
           </h1>
-          {subtitle && (
-            <p className="font-sans text-xs text-neutral-500 leading-tight mt-0.5 truncate">
-              {subtitle}
+          {displaySubtitle && (
+            <p className="font-sans text-xs text-neutral-500 leading-4 mt-0.5 truncate">
+              {displaySubtitle}
             </p>
           )}
         </div>
@@ -61,6 +90,6 @@ export function Header({
         {actions}
         <UserProfileMenu {...user} />
       </div>
-    </header>
+    </div>
   );
 }

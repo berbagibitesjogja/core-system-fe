@@ -1,17 +1,17 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import {
-  Building2,
+  Building,
   ChevronDown,
   ClipboardCheck,
-  FilePlus,
   FileText,
   Heart,
   Home,
   Image as ImageIcon,
   LogOut,
+  MapPin,
   Package,
-  Receipt,
+  Upload,
   Users,
   Utensils,
   Wallet,
@@ -31,7 +31,8 @@ export interface SidebarProps {
 }
 
 /**
- * Sidebar: Navigasi utama desktop & mobile drawer admin BBJ dengan pengelompokan menu (Utama, Data, Tim, Sistem).
+ * Sidebar: Navigasi utama admin BBJ (Figma 112:319) dengan sudut rounded-md (12px)
+ * dan icon Lucide resmi sesuai spesifikasi desain.
  */
 export function Sidebar({
   activePath = "/admin/dashboard",
@@ -56,7 +57,7 @@ export function Sidebar({
             onClick={onCloseMobile}
             className="flex items-center gap-3 group outline-none"
           >
-            <div className="flex size-11 items-center justify-center rounded-xl bg-bondi-50/70 p-1.5 transition-transform group-hover:scale-105 shrink-0">
+            <div className="flex size-11 items-center justify-center rounded-md bg-bondi-50/70 p-1.5 transition-transform group-hover:scale-105 shrink-0">
               <img
                 src={bbjLogoSvg}
                 alt="Logo Berbagi Bites Jogja"
@@ -74,7 +75,7 @@ export function Sidebar({
               type="button"
               onClick={onCloseMobile}
               aria-label="Tutup menu navigasi"
-              className="flex size-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden cursor-pointer"
+              className="flex size-8 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden cursor-pointer"
             >
               <X className="size-5" />
             </button>
@@ -91,12 +92,12 @@ export function Sidebar({
               </span>
             </div>
 
-            {/* Nav: Home */}
+            {/* Nav: Home (Lucide: Home) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/dashboard" || activePath === "/admin"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -113,8 +114,8 @@ export function Sidebar({
               <span className="flex-1 truncate">Home</span>
             </Link>
 
-            {/* Nav: Gallery (Segera) */}
-            <div className="flex min-h-[40px] w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
+            {/* Nav: Gallery (Lucide: Image) */}
+            <div className="flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
               <div className="flex items-center gap-3 truncate">
                 <ImageIcon className="size-5 shrink-0 text-neutral-400" />
                 <span className="truncate">Gallery</span>
@@ -137,12 +138,12 @@ export function Sidebar({
               </span>
             </div>
 
-            {/* Nav: Donasi */}
+            {/* Nav: Donasi (Lucide: Package) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/donasi"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -152,27 +153,27 @@ export function Sidebar({
               <span className="flex-1 truncate">Donasi</span>
             </Link>
 
-            {/* Nav: Beneficiaries */}
+            {/* Nav: Beneficiaries (Lucide: Building) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/beneficiaries"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
               )}
             >
-              <Building2 className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
+              <Building className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
               <span className="flex-1 truncate">Beneficiaries</span>
             </Link>
 
-            {/* Nav: Heroes */}
+            {/* Nav: Heroes (Lucide: Heart) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/heroes"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -182,12 +183,12 @@ export function Sidebar({
               <span className="flex-1 truncate">Heroes</span>
             </Link>
 
-            {/* Nav: Partner */}
+            {/* Nav: Partner (Lucide: Utensils) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/partner"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -206,12 +207,12 @@ export function Sidebar({
               </span>
             </div>
 
-            {/* Nav: Reimburse (Dropdown submenu) */}
+            {/* Nav: Reimburse (Lucide: Wallet) */}
             <div>
               <button
                 type="button"
                 onClick={() => setReimburseOpen(!reimburseOpen)}
-                className="group flex min-h-[40px] w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900 transition-colors cursor-pointer select-none"
+                className="group flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900 transition-colors cursor-pointer select-none"
               >
                 <div className="flex items-center gap-3 truncate">
                   <Wallet className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
@@ -225,32 +226,36 @@ export function Sidebar({
                 />
               </button>
 
+              {/* Submenu Reimburse (pl-[28px]) */}
               {reimburseOpen && (
                 <div className="mt-1 space-y-1 pl-7">
+                  {/* Ajukan Reimburse (Lucide: Upload) */}
                   <Link
                     to="/admin/dashboard"
                     onClick={onCloseMobile}
-                    className="flex min-h-[36px] w-full items-center gap-3 rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
+                    className="flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
                   >
-                    <FilePlus className="size-4 shrink-0 text-neutral-400" />
+                    <Upload className="size-5 shrink-0 text-neutral-500" />
                     <span>Ajukan Reimburse</span>
                   </Link>
+
+                  {/* Data Reimburse (Lucide: ClipboardCheck) */}
                   <Link
                     to="/admin/dashboard"
                     onClick={onCloseMobile}
-                    className="flex min-h-[36px] w-full items-center gap-3 rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
+                    className="flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
                   >
-                    <Receipt className="size-4 shrink-0 text-neutral-400" />
+                    <ClipboardCheck className="size-5 shrink-0 text-neutral-500" />
                     <span>Data Reimburse</span>
                   </Link>
                 </div>
               )}
             </div>
 
-            {/* Nav: Presensi (Segera) */}
-            <div className="flex min-h-[40px] w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
+            {/* Nav: Presensi (Lucide: MapPin) */}
+            <div className="flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
               <div className="flex items-center gap-3 truncate">
-                <ClipboardCheck className="size-5 shrink-0 text-neutral-400" />
+                <MapPin className="size-5 shrink-0 text-neutral-400" />
                 <span className="truncate">Presensi</span>
               </div>
               <Badge
@@ -262,12 +267,12 @@ export function Sidebar({
               </Badge>
             </div>
 
-            {/* Nav: Volunteer */}
+            {/* Nav: Volunteer (Lucide: Users) */}
             <Link
               to="/admin/dashboard"
               onClick={onCloseMobile}
               className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                 activePath === "/admin/volunteer"
                   ? "bg-bondi-50 text-brand-strong"
                   : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -288,11 +293,12 @@ export function Sidebar({
                 </span>
               </div>
 
+              {/* Nav: Logs (Lucide: FileText) */}
               <Link
                 to="/admin/dashboard"
                 onClick={onCloseMobile}
                 className={cn(
-                  "group flex min-h-[40px] w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+                  "group flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
                   activePath === "/admin/logs"
                     ? "bg-bondi-50 text-brand-strong"
                     : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
@@ -309,12 +315,12 @@ export function Sidebar({
         </nav>
       </div>
 
-      {/* Footer Nav / Keluar */}
+      {/* Footer Nav / Keluar (Lucide: LogOut) */}
       <div className="pt-4 border-t border-neutral-100">
         <button
           type="button"
           onClick={onLogout}
-          className="group flex min-h-[40px] w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer select-none"
+          className="group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer select-none"
         >
           <LogOut className="size-5 shrink-0 text-neutral-500 group-hover:text-red-600 transition-colors" />
           <span className="flex-1 text-left truncate">Keluar</span>

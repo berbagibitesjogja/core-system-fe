@@ -118,9 +118,9 @@ export function DashboardSkeleton() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 p-3 rounded-xl border border-neutral-200"
+                className="flex items-center gap-3 p-3 rounded-md border border-neutral-200"
               >
-                <Skeleton className="size-10 rounded-xl shrink-0" />
+                <Skeleton className="size-10 rounded-md shrink-0" />
                 <div className="flex-1 space-y-1.5">
                   <Skeleton className="h-4 w-24 rounded-md" />
                   <Skeleton className="h-3 w-32 rounded-md" />

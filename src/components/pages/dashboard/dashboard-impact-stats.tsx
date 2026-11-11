@@ -1,4 +1,4 @@
-import { Heart, Leaf, Package } from "lucide-react";
+import { Leaf, Package, Users } from "lucide-react";
 import { StatCard } from "#/components/shared/stat-card";
 import statFastFoodSvg from "#/assets/illustrations/stat-fast-food.svg";
 import statOrganicFoodSvg from "#/assets/illustrations/stat-organic-food.svg";
@@ -80,7 +80,7 @@ export function DashboardImpactStats() {
           value="14.933"
           unit="Orang"
           styleVariant="default"
-          icon={<Heart className="size-5 text-brand" />}
+          icon={<Users className="size-5 text-brand" />}
           trend={{
             value: "+3.020 orang",
             label: "bulan ini",

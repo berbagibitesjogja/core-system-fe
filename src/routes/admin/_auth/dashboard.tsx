@@ -18,8 +18,16 @@ export const Route = createFileRoute("/admin/_auth/dashboard")({
  * Mengimplementasikan State Super Admin (Figma 112:318) dan State Loading (Figma 114:835).
  */
 function DashboardPage() {
-  // State switcher untuk simulasi/verifikasi tampilan antara Loading State & Data Normal
-  const [isLoading, setIsLoading] = React.useState(false);
+  // Loading aktif selama 3 detik setiap kali berpindah atau membuka halaman ini
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // TODO: ketika integrasi api: ambil data sesi user, jika userRole !== "super_admin",
   // sembunyikan komponen DashboardActivityCard (khusus Super Admin) sesuai spesifikasi Figma 114:501.
@@ -27,38 +35,7 @@ function DashboardPage() {
   const isSuperAdmin = userRole === "super_admin";
 
   return (
-    <div className="space-y-6 mx-auto p-4 sm:p-6 lg:p-8">
-      {/* Pengalih Cepat State (Hanya untuk preview & verifikasi pengembang) */}
-      <div className="flex items-center justify-between border-b border-neutral-200/60 pb-3">
-        <span className="font-label text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-          Tampilan Dashboard Admin
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setIsLoading(false)}
-            className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors cursor-pointer ${
-              !isLoading
-                ? "bg-brand text-white shadow-2xs"
-                : "bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-            }`}
-          >
-            Super Admin
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsLoading(true)}
-            className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors cursor-pointer ${
-              isLoading
-                ? "bg-brand text-white shadow-2xs"
-                : "bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-            }`}
-          >
-            Loading Skeleton
-          </button>
-        </div>
-      </div>
-
+    <div className="space-y-6 w-full">
       {isLoading ? (
         /* State 2: Dashboard Loading Skeleton (Figma 114:835) */
         <DashboardSkeleton />
