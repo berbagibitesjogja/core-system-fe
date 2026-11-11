@@ -227,6 +227,10 @@ function DonationPage() {
         currentPage={page}
         totalPages={totalPages}
         onPageChange={(newPage) => updateSearch({ page: newPage })}
+        perPage={per_page}
+        onPerPageChange={(newPerPage) =>
+          updateSearch({ per_page: newPerPage, page: 1 })
+        }
         sortDirection={sort}
         onSortToggle={handleSortToggle}
         searchQuery={search}

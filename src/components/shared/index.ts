@@ -2,6 +2,7 @@ export * from "./stat-card";
 export * from "./filter-chip";
 export * from "./tag";
 export * from "./pagination";
+export * from "./per-page-selector";
 export * from "./google-sign-in-button";
 export * from "./empty-state";
 export * from "./file-upload";

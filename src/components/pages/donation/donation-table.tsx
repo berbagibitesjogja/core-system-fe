@@ -24,6 +24,8 @@ export interface DonationTableProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  perPage?: number;
+  onPerPageChange?: (perPage: number) => void;
   sortDirection?: "asc" | "desc";
   onSortToggle?: () => void;
   searchQuery?: string;
@@ -44,6 +46,8 @@ export function DonationTable({
   currentPage,
   totalPages,
   onPageChange,
+  perPage,
+  onPerPageChange,
   sortDirection = "desc",
   onSortToggle,
   searchQuery,
@@ -54,8 +58,10 @@ export function DonationTable({
   userRole = "super_admin",
 }: DonationTableProps) {
   const canDelete = userRole === "super_admin" || userRole === "core";
-  const startRange = totalCount === 0 ? 0 : (currentPage - 1) * 10 + 1;
-  const endRange = Math.min(currentPage * 10, totalCount);
+  const effectivePerPage = perPage ?? 10;
+  const startRange =
+    totalCount === 0 ? 0 : (currentPage - 1) * effectivePerPage + 1;
+  const endRange = Math.min(currentPage * effectivePerPage, totalCount);
 
   return (
     <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col shadow-xs overflow-hidden w-full">
@@ -216,6 +222,8 @@ export function DonationTable({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={onPageChange}
+            perPage={perPage}
+            onPerPageChange={onPerPageChange}
             rangeText={`${startRange} - ${endRange} dari ${totalCount}`}
           />
         </div>
