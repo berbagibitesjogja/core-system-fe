@@ -19,6 +19,7 @@ const routeTitles: Record<string, string> = {
   "/admin/reimburse/data": "Data Reimburse",
   "/admin/volunteer": "Volunteer",
   "/admin/profile": "Profil Pengguna",
+  "/admin/logs": "Logs Sistem",
 };
 
 /**

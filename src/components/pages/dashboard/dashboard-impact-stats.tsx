@@ -3,11 +3,50 @@ import { StatCard } from "#/components/shared/stat-card";
 import statFastFoodSvg from "#/assets/illustrations/stat-fast-food.svg";
 import statOrganicFoodSvg from "#/assets/illustrations/stat-organic-food.svg";
 import statCharityHeroesSvg from "#/assets/illustrations/stat-charity-heroes.svg";
+import { DEFAULT_IMPACT_STATS } from "./dashboard-data";
+import type { ImpactStatItem } from "./dashboard-data";
+
+export interface DashboardImpactStatsProps {
+  stats?: ImpactStatItem[];
+}
+
+const ILLUSTRATIONS: Record<ImpactStatItem["illustrationKey"], string> = {
+  "fast-food": statFastFoodSvg,
+  "organic-food": statOrganicFoodSvg,
+  "charity-heroes": statCharityHeroesSvg,
+};
 
 /**
- * DashboardImpactStats: Bagian kartu metrik dampak kumulatif BBJ dengan ilustrasi latar.
+ * DashboardImpactStats: Bagian kartu metrik dampak kumulatif BBJ dengan ilustrasi latar berbasis data.
  */
-export function DashboardImpactStats() {
+export function DashboardImpactStats({
+  stats = DEFAULT_IMPACT_STATS,
+}: DashboardImpactStatsProps) {
+  const getIcon = (
+    iconName: ImpactStatItem["iconName"],
+    styleVariant: ImpactStatItem["styleVariant"],
+  ) => {
+    const isBrand = styleVariant === "brand";
+    switch (iconName) {
+      case "package":
+        return (
+          <Package
+            className={`size-5 ${isBrand ? "text-white" : "text-brand"}`}
+          />
+        );
+      case "leaf":
+        return (
+          <Leaf className={`size-5 ${isBrand ? "text-white" : "text-brand"}`} />
+        );
+      case "users":
+        return (
+          <Users
+            className={`size-5 ${isBrand ? "text-white" : "text-brand"}`}
+          />
+        );
+    }
+  };
+
   return (
     <section className="space-y-3">
       {/* Header Bagian */}
@@ -20,85 +59,31 @@ export function DashboardImpactStats() {
         </span>
       </div>
 
-      {/* Grid 3 Kartu Metrik */}
+      {/* Grid Kartu Metrik Dinamis */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-        {/* Metrik 1: Food Rescue */}
-        <StatCard
-          title="Food Rescue"
-          value="372"
-          unit="Aksi"
-          styleVariant="brand"
-          icon={<Package className="size-5 text-white" />}
-          trend={{
-            value: "+18 aksi",
-            label: "bulan ini",
-            isPositive: true,
-          }}
-          className="relative min-h-[148px]"
-        >
-          <div
-            aria-hidden="true"
-            className="absolute -right-10 top-2 size-48 lg:size-52 pointer-events-none select-none opacity-85"
+        {stats.map((stat) => (
+          <StatCard
+            key={stat.id}
+            title={stat.title}
+            value={stat.value}
+            unit={stat.unit}
+            styleVariant={stat.styleVariant}
+            icon={getIcon(stat.iconName, stat.styleVariant)}
+            trend={stat.trend}
+            className={stat.className}
           >
-            <img
-              src={statFastFoodSvg}
-              alt=""
-              className="size-full object-contain pointer-events-none select-none"
-            />
-          </div>
-        </StatCard>
-
-        {/* Metrik 2: Makanan Diselamatkan */}
-        <StatCard
-          title="Makanan Diselamatkan"
-          value="3.077"
-          unit="Kg"
-          styleVariant="default"
-          icon={<Leaf className="size-5 text-brand" />}
-          trend={{
-            value: "+624 Kg",
-            label: "bulan ini",
-            isPositive: true,
-          }}
-          className="relative min-h-[148px] bg-white"
-        >
-          <div
-            aria-hidden="true"
-            className="absolute -right-10 top-2 size-48 lg:size-52 pointer-events-none select-none opacity-85"
-          >
-            <img
-              src={statOrganicFoodSvg}
-              alt=""
-              className="size-full object-contain pointer-events-none select-none"
-            />
-          </div>
-        </StatCard>
-
-        {/* Metrik 3: Total Heroes */}
-        <StatCard
-          title="Total Heroes"
-          value="14.933"
-          unit="Orang"
-          styleVariant="default"
-          icon={<Users className="size-5 text-brand" />}
-          trend={{
-            value: "+3.020 orang",
-            label: "bulan ini",
-            isPositive: true,
-          }}
-          className="relative min-h-[148px] bg-white md:col-span-2 lg:col-span-1"
-        >
-          <div
-            aria-hidden="true"
-            className="absolute -right-10 top-2 size-48 lg:size-52 pointer-events-none select-none opacity-85"
-          >
-            <img
-              src={statCharityHeroesSvg}
-              alt=""
-              className="size-full object-contain pointer-events-none select-none"
-            />
-          </div>
-        </StatCard>
+            <div
+              aria-hidden="true"
+              className="absolute -right-10 top-2 size-48 lg:size-52 pointer-events-none select-none opacity-85"
+            >
+              <img
+                src={ILLUSTRATIONS[stat.illustrationKey]}
+                alt=""
+                className="size-full object-contain pointer-events-none select-none"
+              />
+            </div>
+          </StatCard>
+        ))}
       </div>
     </section>
   );

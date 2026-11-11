@@ -40,27 +40,31 @@ export function UserProfileMenuBlock({
           Demo Interaktif (Klik untuk membuka menu popover)
         </h4>
         <div className="flex flex-wrap items-center gap-6 p-6 rounded-2xl bg-canvas border border-neutral-200">
-          <div>
-            <span className="font-label text-xs text-neutral-500 block mb-2">
-              Role: Super Admin
-            </span>
-            <UserProfileMenu
-              name="Dian Pratiwi"
-              role="Super Admin"
-              division="Divisi Operasional"
-            />
-          </div>
-
-          <div>
-            <span className="font-label text-xs text-neutral-500 block mb-2">
-              Role: Staff
-            </span>
-            <UserProfileMenu
-              name="Bima Aditya"
-              role="Staff"
-              division="Logistik Makanan"
-            />
-          </div>
+          {[
+            {
+              roleLabel: "Role: Super Admin",
+              name: "Dian Pratiwi",
+              role: "Super Admin",
+              division: "Divisi Operasional",
+            },
+            {
+              roleLabel: "Role: Staff",
+              name: "Bima Aditya",
+              role: "Staff",
+              division: "Logistik Makanan",
+            },
+          ].map((demo, idx) => (
+            <div key={idx}>
+              <span className="font-label text-xs text-neutral-500 block mb-2">
+                {demo.roleLabel}
+              </span>
+              <UserProfileMenu
+                name={demo.name}
+                role={demo.role}
+                division={demo.division}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </DocBlock>
