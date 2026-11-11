@@ -15,7 +15,9 @@ export interface PaginationBlockProps {
  */
 export function PaginationBlock({ onCopy, copiedToken }: PaginationBlockProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
-  const totalPages = 40;
+  const [perPage, setPerPage] = React.useState(10);
+  const totalItems = 392;
+  const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
 
   return (
     <DocBlock
@@ -93,7 +95,12 @@ export function PaginationBlock({ onCopy, copiedToken }: PaginationBlockProps) {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            rangeText={`${(currentPage - 1) * 10 + 1} - ${Math.min(currentPage * 10, 392)} dari 392 donasi`}
+            perPage={perPage}
+            onPerPageChange={(val) => {
+              setPerPage(val);
+              setCurrentPage(1);
+            }}
+            rangeText={`${(currentPage - 1) * perPage + 1} - ${Math.min(currentPage * perPage, totalItems)} dari ${totalItems} donasi`}
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         </div>

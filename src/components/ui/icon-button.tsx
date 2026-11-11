@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Tooltip } from "./tooltip";
 import { cn } from "#/lib/utils";
 
 export type IconButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -9,6 +10,8 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   variant?: IconButtonVariant;
   size?: IconButtonSize;
   forcedState?: IconButtonState;
+  tooltip?: React.ReactNode;
+  tooltipPlacement?: "top" | "bottom";
 }
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
@@ -19,6 +22,8 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       size = "md",
       forcedState,
       disabled,
+      tooltip,
+      tooltipPlacement = "top",
       children,
       ...props
     },
@@ -86,7 +91,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       }
     }
 
-    return (
+    const button = (
       <button
         ref={ref}
         type="button"
@@ -106,6 +111,16 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         {children}
       </button>
     );
+
+    if (tooltip) {
+      return (
+        <Tooltip content={tooltip} placement={tooltipPlacement}>
+          {button}
+        </Tooltip>
+      );
+    }
+
+    return button;
   },
 );
 

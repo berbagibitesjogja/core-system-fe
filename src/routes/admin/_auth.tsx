@@ -22,6 +22,10 @@ const routeTitles: Record<string, string> = {
   "/admin/logs": "Logs Sistem",
 };
 
+const routeSubtitles: Record<string, string> = {
+  "/admin/donation": "Kelola aksi food rescue dan CSR beserta kuota heroes-nya",
+};
+
 /**
  * AdminLayout: Layout route terlindungi untuk dashboard admin BBJ.
  * Mengikuti arsitektur Figma 112:318 di mana Sidebar berada di kiri dan
@@ -51,6 +55,7 @@ function AdminLayout() {
         {/* Header di dalam main tanpa background sesuai Figma 112:522 */}
         <Header
           title={currentTitle}
+          subtitle={routeSubtitles[location.pathname]}
           onMenuToggle={() => setMobileSidebarOpen(true)}
         />
         <div className="flex-1 w-full">

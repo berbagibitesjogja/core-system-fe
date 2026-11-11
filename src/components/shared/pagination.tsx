@@ -1,4 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PerPageSelector } from "./per-page-selector";
+import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
 
 export interface PaginationProps {
@@ -7,6 +9,10 @@ export interface PaginationProps {
   onPageChange: (page: number) => void;
   rangeText?: string;
   className?: string;
+  perPage?: number;
+  onPerPageChange?: (perPage: number) => void;
+  perPageOptions?: number[];
+  perPageDirection?: "up" | "down";
 }
 
 export function Pagination({
@@ -15,6 +21,10 @@ export function Pagination({
   onPageChange,
   rangeText,
   className,
+  perPage,
+  onPerPageChange,
+  perPageOptions,
+  perPageDirection = "up",
 }: PaginationProps) {
   // Generate pages array
   const pages: Array<number | "..."> = [];
@@ -44,64 +54,84 @@ export function Pagination({
         {rangeText || defaultRangeText}
       </div>
 
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-          disabled={currentPage <= 1}
-          className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-          aria-label="Halaman Sebelumnya"
-        >
-          <ChevronLeft className="size-4" />
-        </button>
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+        {perPage !== undefined && onPerPageChange && (
+          <PerPageSelector
+            perPage={perPage}
+            onPerPageChange={onPerPageChange}
+            options={perPageOptions}
+            direction={perPageDirection}
+          />
+        )}
 
-        <div className="hidden sm:flex items-center gap-1">
-          {pages.map((p, idx) => {
-            if (p === "...") {
+        <div className="flex items-center gap-1">
+          <Tooltip content="Halaman Sebelumnya">
+            <button
+              type="button"
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+              disabled={currentPage <= 1}
+              className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              aria-label="Halaman Sebelumnya"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+          </Tooltip>
+
+          <div className="hidden sm:flex items-center gap-1">
+            {pages.map((p, idx) => {
+              if (p === "...") {
+                return (
+                  <span
+                    key={`ellipsis-${idx}`}
+                    className="size-9 flex items-center justify-center text-neutral-400 font-bold"
+                  >
+                    …
+                  </span>
+                );
+              }
+
+              const isActive = p === currentPage;
               return (
-                <span
-                  key={`ellipsis-${idx}`}
-                  className="size-9 flex items-center justify-center text-neutral-400 font-bold"
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => onPageChange(p)}
+                  className={cn(
+                    "size-9 rounded-md font-label text-sm font-semibold transition-colors flex items-center justify-center",
+                    isActive
+                      ? "bg-neutral-900 text-white"
+                      : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+                  )}
                 >
-                  …
-                </span>
+                  {p}
+                </button>
               );
-            }
+            })}
+          </div>
 
-            const isActive = p === currentPage;
-            return (
-              <button
-                key={p}
-                type="button"
-                onClick={() => onPageChange(p)}
-                className={cn(
-                  "size-9 rounded-md font-label text-sm font-semibold transition-colors flex items-center justify-center",
-                  isActive
-                    ? "bg-neutral-900 text-white"
-                    : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
-                )}
-              >
-                {p}
-              </button>
-            );
-          })}
+          {/* Mobile page indicator */}
+          <span className="sm:hidden font-label text-xs font-semibold px-2 text-neutral-700">
+            Hal {currentPage} / {totalPages}
+          </span>
+
+          <Tooltip content="Halaman Selanjutnya">
+            <button
+              type="button"
+              onClick={() =>
+                onPageChange(Math.min(totalPages, currentPage + 1))
+              }
+              disabled={currentPage >= totalPages}
+              className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              aria-label="Halaman Selanjutnya"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </Tooltip>
         </div>
-
-        {/* Mobile page indicator */}
-        <span className="sm:hidden font-label text-xs font-semibold px-2 text-neutral-700">
-          Hal {currentPage} / {totalPages}
-        </span>
-
-        <button
-          type="button"
-          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage >= totalPages}
-          className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-          aria-label="Halaman Selanjutnya"
-        >
-          <ChevronRight className="size-4" />
-        </button>
       </div>
     </nav>
   );
 }
+
+export { PerPageSelector } from "./per-page-selector";
+export type { PerPageSelectorProps } from "./per-page-selector";
