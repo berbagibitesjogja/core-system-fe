@@ -113,9 +113,11 @@ export function Header({
         </div>
       </div>
 
-      {/* Sisi Kanan: Aksi Tambahan & Profile Chip */}
+      {/* Sisi Kanan: Aksi Tambahan & Profile Chip (Responsif: Foto Profil saja pada Mobile) */}
       <div className="flex items-center gap-3 shrink-0">
-        {actions}
+        {actions && (
+          <div className="hidden sm:flex items-center gap-2">{actions}</div>
+        )}
         <UserProfileMenu {...user} />
       </div>
     </div>
