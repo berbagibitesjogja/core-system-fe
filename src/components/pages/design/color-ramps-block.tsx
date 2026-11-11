@@ -1,13 +1,5 @@
 import { Check, Copy } from "lucide-react";
-import {
-  BLUE_RAMP,
-  BONDI_RAMP,
-  GREEN_RAMP,
-  NEUTRAL_RAMP,
-  ORANGE_RAMP,
-  RED_RAMP,
-  SUNNY_RAMP,
-} from "./design-data";
+import { PALETTE_RAMP_GROUPS } from "./design-data";
 import { DocBlock } from "./doc-block";
 
 export interface ColorRampsBlockProps {
@@ -100,48 +92,15 @@ export function ColorRampsBlock({ onCopy, copiedToken }: ColorRampsBlockProps) {
       description="7 Skala warna utama BBJ: Bondi (brand), Sunny (aksen fun), Green (sukses), Orange (peringatan), Red (danger), Blue (info), dan Neutral (tinta & kanvas)."
     >
       <div className="space-y-5 sm:space-y-6">
-        <PaletteRow
-          title="Bondi (Brand)"
-          shades={BONDI_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Sunny (Aksen Fun)"
-          shades={SUNNY_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Green (Sukses)"
-          shades={GREEN_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Orange (Peringatan)"
-          shades={ORANGE_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Red (Bahaya)"
-          shades={RED_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Blue (Info)"
-          shades={BLUE_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
-        <PaletteRow
-          title="Neutral (Tinta & Kanvas)"
-          shades={NEUTRAL_RAMP}
-          onCopy={onCopy}
-          copiedToken={copiedToken}
-        />
+        {PALETTE_RAMP_GROUPS.map((group) => (
+          <PaletteRow
+            key={group.title}
+            title={group.title}
+            shades={group.shades}
+            onCopy={onCopy}
+            copiedToken={copiedToken}
+          />
+        ))}
       </div>
     </DocBlock>
   );

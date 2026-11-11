@@ -1,43 +1,37 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Plus, Users, Wallet } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { DEFAULT_QUICK_ACTIONS } from "./dashboard-data";
+import type { QuickActionItem } from "./dashboard-data";
 
 export interface DashboardQuickActionsProps {
+  actions?: QuickActionItem[];
   layout?: "vertical" | "horizontal";
   className?: string;
 }
 
 /**
- * DashboardQuickActions: Kartu daftar pintasan aksi cepat operasional BBJ.
+ * DashboardQuickActions: Kartu daftar pintasan aksi cepat operasional BBJ berbasis data konfigurasi.
  * Mendukung layout "vertical" (berdampingan dengan Aktivitas Terbaru - Figma 112:318)
  * dan "horizontal" (saat Aktivitas Terbaru disembunyikan/peran Staff & Core - Figma 114:643).
  */
 export function DashboardQuickActions({
+  actions = DEFAULT_QUICK_ACTIONS,
   layout = "vertical",
   className,
 }: DashboardQuickActionsProps) {
   const isHorizontal = layout === "horizontal";
 
-  const actions = [
-    {
-      title: "Tambah Donasi",
-      subtitle: "Catat aksi food rescue baru",
-      icon: <Plus className="size-5 text-brand" />,
-      href: "/admin/dashboard",
-    },
-    {
-      title: "Ajukan Reimburse",
-      subtitle: "Klaim biaya operasional",
-      icon: <Wallet className="size-5 text-brand" />,
-      href: "/admin/dashboard",
-    },
-    {
-      title: "Tambah Volunteer",
-      subtitle: "Daftarkan relawan baru",
-      icon: <Users className="size-5 text-brand" />,
-      href: "/admin/dashboard",
-    },
-  ];
+  const renderIcon = (name: QuickActionItem["iconName"]) => {
+    switch (name) {
+      case "plus":
+        return <Plus className="size-5 text-brand" />;
+      case "wallet":
+        return <Wallet className="size-5 text-brand" />;
+      case "users":
+        return <Users className="size-5 text-brand" />;
+    }
+  };
 
   return (
     <div
@@ -58,14 +52,14 @@ export function DashboardQuickActions({
             : "space-y-3 w-full",
         )}
       >
-        {actions.map((act, idx) => (
+        {actions.map((act) => (
           <Link
-            key={idx}
+            key={act.id}
             to={act.href}
             className="group flex flex-1 items-center gap-3 rounded-md border border-neutral-200 p-3 transition-all duration-150 hover:border-brand/40 hover:bg-neutral-50/80 hover:shadow-2xs cursor-pointer select-none"
           >
             <div className="flex size-10 items-center justify-center rounded-md bg-bondi-50 shrink-0 group-hover:scale-105 transition-transform">
-              {act.icon}
+              {renderIcon(act.iconName)}
             </div>
 
             <div className="flex-1 min-w-0">

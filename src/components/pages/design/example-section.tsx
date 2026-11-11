@@ -32,8 +32,30 @@ import {
 } from "#/components/ui";
 import { FilterChip, NavItem, Pagination } from "#/components/shared";
 import { toast } from "#/components/ui/toast";
-import { EXAMPLE_DONATION_ROWS } from "./design-data";
+import {
+  EXAMPLE_DONATION_ROWS,
+  MOCKUP_FILTER_CHIPS,
+  MOCKUP_SIDEBAR_ITEMS,
+} from "./design-data";
 import { DocBlock } from "./doc-block";
+
+const TABLE_COLUMNS = [
+  { id: "date", label: "Tanggal", sortable: true, className: "w-[220px]" },
+  { id: "donor", label: "Nama Donatur" },
+  {
+    id: "quota",
+    label: "Kuota",
+    align: "right" as const,
+    className: "w-[120px]",
+  },
+  { id: "status", label: "Status", className: "w-[160px]" },
+  {
+    id: "action",
+    label: "Aksi",
+    align: "right" as const,
+    className: "w-[160px]",
+  },
+];
 
 export function ExampleSection() {
   const [activeNav, setActiveNav] = React.useState("donasi");
@@ -190,49 +212,36 @@ export function ExampleSection() {
 
             {/* Reusable NavItem List */}
             <nav className="space-y-1">
-              <NavItem
-                label="Home"
-                icon={<Home className="size-5" />}
-                isActive={activeNav === "home"}
-                onClick={() => setActiveNav("home")}
-              />
-              <NavItem
-                label="Donasi"
-                icon={<Package className="size-5" />}
-                isActive={activeNav === "donasi"}
-                onClick={() => setActiveNav("donasi")}
-              />
-              <NavItem
-                label="Beneficiaries"
-                icon={<Users className="size-5" />}
-                isActive={activeNav === "beneficiaries"}
-                onClick={() => setActiveNav("beneficiaries")}
-              />
-              <NavItem
-                label="Heroes"
-                icon={<Heart className="size-5" />}
-                isActive={activeNav === "heroes"}
-                onClick={() => setActiveNav("heroes")}
-              />
-              <NavItem
-                label="Partner"
-                icon={<Building className="size-5" />}
-                isActive={activeNav === "partner"}
-                onClick={() => setActiveNav("partner")}
-              />
-              <NavItem
-                label="Volunteer"
-                icon={<User className="size-5" />}
-                isActive={activeNav === "volunteer"}
-                onClick={() => setActiveNav("volunteer")}
-              />
-              <NavItem
-                label="Reimburse"
-                icon={<Wallet className="size-5" />}
-                hasChildren
-                isActive={activeNav === "reimburse"}
-                onClick={() => setActiveNav("reimburse")}
-              />
+              {MOCKUP_SIDEBAR_ITEMS.map((item) => {
+                const getIcon = () => {
+                  switch (item.iconName) {
+                    case "home":
+                      return <Home className="size-5" />;
+                    case "package":
+                      return <Package className="size-5" />;
+                    case "users":
+                      return <Users className="size-5" />;
+                    case "heart":
+                      return <Heart className="size-5" />;
+                    case "building":
+                      return <Building className="size-5" />;
+                    case "user":
+                      return <User className="size-5" />;
+                    case "wallet":
+                      return <Wallet className="size-5" />;
+                  }
+                };
+                return (
+                  <NavItem
+                    key={item.id}
+                    label={item.label}
+                    icon={getIcon()}
+                    isActive={activeNav === item.id}
+                    hasChildren={item.hasChildren}
+                    onClick={() => setActiveNav(item.id)}
+                  />
+                );
+              })}
             </nav>
           </div>
 
@@ -280,25 +289,16 @@ export function ExampleSection() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               {/* Reusable FilterChip Components */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-                <FilterChip
-                  selected={selectedFilter === "Semua"}
-                  onClick={() => setSelectedFilter("Semua")}
-                  count={donations.length}
-                >
-                  Semua
-                </FilterChip>
-                <FilterChip
-                  selected={selectedFilter === "Food Rescue"}
-                  onClick={() => setSelectedFilter("Food Rescue")}
-                >
-                  Food Rescue
-                </FilterChip>
-                <FilterChip
-                  selected={selectedFilter === "CSR"}
-                  onClick={() => setSelectedFilter("CSR")}
-                >
-                  CSR
-                </FilterChip>
+                {MOCKUP_FILTER_CHIPS.map((filter) => (
+                  <FilterChip
+                    key={filter}
+                    selected={selectedFilter === filter}
+                    onClick={() => setSelectedFilter(filter)}
+                    count={filter === "Semua" ? donations.length : undefined}
+                  >
+                    {filter}
+                  </FilterChip>
+                ))}
               </div>
 
               {/* Reusable Input Components (Search & Date Range matching Node 23:334) */}
@@ -343,21 +343,17 @@ export function ExampleSection() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead
-                    sort={sortDirection}
-                    onSort={handleToggleSort}
-                    className="w-[220px]"
-                  >
-                    Tanggal
-                  </TableHead>
-                  <TableHead>Nama Donatur</TableHead>
-                  <TableHead align="right" className="w-[120px]">
-                    Kuota
-                  </TableHead>
-                  <TableHead className="w-[160px]">Status</TableHead>
-                  <TableHead align="right" className="w-[160px]">
-                    Aksi
-                  </TableHead>
+                  {TABLE_COLUMNS.map((col) => (
+                    <TableHead
+                      key={col.id}
+                      align={col.align}
+                      sort={col.sortable ? sortDirection : undefined}
+                      onSort={col.sortable ? handleToggleSort : undefined}
+                      className={col.className}
+                    >
+                      {col.label}
+                    </TableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
 

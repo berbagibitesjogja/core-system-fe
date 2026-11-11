@@ -2,12 +2,6 @@ import { Calendar, Heart } from "lucide-react";
 import blobStageSvg from "#/assets/illustrations/login-blob-stage.svg";
 import heroImg from "#/assets/illustrations/login-hero.png";
 import iconLeafSvg from "#/assets/icons/icon-leaf.svg";
-import avatar1Svg from "#/assets/illustrations/avatars/avatar-1.svg";
-import avatar2Svg from "#/assets/illustrations/avatars/avatar-2.svg";
-import avatar3Svg from "#/assets/illustrations/avatars/avatar-3.svg";
-import avatar4Svg from "#/assets/illustrations/avatars/avatar-4.svg";
-import avatar5Svg from "#/assets/illustrations/avatars/avatar-5.svg";
-import avatar6Svg from "#/assets/illustrations/avatars/avatar-6.svg";
 import {
   Avatar,
   Carousel,
@@ -15,8 +9,36 @@ import {
   CarouselItem,
   CarouselDots,
 } from "#/components/ui";
+import { DEFAULT_LOGIN_SLIDES } from "./login-data";
+import type { ShowcaseSlideConfig } from "./login-data";
 
-export function LoginShowcase() {
+export interface LoginShowcaseProps {
+  slides?: ShowcaseSlideConfig[];
+}
+
+/**
+ * LoginShowcase: Area panggung visual samping form login dengan ilustrasi interaktif dan carousel berbasis data-driven.
+ */
+export function LoginShowcase({
+  slides = DEFAULT_LOGIN_SLIDES,
+}: LoginShowcaseProps) {
+  const renderTopIcon = (type: ShowcaseSlideConfig["badgeTop"]["iconType"]) => {
+    switch (type) {
+      case "leaf":
+        return (
+          <img
+            src={iconLeafSvg}
+            alt=""
+            className="size-5 sm:size-6 object-contain pointer-events-none select-none"
+          />
+        );
+      case "calendar":
+        return <Calendar className="size-4 sm:size-5" />;
+      case "heart":
+        return <Heart className="size-4 sm:size-5" />;
+    }
+  };
+
   return (
     <aside
       data-node-id="95:429"
@@ -38,7 +60,6 @@ export function LoginShowcase() {
           className="block size-full max-w-none opacity-85"
           style={{ overflow: "visible" }}
         >
-          {/* Path tunggal tanpa pemisahan subpath M di tengah agar animasi trim hanya mulai dari bawah (Y=1015) ke atas (Y=33) */}
           <path
             id="Trail / Loop"
             data-node-id="95:430"
@@ -74,340 +95,131 @@ export function LoginShowcase() {
         className="relative size-full flex flex-col justify-between z-10"
       >
         <CarouselContent className="size-full">
-          {/* Slide 1: Penyelamatan Makanan */}
-          <CarouselItem className="size-full flex flex-col justify-between">
-            {/* Stage Panggung Visual dengan Posisi Persentase */}
-            <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
-              <div
-                data-node-id="95:431"
-                data-name="Blob / Stage"
-                className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center"
-              >
-                {/* Background Blob SVG */}
-                <img
-                  src={blobStageSvg}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 size-full object-contain pointer-events-none animate-blob-stage"
-                />
-
-                {/* Ilustrasi Karakter (Posisi Persentase Relatif terhadap Stage) */}
+          {slides.map((slide) => (
+            <CarouselItem
+              key={slide.id}
+              className="size-full flex flex-col justify-between"
+            >
+              {/* Stage Panggung Visual dengan Posisi Persentase */}
+              <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
                 <div
-                  data-node-id="95:432"
-                  data-name="Illustration"
-                  className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[72%] h-[72%] flex items-center justify-center pointer-events-none select-none z-0"
+                  data-node-id="95:431"
+                  data-name="Blob / Stage"
+                  className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center"
                 >
+                  {/* Background Blob SVG */}
                   <img
-                    src={heroImg}
-                    alt="Relawan Berbagi Bites Jogja sedang berbagi makanan"
-                    className="size-full object-contain drop-shadow-md animate-hero-illustration"
+                    src={blobStageSvg}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 size-full object-contain pointer-events-none animate-blob-stage"
                   />
-                </div>
 
-                {/* Floating Card 1: Makanan Diselamatkan (Lebih ke Kiri di Desktop & Responsif ke Tengah Saat Mengecil) */}
-                <div
-                  data-node-id="95:433"
-                  data-name="Float / Food Saved"
-                  className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
-                >
+                  {/* Ilustrasi Karakter (Posisi Persentase Relatif terhadap Stage) */}
                   <div
-                    className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
-                    role="status"
-                    aria-label="Statistik makanan diselamatkan: 3.077 Kilogram"
+                    data-node-id="95:432"
+                    data-name="Illustration"
+                    className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[72%] h-[72%] flex items-center justify-center pointer-events-none select-none z-0"
                   >
-                    <div className="bg-bondi-700 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0">
-                      <img
-                        src={iconLeafSvg}
-                        alt=""
-                        aria-hidden="true"
-                        className="size-4 sm:size-5 pointer-events-none select-none"
-                      />
-                    </div>
-                    <div className="flex flex-col text-left">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Makanan diselamatkan
-                      </span>
-                      <div className="flex items-baseline gap-1">
-                        <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                          3.400
+                    <img
+                      src={heroImg}
+                      alt="Relawan Berbagi Bites Jogja sedang berbagi makanan"
+                      className="size-full object-contain drop-shadow-md animate-hero-illustration"
+                    />
+                  </div>
+
+                  {/* Pop Badge 1 (Kiri Atas: Responsif Skala Luasan) */}
+                  <div
+                    data-node-id="95:433"
+                    data-name="Food Saved Badge"
+                    className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved"
+                  >
+                    <div
+                      className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
+                      role="status"
+                      aria-label={slide.badgeTop.ariaLabel}
+                    >
+                      <div
+                        className={`${slide.badgeTop.bgClass} size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white`}
+                      >
+                        {renderTopIcon(slide.badgeTop.iconType)}
+                      </div>
+                      <div className="flex flex-col text-left">
+                        <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
+                          {slide.badgeTop.label}
                         </span>
-                        <span className="font-label text-[11px] sm:text-xs font-semibold leading-4 text-neutral-600">
-                          Kg
+                        <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
+                          {slide.badgeTop.value}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pop Badge 2 (Kanan Bawah: Responsif Skala Luasan) */}
+                  <div
+                    data-node-id="95:440"
+                    data-name="Heroes Badge"
+                    className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
+                  >
+                    <div
+                      className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
+                      role="status"
+                      aria-label={slide.badgeBottom.ariaLabel}
+                    >
+                      {/* Avatar Stack Ilustrasi Karakter */}
+                      <div
+                        className="flex items-center -space-x-2"
+                        aria-hidden="true"
+                      >
+                        {slide.badgeBottom.avatars.map((av, avIdx) => (
+                          <Avatar
+                            key={avIdx}
+                            size="sm"
+                            shape="circle"
+                            src={av.src}
+                            name={av.name}
+                            alt={av.alt}
+                            className="border-2 border-white shadow-xs"
+                          />
+                        ))}
+                      </div>
+
+                      <div className="flex flex-col text-left pl-1">
+                        <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
+                          {slide.badgeBottom.label}
+                        </span>
+                        <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
+                          {slide.badgeBottom.value}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Floating Card 2: Heroes Terbantu (Lebih ke Kanan di Desktop & Responsif ke Tengah Saat Mengecil) */}
-                <div
-                  data-node-id="95:441"
-                  data-name="Float / Heroes"
-                  className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes"
+              {/* Caption Teks Slide */}
+              <div
+                data-node-id="95:449"
+                data-name="Caption Block"
+                className="flex flex-col items-center text-center gap-2 max-w-[480px] mx-auto pt-2 pb-1"
+              >
+                <h2
+                  data-node-id="95:450"
+                  className="font-heading text-xl xl:text-2xl font-bold leading-7 xl:leading-8 tracking-tight text-neutral-900"
                 >
-                  <div
-                    className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
-                    role="status"
-                    aria-label="Statistik heroes terbantu: 14.933 orang"
-                  >
-                    {/* Avatar Stack dengan Ilustrasi Karakter Warna-Warni */}
-                    <div
-                      className="flex items-center -space-x-2"
-                      aria-hidden="true"
-                    >
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar1Svg}
-                        name="Fajar Ramadhan"
-                        alt="Ilustrasi Relawan 1"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar2Svg}
-                        name="Anisa Nurul"
-                        alt="Ilustrasi Relawan 2"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar3Svg}
-                        name="Dimas Saputra"
-                        alt="Ilustrasi Relawan 3"
-                        className="border-2 border-white shadow-xs"
-                      />
-                    </div>
-
-                    <div className="flex flex-col text-left pl-1">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Heroes terbantu
-                      </span>
-                      <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        15.400
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  {slide.titlePart1}
+                  <br />
+                  {slide.titlePart2}
+                </h2>
+                <p
+                  data-node-id="95:451"
+                  className="font-body text-xs sm:text-sm leading-5 text-neutral-600"
+                >
+                  {slide.description}
+                </p>
               </div>
-            </div>
-
-            {/* Caption Teks Slide 1 */}
-            <div
-              data-node-id="95:449"
-              data-name="Caption Block"
-              className="flex flex-col items-center text-center gap-2 max-w-[480px] mx-auto pt-2 pb-1"
-            >
-              <h2
-                data-node-id="95:450"
-                className="font-heading text-xl xl:text-2xl font-bold leading-7 xl:leading-8 tracking-tight text-neutral-900"
-              >
-                Bersama, kita selamatkan
-                <br />
-                lebih banyak makanan
-              </h2>
-              <p
-                data-node-id="95:451"
-                className="font-body text-xs sm:text-sm leading-5 text-neutral-600"
-              >
-                Setiap login membawamu lebih dekat dengan aksi berbagi di Jogja.
-              </p>
-            </div>
-          </CarouselItem>
-
-          {/* Slide 2: Distribusi Cepat & Tepat Sasaran */}
-          <CarouselItem className="size-full flex flex-col justify-between">
-            <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
-              <div className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center">
-                <img
-                  src={blobStageSvg}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 size-full object-contain pointer-events-none animate-blob-stage"
-                />
-
-                <div className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[72%] h-[72%] flex items-center justify-center pointer-events-none select-none z-0">
-                  <img
-                    src={heroImg}
-                    alt="Relawan Berbagi Bites Jogja sedang berbagi makanan"
-                    className="size-full object-contain drop-shadow-md animate-hero-illustration"
-                  />
-                </div>
-
-                <div className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
-                  <div
-                    className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none"
-                    role="status"
-                    aria-label="Statistik perjalanan aksi: lebih dari 2 tahun"
-                  >
-                    <div className="bg-amber-600 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white">
-                      <Calendar className="size-4 sm:size-5" />
-                    </div>
-                    <div className="flex flex-col text-left">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Perjalanan Aksi
-                      </span>
-                      <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        &gt; 2 Tahun
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
-                  <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
-                    {/* Avatar Stack Mitra Donatur Warna-Warni */}
-                    <div
-                      className="flex items-center -space-x-2"
-                      aria-hidden="true"
-                    >
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar4Svg}
-                        name="Rina Astuti"
-                        alt="Ilustrasi Mitra 1"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar5Svg}
-                        name="Made Tirta"
-                        alt="Ilustrasi Mitra 2"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar6Svg}
-                        name="Kevin Pratama"
-                        alt="Ilustrasi Mitra 3"
-                        className="border-2 border-white shadow-xs"
-                      />
-                    </div>
-
-                    <div className="flex flex-col text-left pl-1">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Mitra Donatur
-                      </span>
-                      <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        20+ Mitra
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center text-center gap-2 max-w-[480px] mx-auto pt-2 pb-1">
-              <h2 className="font-heading text-xl xl:text-2xl font-bold leading-7 xl:leading-8 tracking-tight text-neutral-900">
-                Distribusi Cepat &
-                <br />
-                Tepat Sasaran
-              </h2>
-              <p className="font-body text-xs sm:text-sm leading-5 text-neutral-600">
-                Menjangkau panti asuhan, kaum dhuafa, dan pejuang nafkah di
-                seluruh Yogyakarta.
-              </p>
-            </div>
-          </CarouselItem>
-
-          {/* Slide 3: Kolaborasi Komunitas */}
-          <CarouselItem className="size-full flex flex-col justify-between">
-            <div className="relative w-full flex-1 flex items-center justify-center my-auto min-h-[360px] sm:min-h-[420px] xl:min-h-[480px]">
-              <div className="relative w-[92%] sm:w-[88%] md:w-[84%] lg:w-[82%] xl:w-[86%] 2xl:w-[90%] max-w-[564px] aspect-[564/492] flex items-center justify-center">
-                <img
-                  src={blobStageSvg}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 size-full object-contain pointer-events-none animate-blob-stage"
-                />
-
-                <div className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 w-[72%] h-[72%] flex items-center justify-center pointer-events-none select-none z-0">
-                  <img
-                    src={heroImg}
-                    alt="Relawan Berbagi Bites Jogja sedang berbagi makanan"
-                    className="size-full object-contain drop-shadow-md animate-hero-illustration"
-                  />
-                </div>
-
-                <div className="absolute left-[4%] sm:left-[1%] md:left-[-4%] lg:left-[-6%] xl:left-[-8%] 2xl:left-[-10%] top-[13%] sm:top-[15%] z-10 origin-left scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-food-saved">
-                  <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
-                    <div className="bg-emerald-600 size-9 sm:size-10 rounded-xl flex items-center justify-center shrink-0 text-white">
-                      <Heart className="size-4 sm:size-5" />
-                    </div>
-                    <div className="flex flex-col text-left">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Dampak Sosial
-                      </span>
-                      <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        100% Nyata
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute right-[4%] sm:right-[1%] md:right-[-4%] lg:right-[-6%] xl:right-[-8%] 2xl:right-[-10%] bottom-[11%] sm:bottom-[13%] z-10 origin-right scale-[118%] sm:scale-[124%] xl:scale-[130%] animate-float-heroes">
-                  <div className="bg-white/95 backdrop-blur-md border-[1.5px] border-neutral-900 rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 shadow-pop-sm flex items-center gap-3 select-none">
-                    {/* Avatar Stack Relawan Aktif Warna-Warni */}
-                    <div
-                      className="flex items-center -space-x-2"
-                      aria-hidden="true"
-                    >
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar2Svg}
-                        name="Bunga Berlian"
-                        alt="Ilustrasi Relawan 1"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar1Svg}
-                        name="Yoga Kurnia"
-                        alt="Ilustrasi Relawan 2"
-                        className="border-2 border-white shadow-xs"
-                      />
-                      <Avatar
-                        size="sm"
-                        shape="circle"
-                        src={avatar3Svg}
-                        name="Intan Dewi"
-                        alt="Ilustrasi Relawan 3"
-                        className="border-2 border-white shadow-xs"
-                      />
-                    </div>
-
-                    <div className="flex flex-col text-left pl-1">
-                      <span className="font-label text-[11px] sm:text-xs font-medium leading-4 text-neutral-600">
-                        Relawan Aktif
-                      </span>
-                      <span className="font-heading text-lg sm:text-xl font-bold leading-6 text-neutral-900">
-                        100+ Relawan
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center text-center gap-2 max-w-[480px] mx-auto pt-2 pb-1">
-              <h2 className="font-heading text-xl xl:text-2xl font-bold leading-7 xl:leading-8 tracking-tight text-neutral-900">
-                Kolaborasi Komunitas &
-                <br />
-                Mitra Makanan
-              </h2>
-              <p className="font-body text-xs sm:text-sm leading-5 text-neutral-600">
-                Bersama kurangi food waste dan tebarkan senyum kebaikan setiap
-                hari.
-              </p>
-            </div>
-          </CarouselItem>
+            </CarouselItem>
+          ))}
         </CarouselContent>
 
         {/* Indikator Dots Carousel Interaktif */}
