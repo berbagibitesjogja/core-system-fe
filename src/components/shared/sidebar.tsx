@@ -2,7 +2,6 @@ import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Building,
-  ChevronDown,
   ClipboardCheck,
   FileText,
   Heart,
@@ -15,11 +14,11 @@ import {
   Users,
   Utensils,
   Wallet,
-  X,
 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
 import bbjLogoSvg from "#/assets/illustrations/bbj-logo.svg";
+import { NavItem } from "./nav-item";
 
 export interface SidebarProps {
   activePath?: string;
@@ -51,7 +50,7 @@ export function Sidebar({
     <div className="flex h-full flex-col justify-between overflow-y-auto px-4 py-6">
       <div className="space-y-6">
         {/* Brand Row */}
-        <div className="flex items-center justify-between px-2">
+        <div className="flex items-center px-2">
           <Link
             to="/admin/dashboard"
             onClick={onCloseMobile}
@@ -68,18 +67,6 @@ export function Sidebar({
               Berbagi Bites Jogja
             </span>
           </Link>
-
-          {/* Close button untuk mode mobile drawer */}
-          {onCloseMobile && (
-            <button
-              type="button"
-              onClick={onCloseMobile}
-              aria-label="Tutup menu navigasi"
-              className="flex size-8 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden cursor-pointer"
-            >
-              <X className="size-5" />
-            </button>
-          )}
         </div>
 
         {/* Navigation Sections */}
@@ -93,41 +80,31 @@ export function Sidebar({
             </div>
 
             {/* Nav: Home (Lucide: Home) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
+              label="Home"
+              icon={<Home className="size-5" />}
+              isActive={
                 activePath === "/admin/dashboard" || activePath === "/admin"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Home
-                className={cn(
-                  "size-5 shrink-0 transition-colors",
-                  activePath === "/admin/dashboard" || activePath === "/admin"
-                    ? "text-brand-strong"
-                    : "text-neutral-500 group-hover:text-neutral-700",
-                )}
-              />
-              <span className="flex-1 truncate">Home</span>
-            </Link>
+              }
+            />
 
             {/* Nav: Gallery (Lucide: Image) */}
-            <div className="flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
-              <div className="flex items-center gap-3 truncate">
-                <ImageIcon className="size-5 shrink-0 text-neutral-400" />
-                <span className="truncate">Gallery</span>
-              </div>
-              <Badge
-                tone="neutral"
-                styleVariant="soft"
-                className="text-[10px] h-5 px-2"
-              >
-                Segera
-              </Badge>
-            </div>
+            <NavItem
+              label="Gallery"
+              icon={<ImageIcon className="size-5" />}
+              disabled
+              badge={
+                <Badge
+                  tone="neutral"
+                  styleVariant="soft"
+                  className="text-[10px] h-5 px-2"
+                >
+                  Segera
+                </Badge>
+              }
+            />
           </div>
 
           {/* Kelompok: DATA */}
@@ -139,64 +116,40 @@ export function Sidebar({
             </div>
 
             {/* Nav: Donasi (Lucide: Package) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                activePath === "/admin/donasi"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Package className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-              <span className="flex-1 truncate">Donasi</span>
-            </Link>
+              label="Donasi"
+              icon={<Package className="size-5" />}
+              isActive={activePath === "/admin/donasi"}
+            />
 
             {/* Nav: Beneficiaries (Lucide: Building) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                activePath === "/admin/beneficiaries"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Building className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-              <span className="flex-1 truncate">Beneficiaries</span>
-            </Link>
+              label="Beneficiaries"
+              icon={<Building className="size-5" />}
+              isActive={activePath === "/admin/beneficiaries"}
+            />
 
             {/* Nav: Heroes (Lucide: Heart) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                activePath === "/admin/heroes"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Heart className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-              <span className="flex-1 truncate">Heroes</span>
-            </Link>
+              label="Heroes"
+              icon={<Heart className="size-5" />}
+              isActive={activePath === "/admin/heroes"}
+            />
 
             {/* Nav: Partner (Lucide: Utensils) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                activePath === "/admin/partner"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Utensils className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-              <span className="flex-1 truncate">Partner</span>
-            </Link>
+              label="Partner"
+              icon={<Utensils className="size-5" />}
+              isActive={activePath === "/admin/partner"}
+            />
           </div>
 
           {/* Kelompok: TIM */}
@@ -209,78 +162,60 @@ export function Sidebar({
 
             {/* Nav: Reimburse (Lucide: Wallet) */}
             <div>
-              <button
-                type="button"
+              <NavItem
+                label="Reimburse"
+                icon={<Wallet className="size-5" />}
+                hasChildren
+                isOpen={reimburseOpen}
                 onClick={() => setReimburseOpen(!reimburseOpen)}
-                className="group flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900 transition-colors cursor-pointer select-none"
-              >
-                <div className="flex items-center gap-3 truncate">
-                  <Wallet className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-                  <span className="truncate">Reimburse</span>
-                </div>
-                <ChevronDown
-                  className={cn(
-                    "size-4 shrink-0 text-neutral-400 transition-transform duration-200",
-                    reimburseOpen && "rotate-180",
-                  )}
-                />
-              </button>
+              />
 
-              {/* Submenu Reimburse (pl-[28px]) */}
+              {/* Submenu Reimburse (pl-7) */}
               {reimburseOpen && (
                 <div className="mt-1 space-y-1 pl-7">
                   {/* Ajukan Reimburse (Lucide: Upload) */}
-                  <Link
+                  <NavItem
                     to="/admin/dashboard"
                     onClick={onCloseMobile}
-                    className="flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
-                  >
-                    <Upload className="size-5 shrink-0 text-neutral-500" />
-                    <span>Ajukan Reimburse</span>
-                  </Link>
+                    label="Ajukan Reimburse"
+                    icon={<Upload className="size-5" />}
+                  />
 
                   {/* Data Reimburse (Lucide: ClipboardCheck) */}
-                  <Link
+                  <NavItem
                     to="/admin/dashboard"
                     onClick={onCloseMobile}
-                    className="flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
-                  >
-                    <ClipboardCheck className="size-5 shrink-0 text-neutral-500" />
-                    <span>Data Reimburse</span>
-                  </Link>
+                    label="Data Reimburse"
+                    icon={<ClipboardCheck className="size-5" />}
+                  />
                 </div>
               )}
             </div>
 
             {/* Nav: Presensi (Lucide: MapPin) */}
-            <div className="flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-neutral-400 select-none cursor-not-allowed">
-              <div className="flex items-center gap-3 truncate">
-                <MapPin className="size-5 shrink-0 text-neutral-400" />
-                <span className="truncate">Presensi</span>
-              </div>
-              <Badge
-                tone="neutral"
-                styleVariant="soft"
-                className="text-[10px] h-5 px-2"
-              >
-                Segera
-              </Badge>
-            </div>
+            <NavItem
+              label="Presensi"
+              icon={<MapPin className="size-5" />}
+              disabled
+              badge={
+                <Badge
+                  tone="neutral"
+                  styleVariant="soft"
+                  className="text-[10px] h-5 px-2"
+                >
+                  Segera
+                </Badge>
+              }
+            />
 
             {/* Nav: Volunteer (Lucide: Users) */}
-            <Link
+            <NavItem
               to="/admin/dashboard"
               onClick={onCloseMobile}
-              className={cn(
-                "group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                activePath === "/admin/volunteer"
-                  ? "bg-bondi-50 text-brand-strong"
-                  : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-              )}
-            >
-              <Users className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-              <span className="flex-1 truncate">Volunteer</span>
-            </Link>
+              label="Volunteer"
+              icon={<Users className="size-5" />}
+              isActive={activePath === "/admin/volunteer"}
+            />
           </div>
 
           {/* Kelompok: SISTEM (Khusus Super Admin) */}
@@ -294,22 +229,14 @@ export function Sidebar({
               </div>
 
               {/* Nav: Logs (Lucide: FileText) */}
-              <Link
+              <NavItem
                 to="/admin/dashboard"
                 onClick={onCloseMobile}
-                className={cn(
-                  "group flex min-h-[40px] w-full items-center justify-between rounded-md px-3 py-2 text-sm font-semibold transition-all duration-150 outline-none select-none",
-                  activePath === "/admin/logs"
-                    ? "bg-bondi-50 text-brand-strong"
-                    : "text-neutral-600 hover:bg-neutral-100/80 hover:text-neutral-900",
-                )}
-              >
-                <div className="flex items-center gap-3 truncate">
-                  <FileText className="size-5 shrink-0 text-neutral-500 group-hover:text-neutral-700" />
-                  <span className="truncate">Logs</span>
-                </div>
-                <ChevronDown className="size-4 shrink-0 text-neutral-400" />
-              </Link>
+                label="Logs"
+                icon={<FileText className="size-5" />}
+                hasChildren
+                isActive={activePath === "/admin/logs"}
+              />
             </div>
           )}
         </nav>
@@ -317,14 +244,12 @@ export function Sidebar({
 
       {/* Footer Nav / Keluar (Lucide: LogOut) */}
       <div className="pt-4 border-t border-neutral-100">
-        <button
-          type="button"
+        <NavItem
+          label="Keluar"
+          icon={<LogOut className="size-5" />}
+          variant="danger"
           onClick={onLogout}
-          className="group flex min-h-[40px] w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold text-neutral-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer select-none"
-        >
-          <LogOut className="size-5 shrink-0 text-neutral-500 group-hover:text-red-600 transition-colors" />
-          <span className="flex-1 text-left truncate">Keluar</span>
-        </button>
+        />
       </div>
     </div>
   );
