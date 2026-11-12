@@ -48,6 +48,8 @@ const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/beneficiary/add": "Daftarkan penerima manfaat baru",
   "/admin/beneficiary/edit": "Perbarui data penerima manfaat",
   "/admin/beneficiary/detail": "Riwayat donasi dan persebaran penerima manfaat",
+  "/admin/hero":
+    "Penerima makanan yang terdaftar beserta riwayat pengambilannya",
 };
 
 /**
