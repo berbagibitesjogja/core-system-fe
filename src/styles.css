@@ -335,6 +335,7 @@
   --color-canvas: var(--color-bg-canvas);
   --color-surface: var(--color-bg-surface);
   --color-brand: var(--color-bg-brand);
+  --color-brand-strong: var(--color-text-brand-strong);
   --color-brand-hover: var(--color-bg-brand-hover);
   --color-brand-vivid: var(--color-bg-brand-vivid);
   --color-brand-subtle: var(--color-bg-brand-subtle);

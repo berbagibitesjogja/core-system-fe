@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AlertTriangle, HelpCircle, X } from "lucide-react";
+import { AlertTriangle, HelpCircle } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "#/lib/utils";
 
@@ -67,39 +67,29 @@ export function Dialog({
           className,
         )}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-4">
-            <div
-              className={cn(
-                "size-12 rounded-full flex items-center justify-center shrink-0",
-                isDanger ? "bg-red-50 text-red-600" : "bg-bondi-50 text-brand",
-              )}
-            >
-              {isDanger ? (
-                <AlertTriangle className="size-6" />
-              ) : (
-                <HelpCircle className="size-6" />
-              )}
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-heading-h3 text-xl font-bold text-neutral-900 leading-tight">
-                {title}
-              </h3>
-              {description && (
-                <p className="font-body-m text-sm text-neutral-600 leading-relaxed">
-                  {description}
-                </p>
-              )}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Tutup modal"
-            className="size-8 rounded-full flex items-center justify-center text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer shrink-0 -mt-1 -mr-1"
+        <div className="flex items-start gap-4">
+          <div
+            className={cn(
+              "size-12 rounded-full flex items-center justify-center shrink-0",
+              isDanger ? "bg-red-50 text-red-600" : "bg-bondi-50 text-brand",
+            )}
           >
-            <X className="size-4" />
-          </button>
+            {isDanger ? (
+              <AlertTriangle className="size-6" />
+            ) : (
+              <HelpCircle className="size-6" />
+            )}
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-heading-h3 text-xl font-bold text-neutral-900 leading-tight">
+              {title}
+            </h3>
+            {description && (
+              <p className="font-body-m text-sm text-neutral-600 leading-relaxed">
+                {description}
+              </p>
+            )}
+          </div>
         </div>
 
         {children && <div className="text-sm">{children}</div>}
