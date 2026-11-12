@@ -20,6 +20,7 @@ import type {
   HeroFormValues,
   HeroRecord,
 } from "#/components/pages/hero";
+import { defaultDonations } from "#/components/pages/donation";
 import { Alert } from "#/components/ui/alert";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -186,11 +187,16 @@ function HeroDetailPage() {
 
   const handleViewDonation = React.useCallback(
     (record: HeroDonationHistoryRecord) => {
-      toast.info(
-        `Menampilkan detail donasi ${record.donorName} (${record.dateLabel})`,
+      const matchedDonation = defaultDonations.find(
+        (donation) =>
+          donation.donorName.toLowerCase() === record.donorName.toLowerCase(),
       );
+      navigate({
+        to: "/admin/donation/detail",
+        search: { id: matchedDonation?.id ?? "donasi-1" },
+      });
     },
-    [],
+    [navigate],
   );
 
   // Representasi HeroRecord untuk kompatibilitas modal Edit Data Hero

@@ -16,6 +16,7 @@ import type {
   BeneficiaryDonationRecord,
   BeneficiarySectorRecord,
 } from "#/components/pages/beneficiary";
+import { defaultDonations } from "#/components/pages/donation";
 import { getCategoryBadgeConfig } from "#/components/shared/beneficiary-card";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -189,11 +190,16 @@ function BeneficiaryDetailPage() {
 
   const handleViewDonation = React.useCallback(
     (item: BeneficiaryDonationRecord) => {
-      toast.info(
-        `Menampilkan detail donasi ${item.donorName} (${item.dateLabel})`,
+      const matchedDonation = defaultDonations.find(
+        (donation) =>
+          donation.donorName.toLowerCase() === item.donorName.toLowerCase(),
       );
+      navigate({
+        to: "/admin/donation/detail",
+        search: { id: matchedDonation?.id ?? "donasi-1" },
+      });
     },
-    [],
+    [navigate],
   );
 
   const handleViewSector = React.useCallback(

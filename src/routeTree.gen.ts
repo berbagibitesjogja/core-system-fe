@@ -25,6 +25,7 @@ import { Route as AdminAuthBeneficiaryDetailRouteImport } from './routes/admin/_
 import { Route as AdminAuthBeneficiaryEditRouteImport } from './routes/admin/_auth/beneficiary/edit'
 import { Route as AdminAuthDonationIndexRouteImport } from './routes/admin/_auth/donation/index'
 import { Route as AdminAuthDonationAddRouteImport } from './routes/admin/_auth/donation/add'
+import { Route as AdminAuthDonationDetailRouteImport } from './routes/admin/_auth/donation/detail'
 import { Route as AdminAuthDonationEditRouteImport } from './routes/admin/_auth/donation/edit'
 import { Route as AdminAuthHeroIndexRouteImport } from './routes/admin/_auth/hero/index'
 import { Route as AdminAuthHeroDetailRouteImport } from './routes/admin/_auth/hero/detail'
@@ -114,6 +115,11 @@ const AdminAuthDonationAddRoute = AdminAuthDonationAddRouteImport.update({
   path: '/donation/add',
   getParentRoute: () => AdminAuthRoute,
 } as any)
+const AdminAuthDonationDetailRoute = AdminAuthDonationDetailRouteImport.update({
+  id: '/donation/detail',
+  path: '/donation/detail',
+  getParentRoute: () => AdminAuthRoute,
+} as any)
 const AdminAuthDonationEditRoute = AdminAuthDonationEditRouteImport.update({
   id: '/donation/edit',
   path: '/donation/edit',
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/admin/beneficiary/detail': typeof AdminAuthBeneficiaryDetailRoute
   '/admin/beneficiary/edit': typeof AdminAuthBeneficiaryEditRoute
   '/admin/donation/add': typeof AdminAuthDonationAddRoute
+  '/admin/donation/detail': typeof AdminAuthDonationDetailRoute
   '/admin/donation/edit': typeof AdminAuthDonationEditRoute
   '/admin/hero/detail': typeof AdminAuthHeroDetailRoute
   '/admin/reimburse/data': typeof AdminAuthReimburseDataRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/admin/beneficiary/detail': typeof AdminAuthBeneficiaryDetailRoute
   '/admin/beneficiary/edit': typeof AdminAuthBeneficiaryEditRoute
   '/admin/donation/add': typeof AdminAuthDonationAddRoute
+  '/admin/donation/detail': typeof AdminAuthDonationDetailRoute
   '/admin/donation/edit': typeof AdminAuthDonationEditRoute
   '/admin/hero/detail': typeof AdminAuthHeroDetailRoute
   '/admin/reimburse/data': typeof AdminAuthReimburseDataRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/admin/_auth/beneficiary/detail': typeof AdminAuthBeneficiaryDetailRoute
   '/admin/_auth/beneficiary/edit': typeof AdminAuthBeneficiaryEditRoute
   '/admin/_auth/donation/add': typeof AdminAuthDonationAddRoute
+  '/admin/_auth/donation/detail': typeof AdminAuthDonationDetailRoute
   '/admin/_auth/donation/edit': typeof AdminAuthDonationEditRoute
   '/admin/_auth/hero/detail': typeof AdminAuthHeroDetailRoute
   '/admin/_auth/reimburse/data': typeof AdminAuthReimburseDataRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/admin/beneficiary/detail'
     | '/admin/beneficiary/edit'
     | '/admin/donation/add'
+    | '/admin/donation/detail'
     | '/admin/donation/edit'
     | '/admin/hero/detail'
     | '/admin/reimburse/data'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/admin/beneficiary/detail'
     | '/admin/beneficiary/edit'
     | '/admin/donation/add'
+    | '/admin/donation/detail'
     | '/admin/donation/edit'
     | '/admin/hero/detail'
     | '/admin/reimburse/data'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/admin/_auth/beneficiary/detail'
     | '/admin/_auth/beneficiary/edit'
     | '/admin/_auth/donation/add'
+    | '/admin/_auth/donation/detail'
     | '/admin/_auth/donation/edit'
     | '/admin/_auth/hero/detail'
     | '/admin/_auth/reimburse/data'
@@ -403,6 +415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthDonationAddRouteImport
       parentRoute: typeof AdminAuthRoute
     }
+    '/admin/_auth/donation/detail': {
+      id: '/admin/_auth/donation/detail'
+      path: '/donation/detail'
+      fullPath: '/admin/donation/detail'
+      preLoaderRoute: typeof AdminAuthDonationDetailRouteImport
+      parentRoute: typeof AdminAuthRoute
+    }
     '/admin/_auth/donation/edit': {
       id: '/admin/_auth/donation/edit'
       path: '/donation/edit'
@@ -451,6 +470,7 @@ interface AdminAuthRouteChildren {
   AdminAuthBeneficiaryDetailRoute: typeof AdminAuthBeneficiaryDetailRoute
   AdminAuthBeneficiaryEditRoute: typeof AdminAuthBeneficiaryEditRoute
   AdminAuthDonationAddRoute: typeof AdminAuthDonationAddRoute
+  AdminAuthDonationDetailRoute: typeof AdminAuthDonationDetailRoute
   AdminAuthDonationEditRoute: typeof AdminAuthDonationEditRoute
   AdminAuthHeroDetailRoute: typeof AdminAuthHeroDetailRoute
   AdminAuthReimburseDataRoute: typeof AdminAuthReimburseDataRoute
@@ -470,6 +490,7 @@ const AdminAuthRouteChildren: AdminAuthRouteChildren = {
   AdminAuthBeneficiaryDetailRoute: AdminAuthBeneficiaryDetailRoute,
   AdminAuthBeneficiaryEditRoute: AdminAuthBeneficiaryEditRoute,
   AdminAuthDonationAddRoute: AdminAuthDonationAddRoute,
+  AdminAuthDonationDetailRoute: AdminAuthDonationDetailRoute,
   AdminAuthDonationEditRoute: AdminAuthDonationEditRoute,
   AdminAuthHeroDetailRoute: AdminAuthHeroDetailRoute,
   AdminAuthReimburseDataRoute: AdminAuthReimburseDataRoute,
