@@ -6,6 +6,7 @@ import volunteerHighFivePng from "#/assets/illustrations/volunteer-high-five.png
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
+  calculateHeroesQuotaSummary,
   calculateSurplusSummary,
   formatShortPosterDate,
 } from "./donation-detail-data";
@@ -71,6 +72,10 @@ export function DonationDetailImpactDialog({
     };
   }, [isOpen, onClose]);
 
+  const heroesSummary = React.useMemo(
+    () => calculateHeroesQuotaSummary(detail.heroes, detail.quotaTotal),
+    [detail.heroes, detail.quotaTotal],
+  );
   const surplusSummary = React.useMemo(
     () => calculateSurplusSummary(detail.surplusFoods),
     [detail.surplusFoods],
@@ -82,7 +87,11 @@ export function DonationDetailImpactDialog({
 
   const posterMetrics = React.useMemo(
     () => [
-      { id: "heroes", label: "Heroes", value: `${detail.heroes.length} orang` },
+      {
+        id: "heroes",
+        label: "Heroes",
+        value: `${heroesSummary.activeHeroesCount} orang`,
+      },
       {
         id: "weight",
         label: "Surplus food",
@@ -96,7 +105,7 @@ export function DonationDetailImpactDialog({
       { id: "date", label: "Tanggal", value: shortDate },
     ],
     [
-      detail.heroes.length,
+      heroesSummary.activeHeroesCount,
       detail.surplusFoods.length,
       shortDate,
       surplusSummary.totalWeightFormatted,
@@ -250,7 +259,7 @@ export function DonationDetailImpactDialog({
         <div className="grid grid-cols-1 md:grid-cols-[310px_1fr] gap-6 items-stretch">
           {/* Kolom Kiri: Pratinjau Poster 9:16 */}
           <div className="space-y-2">
-            <p className="text-[12px] font-medium text-[#6b777a] text-center">
+            <p className="font-sans text-xs font-medium text-neutral-500 text-center">
               Poster Preview (1080 × 1920)
             </p>
             <div className="aspect-[9/16] w-full max-w-[300px] mx-auto rounded-[20px] bg-[#009ca6] text-white p-5 relative overflow-hidden flex flex-col justify-between shadow-md select-none">
@@ -264,15 +273,15 @@ export function DonationDetailImpactDialog({
 
               {/* Bagian Atas Poster */}
               <div className="relative z-10 space-y-2.5">
-                <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase text-white">
+                <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 font-sans text-[10px] font-bold tracking-wider uppercase text-white">
                   {detail.program === "CSR" ? "AKSI CSR" : "AKSI FOOD RESCUE"}
                 </span>
 
                 <div className="space-y-1.5">
-                  <h3 className="font-['Gabarito'] font-bold text-[26px] leading-[1.1] tracking-tight">
+                  <h3 className="font-heading font-bold text-[26px] leading-[1.1] tracking-tight">
                     Impact Report
                   </h3>
-                  <span className="inline-flex items-center rounded-full bg-[#f5bc00] px-3 py-1 text-[11px] font-bold text-[#142023] max-w-full truncate">
+                  <span className="inline-flex items-center rounded-full bg-[#f5bc00] px-3 py-1 font-sans text-[11px] font-bold text-[#142023] max-w-full truncate">
                     bersama {detail.donorName}
                   </span>
                 </div>
@@ -284,10 +293,10 @@ export function DonationDetailImpactDialog({
                       key={metric.id}
                       className="rounded-xl bg-white/15 border border-white/20 px-2.5 py-2 backdrop-blur-[2px]"
                     >
-                      <p className="text-[10px] text-white/85">
+                      <p className="font-sans text-[10px] text-white/85">
                         {metric.label}
                       </p>
-                      <p className="font-['Gabarito'] font-bold text-[15px] leading-tight text-white truncate">
+                      <p className="font-heading font-bold text-[15px] leading-tight text-white truncate">
                         {metric.value}
                       </p>
                     </div>
@@ -308,8 +317,10 @@ export function DonationDetailImpactDialog({
               {/* Footer Poster */}
               <div className="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/25">
                 <div className="min-w-0">
-                  <p className="text-[10px] text-white/85">Join the mission</p>
-                  <p className="font-['Gabarito'] font-bold text-[13px] truncate">
+                  <p className="font-sans text-[10px] text-white/85">
+                    Join the mission
+                  </p>
+                  <p className="font-heading font-bold text-[13px] truncate">
                     berbagibitesjogja.com
                   </p>
                 </div>
@@ -330,11 +341,11 @@ export function DonationDetailImpactDialog({
                 <div>
                   <h2
                     id="impact-dialog-title"
-                    className="font-['Gabarito'] font-semibold text-[22px] leading-[28px] text-[#142023]"
+                    className="font-heading-h3 text-neutral-900"
                   >
                     Bagikan Impact
                   </h2>
-                  <p className="text-[14px] text-[#4d585b] mt-1">
+                  <p className="font-sans text-sm text-neutral-600 mt-1">
                     Unduh poster laporan dampak siap unggah untuk Instagram
                     Story maupun laporan kepada mitra donatur.
                   </p>
@@ -351,32 +362,32 @@ export function DonationDetailImpactDialog({
                 </IconButton>
               </div>
 
-              <div className="rounded-2xl bg-[#f7f9f9] border border-neutral-200 p-4 space-y-2.5">
-                <p className="text-[12px] font-semibold uppercase tracking-wide text-[#6b777a]">
+              <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-4 space-y-2.5">
+                <p className="font-label text-xs font-semibold uppercase tracking-wide text-neutral-500">
                   Ringkasan Data Poster
                 </p>
-                <div className="grid grid-cols-2 gap-3 text-[13px]">
+                <div className="grid grid-cols-2 gap-3 font-sans text-sm">
                   <div>
-                    <p className="text-[#6b777a]">Mitra Donatur</p>
-                    <p className="font-semibold text-[#142023]">
+                    <p className="text-xs text-neutral-500">Mitra Donatur</p>
+                    <p className="font-semibold text-neutral-900">
                       {detail.donorName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#6b777a]">Program</p>
-                    <p className="font-semibold text-[#142023]">
+                    <p className="text-xs text-neutral-500">Program</p>
+                    <p className="font-semibold text-neutral-900">
                       {detail.program}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#6b777a]">Total Heroes</p>
-                    <p className="font-semibold text-[#142023]">
-                      {detail.heroes.length} orang
+                    <p className="text-xs text-neutral-500">Total Heroes</p>
+                    <p className="font-semibold text-neutral-900">
+                      {heroesSummary.activeHeroesCount} orang
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#6b777a]">Surplus Tercatat</p>
-                    <p className="font-semibold text-[#142023]">
+                    <p className="text-xs text-neutral-500">Surplus Tercatat</p>
+                    <p className="font-semibold text-neutral-900">
                       {surplusSummary.totalWeightFormatted} (
                       {detail.surplusFoods.length} jenis)
                     </p>
@@ -404,7 +415,7 @@ export function DonationDetailImpactDialog({
               >
                 Tutup
               </Button>
-              <p className="text-[12px] text-[#6b777a] text-center">
+              <p className="font-sans text-xs text-neutral-500 text-center">
                 Format PNG 1080 × 1920 px · BBJ-Impact-Report.png
               </p>
             </div>

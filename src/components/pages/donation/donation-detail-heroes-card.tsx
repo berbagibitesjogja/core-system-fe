@@ -6,6 +6,7 @@ import {
   Plus,
   Search,
   Trash2,
+  User,
   X,
 } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
@@ -25,8 +26,11 @@ import {
   EmptyState,
   IllustrationSantaiKosong,
 } from "#/components/shared/empty-state";
+import { cn } from "#/lib/utils";
+import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type {
   DonationHeroClaimRecord,
+  DonationHeroPickupStatus,
   DonationHeroSearchOption,
 } from "./donation-detail-data";
 
@@ -35,14 +39,23 @@ export interface DonationDetailHeroesCardProps {
   quotaTotal: number;
   searchableHeroes: DonationHeroSearchOption[];
   onAddHero: (candidate: DonationHeroSearchOption) => void;
-  onConfirmPickup: (heroId: string) => void;
+  onConfirmPickup: (hero: DonationHeroClaimRecord) => void;
   onRemoveHero: (hero: DonationHeroClaimRecord) => void;
 }
 
 const INITIAL_VISIBLE_HEROES = 6;
 
+const HERO_STATUS_BADGE_MAP: Record<
+  DonationHeroPickupStatus,
+  { tone: "success" | "warning" | "danger"; label: string }
+> = {
+  "sudah-diambil": { tone: "success", label: "Sudah Diambil" },
+  "belum-diambil": { tone: "warning", label: "Belum Diambil" },
+  "tidak-jadi-ambil": { tone: "danger", label: "Tidak Jadi Ambil" },
+};
+
 /**
- * DonationDetailHeroesCard: Menampilkan daftar heroes klaim, popover tambah heroes, serta konfirmasi pengambilan (Figma 123:4842, 124:5133, 124:6103).
+ * DonationDetailHeroesCard: Menampilkan daftar heroes klaim, dropdown tambah heroes, konfirmasi pengambilan, dan keluarkan hero.
  */
 export function DonationDetailHeroesCard({
   heroes,
@@ -58,7 +71,12 @@ export function DonationDetailHeroesCard({
   const popoverWrapperRef = React.useRef<HTMLDivElement>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-  const isQuotaFull = heroes.length >= quotaTotal;
+  const heroesSummary = React.useMemo(
+    () => calculateHeroesQuotaSummary(heroes, quotaTotal),
+    [heroes, quotaTotal],
+  );
+  const isQuotaFull = heroesSummary.isQuotaFull;
+
   const visibleHeroes =
     isExpanded || heroes.length <= INITIAL_VISIBLE_HEROES
       ? heroes
@@ -113,18 +131,79 @@ export function DonationDetailHeroesCard({
     );
   }, [searchableHeroes, searchTerm]);
 
+  const renderHeroActionButtons = (hero: DonationHeroClaimRecord) => {
+    if (hero.status === "tidak-jadi-ambil") {
+      return (
+        <span className="font-sans text-xs font-semibold text-red-700">
+          Kuota hangus
+        </span>
+      );
+    }
+
+    const isPickedUp = hero.status === "sudah-diambil";
+    return (
+      <div className="flex items-center justify-end gap-2">
+        {isPickedUp ? (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled
+            leftIcon={<Check className="size-3.5" />}
+          >
+            Sudah Diambil
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={() => onConfirmPickup(hero)}
+          >
+            Konfirmasi Ambil
+          </Button>
+        )}
+        <IconButton
+          type="button"
+          variant="danger"
+          size="sm"
+          aria-label={
+            isPickedUp
+              ? `Keluarkan ${hero.name} (kuota hangus)`
+              : `Keluarkan ${hero.name} dari donasi`
+          }
+          tooltip={
+            isPickedUp
+              ? "Keluarkan hero (kuota hangus)"
+              : "Keluarkan hero dari donasi"
+          }
+          onClick={() => onRemoveHero(hero)}
+        >
+          <Trash2 className="size-[18px]" />
+        </IconButton>
+      </div>
+    );
+  };
+
   return (
-    <section className="rounded-[24px] border border-neutral-200 bg-white shadow-xs overflow-visible">
+    <section className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-visible">
       {/* Header Kartu Daftar Heroes */}
-      <div className="px-5 sm:px-6 py-4 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[26px] text-[#142023]">
+      <div className="px-5 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
             Daftar Heroes
           </h2>
-          <Badge tone="neutral">{heroes.length} orang</Badge>
+          <Badge tone="neutral" styleVariant="soft">
+            {heroesSummary.activeHeroesCount} orang
+          </Badge>
+          {heroesSummary.forfeitedCount > 0 && (
+            <Badge tone="danger" styleVariant="soft" dot>
+              {heroesSummary.forfeitedCount} kuota hangus
+            </Badge>
+          )}
         </div>
 
-        {/* Tombol & Popover Tambah Heroes */}
+        {/* Tombol & Dropdown Menu Tambah Heroes */}
         <div ref={popoverWrapperRef} className="relative">
           <Button
             type="button"
@@ -133,15 +212,15 @@ export function DonationDetailHeroesCard({
             leftIcon={<Plus className="size-4" />}
             onClick={() => setIsAddOpen((prev) => !prev)}
             aria-expanded={isAddOpen}
-            aria-haspopup="listbox"
+            aria-haspopup="menu"
           >
             Tambah Heroes
           </Button>
 
           {isAddOpen && (
             <div
-              className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[340px] z-40 rounded-2xl border border-neutral-200 bg-white shadow-[0px_16px_32px_rgba(20,32,35,0.14)] p-3 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-150 motion-reduce:animate-none"
-              role="dialog"
+              className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[340px] z-40 rounded-xl border border-neutral-200 bg-white p-1.5 flex flex-col gap-0.5 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150 motion-reduce:animate-none"
+              role="menu"
               aria-label="Pilih hero untuk ditambahkan"
             >
               <Input
@@ -152,7 +231,7 @@ export function DonationDetailHeroesCard({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Cari nama hero..."
-                leadingIcon={<Search className="size-4" />}
+                leadingIcon={<Search className="size-4 text-neutral-500" />}
                 trailingIcon={
                   searchTerm ? (
                     <IconButton
@@ -167,20 +246,19 @@ export function DonationDetailHeroesCard({
                     </IconButton>
                   ) : undefined
                 }
+                className="max-w-none [&>div]:bg-neutral-100 [&>div]:border-transparent [&>div]:rounded-lg [&>div]:h-9 [&>div]:px-3 [&>div]:shadow-none [&>div]:hover:border-transparent [&>div]:focus-within:bg-neutral-100 [&>div]:focus-within:border-brand-vivid [&>div]:focus-within:shadow-none"
               />
 
               {isQuotaFull && (
-                <div className="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[12px] text-amber-800 font-medium">
-                  Kuota heroes sudah penuh ({heroes.length} / {quotaTotal}).
+                <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 font-sans text-xs text-amber-800 font-medium">
+                  Kuota heroes sudah penuh ({heroesSummary.usedQuotaCount} /{" "}
+                  {quotaTotal}).
                 </div>
               )}
 
-              <div
-                className="max-h-[250px] overflow-y-auto divide-y divide-neutral-100 pr-0.5"
-                role="listbox"
-              >
+              <div className="max-h-[260px] overflow-y-auto flex flex-col gap-0.5">
                 {filteredCandidates.length === 0 ? (
-                  <p className="py-6 text-center text-[13px] text-[#6b777a]">
+                  <p className="py-5 text-center font-sans text-xs text-neutral-500">
                     Tidak ada hero yang cocok dengan "{searchTerm}".
                   </p>
                 ) : (
@@ -190,6 +268,10 @@ export function DonationDetailHeroesCard({
                     );
                     const isDisabled =
                       candidate.isBlocked || isAlreadyRegistered || isQuotaFull;
+
+                    const subtitleText = isAlreadyRegistered
+                      ? "Sudah terdaftar di donasi ini"
+                      : `${candidate.sectorName} · ${candidate.beneficiaryName}`;
 
                     return (
                       <Button
@@ -202,36 +284,49 @@ export function DonationDetailHeroesCard({
                           setSearchTerm("");
                           setIsAddOpen(false);
                         }}
-                        className="w-full h-auto justify-between items-center rounded-xl px-2.5 py-2.5 text-left font-normal hover:bg-neutral-50 disabled:opacity-60"
+                        className="w-full h-auto justify-start items-center gap-3 rounded-lg px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
                       >
-                        <div className="min-w-0 pr-2">
-                          <p className="font-semibold text-[14px] text-[#142023] truncate">
+                        <User
+                          className={cn(
+                            "size-[18px] shrink-0",
+                            isDisabled
+                              ? "text-neutral-400"
+                              : "text-neutral-600",
+                          )}
+                        />
+
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={cn(
+                              "font-sans font-normal text-sm leading-5 truncate",
+                              isDisabled
+                                ? "text-neutral-400"
+                                : "text-neutral-900",
+                            )}
+                          >
                             {candidate.name}
                           </p>
-                          <p className="text-[12px] text-[#6b777a] truncate">
-                            {candidate.sectorName} · {candidate.beneficiaryName}
+                          <p
+                            className={cn(
+                              "font-sans font-normal text-xs leading-4 truncate",
+                              isDisabled
+                                ? "text-neutral-400"
+                                : "text-neutral-600",
+                            )}
+                          >
+                            {subtitleText}
                           </p>
                         </div>
 
-                        {candidate.isBlocked ? (
+                        {candidate.isBlocked && (
                           <Badge
                             tone="danger"
+                            styleVariant="soft"
                             dot
                             className="shrink-0 whitespace-nowrap"
                           >
                             Diblokir
                           </Badge>
-                        ) : isAlreadyRegistered ? (
-                          <Badge
-                            tone="neutral"
-                            className="shrink-0 whitespace-nowrap"
-                          >
-                            Terdaftar
-                          </Badge>
-                        ) : (
-                          <span className="shrink-0 text-[12px] font-semibold text-[#007d85]">
-                            Pilih
-                          </span>
                         )}
                       </Button>
                     );
@@ -245,11 +340,14 @@ export function DonationDetailHeroesCard({
 
       {/* Konten Daftar Heroes */}
       {heroes.length === 0 ? (
-        <div className="p-6">
+        <div className="flex items-center justify-center px-6 py-10">
           <EmptyState
+            size="compact"
+            visual="illustration"
             illustration={<IllustrationSantaiKosong />}
             title="Belum ada heroes"
             description="Tambahkan heroes secara manual atau tunggu heroes melakukan klaim pada aksi donasi ini."
+            className="max-w-[380px] p-4"
           />
         </div>
       ) : (
@@ -257,79 +355,71 @@ export function DonationDetailHeroesCard({
           {/* Tabel Desktop */}
           <div className="hidden md:block">
             <Table containerClassName="rounded-none border-0 shadow-none">
-              <TableHeader className="bg-[#eef1f2]">
+              <TableHeader>
                 <TableRow className="hover:bg-transparent">
-                  <TableHead>Nama</TableHead>
-                  <TableHead>Sector</TableHead>
-                  <TableHead>Beneficiary</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
+                  <TableHead className="uppercase tracking-[0.04em]">
+                    Nama
+                  </TableHead>
+                  <TableHead className="uppercase tracking-[0.04em]">
+                    Sector
+                  </TableHead>
+                  <TableHead className="uppercase tracking-[0.04em]">
+                    Beneficiary
+                  </TableHead>
+                  <TableHead className="uppercase tracking-[0.04em]">
+                    Status
+                  </TableHead>
+                  <TableHead
+                    align="right"
+                    className="uppercase tracking-[0.04em]"
+                  >
+                    Aksi
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {visibleHeroes.map((hero) => {
-                  const isPickedUp = hero.status === "sudah-diambil";
+                  const statusConfig = HERO_STATUS_BADGE_MAP[hero.status];
+                  const isForfeited = hero.status === "tidak-jadi-ambil";
+
                   return (
-                    <TableRow key={hero.id}>
+                    <TableRow
+                      key={hero.id}
+                      className={isForfeited ? "bg-red-50/30" : undefined}
+                    >
                       <TableCell>
                         <div className="flex items-center gap-3 min-w-0">
-                          <Avatar name={hero.name} size="sm" />
-                          <span className="font-medium text-[#142023] truncate">
+                          <Avatar
+                            name={hero.name}
+                            size="sm"
+                            shape="circle"
+                            className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
+                          />
+                          <span
+                            className={cn(
+                              "font-sans font-semibold text-sm truncate",
+                              isForfeited
+                                ? "text-neutral-500 line-through"
+                                : "text-neutral-900",
+                            )}
+                          >
                             {hero.name}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-[#4d585b]">
+                      <TableCell className="font-sans text-sm text-neutral-600">
                         {hero.sectorName}
                       </TableCell>
-                      <TableCell className="text-[#4d585b]">
+                      <TableCell className="font-sans text-sm text-neutral-600">
                         {hero.beneficiaryName}
                       </TableCell>
                       <TableCell>
-                        {isPickedUp ? (
-                          <Badge tone="success" dot>
-                            Sudah Diambil
-                          </Badge>
-                        ) : (
-                          <Badge tone="warning" dot>
-                            Belum Diambil
-                          </Badge>
-                        )}
+                        <Badge tone={statusConfig.tone} styleVariant="soft" dot>
+                          {statusConfig.label}
+                        </Badge>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-end gap-2">
-                          {isPickedUp ? (
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              size="sm"
-                              disabled
-                              leftIcon={<Check className="size-3.5" />}
-                            >
-                              Sudah Diambil
-                            </Button>
-                          ) : (
-                            <Button
-                              type="button"
-                              variant="primary"
-                              size="sm"
-                              onClick={() => onConfirmPickup(hero.id)}
-                            >
-                              Konfirmasi Ambil
-                            </Button>
-                          )}
-                          <IconButton
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            aria-label={`Keluarkan ${hero.name} dari donasi`}
-                            tooltip="Keluarkan hero dari donasi"
-                            onClick={() => onRemoveHero(hero)}
-                            className="text-neutral-500 hover:text-red-600 hover:bg-red-50"
-                          >
-                            <Trash2 className="size-4" />
-                          </IconButton>
-                        </div>
+                      <TableCell align="right">
+                        {renderHeroActionButtons(hero)}
                       </TableCell>
                     </TableRow>
                   );
@@ -341,65 +431,43 @@ export function DonationDetailHeroesCard({
           {/* Kartu Mobile */}
           <div className="md:hidden divide-y divide-neutral-100">
             {visibleHeroes.map((hero) => {
-              const isPickedUp = hero.status === "sudah-diambil";
+              const statusConfig = HERO_STATUS_BADGE_MAP[hero.status];
+              const isForfeited = hero.status === "tidak-jadi-ambil";
+
               return (
-                <div key={hero.id} className="p-4 space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Avatar name={hero.name} size="sm" />
-                      <div className="min-w-0">
-                        <p className="font-semibold text-[14px] text-[#142023] truncate">
-                          {hero.name}
-                        </p>
-                        <p className="text-[12px] text-[#6b777a] truncate">
-                          {hero.sectorName} · {hero.beneficiaryName}
-                        </p>
-                      </div>
-                    </div>
-                    <IconButton
-                      type="button"
-                      variant="ghost"
+                <div
+                  key={hero.id}
+                  className={cn("p-4 space-y-3", isForfeited && "bg-red-50/30")}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Avatar
+                      name={hero.name}
                       size="sm"
-                      aria-label={`Keluarkan ${hero.name} dari donasi`}
-                      tooltip="Keluarkan hero dari donasi"
-                      onClick={() => onRemoveHero(hero)}
-                      className="text-neutral-500 hover:text-red-600 hover:bg-red-50 shrink-0"
-                    >
-                      <Trash2 className="size-4" />
-                    </IconButton>
+                      shape="circle"
+                      className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={cn(
+                          "font-sans font-semibold text-sm truncate",
+                          isForfeited
+                            ? "text-neutral-500 line-through"
+                            : "text-neutral-900",
+                        )}
+                      >
+                        {hero.name}
+                      </p>
+                      <p className="font-sans text-xs text-neutral-500 truncate">
+                        {hero.sectorName} · {hero.beneficiaryName}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    {isPickedUp ? (
-                      <Badge tone="success" dot>
-                        Sudah Diambil
-                      </Badge>
-                    ) : (
-                      <Badge tone="warning" dot>
-                        Belum Diambil
-                      </Badge>
-                    )}
-
-                    {isPickedUp ? (
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        disabled
-                        leftIcon={<Check className="size-3.5" />}
-                      >
-                        Sudah Diambil
-                      </Button>
-                    ) : (
-                      <Button
-                        type="button"
-                        variant="primary"
-                        size="sm"
-                        onClick={() => onConfirmPickup(hero.id)}
-                      >
-                        Konfirmasi Ambil
-                      </Button>
-                    )}
+                    <Badge tone={statusConfig.tone} styleVariant="soft" dot>
+                      {statusConfig.label}
+                    </Badge>
+                    {renderHeroActionButtons(hero)}
                   </div>
                 </div>
               );
@@ -408,7 +476,7 @@ export function DonationDetailHeroesCard({
 
           {/* Footer Tampilkan Lainnya */}
           {hiddenCount > 0 && (
-            <div className="border-t border-neutral-100 px-5 py-3 flex justify-center bg-neutral-50/50 rounded-b-[24px]">
+            <div className="border-t border-neutral-100 px-5 py-3 flex justify-center bg-neutral-50/50 rounded-b-2xl">
               <Button
                 type="button"
                 variant="ghost"
@@ -421,7 +489,7 @@ export function DonationDetailHeroesCard({
                     <ChevronDown className="size-4" />
                   )
                 }
-                className="text-[#007d85] hover:text-[#00646b] hover:bg-bondi-50"
+                className="text-brand hover:text-brand-hover hover:bg-bondi-50"
               >
                 {isExpanded
                   ? "Sembunyikan sebagian heroes"

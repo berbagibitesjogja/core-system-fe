@@ -140,11 +140,11 @@ export function DonationDetailSurplusDialog({
           <div>
             <h2
               id="surplus-dialog-title"
-              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-[#142023]"
+              className="font-heading-h3 text-neutral-900"
             >
               {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
             </h2>
-            <p className="text-[13px] text-[#6b777a]">
+            <p className="font-sans text-sm text-neutral-600 mt-0.5">
               Catat detail makanan yang masuk ke inventaris aksi donasi.
             </p>
           </div>
@@ -174,6 +174,7 @@ export function DonationDetailSurplusDialog({
               if (errors.name)
                 setErrors((prev) => ({ ...prev, name: undefined }));
             }}
+            className="max-w-none"
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
@@ -185,13 +186,14 @@ export function DonationDetailSurplusDialog({
               value={quantityText}
               showHelper={false}
               onChange={(e) => setQuantityText(e.target.value)}
+              className="max-w-none"
             />
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="surplus-weight-input"
-                  className="font-label text-sm font-medium text-[#142023]"
+                  className="font-label text-sm font-semibold text-neutral-900"
                 >
                   Berat
                 </label>
@@ -205,7 +207,7 @@ export function DonationDetailSurplusDialog({
                         variant={isSelected ? "primary" : "ghost"}
                         size="sm"
                         onClick={() => setUnit(option.value)}
-                        className="h-6 px-2.5 text-[11px] rounded-full shadow-none"
+                        className="h-6 px-2.5 text-xs rounded-full shadow-none"
                       >
                         {option.label}
                       </Button>
@@ -228,6 +230,7 @@ export function DonationDetailSurplusDialog({
                     setErrors((prev) => ({ ...prev, weight: undefined }));
                   }
                 }}
+                className="max-w-none"
               />
             </div>
           </div>
@@ -247,6 +250,7 @@ export function DonationDetailSurplusDialog({
             value={notes}
             showHelper={false}
             onChange={(e) => setNotes(e.target.value)}
+            className="max-w-none"
           />
 
           <div className="flex items-center justify-end gap-3 pt-2">
@@ -315,13 +319,15 @@ export function DonationSurplusDeleteDialog({
           <div className="flex flex-col gap-1.5 flex-1 min-w-0 text-center sm:text-left">
             <h2
               id="delete-surplus-title"
-              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-[#142023]"
+              className="font-heading-h3 text-neutral-900"
             >
               Hapus Surplus Food?
             </h2>
-            <p className="font-['Josefin_Sans'] text-[14px] leading-[20px] text-[#4d585b]">
+            <p className="font-sans text-sm leading-relaxed text-neutral-600">
               Item{" "}
-              <span className="font-semibold text-[#142023]">{food.name}</span>{" "}
+              <span className="font-semibold text-neutral-900">
+                {food.name}
+              </span>{" "}
               akan dihapus permanen dari catatan donasi ini.
             </p>
           </div>

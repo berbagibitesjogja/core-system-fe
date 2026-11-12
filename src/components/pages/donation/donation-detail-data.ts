@@ -1,7 +1,8 @@
 import { defaultDonations } from "./donation-data";
 import type { DonationItem, DonationProgram } from "./donation-data";
 
-export type DonationHeroPickupStatus = "sudah-diambil" | "belum-diambil";
+export type DonationHeroPickupStatus =
+  "sudah-diambil" | "belum-diambil" | "tidak-jadi-ambil";
 export type DonationSurplusUnit = "gr" | "ml";
 
 export interface DonationHeroClaimRecord {
@@ -62,29 +63,29 @@ export const defaultSearchableHeroPool: DonationHeroSearchOption[] = [
   {
     id: "hero-cand-1",
     name: "Nadia Putri",
-    sectorName: "Sektor Sleman",
-    beneficiaryName: "Panti Asuhan Harapan",
+    sectorName: "Hukum",
+    beneficiaryName: "Universitas Gadjah Mada",
     isBlocked: false,
   },
   {
     id: "hero-cand-2",
     name: "Nadhif Akbar",
-    sectorName: "Sektor Utara",
-    beneficiaryName: "Rumah Singgah Harmoni",
+    sectorName: "Teknik",
+    beneficiaryName: "Universitas Negeri Yogyakarta",
     isBlocked: false,
   },
   {
     id: "hero-cand-3",
     name: "Nadya Kirana",
-    sectorName: "Sektor Kota",
-    beneficiaryName: "Komunitas Lansia Berkah",
+    sectorName: "Psikologi",
+    beneficiaryName: "Universitas Gadjah Mada",
     isBlocked: false,
   },
   {
     id: "hero-cand-4",
-    name: "Nadine Azzahra",
-    sectorName: "Sektor Bantul",
-    beneficiaryName: "Yayasan Cahaya Bangsa",
+    name: "Nadia Rahmawati",
+    sectorName: "Ekonomi",
+    beneficiaryName: "Universitas Muhammadiyah Yogyakarta",
     isBlocked: true,
   },
   {
@@ -190,9 +191,9 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
   {
     id: "claim-10",
     heroId: "hero-10",
-    name: "Nadia Putri",
-    sectorName: "Sektor Sleman",
-    beneficiaryName: "Panti Asuhan Harapan",
+    name: "Nadia Rahmawati",
+    sectorName: "Ekonomi",
+    beneficiaryName: "Universitas Muhammadiyah Yogyakarta",
     status: "sudah-diambil",
   },
   {
@@ -353,6 +354,45 @@ const donationLocationMap: Record<string, string> = {
   "donasi-9": "Jl. Prawirotaman No. 32, Yogyakarta",
   "donasi-10": "Jl. KHA Dahlan No. 107, Yogyakarta",
 };
+
+// Menghitung ringkasan kuota heroes termasuk jatah yang hangus karena tidak jadi ambil
+export function calculateHeroesQuotaSummary(
+  heroes: DonationHeroClaimRecord[],
+  quotaTotal: number,
+) {
+  let pickedUpCount = 0;
+  let pendingCount = 0;
+  let forfeitedCount = 0;
+
+  for (const hero of heroes) {
+    if (hero.status === "sudah-diambil") {
+      pickedUpCount += 1;
+    } else if (hero.status === "tidak-jadi-ambil") {
+      forfeitedCount += 1;
+    } else {
+      pendingCount += 1;
+    }
+  }
+
+  const activeHeroesCount = pickedUpCount + pendingCount;
+  const usedQuotaCount = heroes.length;
+  const remainingQuota = Math.max(0, quotaTotal - usedQuotaCount);
+  const quotaPercentage =
+    quotaTotal > 0
+      ? Math.min(100, Math.round((usedQuotaCount / quotaTotal) * 100))
+      : 0;
+
+  return {
+    activeHeroesCount,
+    pickedUpCount,
+    pendingCount,
+    forfeitedCount,
+    usedQuotaCount,
+    remainingQuota,
+    isQuotaFull: usedQuotaCount >= quotaTotal,
+    quotaPercentage,
+  };
+}
 
 // Menghitung total berat layak konsumsi dalam kilogram atau liter ekuivalen
 export function calculateSurplusSummary(foods: DonationSurplusFoodItem[]) {

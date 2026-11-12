@@ -10,6 +10,7 @@ import {
   DonationDetailSurplusCard,
   DonationDetailSurplusDialog,
   DonationSurplusDeleteDialog,
+  calculateHeroesQuotaSummary,
   defaultSearchableHeroPool,
   getDonationDetailById,
 } from "#/components/pages/donation";
@@ -22,6 +23,7 @@ import type {
 } from "#/components/pages/donation";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
+import { Dialog } from "#/components/ui/dialog";
 import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/routes/admin/_auth";
 
@@ -51,7 +53,7 @@ export const Route = createFileRoute("/admin/_auth/donation/detail")({
 });
 
 /**
- * DonationDetailPage: Halaman Detail Donasi menampilkan Daftar Heroes, Daftar Surplus Food, Ringkasan Donasi, Catatan, dan Bagikan Impact (Figma 123:4842 - 124:6103).
+ * DonationDetailPage: Halaman Detail Donasi menampilkan Daftar Heroes, Daftar Surplus Food, Ringkasan Donasi, Catatan, dan Bagikan Impact.
  */
 function DonationDetailPage() {
   const { id = "", state } = Route.useSearch();
@@ -93,6 +95,15 @@ function DonationDetailPage() {
     return () => setHeaderOverride(null);
   }, [setHeaderOverride, detail.donorName, detail.day, detail.date, navigate]);
 
+  // State modal Konfirmasi Ambil & Keluarkan Hero (mengikuti aturan Dialog design.tsx)
+  const [pickupTargetHero, setPickupTargetHero] =
+    React.useState<DonationHeroClaimRecord | null>(null);
+  const [isConfirmingPickup, setIsConfirmingPickup] = React.useState(false);
+
+  const [removeTargetHero, setRemoveTargetHero] =
+    React.useState<DonationHeroClaimRecord | null>(null);
+  const [isRemovingHero, setIsRemovingHero] = React.useState(false);
+
   // State modal Surplus Food & Bagikan Impact
   const [surplusDialogMode, setSurplusDialogMode] = React.useState<
     "add" | "edit"
@@ -104,18 +115,23 @@ function DonationDetailPage() {
     React.useState<DonationSurplusFoodItem | null>(null);
   const [isImpactDialogOpen, setIsImpactDialogOpen] = React.useState(false);
 
+  const heroesSummary = React.useMemo(
+    () => calculateHeroesQuotaSummary(detail.heroes, detail.quotaTotal),
+    [detail.heroes, detail.quotaTotal],
+  );
+
   const computedStatus = React.useMemo(() => {
     if (detail.status === "Selesai") return "Selesai" as const;
-    if (detail.heroes.length >= detail.quotaTotal) return "Penuh" as const;
+    if (heroesSummary.isQuotaFull) return "Penuh" as const;
     return "Aktif" as const;
-  }, [detail.status, detail.heroes.length, detail.quotaTotal]);
+  }, [detail.status, heroesSummary.isQuotaFull]);
 
   const statusTone =
     computedStatus === "Aktif"
       ? "brand"
       : computedStatus === "Penuh"
         ? "warning"
-        : "success";
+        : "neutral";
 
   const handleAddHero = React.useCallback(
     (candidate: DonationHeroSearchOption) => {
@@ -137,26 +153,76 @@ function DonationDetailPage() {
     [],
   );
 
-  const handleConfirmPickup = React.useCallback((claimId: string) => {
-    setDetail((prev) => ({
-      ...prev,
-      heroes: prev.heroes.map((hero) =>
-        hero.id === claimId ? { ...hero, status: "sudah-diambil" } : hero,
-      ),
-    }));
-    toast.success("Status pengambilan donasi hero berhasil dikonfirmasi.");
-  }, []);
-
-  const handleRemoveHero = React.useCallback(
+  // Buka modal konfirmasi pengambilan donasi
+  const handleRequestConfirmPickup = React.useCallback(
     (hero: DonationHeroClaimRecord) => {
-      setDetail((prev) => ({
-        ...prev,
-        heroes: prev.heroes.filter((item) => item.id !== hero.id),
-      }));
-      toast.info(`${hero.name} dikeluarkan dari daftar heroes donasi ini.`);
+      if (hero.status !== "belum-diambil") return;
+      setPickupTargetHero(hero);
     },
     [],
   );
+
+  const handleConfirmPickupAction = React.useCallback(() => {
+    if (!pickupTargetHero) return;
+    setIsConfirmingPickup(true);
+    window.setTimeout(() => {
+      setDetail((prev) => ({
+        ...prev,
+        heroes: prev.heroes.map((hero) =>
+          hero.id === pickupTargetHero.id
+            ? { ...hero, status: "sudah-diambil" }
+            : hero,
+        ),
+      }));
+      setIsConfirmingPickup(false);
+      toast.success(
+        `Pengambilan donasi oleh ${pickupTargetHero.name} berhasil dikonfirmasi.`,
+      );
+      setPickupTargetHero(null);
+    }, 300);
+  }, [pickupTargetHero]);
+
+  // Buka modal konfirmasi keluarkan hero (tetap diizinkan setelah konfirmasi ambil)
+  const handleRequestRemoveHero = React.useCallback(
+    (hero: DonationHeroClaimRecord) => {
+      if (hero.status === "tidak-jadi-ambil") return;
+      setRemoveTargetHero(hero);
+    },
+    [],
+  );
+
+  const handleConfirmRemoveHero = React.useCallback(() => {
+    if (!removeTargetHero) return;
+    setIsRemovingHero(true);
+    window.setTimeout(() => {
+      const wasConfirmed = removeTargetHero.status === "sudah-diambil";
+
+      setDetail((prev) => ({
+        ...prev,
+        heroes: wasConfirmed
+          ? // Jika sudah konfirmasi ambil, status diubah menjadi tidak jadi ambil dan kuota hangus
+            prev.heroes.map((item) =>
+              item.id === removeTargetHero.id
+                ? { ...item, status: "tidak-jadi-ambil" }
+                : item,
+            )
+          : // Jika belum konfirmasi ambil, keluarkan sepenuhnya dan kembalikan kuota
+            prev.heroes.filter((item) => item.id !== removeTargetHero.id),
+      }));
+
+      setIsRemovingHero(false);
+      if (wasConfirmed) {
+        toast.warning(
+          `${removeTargetHero.name} dinyatakan tidak jadi ambil dan kuotanya hangus.`,
+        );
+      } else {
+        toast.info(
+          `${removeTargetHero.name} dikeluarkan dari daftar heroes donasi ini.`,
+        );
+      }
+      setRemoveTargetHero(null);
+    }, 300);
+  }, [removeTargetHero]);
 
   const handleOpenAddFood = React.useCallback(() => {
     setSurplusDialogMode("add");
@@ -227,26 +293,36 @@ function DonationDetailPage() {
     return <DonationDetailSkeleton />;
   }
 
+  const isRemovingConfirmedHero = removeTargetHero?.status === "sudah-diambil";
+
   return (
-    <div className="space-y-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">
+    <div className="space-y-6 w-full pb-8 animate-in fade-in duration-200 motion-reduce:animate-none">
       {/* Action Bar: Ringkasan Kuota, Badge Status, & Tombol Aksi Utama */}
-      <div className="flex flex-wrap items-center justify-between gap-3 w-full">
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-          <span className="inline-flex items-center gap-1.5 text-[14px] font-medium text-[#4d585b] tabular-nums">
-            <Users className="size-4 text-[#007d85]" />
+      <div className="flex flex-wrap items-center justify-between gap-4 w-full">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div className="inline-flex items-center gap-1.5 font-sans text-sm font-medium text-neutral-600 tabular-nums">
+            <Users className="size-4 text-neutral-500 shrink-0" />
             <span>
               Heroes:{" "}
-              <strong className="font-semibold text-[#142023]">
-                {detail.heroes.length} / {detail.quotaTotal}
+              <strong className="font-semibold text-neutral-900">
+                {heroesSummary.usedQuotaCount} / {detail.quotaTotal}
               </strong>
+              {heroesSummary.forfeitedCount > 0 && (
+                <span className="ml-1.5 text-xs text-red-700 font-semibold">
+                  ({heroesSummary.forfeitedCount} kuota hangus)
+                </span>
+              )}
             </span>
-          </span>
+          </div>
 
-          <Badge tone={detail.program === "CSR" ? "accent" : "brand"}>
+          <Badge
+            tone={detail.program === "CSR" ? "accent" : "brand"}
+            styleVariant="soft"
+          >
             {detail.program}
           </Badge>
 
-          <Badge tone={statusTone} dot>
+          <Badge tone={statusTone} styleVariant="soft" dot>
             {computedStatus}
           </Badge>
         </div>
@@ -255,6 +331,7 @@ function DonationDetailPage() {
           <Button
             type="button"
             variant="secondary"
+            size="md"
             leftIcon={<Camera className="size-4" />}
             onClick={handleOpenDocumentation}
           >
@@ -263,6 +340,7 @@ function DonationDetailPage() {
           <Button
             type="button"
             variant="primary"
+            size="md"
             leftIcon={<Share2 className="size-4" />}
             onClick={() => setIsImpactDialogOpen(true)}
           >
@@ -280,8 +358,8 @@ function DonationDetailPage() {
             quotaTotal={detail.quotaTotal}
             searchableHeroes={defaultSearchableHeroPool}
             onAddHero={handleAddHero}
-            onConfirmPickup={handleConfirmPickup}
-            onRemoveHero={handleRemoveHero}
+            onConfirmPickup={handleRequestConfirmPickup}
+            onRemoveHero={handleRequestRemoveHero}
           />
 
           <DonationDetailSurplusCard
@@ -295,6 +373,52 @@ function DonationDetailPage() {
         {/* Kolom Kanan: Ringkasan Donasi & Catatan */}
         <DonationDetailSidebar detail={detail} onSaveNotes={handleSaveNotes} />
       </div>
+
+      {/* Modal Konfirmasi Ambil Donasi Hero (Dialog Default design.tsx) */}
+      <Dialog
+        isOpen={Boolean(pickupTargetHero)}
+        onClose={() => {
+          if (!isConfirmingPickup) setPickupTargetHero(null);
+        }}
+        tone="default"
+        title="Konfirmasi Pengambilan Donasi?"
+        description={
+          pickupTargetHero
+            ? `Apakah Anda yakin ${pickupTargetHero.name} sudah mengambil jatah donasi dari ${detail.donorName} untuk ${pickupTargetHero.beneficiaryName}?`
+            : undefined
+        }
+        cancelText="Batal"
+        confirmText="Konfirmasi Ambil"
+        isConfirmLoading={isConfirmingPickup}
+        onConfirm={handleConfirmPickupAction}
+      />
+
+      {/* Modal Konfirmasi Keluarkan Hero dari Donasi (Dialog Danger design.tsx) */}
+      <Dialog
+        isOpen={Boolean(removeTargetHero)}
+        onClose={() => {
+          if (!isRemovingHero) setRemoveTargetHero(null);
+        }}
+        tone="danger"
+        title={
+          isRemovingConfirmedHero
+            ? "Keluarkan Hero yang Sudah Konfirmasi?"
+            : "Keluarkan Hero dari Donasi?"
+        }
+        description={
+          removeTargetHero
+            ? isRemovingConfirmedHero
+              ? `${removeTargetHero.name} sudah melakukan konfirmasi ambil pada donasi ${detail.donorName}. Jika dikeluarkan, ia dinyatakan Tidak Jadi Ambil dan kuota ini akan hangus (tidak kembali tersedia).`
+              : `Apakah Anda yakin ingin mengeluarkan ${removeTargetHero.name} dari daftar heroes donasi ${detail.donorName}? Kuota klaim hero akan dilepaskan dan tersedia kembali.`
+            : undefined
+        }
+        cancelText="Batal"
+        confirmText={
+          isRemovingConfirmedHero ? "Keluarkan & Hanguskan" : "Keluarkan Hero"
+        }
+        isConfirmLoading={isRemovingHero}
+        onConfirm={handleConfirmRemoveHero}
+      />
 
       {/* Modal Tambah / Edit Surplus Food */}
       <DonationDetailSurplusDialog

@@ -27,8 +27,8 @@ export function DonationDetailSkeleton() {
         {/* Kolom Kiri */}
         <div className="space-y-6">
           {/* Kartu Daftar Heroes */}
-          <div className="rounded-[24px] border border-neutral-200 bg-white shadow-xs overflow-hidden">
-            <div className="px-6 py-5 flex items-center justify-between border-b border-neutral-100">
+          <div className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-hidden">
+            <div className="px-5 py-4 flex items-center justify-between border-b border-neutral-100">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-6 w-36 rounded-md" />
                 <Skeleton className="h-6 w-16 rounded-full" />
@@ -40,7 +40,7 @@ export function DonationDetailSkeleton() {
               {HERO_SKELETON_ROWS.map((row) => (
                 <div
                   key={row}
-                  className="px-6 py-4 flex items-center justify-between gap-4"
+                  className="px-5 py-4 flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-3">
                     <Skeleton className="size-8 rounded-full" />
@@ -56,8 +56,8 @@ export function DonationDetailSkeleton() {
           </div>
 
           {/* Kartu Daftar Surplus Food */}
-          <div className="rounded-[24px] border border-neutral-200 bg-white shadow-xs overflow-hidden">
-            <div className="px-6 py-5 flex items-center justify-between border-b border-neutral-100">
+          <div className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-hidden">
+            <div className="px-5 py-4 flex items-center justify-between border-b border-neutral-100">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-6 w-44 rounded-md" />
                 <Skeleton className="h-6 w-14 rounded-full" />
@@ -69,7 +69,7 @@ export function DonationDetailSkeleton() {
               {SURPLUS_SKELETON_ROWS.map((row) => (
                 <div
                   key={row}
-                  className="px-6 py-4 flex items-center justify-between gap-4"
+                  className="px-5 py-4 flex items-center justify-between gap-4"
                 >
                   <Skeleton className="h-4 w-32 rounded" />
                   <Skeleton className="h-4 w-14 rounded hidden md:block" />
@@ -87,7 +87,7 @@ export function DonationDetailSkeleton() {
 
         {/* Kolom Kanan */}
         <div className="space-y-6">
-          <div className="rounded-[24px] border border-neutral-200 bg-white p-6 shadow-xs space-y-5">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-5">
             <Skeleton className="h-6 w-36 rounded-md" />
             <div className="space-y-2.5">
               <div className="flex justify-between">
@@ -103,10 +103,10 @@ export function DonationDetailSkeleton() {
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-neutral-200 bg-white p-6 shadow-xs space-y-4">
-            <Skeleton className="h-6 w-24 rounded-md" />
-            <Skeleton className="h-24 w-full rounded-xl" />
-            <Skeleton className="h-10 w-full rounded-full" />
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-4">
+            <Skeleton className="h-5 w-20 rounded-md" />
+            <Skeleton className="h-28 w-full rounded-xl" />
+            <Skeleton className="h-11 w-full rounded-full" />
           </div>
         </div>
       </div>

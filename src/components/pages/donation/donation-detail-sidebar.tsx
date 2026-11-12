@@ -1,9 +1,12 @@
 import * as React from "react";
-import { Calendar, MapPin, PackageCheck, Users } from "lucide-react";
+import { Calendar, Check, MapPin, PackageCheck, Users } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Textarea } from "#/components/ui/textarea";
 import { ProgressBar } from "#/components/shared/progress-bar";
-import { calculateSurplusSummary } from "./donation-detail-data";
+import {
+  calculateHeroesQuotaSummary,
+  calculateSurplusSummary,
+} from "./donation-detail-data";
 import type { DonationDetailRecord } from "./donation-detail-data";
 
 export interface DonationDetailSidebarProps {
@@ -12,7 +15,7 @@ export interface DonationDetailSidebarProps {
 }
 
 /**
- * DonationDetailSidebar: Panel samping kanan berisi Ringkasan Donasi dan Catatan pelaksanaan (Figma 123:4842, 124:6103).
+ * DonationDetailSidebar: Panel samping kanan berisi Ringkasan Donasi dan Card Catatan.
  */
 export function DonationDetailSidebar({
   detail,
@@ -25,19 +28,13 @@ export function DonationDetailSidebar({
     setNoteDraft(detail.notes);
   }, [detail.id, detail.notes]);
 
-  const heroesCount = detail.heroes.length;
-  const quotaPercentage =
-    detail.quotaTotal > 0
-      ? Math.min(100, Math.round((heroesCount / detail.quotaTotal) * 100))
-      : 0;
-  const remainingQuota = Math.max(0, detail.quotaTotal - heroesCount);
+  const heroesSummary = React.useMemo(
+    () => calculateHeroesQuotaSummary(detail.heroes, detail.quotaTotal),
+    [detail.heroes, detail.quotaTotal],
+  );
   const surplusSummary = React.useMemo(
     () => calculateSurplusSummary(detail.surplusFoods),
     [detail.surplusFoods],
-  );
-  const pickedUpCount = React.useMemo(
-    () => detail.heroes.filter((h) => h.status === "sudah-diambil").length,
-    [detail.heroes],
   );
 
   const infoItems = React.useMemo(
@@ -69,49 +66,54 @@ export function DonationDetailSidebar({
   return (
     <aside className="space-y-6">
       {/* Kartu Ringkasan Donasi */}
-      <section className="rounded-[24px] border border-neutral-200 bg-white p-5 sm:p-6 shadow-xs space-y-5">
-        <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[26px] text-[#142023]">
+      <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-5">
+        <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
           Ringkasan Donasi
         </h2>
 
         {/* Progres Kuota Heroes */}
         <div className="space-y-2.5">
-          <div className="flex items-center justify-between gap-2 text-[14px]">
-            <span className="inline-flex items-center gap-2 text-[#4d585b] font-medium">
-              <Users className="size-4 text-[#007d85]" />
+          <div className="flex items-center justify-between gap-2 font-sans text-sm">
+            <span className="inline-flex items-center gap-2 text-neutral-600 font-medium">
+              <Users className="size-4 text-brand shrink-0" />
               Kuota Heroes
             </span>
-            <span className="font-semibold text-[#142023] tabular-nums">
-              {heroesCount} / {detail.quotaTotal}
+            <span className="font-semibold text-neutral-900 tabular-nums">
+              {heroesSummary.usedQuotaCount} / {detail.quotaTotal}
             </span>
           </div>
 
           <ProgressBar
-            value={quotaPercentage}
-            color={quotaPercentage >= 100 ? "success" : "brand"}
+            value={heroesSummary.quotaPercentage}
+            color={heroesSummary.quotaPercentage >= 100 ? "success" : "brand"}
           />
 
-          <div className="flex items-center justify-between text-[12px] text-[#6b777a]">
+          <div className="flex flex-wrap items-center justify-between gap-1 font-sans text-xs text-neutral-500">
             <span>
-              {remainingQuota > 0
-                ? `${remainingQuota} kuota tersisa`
+              {heroesSummary.remainingQuota > 0
+                ? `${heroesSummary.remainingQuota} kuota tersisa`
                 : "Kuota penuh"}
             </span>
-            <span>{pickedUpCount} sudah diambil</span>
+            <span>
+              {heroesSummary.pickedUpCount} diambil
+              {heroesSummary.forfeitedCount > 0
+                ? ` · ${heroesSummary.forfeitedCount} hangus`
+                : ""}
+            </span>
           </div>
         </div>
 
-        <div className="border-t border-neutral-100 pt-4 space-y-2">
+        <div className="border-t border-neutral-100 pt-4 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 text-[14px] text-[#4d585b] font-medium">
-              <PackageCheck className="size-4 text-[#007d85]" />
+            <span className="inline-flex items-center gap-2 font-sans text-sm text-neutral-600 font-medium">
+              <PackageCheck className="size-4 text-brand shrink-0" />
               Total Surplus Food
             </span>
-            <span className="font-['Gabarito'] font-bold text-[20px] text-[#142023] tabular-nums">
+            <span className="font-number-m text-neutral-900 tabular-nums">
               {surplusSummary.totalWeightFormatted}
             </span>
           </div>
-          <p className="text-[12px] text-[#6b777a]">
+          <p className="font-sans text-xs text-neutral-500">
             {surplusSummary.totalItems === 0
               ? "Belum ada catatan makanan surplus."
               : `${surplusSummary.eligibleCount} jenis layak · ${surplusSummary.spoiledCount} basi/tidak layak`}
@@ -124,12 +126,12 @@ export function DonationDetailSidebar({
             const Icon = item.icon;
             return (
               <div key={item.id} className="flex items-start gap-2.5">
-                <Icon className="size-4 text-[#6b777a] mt-0.5 shrink-0" />
+                <Icon className="size-4 text-neutral-500 mt-0.5 shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-[#6b777a]">
+                  <p className="font-label text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
                     {item.label}
                   </p>
-                  <p className="text-[13px] font-medium text-[#142023] leading-snug">
+                  <p className="font-sans text-[13px] font-medium text-neutral-900 leading-snug">
                     {item.value}
                   </p>
                 </div>
@@ -139,30 +141,22 @@ export function DonationDetailSidebar({
         </div>
       </section>
 
-      {/* Kartu Catatan */}
-      <section className="rounded-[24px] border border-neutral-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-        <div className="space-y-0.5">
-          <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[26px] text-[#142023]">
-            Catatan
-          </h2>
-          <p className="text-[12px] text-[#6b777a]">
-            Catatan internal koordinasi lapangan dan hasil distribusi.
-          </p>
-        </div>
-
+      {/* Card / Catatan */}
+      <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs flex flex-col gap-4">
         <Textarea
-          showLabel={false}
-          showHelper={false}
-          rows={4}
+          label="Catatan"
+          helperText="Hanya terlihat oleh pengurus."
+          placeholder="Catatan...."
           value={noteDraft}
           onChange={(e) => setNoteDraft(e.target.value)}
-          placeholder="Tulis catatan aksi donasi di sini..."
+          className="max-w-none"
         />
 
         <Button
           type="button"
           variant="secondary"
           className="w-full"
+          leftIcon={<Check className="size-5" />}
           isLoading={isSaving}
           onClick={handleSave}
         >
