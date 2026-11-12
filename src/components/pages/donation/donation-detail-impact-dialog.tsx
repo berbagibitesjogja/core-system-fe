@@ -126,12 +126,20 @@ export function DonationDetailImpactDialog({
       ctx.fillStyle = "#009ca6";
       ctx.fillRect(0, 0, width, height);
 
-      // Aksen pita dekoratif di bagian atas
+      // Aksen pita dekoratif penuh di bagian atas
       try {
         const ribbonImg = await loadImage(ribbonTrailLoopSvg);
+        const ribbonWidth = width * 1.18;
+        const ribbonHeight = ribbonWidth * (184.608 / 406);
         ctx.save();
         ctx.globalAlpha = 0.88;
-        ctx.drawImage(ribbonImg, 440, -30, 680, 320);
+        ctx.drawImage(
+          ribbonImg,
+          -width * 0.08,
+          -height * 0.015,
+          ribbonWidth,
+          ribbonHeight,
+        );
         ctx.restore();
       } catch {
         // Lewati jika browser memblokir decode SVG ke canvas
@@ -254,19 +262,16 @@ export function DonationDetailImpactDialog({
       aria-modal="true"
       aria-labelledby="impact-dialog-title"
     >
-      <div className="bg-white rounded-[24px] p-6 w-full max-w-[780px] max-h-[92vh] overflow-y-auto shadow-[0px_20px_24px_rgba(20,32,35,0.18)] border border-neutral-100 animate-in zoom-in-95 duration-150 motion-reduce:animate-none">
+      <div className="bg-white rounded-xl p-6 w-full max-w-[780px] max-h-[92vh] overflow-y-auto shadow-[0px_20px_24px_rgba(20,32,35,0.18)] border border-neutral-100 animate-in zoom-in-95 duration-150 motion-reduce:animate-none">
         <div className="grid grid-cols-1 md:grid-cols-[310px_1fr] gap-6 items-stretch">
           {/* Kolom Kiri: Pratinjau Poster 9:16 */}
-          <div className="space-y-2">
-            <p className="font-sans text-xs font-medium text-neutral-500 text-center">
-              Poster Preview (1080 × 1920)
-            </p>
-            <div className="aspect-[9/16] w-full max-w-[300px] mx-auto rounded-[20px] bg-[#009ca6] text-white p-5 relative overflow-hidden flex flex-col justify-between shadow-md select-none">
+          <div className="flex items-center justify-center">
+            <div className="aspect-[9/16] w-full max-w-[300px] mx-auto rounded-lg bg-[#009ca6] text-white p-5 relative overflow-hidden flex flex-col justify-between shadow-md select-none">
               <img
                 src={ribbonTrailLoopSvg}
                 alt=""
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-2 -right-6 w-[180px] opacity-90"
+                className="pointer-events-none absolute -top-[1.5%] -left-[8%] w-[118%] max-w-none h-auto opacity-90"
                 draggable={false}
               />
 
@@ -290,7 +295,7 @@ export function DonationDetailImpactDialog({
                   {posterMetrics.map((metric) => (
                     <div
                       key={metric.id}
-                      className="rounded-xl bg-white/15 border border-white/20 px-2.5 py-2 backdrop-blur-[2px]"
+                      className="rounded-md bg-white/15 border border-white/20 px-2.5 py-2 backdrop-blur-[2px]"
                     >
                       <p className="font-sans text-[10px] text-white/85">
                         {metric.label}
@@ -324,7 +329,7 @@ export function DonationDetailImpactDialog({
                   </p>
                 </div>
                 <div
-                  className="size-10 shrink-0 rounded-lg bg-white text-[#142023] flex items-center justify-center shadow-xs"
+                  className="size-10 shrink-0 rounded-sm bg-white text-[#142023] flex items-center justify-center shadow-xs"
                   aria-label="QR Code berbagibitesjogja.com"
                 >
                   <QrCode className="size-7" />
@@ -349,7 +354,7 @@ export function DonationDetailImpactDialog({
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-4 space-y-2.5">
+              <div className="rounded-lg bg-neutral-50 border border-neutral-200 p-4 space-y-2.5">
                 <p className="font-label text-xs font-semibold uppercase tracking-wide text-neutral-500">
                   Ringkasan Data Poster
                 </p>

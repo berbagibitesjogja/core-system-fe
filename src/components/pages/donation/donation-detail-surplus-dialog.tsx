@@ -1,5 +1,6 @@
 import * as React from "react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { FilterChip } from "#/components/shared/filter-chip";
 import { Button } from "#/components/ui/button";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Input } from "#/components/ui/input";
@@ -132,26 +133,21 @@ export function DonationDetailSurplusDialog({
       aria-modal="true"
       aria-labelledby="surplus-dialog-title"
     >
-      <div className="bg-white rounded-[24px] p-6 w-full max-w-[480px] shadow-[0px_20px_24px_rgba(20,32,35,0.16)] border border-neutral-100 animate-in zoom-in-95 duration-150 motion-reduce:animate-none">
+      <div className="bg-white rounded-[24px] p-6 w-full max-w-[520px] flex flex-col gap-5 shadow-[0px_20px_48px_-8px_rgba(20,32,35,0.16)] border border-neutral-100 animate-in zoom-in-95 duration-150 motion-reduce:animate-none">
         {/* Header Modal */}
-        <div className="pb-4 border-b border-neutral-100">
-          <h2
-            id="surplus-dialog-title"
-            className="font-heading-h3 text-neutral-900"
-          >
-            {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
-          </h2>
-          <p className="font-sans text-sm text-neutral-600 mt-0.5">
-            Catat detail makanan yang masuk ke inventaris aksi donasi.
-          </p>
-        </div>
+        <h2
+          id="surplus-dialog-title"
+          className="font-heading text-xl font-semibold leading-7 text-neutral-900"
+        >
+          {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
+        </h2>
 
         {/* Form Surplus Food */}
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Input
             ref={nameInputRef}
             label="Nama Makanan"
-            placeholder="Contoh: Roti Manis"
+            placeholder="Contoh: Roti Kering"
             value={name}
             error={errors.name}
             showHelper={Boolean(errors.name)}
@@ -163,83 +159,72 @@ export function DonationDetailSurplusDialog({
             className="max-w-none"
           />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-3 items-start">
             <Input
-              label="Jumlah (Opsional)"
+              label="Jumlah"
               type="number"
               min={1}
-              placeholder="Contoh: 40"
+              placeholder="Contoh: 20"
+              helperText="Opsional"
               value={quantityText}
-              showHelper={false}
+              showHelper={true}
               onChange={(e) => setQuantityText(e.target.value)}
-              className="max-w-none"
+              className="max-w-none min-w-0"
             />
 
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="surplus-weight-input"
-                  className="font-label text-sm font-semibold text-neutral-900"
-                >
-                  Berat
-                </label>
-                <div className="inline-flex rounded-full bg-neutral-100 p-0.5 border border-neutral-200">
-                  {SURPLUS_UNITS.map((option) => {
-                    const isSelected = unit === option.value;
-                    return (
-                      <Button
-                        key={option.value}
-                        type="button"
-                        variant={isSelected ? "primary" : "ghost"}
-                        size="sm"
-                        onClick={() => setUnit(option.value)}
-                        className="h-6 px-2.5 text-xs rounded-full shadow-none"
-                      >
-                        {option.label}
-                      </Button>
-                    );
-                  })}
-                </div>
+            <Input
+              label="Berat"
+              type="number"
+              min={1}
+              placeholder="Contoh: 5925"
+              value={weightText}
+              error={errors.weight}
+              showHelper={Boolean(errors.weight)}
+              onChange={(e) => {
+                setWeightText(e.target.value);
+                if (errors.weight) {
+                  setErrors((prev) => ({ ...prev, weight: undefined }));
+                }
+              }}
+              className="max-w-none min-w-0"
+            />
+
+            <div className="flex flex-col gap-[6px] items-start shrink-0">
+              <span className="font-sans font-semibold text-sm leading-5 text-neutral-900 select-none">
+                Satuan
+              </span>
+              <div className="min-h-[44px] flex items-center gap-2">
+                {SURPLUS_UNITS.map((option) => (
+                  <FilterChip
+                    key={option.value}
+                    label={option.label}
+                    showCount={false}
+                    selected={unit === option.value}
+                    onClick={() => setUnit(option.value)}
+                  />
+                ))}
               </div>
-              <Input
-                id="surplus-weight-input"
-                type="number"
-                min={1}
-                showLabel={false}
-                placeholder={`Contoh: 2500 (${unit})`}
-                value={weightText}
-                error={errors.weight}
-                showHelper={Boolean(errors.weight)}
-                onChange={(e) => {
-                  setWeightText(e.target.value);
-                  if (errors.weight) {
-                    setErrors((prev) => ({ ...prev, weight: undefined }));
-                  }
-                }}
-                className="max-w-none"
-              />
             </div>
           </div>
 
-          <div className="pt-1">
-            <Checkbox
-              checked={isSpoiled}
-              onChange={setIsSpoiled}
-              label="Basi / Tidak Layak"
-            />
-          </div>
+          <Checkbox
+            checked={isSpoiled}
+            onChange={setIsSpoiled}
+            label="Basi / Tidak Layak"
+          />
 
           <Textarea
-            label="Keterangan (Opsional)"
-            rows={3}
-            placeholder="Catatan kondisi makanan atau instruksi penyimpanan..."
+            label="Keterangan"
+            helperText="Opsional"
+            rows={4}
+            placeholder="Contoh: Kemasan utuh, simpan di suhu ruang"
             value={notes}
-            showHelper={false}
+            showHelper={true}
             onChange={(e) => setNotes(e.target.value)}
             className="max-w-none"
           />
 
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-3">
             <Button type="button" variant="secondary" onClick={onClose}>
               Batal
             </Button>

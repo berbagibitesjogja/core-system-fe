@@ -92,20 +92,24 @@ export function DonationDetailSkeleton() {
 
         {/* Kolom Kanan */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-5">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-4">
             <Skeleton className="h-6 w-36 rounded-md" />
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <div className="flex justify-between">
                 <Skeleton className="h-4 w-24 rounded" />
-                <Skeleton className="h-4 w-16 rounded" />
+                <Skeleton className="h-4 w-24 rounded" />
               </div>
               <Skeleton className="h-2 w-full rounded-full" />
-              <Skeleton className="h-3 w-32 rounded" />
             </div>
-            <div className="border-t border-neutral-100 pt-4 space-y-2">
-              <Skeleton className="h-4 w-28 rounded" />
-              <Skeleton className="h-7 w-20 rounded" />
-            </div>
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="flex items-start gap-3">
+                <Skeleton className="size-9 rounded-xl shrink-0" />
+                <div className="space-y-1.5 flex-1">
+                  <Skeleton className="h-3 w-24 rounded" />
+                  <Skeleton className="h-4 w-44 rounded" />
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-4">

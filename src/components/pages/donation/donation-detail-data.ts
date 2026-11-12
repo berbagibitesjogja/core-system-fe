@@ -41,10 +41,12 @@ export interface DonationDetailRecord {
   date: string;
   day: string;
   dateIso: string;
+  pickupSchedule: string;
   program: DonationProgram;
   status: DonationItem["status"];
   quotaTotal: number;
   location: string;
+  mapsUrl: string;
   documentationUrl?: string;
   notes: string;
   heroes: DonationHeroClaimRecord[];
@@ -466,6 +468,11 @@ export function getDonationDetailById(
   const baseItem =
     defaultDonations.find((item) => item.id === id) ?? defaultDonations[0];
 
+  const resolvedLocation =
+    donationLocationMap[baseItem.id] ?? "Area Distribusi BBJ Yogyakarta";
+  const resolvedMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(resolvedLocation)}`;
+  const defaultPickupSchedule = "17.30 – 18.30 WIB (60 menit)";
+
   const isEmpty = stateMode === "empty" || baseItem.quotaClaimed === 0;
 
   if (isEmpty) {
@@ -476,11 +483,12 @@ export function getDonationDetailById(
       date: baseItem.date,
       day: baseItem.day,
       dateIso: baseItem.isoDate,
+      pickupSchedule: defaultPickupSchedule,
       program: baseItem.program,
       status: baseItem.status,
       quotaTotal: baseItem.quotaTotal,
-      location:
-        donationLocationMap[baseItem.id] ?? "Area Distribusi BBJ Yogyakarta",
+      location: resolvedLocation,
+      mapsUrl: resolvedMapsUrl,
       documentationUrl: "https://drive.google.com",
       notes: "",
       heroes: [],
@@ -496,10 +504,12 @@ export function getDonationDetailById(
       date: baseItem.date,
       day: baseItem.day,
       dateIso: baseItem.isoDate,
+      pickupSchedule: defaultPickupSchedule,
       program: baseItem.program,
       status: baseItem.status,
       quotaTotal: baseItem.quotaTotal,
-      location: donationLocationMap["donasi-1"],
+      location: resolvedLocation,
+      mapsUrl: resolvedMapsUrl,
       documentationUrl: "https://drive.google.com",
       notes:
         "Penjemputan berlangsung lancar pukul 16.00 WIB. Seluruh roti dikemas ulang oleh tim relawan sebelum disalurkan ke titik penerima.",
@@ -590,11 +600,12 @@ export function getDonationDetailById(
     date: baseItem.date,
     day: baseItem.day,
     dateIso: baseItem.isoDate,
+    pickupSchedule: defaultPickupSchedule,
     program: baseItem.program,
     status: baseItem.status,
     quotaTotal: baseItem.quotaTotal,
-    location:
-      donationLocationMap[baseItem.id] ?? "Area Distribusi BBJ Yogyakarta",
+    location: resolvedLocation,
+    mapsUrl: resolvedMapsUrl,
     documentationUrl: "https://drive.google.com",
     notes:
       "Koordinasi dengan PIC donatur berjalan baik sesuai jadwal penjemputan.",

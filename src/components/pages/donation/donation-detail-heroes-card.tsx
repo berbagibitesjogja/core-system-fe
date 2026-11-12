@@ -184,7 +184,7 @@ export function DonationDetailHeroesCard({
         <div ref={popoverWrapperRef} className="relative">
           <Button
             type="button"
-            variant="secondary"
+            variant="primary"
             size="sm"
             leftIcon={<Plus className="size-4" />}
             onClick={() => setIsAddOpen((prev) => !prev)}
@@ -196,7 +196,7 @@ export function DonationDetailHeroesCard({
 
           {isAddOpen && (
             <div
-              className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[340px] z-40 rounded-xl border border-neutral-200 bg-white p-1.5 flex flex-col gap-0.5 shadow-lg animate-in fade-in slide-in-from-top-1 duration-150 motion-reduce:animate-none"
+              className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[320px] z-40 rounded-md border border-neutral-200 bg-white p-1.5 flex flex-col gap-0.5 shadow-[0px_8px_24px_-4px_rgba(20,32,35,0.1)] animate-in fade-in slide-in-from-top-1 duration-150 motion-reduce:animate-none"
               role="menu"
               aria-label="Pilih hero untuk ditambahkan"
             >
@@ -223,11 +223,11 @@ export function DonationDetailHeroesCard({
                     </IconButton>
                   ) : undefined
                 }
-                className="max-w-none [&>div]:bg-neutral-100 [&>div]:border-transparent [&>div]:rounded-lg [&>div]:h-9 [&>div]:px-3 [&>div]:shadow-none [&>div]:hover:border-transparent [&>div]:focus-within:bg-neutral-100 [&>div]:focus-within:border-brand-vivid [&>div]:focus-within:shadow-none"
+                className="max-w-none [&>div]:bg-neutral-100 [&>div]:border-transparent [&>div]:rounded-sm [&>div]:h-9 [&>div]:px-3 [&>div]:shadow-none [&>div]:hover:border-transparent [&>div]:focus-within:bg-neutral-100 [&>div]:focus-within:border-brand-vivid [&>div]:focus-within:shadow-none"
               />
 
               {isQuotaFull && (
-                <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 font-sans text-xs text-amber-800 font-medium">
+                <div className="rounded-sm bg-amber-50 border border-amber-200 px-3 py-1.5 font-sans text-xs text-amber-800 font-medium">
                   Kuota heroes sudah penuh ({heroesSummary.usedQuotaCount} /{" "}
                   {quotaTotal}).
                 </div>
@@ -261,7 +261,7 @@ export function DonationDetailHeroesCard({
                           setSearchTerm("");
                           setIsAddOpen(false);
                         }}
-                        className="w-full h-auto justify-start items-center gap-3 rounded-lg px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
+                        className="w-full h-auto justify-start items-center gap-3 rounded-sm px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
                       >
                         <User
                           className={cn(

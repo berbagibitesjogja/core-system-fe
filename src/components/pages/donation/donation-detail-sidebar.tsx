@@ -1,12 +1,9 @@
 import * as React from "react";
-import { Calendar, Check, MapPin, PackageCheck, Users } from "lucide-react";
+import { Building, Check, Clock, MapPin } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Textarea } from "#/components/ui/textarea";
 import { ProgressBar } from "#/components/shared/progress-bar";
-import {
-  calculateHeroesQuotaSummary,
-  calculateSurplusSummary,
-} from "./donation-detail-data";
+import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type { DonationDetailRecord } from "./donation-detail-data";
 
 export interface DonationDetailSidebarProps {
@@ -32,27 +29,45 @@ export function DonationDetailSidebar({
     () => calculateHeroesQuotaSummary(detail.heroes, detail.quotaTotal),
     [detail.heroes, detail.quotaTotal],
   );
-  const surplusSummary = React.useMemo(
-    () => calculateSurplusSummary(detail.surplusFoods),
-    [detail.surplusFoods],
-  );
+
+  const beneficiariesText = React.useMemo(() => {
+    const uniqueNames = Array.from(
+      new Set(
+        detail.heroes
+          .filter((hero) => hero.status !== "tidak-jadi-ambil")
+          .map((hero) => hero.beneficiaryName)
+          .filter(Boolean),
+      ),
+    );
+    return uniqueNames.length > 0
+      ? uniqueNames.join(", ")
+      : "Belum ada penerima terdaftar";
+  }, [detail.heroes]);
 
   const infoItems = React.useMemo(
     () => [
       {
         id: "schedule",
-        icon: Calendar,
-        label: "Jadwal Aksi",
-        value: `${detail.day}, ${detail.date}`,
+        icon: Clock,
+        label: "Jadwal pengambilan",
+        value: detail.pickupSchedule,
       },
       {
         id: "location",
         icon: MapPin,
-        label: "Lokasi Penjemputan",
+        label: "Lokasi",
         value: detail.location,
+        linkLabel: "Buka di Google Maps",
+        href: detail.mapsUrl,
+      },
+      {
+        id: "beneficiaries",
+        icon: Building,
+        label: "Beneficiaries",
+        value: beneficiariesText,
       },
     ],
-    [detail.day, detail.date, detail.location],
+    [detail.pickupSchedule, detail.location, detail.mapsUrl, beneficiariesText],
   );
 
   const handleSave = () => {
@@ -65,75 +80,60 @@ export function DonationDetailSidebar({
 
   return (
     <aside className="space-y-6">
-      {/* Kartu Ringkasan Donasi */}
-      <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs space-y-5">
+      {/* Card / Ringkasan */}
+      <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs flex flex-col gap-4">
         <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
           Ringkasan Donasi
         </h2>
 
-        {/* Progres Kuota Heroes */}
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between gap-2 font-sans text-sm">
-            <span className="inline-flex items-center gap-2 text-neutral-600 font-medium">
-              <Users className="size-4 text-brand shrink-0" />
-              Kuota Heroes
-            </span>
-            <span className="font-semibold text-neutral-900 tabular-nums">
-              {heroesSummary.usedQuotaCount} / {detail.quotaTotal}
+        {/* Kuota terisi */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2 font-sans text-sm font-semibold leading-5">
+            <span className="text-neutral-600">Kuota terisi</span>
+            <span className="text-neutral-900 tabular-nums">
+              {heroesSummary.usedQuotaCount} / {detail.quotaTotal} heroes
             </span>
           </div>
 
           <ProgressBar
             value={heroesSummary.quotaPercentage}
             color={heroesSummary.quotaPercentage >= 100 ? "success" : "brand"}
+            className="[&>div]:h-2 [&>div>div]:h-2"
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-1 font-sans text-xs text-neutral-500">
-            <span>
-              {heroesSummary.remainingQuota > 0
-                ? `${heroesSummary.remainingQuota} kuota tersisa`
-                : "Kuota penuh"}
-            </span>
-            <span>
-              {heroesSummary.pickedUpCount} diambil
-              {heroesSummary.forfeitedCount > 0
-                ? ` · ${heroesSummary.forfeitedCount} hangus`
-                : ""}
-            </span>
-          </div>
+          {heroesSummary.forfeitedCount > 0 && (
+            <p className="font-sans text-xs font-medium text-red-700">
+              {heroesSummary.forfeitedCount} kuota hangus (tidak jadi ambil)
+            </p>
+          )}
         </div>
 
-        <div className="border-t border-neutral-100 pt-4 space-y-1.5">
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-2 font-sans text-sm text-neutral-600 font-medium">
-              <PackageCheck className="size-4 text-brand shrink-0" />
-              Total Surplus Food
-            </span>
-            <span className="font-number-m text-neutral-900 tabular-nums">
-              {surplusSummary.totalWeightFormatted}
-            </span>
-          </div>
-          <p className="font-sans text-xs text-neutral-500">
-            {surplusSummary.totalItems === 0
-              ? "Belum ada catatan makanan surplus."
-              : `${surplusSummary.eligibleCount} jenis layak · ${surplusSummary.spoiledCount} basi/tidak layak`}
-          </p>
-        </div>
-
-        {/* Informasi Jadwal & Lokasi */}
-        <div className="border-t border-neutral-100 pt-4 space-y-3">
+        {/* Informasi Jadwal, Lokasi, dan Beneficiaries */}
+        <div className="flex flex-col gap-4">
           {infoItems.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.id} className="flex items-start gap-2.5">
-                <Icon className="size-4 text-neutral-500 mt-0.5 shrink-0" />
-                <div className="min-w-0">
-                  <p className="font-label text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+              <div key={item.id} className="flex items-start gap-3">
+                <div className="size-9 rounded-xl bg-bondi-50 text-brand flex items-center justify-center shrink-0">
+                  <Icon className="size-[18px]" />
+                </div>
+                <div className="min-w-0 flex-1 flex flex-col items-start">
+                  <p className="font-sans font-medium text-xs leading-4 text-neutral-500">
                     {item.label}
                   </p>
-                  <p className="font-sans text-[13px] font-medium text-neutral-900 leading-snug">
+                  <p className="font-sans font-semibold text-sm leading-5 text-neutral-900">
                     {item.value}
                   </p>
+                  {item.href && item.linkLabel && (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-sans font-semibold text-xs leading-4 text-brand hover:text-brand-hover hover:underline mt-0.5"
+                    >
+                      {item.linkLabel}
+                    </a>
+                  )}
                 </div>
               </div>
             );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Camera, Share2, Users } from "lucide-react";
+import { Camera, Sparkles, Users } from "lucide-react";
 import { z } from "zod";
 import {
   DonationDetailHeroesCard,
@@ -341,9 +341,9 @@ function DonationDetailPage() {
           </Button>
           <Button
             type="button"
-            variant="primary"
+            variant="accent"
             size="md"
-            leftIcon={<Share2 className="size-4" />}
+            leftIcon={<Sparkles className="size-5" />}
             onClick={() => setIsImpactDialogOpen(true)}
           >
             Bagikan Impact
