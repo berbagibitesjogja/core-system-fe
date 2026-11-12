@@ -46,10 +46,15 @@ export function DonationDetailSkeleton() {
                     <Skeleton className="size-8 rounded-full" />
                     <Skeleton className="h-4 w-32 rounded" />
                   </div>
-                  <Skeleton className="h-4 w-24 rounded hidden md:block" />
-                  <Skeleton className="h-4 w-36 rounded hidden md:block" />
-                  <Skeleton className="h-6 w-24 rounded-full" />
-                  <Skeleton className="h-8 w-28 rounded-full" />
+                  <div className="hidden md:flex flex-col gap-1.5">
+                    <Skeleton className="h-4 w-24 rounded" />
+                    <Skeleton className="h-3 w-36 rounded" />
+                  </div>
+                  <Skeleton className="h-4 w-16 rounded hidden md:block" />
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-8 w-28 rounded-full" />
+                    <Skeleton className="size-8 rounded-full" />
+                  </div>
                 </div>
               ))}
             </div>

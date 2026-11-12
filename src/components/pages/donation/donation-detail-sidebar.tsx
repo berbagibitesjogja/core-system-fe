@@ -154,7 +154,7 @@ export function DonationDetailSidebar({
 
         <Button
           type="button"
-          variant="secondary"
+          variant="primary"
           className="w-full"
           leftIcon={<Check className="size-5" />}
           isLoading={isSaving}

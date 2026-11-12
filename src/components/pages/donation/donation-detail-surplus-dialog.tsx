@@ -1,9 +1,7 @@
 import * as React from "react";
-import { X } from "lucide-react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
 import { Button } from "#/components/ui/button";
 import { Checkbox } from "#/components/ui/checkbox";
-import { IconButton } from "#/components/ui/icon-button";
 import { Input } from "#/components/ui/input";
 import { Textarea } from "#/components/ui/textarea";
 import type {
@@ -136,28 +134,16 @@ export function DonationDetailSurplusDialog({
     >
       <div className="bg-white rounded-[24px] p-6 w-full max-w-[480px] shadow-[0px_20px_24px_rgba(20,32,35,0.16)] border border-neutral-100 animate-in zoom-in-95 duration-150 motion-reduce:animate-none">
         {/* Header Modal */}
-        <div className="flex items-start justify-between gap-3 pb-4 border-b border-neutral-100">
-          <div>
-            <h2
-              id="surplus-dialog-title"
-              className="font-heading-h3 text-neutral-900"
-            >
-              {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
-            </h2>
-            <p className="font-sans text-sm text-neutral-600 mt-0.5">
-              Catat detail makanan yang masuk ke inventaris aksi donasi.
-            </p>
-          </div>
-          <IconButton
-            type="button"
-            variant="ghost"
-            size="sm"
-            aria-label="Tutup modal surplus food"
-            tooltip="Tutup"
-            onClick={onClose}
+        <div className="pb-4 border-b border-neutral-100">
+          <h2
+            id="surplus-dialog-title"
+            className="font-heading-h3 text-neutral-900"
           >
-            <X className="size-4" />
-          </IconButton>
+            {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
+          </h2>
+          <p className="font-sans text-sm text-neutral-600 mt-0.5">
+            Catat detail makanan yang masuk ke inventaris aksi donasi.
+          </p>
         </div>
 
         {/* Form Surplus Food */}

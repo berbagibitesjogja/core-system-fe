@@ -11,6 +11,7 @@ export interface DonationHeroClaimRecord {
   name: string;
   sectorName: string;
   beneficiaryName: string;
+  claimCode: string;
   status: DonationHeroPickupStatus;
   claimedAt?: string;
 }
@@ -118,8 +119,8 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Ahmad Fauzi",
     sectorName: "Sektor Utara",
     beneficiaryName: "Panti Asuhan Harapan",
-    status: "sudah-diambil",
-    claimedAt: "16:10 WIB",
+    claimCode: "482913",
+    status: "belum-diambil",
   },
   {
     id: "claim-2",
@@ -127,8 +128,8 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Siti Aminah",
     sectorName: "Sektor Selatan",
     beneficiaryName: "Rumah Singgah Harmoni",
-    status: "sudah-diambil",
-    claimedAt: "16:18 WIB",
+    claimCode: "730264",
+    status: "belum-diambil",
   },
   {
     id: "claim-3",
@@ -136,7 +137,9 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Rizky Ramadhan",
     sectorName: "Sektor Kota",
     beneficiaryName: "Komunitas Lansia Berkah",
-    status: "belum-diambil",
+    claimCode: "195837",
+    status: "sudah-diambil",
+    claimedAt: "16:10 WIB",
   },
   {
     id: "claim-4",
@@ -144,8 +147,9 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Putri Maharani",
     sectorName: "Sektor Sleman",
     beneficiaryName: "Yayasan Cahaya Bangsa",
+    claimCode: "608142",
     status: "sudah-diambil",
-    claimedAt: "16:25 WIB",
+    claimedAt: "16:18 WIB",
   },
   {
     id: "claim-5",
@@ -153,7 +157,9 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Dimas Kurniawan",
     sectorName: "Sektor Bantul",
     beneficiaryName: "Sekolah Rakyat Mandiri",
-    status: "belum-diambil",
+    claimCode: "357019",
+    status: "sudah-diambil",
+    claimedAt: "16:25 WIB",
   },
   {
     id: "claim-6",
@@ -161,6 +167,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Ayu Lestari",
     sectorName: "Sektor Timur",
     beneficiaryName: "Panti Asuhan Harapan",
+    claimCode: "924670",
     status: "sudah-diambil",
     claimedAt: "16:32 WIB",
   },
@@ -170,6 +177,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Budi Santoso",
     sectorName: "Sektor Utara",
     beneficiaryName: "Panti Asuhan Harapan",
+    claimCode: "518402",
     status: "sudah-diambil",
   },
   {
@@ -178,6 +186,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Anisa Rahma",
     sectorName: "Sektor Kota",
     beneficiaryName: "Rumah Singgah Harmoni",
+    claimCode: "842719",
     status: "sudah-diambil",
   },
   {
@@ -186,6 +195,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Hendra Wijaya",
     sectorName: "Sektor Sleman",
     beneficiaryName: "Komunitas Lansia Berkah",
+    claimCode: "293847",
     status: "sudah-diambil",
   },
   {
@@ -194,6 +204,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Nadia Rahmawati",
     sectorName: "Ekonomi",
     beneficiaryName: "Universitas Muhammadiyah Yogyakarta",
+    claimCode: "671204",
     status: "sudah-diambil",
   },
   {
@@ -202,6 +213,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Bayu Setiawan",
     sectorName: "Sektor Barat",
     beneficiaryName: "Yayasan Cahaya Bangsa",
+    claimCode: "104982",
     status: "belum-diambil",
   },
   {
@@ -210,6 +222,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Citra Dewi",
     sectorName: "Sektor Selatan",
     beneficiaryName: "Rumah Singgah Harmoni",
+    claimCode: "559301",
     status: "sudah-diambil",
   },
   {
@@ -218,6 +231,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Eko Prasetyo",
     sectorName: "Sektor Timur",
     beneficiaryName: "Sekolah Rakyat Mandiri",
+    claimCode: "782615",
     status: "sudah-diambil",
   },
   {
@@ -226,6 +240,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Fitri Handayani",
     sectorName: "Sektor Kota",
     beneficiaryName: "Panti Asuhan Harapan",
+    claimCode: "319450",
     status: "belum-diambil",
   },
   {
@@ -234,6 +249,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Gilang Permana",
     sectorName: "Sektor Utara",
     beneficiaryName: "Komunitas Lansia Berkah",
+    claimCode: "640128",
     status: "sudah-diambil",
   },
   {
@@ -242,6 +258,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Intan Sari",
     sectorName: "Sektor Sleman",
     beneficiaryName: "Yayasan Cahaya Bangsa",
+    claimCode: "885034",
     status: "sudah-diambil",
   },
   {
@@ -250,6 +267,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Joko Susilo",
     sectorName: "Sektor Bantul",
     beneficiaryName: "Rumah Singgah Harmoni",
+    claimCode: "412796",
     status: "sudah-diambil",
   },
   {
@@ -258,6 +276,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Kartika Sari",
     sectorName: "Sektor Kota",
     beneficiaryName: "Panti Asuhan Harapan",
+    claimCode: "903417",
     status: "sudah-diambil",
   },
   {
@@ -266,6 +285,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Lukman Hakim",
     sectorName: "Sektor Barat",
     beneficiaryName: "Sekolah Rakyat Mandiri",
+    claimCode: "276589",
     status: "belum-diambil",
   },
   {
@@ -274,6 +294,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Maya Kusuma",
     sectorName: "Sektor Selatan",
     beneficiaryName: "Komunitas Lansia Berkah",
+    claimCode: "531048",
     status: "sudah-diambil",
   },
   {
@@ -282,6 +303,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Naufal Aziz",
     sectorName: "Sektor Timur",
     beneficiaryName: "Yayasan Cahaya Bangsa",
+    claimCode: "694721",
     status: "sudah-diambil",
   },
   {
@@ -290,6 +312,7 @@ const hollandBakeryHeroes: DonationHeroClaimRecord[] = [
     name: "Rina Amelia",
     sectorName: "Sektor Utara",
     beneficiaryName: "Panti Asuhan Harapan",
+    claimCode: "815390",
     status: "sudah-diambil",
   },
 ];

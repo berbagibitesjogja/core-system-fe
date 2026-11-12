@@ -135,12 +135,14 @@ function DonationDetailPage() {
 
   const handleAddHero = React.useCallback(
     (candidate: DonationHeroSearchOption) => {
+      const generatedCode = String(100000 + (Date.now() % 900000));
       const newClaim: DonationHeroClaimRecord = {
         id: `claim-${Date.now()}`,
         heroId: candidate.id,
         name: candidate.name,
         sectorName: candidate.sectorName,
         beneficiaryName: candidate.beneficiaryName,
+        claimCode: generatedCode,
         status: "belum-diambil",
       };
 

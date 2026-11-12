@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Download, QrCode, X } from "lucide-react";
+import { Download, QrCode } from "lucide-react";
 import { toast } from "#/components/ui/toast";
 import ribbonTrailLoopSvg from "#/assets/illustrations/ribbon-trail-loop.svg";
 import volunteerHighFivePng from "#/assets/illustrations/volunteer-high-five.png";
 import { Button } from "#/components/ui/button";
-import { IconButton } from "#/components/ui/icon-button";
 import {
   calculateHeroesQuotaSummary,
   calculateSurplusSummary,
@@ -337,29 +336,17 @@ export function DonationDetailImpactDialog({
           {/* Kolom Kanan: Panel Unduh & Ringkasan */}
           <div className="flex flex-col justify-between gap-6">
             <div className="space-y-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h2
-                    id="impact-dialog-title"
-                    className="font-heading-h3 text-neutral-900"
-                  >
-                    Bagikan Impact
-                  </h2>
-                  <p className="font-sans text-sm text-neutral-600 mt-1">
-                    Unduh poster laporan dampak siap unggah untuk Instagram
-                    Story maupun laporan kepada mitra donatur.
-                  </p>
-                </div>
-                <IconButton
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  aria-label="Tutup modal bagikan impact"
-                  tooltip="Tutup"
-                  onClick={onClose}
+              <div>
+                <h2
+                  id="impact-dialog-title"
+                  className="font-heading-h3 text-neutral-900"
                 >
-                  <X className="size-4" />
-                </IconButton>
+                  Bagikan Impact
+                </h2>
+                <p className="font-sans text-sm text-neutral-600 mt-1">
+                  Unduh poster laporan dampak siap unggah untuk Instagram Story
+                  maupun laporan kepada mitra donatur.
+                </p>
               </div>
 
               <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-4 space-y-2.5">

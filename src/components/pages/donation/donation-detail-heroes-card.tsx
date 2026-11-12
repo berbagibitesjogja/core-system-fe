@@ -1,14 +1,5 @@
 import * as React from "react";
-import {
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Search,
-  Trash2,
-  User,
-  X,
-} from "lucide-react";
+import { Plus, Search, Trash2, User, X } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -30,7 +21,6 @@ import { cn } from "#/lib/utils";
 import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type {
   DonationHeroClaimRecord,
-  DonationHeroPickupStatus,
   DonationHeroSearchOption,
 } from "./donation-detail-data";
 
@@ -44,15 +34,6 @@ export interface DonationDetailHeroesCardProps {
 }
 
 const INITIAL_VISIBLE_HEROES = 6;
-
-const HERO_STATUS_BADGE_MAP: Record<
-  DonationHeroPickupStatus,
-  { tone: "success" | "warning" | "danger"; label: string }
-> = {
-  "sudah-diambil": { tone: "success", label: "Sudah Diambil" },
-  "belum-diambil": { tone: "warning", label: "Belum Diambil" },
-  "tidak-jadi-ambil": { tone: "danger", label: "Tidak Jadi Ambil" },
-};
 
 /**
  * DonationDetailHeroesCard: Menampilkan daftar heroes klaim, dropdown tambah heroes, konfirmasi pengambilan, dan keluarkan hero.
@@ -134,9 +115,11 @@ export function DonationDetailHeroesCard({
   const renderHeroActionButtons = (hero: DonationHeroClaimRecord) => {
     if (hero.status === "tidak-jadi-ambil") {
       return (
-        <span className="font-sans text-xs font-semibold text-red-700">
-          Kuota hangus
-        </span>
+        <div className="flex items-center justify-end gap-2">
+          <Badge tone="danger" styleVariant="soft">
+            Tidak Jadi Ambil
+          </Badge>
+        </div>
       );
     }
 
@@ -144,15 +127,9 @@ export function DonationDetailHeroesCard({
     return (
       <div className="flex items-center justify-end gap-2">
         {isPickedUp ? (
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            disabled
-            leftIcon={<Check className="size-3.5" />}
-          >
+          <Badge tone="success" styleVariant="soft">
             Sudah Diambil
-          </Button>
+          </Badge>
         ) : (
           <Button
             type="button"
@@ -188,7 +165,7 @@ export function DonationDetailHeroesCard({
   return (
     <section className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-visible">
       {/* Header Kartu Daftar Heroes */}
-      <div className="px-5 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
+      <div className="p-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
           <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
             Daftar Heroes
@@ -207,7 +184,7 @@ export function DonationDetailHeroesCard({
         <div ref={popoverWrapperRef} className="relative">
           <Button
             type="button"
-            variant="primary"
+            variant="secondary"
             size="sm"
             leftIcon={<Plus className="size-4" />}
             onClick={() => setIsAddOpen((prev) => !prev)}
@@ -361,13 +338,10 @@ export function DonationDetailHeroesCard({
                     Nama
                   </TableHead>
                   <TableHead className="uppercase tracking-[0.04em]">
-                    Sector
+                    Asal
                   </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Beneficiary
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Status
+                  <TableHead className="uppercase tracking-[0.04em] w-[110px]">
+                    Kode
                   </TableHead>
                   <TableHead
                     align="right"
@@ -379,7 +353,6 @@ export function DonationDetailHeroesCard({
               </TableHeader>
               <TableBody>
                 {visibleHeroes.map((hero) => {
-                  const statusConfig = HERO_STATUS_BADGE_MAP[hero.status];
                   const isForfeited = hero.status === "tidak-jadi-ambil";
 
                   return (
@@ -397,7 +370,7 @@ export function DonationDetailHeroesCard({
                           />
                           <span
                             className={cn(
-                              "font-sans font-semibold text-sm truncate",
+                              "font-sans font-normal text-sm leading-5 truncate",
                               isForfeited
                                 ? "text-neutral-500 line-through"
                                 : "text-neutral-900",
@@ -407,16 +380,18 @@ export function DonationDetailHeroesCard({
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="font-sans text-sm text-neutral-600">
-                        {hero.sectorName}
-                      </TableCell>
-                      <TableCell className="font-sans text-sm text-neutral-600">
-                        {hero.beneficiaryName}
-                      </TableCell>
                       <TableCell>
-                        <Badge tone={statusConfig.tone} styleVariant="soft" dot>
-                          {statusConfig.label}
-                        </Badge>
+                        <div className="flex flex-col items-start min-w-0">
+                          <p className="font-sans font-semibold text-sm leading-5 text-neutral-900 truncate">
+                            {hero.sectorName}
+                          </p>
+                          <p className="font-sans font-normal text-xs leading-4 text-neutral-600 truncate">
+                            {hero.beneficiaryName}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-sans font-normal text-sm text-neutral-900 tabular-nums">
+                        {hero.claimCode}
                       </TableCell>
                       <TableCell align="right">
                         {renderHeroActionButtons(hero)}
@@ -429,9 +404,8 @@ export function DonationDetailHeroesCard({
           </div>
 
           {/* Kartu Mobile */}
-          <div className="md:hidden divide-y divide-neutral-100">
+          <div className="md:hidden divide-y divide-neutral-100 border-t border-neutral-100">
             {visibleHeroes.map((hero) => {
-              const statusConfig = HERO_STATUS_BADGE_MAP[hero.status];
               const isForfeited = hero.status === "tidak-jadi-ambil";
 
               return (
@@ -457,16 +431,19 @@ export function DonationDetailHeroesCard({
                       >
                         {hero.name}
                       </p>
-                      <p className="font-sans text-xs text-neutral-500 truncate">
+                      <p className="font-sans text-xs text-neutral-600 truncate">
                         {hero.sectorName} · {hero.beneficiaryName}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    <Badge tone={statusConfig.tone} styleVariant="soft" dot>
-                      {statusConfig.label}
-                    </Badge>
+                    <span className="font-sans text-xs text-neutral-600 tabular-nums">
+                      Kode:{" "}
+                      <span className="font-medium text-neutral-900">
+                        {hero.claimCode}
+                      </span>
+                    </span>
                     {renderHeroActionButtons(hero)}
                   </div>
                 </div>
@@ -476,19 +453,12 @@ export function DonationDetailHeroesCard({
 
           {/* Footer Tampilkan Lainnya */}
           {hiddenCount > 0 && (
-            <div className="border-t border-neutral-100 px-5 py-3 flex justify-center bg-neutral-50/50 rounded-b-2xl">
+            <div className="p-4 flex justify-center bg-white rounded-b-2xl">
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded((prev) => !prev)}
-                rightIcon={
-                  isExpanded ? (
-                    <ChevronUp className="size-4" />
-                  ) : (
-                    <ChevronDown className="size-4" />
-                  )
-                }
                 className="text-brand hover:text-brand-hover hover:bg-bondi-50"
               >
                 {isExpanded
