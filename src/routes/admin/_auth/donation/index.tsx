@@ -163,7 +163,13 @@ function DonationPage() {
   };
 
   const handleView = (item: DonationItem) => {
-    toast.info(`Melihat detail donasi: ${item.donorName}`);
+    navigate({
+      to: "/admin/donation/detail",
+      search: {
+        id: item.id,
+        state: item.quotaClaimed === 0 ? "empty" : undefined,
+      },
+    });
   };
 
   const handleEdit = (item: DonationItem) => {

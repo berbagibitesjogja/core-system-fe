@@ -57,7 +57,7 @@ export function NavItem({
       : disabled
         ? "text-neutral-400"
         : isActive
-          ? "text-brand-strong"
+          ? "text-brand"
           : "text-neutral-500 group-hover:text-neutral-700",
   );
 
@@ -82,8 +82,9 @@ export function NavItem({
         <ChevronDown
           className={cn(
             "size-4 shrink-0 text-neutral-400 transition-transform duration-200",
+            isActive && "text-brand",
             isOpen && "rotate-180",
-            !isDanger && "group-hover:text-neutral-700",
+            !isDanger && !isActive && "group-hover:text-neutral-700",
           )}
         />
       )}
