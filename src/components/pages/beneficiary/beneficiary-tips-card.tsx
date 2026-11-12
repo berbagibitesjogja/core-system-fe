@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import beneficiaryTipsImg from "#/assets/illustrations/donation-tips.png";
+import beneficiaryTipsImg from "#/assets/illustrations/volunteer-checklist-idea.png";
 import { defaultBeneficiaryTips } from "./beneficiary-data";
 import type { BeneficiaryTipItem } from "./beneficiary-data";
 import { cn } from "#/lib/utils";

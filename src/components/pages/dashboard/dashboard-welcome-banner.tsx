@@ -1,5 +1,5 @@
-import dashboardTrailSvg from "#/assets/illustrations/dashboard-trail.svg";
-import dashboardCharitySvg from "#/assets/illustrations/dashboard-charity.svg";
+import dashboardTrailSvg from "#/assets/illustrations/ribbon-trail.svg";
+import dashboardCharitySvg from "#/assets/illustrations/charity-sharing.svg";
 
 export interface DashboardWelcomeBannerProps {
   userName?: string;

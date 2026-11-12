@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import donationTipsImg from "#/assets/illustrations/donation-tips.png";
+import donationTipsImg from "#/assets/illustrations/volunteer-checklist-idea.png";
 import { defaultDonationTips } from "./donation-data";
 import type { DonationTipItem } from "./donation-data";
 import { cn } from "#/lib/utils";
