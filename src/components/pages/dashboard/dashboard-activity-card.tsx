@@ -3,7 +3,7 @@ import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { RECENT_ACTIVITIES } from "./dashboard-data";
 import type { ActivityItem } from "./dashboard-data";
-import cariKosongSvg from "#/assets/illustrations/cari-kosong.svg";
+import cariKosongSvg from "#/assets/illustrations/magnifying-empty-box.svg";
 
 export interface DashboardActivityCardProps {
   activities?: ActivityItem[];

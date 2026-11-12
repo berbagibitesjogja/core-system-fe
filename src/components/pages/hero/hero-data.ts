@@ -1,6 +1,6 @@
-import statHeroBlocked from "#/assets/illustrations/stat-hero-blocked.svg";
-import statHeroMonth from "#/assets/illustrations/stat-hero-month.svg";
-import statHeroTotal from "#/assets/illustrations/stat-hero-total.svg";
+import statHeroBlocked from "#/assets/illustrations/volunteer-thinking.svg";
+import statHeroMonth from "#/assets/illustrations/volunteer-relaxing.svg";
+import statHeroTotal from "#/assets/illustrations/charity-family.svg";
 
 export type HeroStatus = "aktif" | "diblokir";
 

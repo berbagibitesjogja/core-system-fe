@@ -1,6 +1,6 @@
-import statCharityHeroes from "#/assets/illustrations/stat-charity-heroes.svg";
-import statDonationNearest from "#/assets/illustrations/stat-donation-nearest.svg";
-import statOrganicFood from "#/assets/illustrations/stat-organic-food.svg";
+import statCharityHeroes from "#/assets/illustrations/charity-family.svg";
+import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
+import statOrganicFood from "#/assets/illustrations/organic-food.svg";
 import { defaultBeneficiaries } from "./beneficiary-data";
 import type { BeneficiaryStatItem, BeneficiaryType } from "./beneficiary-data";
 

@@ -1,7 +1,7 @@
 import { Calendar, Heart } from "lucide-react";
-import blobStageSvg from "#/assets/illustrations/login-blob-stage.svg";
-import heroImg from "#/assets/illustrations/login-hero.png";
-import iconLeafSvg from "#/assets/icons/icon-leaf.svg";
+import blobStageSvg from "#/assets/illustrations/organic-blob.svg";
+import heroImg from "#/assets/illustrations/community-food-table.png";
+import iconLeafSvg from "#/assets/icons/leaf.svg";
 import {
   Avatar,
   Carousel,

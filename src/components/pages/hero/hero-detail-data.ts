@@ -1,6 +1,6 @@
-import statHeroFood from "#/assets/illustrations/stat-hero-food.svg";
-import statHeroPortions from "#/assets/illustrations/stat-hero-portions.svg";
-import statHeroTotal from "#/assets/illustrations/stat-hero-total.svg";
+import statHeroFood from "#/assets/illustrations/lunch-box.svg";
+import statHeroPortions from "#/assets/illustrations/ice-cream.svg";
+import statHeroTotal from "#/assets/illustrations/charity-family.svg";
 import { defaultHeroes } from "./hero-data";
 import type { HeroStatus } from "./hero-data";
 

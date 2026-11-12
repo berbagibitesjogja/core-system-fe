@@ -1,6 +1,6 @@
-import statDonationNearest from "#/assets/illustrations/stat-donation-nearest.svg";
-import statDonationQuota from "#/assets/illustrations/stat-donation-quota.svg";
-import statDonationActive from "#/assets/illustrations/stat-donation-active.svg";
+import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
+import statDonationQuota from "#/assets/illustrations/charity-family.svg";
+import statDonationActive from "#/assets/illustrations/lunch-box.svg";
 
 export type DonationProgram = "Food Rescue" | "CSR";
 export type DonationStatus = "Aktif" | "Selesai";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import raguHapusSvg from "#/assets/illustrations/ragu-hapus.svg";
+import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
 
 export interface HeroIllustrationDialogProps {
   isOpen: boolean;
