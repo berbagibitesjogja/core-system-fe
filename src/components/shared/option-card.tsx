@@ -46,14 +46,14 @@ export function OptionCard({
         }
       }}
       className={cn(
-        "relative flex flex-col gap-3 p-4 rounded-[12px] transition-all duration-150 select-none cursor-pointer outline-none text-left w-full",
+        "relative flex flex-col gap-3 p-4 rounded-[12px] border transition-colors duration-150 select-none cursor-pointer outline-none text-left w-full min-w-0",
         isError
-          ? "bg-white border-2 border-[#ef4444]"
+          ? "bg-white border-[#ef4444] after:content-[''] after:pointer-events-none after:absolute after:-inset-px after:rounded-[12px] after:border-2 after:border-[#ef4444]"
           : isSelected
-            ? "bg-[#e6f5f6] border-2 border-[#009ca6] shadow-2xs"
+            ? "bg-[#e6f5f6] border-[#009ca6] shadow-2xs after:content-[''] after:pointer-events-none after:absolute after:-inset-px after:rounded-[12px] after:border-2 after:border-[#009ca6]"
             : isHover
-              ? "bg-[#eef1f2] border border-[#cdd4d6]"
-              : "bg-white border border-[#e2e7e8] hover:bg-[#eef1f2] hover:border-[#cdd4d6]",
+              ? "bg-[#eef1f2] border-[#cdd4d6]"
+              : "bg-white border-[#e2e7e8] hover:bg-[#eef1f2] hover:border-[#cdd4d6]",
         disabled && "opacity-50 cursor-not-allowed pointer-events-none",
         "focus-visible:ring-3 focus-visible:ring-[#b0e0e3]",
         className,
