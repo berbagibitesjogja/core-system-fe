@@ -36,7 +36,7 @@ const heroSearchSchema = z.object({
 
 export type HeroSearchParams = z.infer<typeof heroSearchSchema>;
 
-export const Route = createFileRoute("/admin/_auth/hero")({
+export const Route = createFileRoute("/admin/_auth/hero/")({
   validateSearch: (search: Record<string, unknown>) => {
     return heroSearchSchema.parse({
       beneficiary:
@@ -294,9 +294,13 @@ function HeroPage() {
   };
 
   const handleViewDetail = (hero: HeroRecord) => {
-    toast.info(
-      `Detail hero ${hero.name} (${hero.sectorName} · ${hero.actionCount} Aksi).`,
-    );
+    navigate({
+      to: "/admin/hero/detail",
+      search: {
+        id: hero.id,
+        state: hero.actionCount === 0 ? "empty" : undefined,
+      },
+    });
   };
 
   const handleRequestDelete = (hero: HeroRecord) => {

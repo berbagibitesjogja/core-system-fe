@@ -8,3 +8,7 @@ export * from "./hero-form-dialog";
 export * from "./hero-illustration-dialog";
 export * from "./hero-delete-dialog";
 export * from "./hero-cannot-delete-dialog";
+export * from "./hero-detail-data";
+export * from "./hero-detail-stats";
+export * from "./hero-detail-history-table";
+export * from "./hero-detail-skeleton";
