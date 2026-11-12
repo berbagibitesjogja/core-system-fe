@@ -2,6 +2,7 @@ import * as React from "react";
 import { Inbox } from "lucide-react";
 import { cn } from "#/lib/utils";
 import cariKosongSvg from "#/assets/illustrations/cari-kosong.svg";
+import santaiKosongSvg from "#/assets/illustrations/santai-kosong.svg";
 
 export interface IllustrationCariKosongProps {
   className?: string;
@@ -18,6 +19,25 @@ export function IllustrationCariKosong({
   return (
     <img
       src={cariKosongSvg}
+      alt={alt}
+      className={cn(
+        "size-full object-contain pointer-events-none select-none",
+        className,
+      )}
+    />
+  );
+}
+
+/**
+ * IllustrationSantaiKosong: Komponen visual ilustrasi SVG santai kosong BBJ (Figma Node 140:11150).
+ */
+export function IllustrationSantaiKosong({
+  className,
+  alt = "Ilustrasi belum ada riwayat",
+}: IllustrationCariKosongProps) {
+  return (
+    <img
+      src={santaiKosongSvg}
       alt={alt}
       className={cn(
         "size-full object-contain pointer-events-none select-none",
