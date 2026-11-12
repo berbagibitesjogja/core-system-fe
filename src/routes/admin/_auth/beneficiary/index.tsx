@@ -33,7 +33,7 @@ const beneficiarySearchSchema = z.object({
 
 export type BeneficiarySearchParams = z.infer<typeof beneficiarySearchSchema>;
 
-export const Route = createFileRoute("/admin/_auth/beneficiary")({
+export const Route = createFileRoute("/admin/_auth/beneficiary/")({
   validateSearch: (search: Record<string, unknown>) => {
     return beneficiarySearchSchema.parse({
       category: typeof search.category === "string" ? search.category : "all",
@@ -159,7 +159,7 @@ function BeneficiaryPage() {
   };
 
   const handleAddBeneficiary = () => {
-    toast.info("Formulir tambah penerima manfaat akan segera tersedia.");
+    navigate({ to: "/admin/beneficiary/add" });
   };
 
   const handleDetailItem = (item: BeneficiaryItem) => {
@@ -167,7 +167,10 @@ function BeneficiaryPage() {
   };
 
   const handleEditItem = (item: BeneficiaryItem) => {
-    toast.info(`Mengedit data penerima: ${item.name}`);
+    navigate({
+      to: "/admin/beneficiary/edit",
+      search: { id: item.id },
+    });
   };
 
   const handleDeleteTrigger = (item: BeneficiaryItem) => {

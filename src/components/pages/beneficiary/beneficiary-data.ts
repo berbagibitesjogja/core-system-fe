@@ -237,3 +237,70 @@ export function buildBeneficiaryFilterOptions(
     },
   ];
 }
+
+export type BeneficiaryFormCategoryId = Exclude<BeneficiaryCategoryId, "all">;
+
+export interface BeneficiaryFormData {
+  id?: string;
+  categoryId: BeneficiaryFormCategoryId | "";
+  name: string;
+}
+
+export interface BeneficiaryCategoryOption {
+  id: BeneficiaryFormCategoryId;
+  title: BeneficiaryType;
+  description: string;
+  iconName: "building" | "heart" | "users";
+}
+
+export interface BeneficiaryTipItem {
+  id: string;
+  text: string;
+}
+
+export const defaultEmptyBeneficiaryForm: BeneficiaryFormData = {
+  categoryId: "",
+  name: "",
+};
+
+export const defaultEditBeneficiaryData: BeneficiaryFormData = {
+  id: "ben-1",
+  categoryId: "universitas",
+  name: "Universitas Gadjah Mada",
+};
+
+export const defaultBeneficiaryCategoryOptions: BeneficiaryCategoryOption[] = [
+  {
+    id: "universitas",
+    title: "Universitas",
+    description: "Kampus, fakultas, dan mahasiswa",
+    iconName: "building",
+  },
+  {
+    id: "yayasan",
+    title: "Yayasan",
+    description: "Yayasan, panti asuhan, dan panti werdha",
+    iconName: "heart",
+  },
+  {
+    id: "masyarakat-umum",
+    title: "Masyarakat Umum",
+    description: "Warga, komunitas, dan kampung",
+    iconName: "users",
+  },
+];
+
+export const defaultBeneficiaryTips: BeneficiaryTipItem[] = [
+  {
+    id: "tip-1",
+    text: "Satu kampus cukup didaftarkan sekali. Fakultas ditambahkan sebagai sektor di halaman detail.",
+  },
+  {
+    id: "tip-2",
+    text: "Pakai nama resmi supaya mudah dicari saat membuat donasi.",
+  },
+  {
+    id: "tip-3",
+    text: "Jenis penerima menentukan pengelompokan di laporan dampak.",
+  },
+];

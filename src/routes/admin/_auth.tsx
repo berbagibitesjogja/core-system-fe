@@ -27,6 +27,8 @@ const routeTitles: Partial<Record<string, string>> = {
   "/admin/donation/add": "Tambah Donasi",
   "/admin/donation/edit": "Edit Donasi",
   "/admin/beneficiary": "Beneficiaries",
+  "/admin/beneficiary/add": "Tambah Beneficiary",
+  "/admin/beneficiary/edit": "Edit Beneficiary",
   "/admin/hero": "Heroes",
   "/admin/partner": "Partner",
   "/admin/reimburse/request": "Ajukan Reimburse",
@@ -42,6 +44,8 @@ const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/donation/edit": "Perbarui informasi aksi donasi",
   "/admin/beneficiary":
     "Kelompok penerima manfaat dan dampak yang mereka terima",
+  "/admin/beneficiary/add": "Daftarkan penerima manfaat baru",
+  "/admin/beneficiary/edit": "Perbarui data penerima manfaat",
 };
 
 /**
