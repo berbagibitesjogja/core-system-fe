@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button } from "#/components/ui/button";
-import raguHapusSvg from "#/assets/illustrations/ragu-hapus.svg";
+import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
 import type { DonationItem } from "./donation-data";
 
 export interface DonationDeleteDialogProps {

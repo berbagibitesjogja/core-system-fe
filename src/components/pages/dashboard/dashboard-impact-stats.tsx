@@ -1,8 +1,8 @@
 import { Leaf, Package, Users } from "lucide-react";
 import { StatCard } from "#/components/shared/stat-card";
-import statFastFoodSvg from "#/assets/illustrations/stat-fast-food.svg";
-import statOrganicFoodSvg from "#/assets/illustrations/stat-organic-food.svg";
-import statCharityHeroesSvg from "#/assets/illustrations/stat-charity-heroes.svg";
+import statFastFoodSvg from "#/assets/illustrations/fast-food.svg";
+import statOrganicFoodSvg from "#/assets/illustrations/organic-food.svg";
+import statCharityHeroesSvg from "#/assets/illustrations/charity-family.svg";
 import { DEFAULT_IMPACT_STATS } from "./dashboard-data";
 import type { ImpactStatItem } from "./dashboard-data";
 

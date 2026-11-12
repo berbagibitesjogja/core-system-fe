@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Inbox } from "lucide-react";
 import { cn } from "#/lib/utils";
-import cariKosongSvg from "#/assets/illustrations/cari-kosong.svg";
-import santaiKosongSvg from "#/assets/illustrations/santai-kosong.svg";
+import cariKosongSvg from "#/assets/illustrations/magnifying-empty-box.svg";
+import santaiKosongSvg from "#/assets/illustrations/volunteer-relaxing.svg";
 
 export interface IllustrationCariKosongProps {
   className?: string;
