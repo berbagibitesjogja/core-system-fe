@@ -40,6 +40,8 @@ const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/donation": "Kelola aksi food rescue dan CSR beserta kuota heroes-nya",
   "/admin/donation/add": "Buat aksi food rescue baru",
   "/admin/donation/edit": "Perbarui informasi aksi donasi",
+  "/admin/beneficiary":
+    "Kelompok penerima manfaat dan dampak yang mereka terima",
 };
 
 /**

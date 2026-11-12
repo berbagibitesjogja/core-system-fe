@@ -1,7 +1,11 @@
-import { Edit2, ExternalLink, Trash2 } from "lucide-react";
+import { Pencil, Search, Trash2 } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
-import { ProgressBar } from "./progress-bar";
+import { Badge } from "#/components/ui/badge";
+import type { BadgeProps } from "#/components/ui/badge";
+import { Button } from "#/components/ui/button";
+import { IconButton } from "#/components/ui/icon-button";
 import { cn } from "#/lib/utils";
+import { ProgressBar } from "./progress-bar";
 
 export interface BeneficiaryCardProps {
   id?: string;
@@ -22,6 +26,48 @@ export interface BeneficiaryCardProps {
   className?: string;
 }
 
+const categoryBadgeConfig: Record<
+  string,
+  { tone: BadgeProps["tone"]; className: string }
+> = {
+  universitas: {
+    tone: "brand",
+    className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+  },
+  kampus: {
+    tone: "brand",
+    className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+  },
+  yayasan: {
+    tone: "accent",
+    className: "bg-[#fff1b8] text-[#142023] border-transparent px-2",
+  },
+  "panti asuhan": {
+    tone: "accent",
+    className: "bg-[#fff1b8] text-[#142023] border-transparent px-2",
+  },
+  "masyarakat umum": {
+    tone: "info",
+    className: "bg-[#eff6ff] text-[#1d4ed8] border-transparent px-2",
+  },
+  "komunitas warga": {
+    tone: "info",
+    className: "bg-[#eff6ff] text-[#1d4ed8] border-transparent px-2",
+  },
+};
+
+function getCategoryBadgeConfig(type: string) {
+  return (
+    categoryBadgeConfig[type.trim().toLowerCase()] ?? {
+      tone: "brand" as const,
+      className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+    }
+  );
+}
+
+/**
+ * BeneficiaryCard: Kartu ringkasan kelompok penerima manfaat dan metrik kontribusi.
+ */
 export function BeneficiaryCard({
   name,
   type,
@@ -30,6 +76,7 @@ export function BeneficiaryCard({
   avatarName,
   heroesCount,
   impactCount,
+  impactUnit = "Kg",
   sharePercent,
   shareText,
   showDelete = true,
@@ -38,6 +85,12 @@ export function BeneficiaryCard({
   onDelete,
   className,
 }: BeneficiaryCardProps) {
+  const badgeConfig = getCategoryBadgeConfig(type);
+  const progressValue =
+    sharePercent <= 0
+      ? 0
+      : Math.max(5, Math.min(100, Math.round(sharePercent / 5) * 5));
+
   return (
     <div
       className={cn(
@@ -45,8 +98,8 @@ export function BeneficiaryCard({
         className,
       )}
     >
-      {/* Header */}
-      <div className="flex items-center gap-3 min-h-[64px] w-full">
+      {/* Header kartu: Avatar, Nama, Kategori, dan Peringkat */}
+      <div className="flex items-center gap-3 min-h-[76px] w-full">
         <Avatar
           src={avatarSrc}
           name={avatarName || name}
@@ -56,12 +109,16 @@ export function BeneficiaryCard({
         />
 
         <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-[#142023] truncate">
+          <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-[#142023] line-clamp-2">
             {name}
           </p>
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#e6f5f6] text-[#00464b] font-['Inter'] font-semibold text-[12px] leading-[16px] w-fit">
+          <Badge
+            tone={badgeConfig.tone}
+            styleVariant="soft"
+            className={cn("w-fit", badgeConfig.className)}
+          >
             {type}
-          </div>
+          </Badge>
         </div>
 
         {rank && (
@@ -71,9 +128,8 @@ export function BeneficiaryCard({
         )}
       </div>
 
-      {/* Stats */}
+      {/* Statistik Heroes & Impact */}
       <div className="flex gap-4 items-start w-full">
-        {/* Stat / Heroes */}
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
             Heroes
@@ -88,10 +144,8 @@ export function BeneficiaryCard({
           </div>
         </div>
 
-        {/* Divider */}
         <div className="w-px self-stretch bg-[#e2e7e8] shrink-0" />
 
-        {/* Stat / Impact */}
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
             Impact
@@ -101,49 +155,53 @@ export function BeneficiaryCard({
               {impactCount}
             </span>
             <span className="font-['Inter'] font-semibold text-[14px] text-[#4d585b]">
-              Kg
+              {impactUnit}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Share Progress */}
+      {/* Indikator porsi kontribusi */}
       <div className="flex flex-col gap-2 w-full">
-        <ProgressBar value={sharePercent} color="brand" />
+        <ProgressBar value={progressValue} color="brand" />
         <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
-          {shareText || `${sharePercent}% dari kuota bulanan tersalurkan`}
+          {shareText || `${sharePercent}% dari total heroes BBJ`}
         </p>
       </div>
 
-      {/* Actions */}
+      {/* Baris tombol aksi kartu */}
       <div className="flex items-center gap-2 w-full">
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          size="sm"
+          leftIcon={<Search className="size-4" />}
           onClick={onDetail}
-          className="flex-1 h-[38px] px-4 rounded-full bg-white border border-[#cdd4d6] hover:bg-[#eef1f2] font-['Inter'] font-semibold text-[14px] text-[#142023] inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          className="flex-1"
         >
-          <ExternalLink className="size-4" />
-          <span>Detail</span>
-        </button>
+          Detail
+        </Button>
 
-        <button
-          type="button"
-          onClick={onEdit}
-          className="size-[36px] rounded-full bg-white border border-[#cdd4d6] hover:bg-[#eef1f2] flex items-center justify-center text-[#142023] transition-colors cursor-pointer shrink-0"
+        <IconButton
+          variant="secondary"
+          size="sm"
+          tooltip="Edit penerima"
           aria-label="Edit penerima"
+          onClick={onEdit}
         >
-          <Edit2 className="size-[16px]" />
-        </button>
+          <Pencil />
+        </IconButton>
 
         {showDelete && (
-          <button
-            type="button"
-            onClick={onDelete}
-            className="size-[36px] rounded-full bg-white border border-[#cdd4d6] hover:bg-red-50 hover:border-red-200 hover:text-red-600 flex items-center justify-center text-[#142023] transition-colors cursor-pointer shrink-0"
+          <IconButton
+            variant="secondary"
+            size="sm"
+            tooltip="Hapus penerima"
             aria-label="Hapus penerima"
+            onClick={onDelete}
+            className="text-[#dc2626] hover:bg-red-50 hover:border-red-200 hover:text-[#b91c1c]"
           >
-            <Trash2 className="size-[16px]" />
-          </button>
+            <Trash2 />
+          </IconButton>
         )}
       </div>
     </div>

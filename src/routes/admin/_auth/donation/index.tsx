@@ -17,10 +17,10 @@ import type { DonationItem } from "#/components/pages/donation";
 
 // Skema validasi Search Params URL tipe-aman Zod sesuai standar WP4 & GEMINI.md
 const donationSearchSchema = z.object({
-  page: z.coerce.number().int().positive().catch(1),
-  per_page: z.coerce.number().int().positive().catch(10),
+  page: z.coerce.number().int().positive().optional().catch(1),
+  per_page: z.coerce.number().int().positive().optional().catch(10),
   search: z.string().optional().catch(""),
-  program: z.enum(["all", "food-rescue", "csr"]).catch("all"),
+  program: z.enum(["all", "food-rescue", "csr"]).optional().catch("all"),
   from: z.string().optional().catch(""),
   to: z.string().optional().catch(""),
   sort: z.enum(["asc", "desc"]).optional().catch("desc"),
