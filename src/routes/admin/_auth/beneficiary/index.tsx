@@ -163,7 +163,10 @@ function BeneficiaryPage() {
   };
 
   const handleDetailItem = (item: BeneficiaryItem) => {
-    toast.info(`Melihat detail penerima: ${item.name}`);
+    navigate({
+      to: "/admin/beneficiary/detail",
+      search: { id: item.id },
+    });
   };
 
   const handleEditItem = (item: BeneficiaryItem) => {

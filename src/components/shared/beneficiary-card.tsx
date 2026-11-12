@@ -56,7 +56,8 @@ const categoryBadgeConfig: Record<
   },
 };
 
-function getCategoryBadgeConfig(type: string) {
+// Memetakan jenis kelompok penerima manfaat ke gaya Badge konsisten
+export function getCategoryBadgeConfig(type: string) {
   return (
     categoryBadgeConfig[type.trim().toLowerCase()] ?? {
       tone: "brand" as const,
