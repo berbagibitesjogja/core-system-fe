@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Avatar } from "#/components/ui/avatar";
 import type { AvatarShape, AvatarSize } from "#/components/ui/avatar";
 import { cn } from "#/lib/utils";
@@ -6,7 +7,7 @@ export type EntityIdentityType = "hero" | "volunteer" | "partner";
 
 export interface EntityIdentityProps {
   name: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   avatarSrc?: string;
   entityType?: EntityIdentityType;
   shape?: AvatarShape;

@@ -61,6 +61,7 @@ const routeSubtitles: Partial<Record<string, string>> = {
     "Ajukan penggantian biaya operasional dan pantau statusnya",
   "/admin/reimburse/data":
     "Verifikasi klaim biaya operasional dan catat pencairannya",
+  "/admin/volunteer": "Anggota tim dan relawan Berbagi Bites Jogja",
   "/admin/profile": "Kelola data akun yang sedang kamu pakai",
 };
 
