@@ -31,6 +31,7 @@ export interface PartnerProfileContactItem {
 export interface PartnerDetailData {
   id: string;
   name: string;
+  avatarSrc?: string;
   type: PartnerType;
   rank: number | null;
   subtitle: string;
@@ -250,6 +251,7 @@ export function getPartnerDetailById(
     return {
       id: target.id,
       name: target.name,
+      avatarSrc: target.avatarSrc,
       type: target.type,
       rank: null,
       subtitle: "Donatur baru · belum ada aksi",
@@ -279,6 +281,7 @@ export function getPartnerDetailById(
   return {
     id: target.id,
     name: target.name,
+    avatarSrc: target.avatarSrc,
     type: target.type,
     rank,
     subtitle:

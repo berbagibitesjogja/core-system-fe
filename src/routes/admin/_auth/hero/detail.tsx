@@ -25,6 +25,7 @@ import { Alert } from "#/components/ui/alert";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { toast } from "#/components/ui/toast";
+import { getHeroAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { useAdminLayout } from "#/routes/admin/_auth";
 
@@ -111,12 +112,28 @@ function HeroDetailPage() {
     setHeaderOverride({
       title: detail.name,
       subtitle: `Hero sejak ${detail.joinedLongLabel}`,
+      avatar: {
+        src: getHeroAvatarSrc({
+          id: detail.id,
+          name: detail.name,
+          avatarSrc: detail.avatarSrc,
+        }),
+        name: detail.name,
+        shape: "circle",
+      },
       onBack: () => navigate({ to: "/admin/hero" }),
       backLabel: "Kembali",
     });
 
     return () => setHeaderOverride(null);
-  }, [setHeaderOverride, detail.name, detail.joinedLongLabel, navigate]);
+  }, [
+    setHeaderOverride,
+    detail.id,
+    detail.name,
+    detail.avatarSrc,
+    detail.joinedLongLabel,
+    navigate,
+  ]);
 
   // Helper pembaruan URL query params secara tipe-aman
   const updateSearch = React.useCallback(
@@ -205,6 +222,7 @@ function HeroDetailPage() {
       id: detail.id,
       name: detail.name,
       phone: detail.phone,
+      avatarSrc: detail.avatarSrc,
       beneficiaryId: detail.beneficiaryId,
       beneficiaryName: detail.beneficiaryName,
       sectorId: detail.sectorId,

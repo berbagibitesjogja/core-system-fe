@@ -12,6 +12,7 @@ export interface PartnerRecord {
   id: string;
   name: string;
   initials?: string;
+  avatarSrc?: string;
   type: PartnerType;
   categoryId: Exclude<PartnerCategoryId, "all">;
   donationCount: number;

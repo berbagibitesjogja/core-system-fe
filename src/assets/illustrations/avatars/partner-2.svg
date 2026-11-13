@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none">
+  <!-- Background Square (Soft Mint) -->
+  <rect width="100" height="100" fill="#CCFBF1" />
+
+  <!-- Ground Line -->
+  <path d="M16 84 H84" stroke="#005E64" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Side Wings -->
+  <rect x="20" y="42" width="16" height="42" rx="3" fill="#4CB9C0" stroke="#005E64" stroke-width="2.2" />
+  <rect x="64" y="42" width="16" height="42" rx="3" fill="#4CB9C0" stroke="#005E64" stroke-width="2.2" />
+
+  <!-- Main Hotel Tower -->
+  <rect x="33" y="22" width="34" height="62" rx="4" fill="#FFFFFF" stroke="#005E64" stroke-width="2.5" />
+  <!-- Roof Accent -->
+  <rect x="39" y="15" width="22" height="7" rx="3" fill="#F5BC00" stroke="#005E64" stroke-width="2.2" />
+
+  <!-- Glowing Windows -->
+  <rect x="40" y="31" width="7" height="7" rx="1.5" fill="#FFDA57" />
+  <rect x="53" y="31" width="7" height="7" rx="1.5" fill="#FFDA57" />
+  <rect x="40" y="44" width="7" height="7" rx="1.5" fill="#009CA6" />
+  <rect x="53" y="44" width="7" height="7" rx="1.5" fill="#009CA6" />
+  <rect x="40" y="57" width="7" height="7" rx="1.5" fill="#FFDA57" />
+  <rect x="53" y="57" width="7" height="7" rx="1.5" fill="#FFDA57" />
+
+  <!-- Canopy Entrance -->
+  <path d="M42 84 V71 C42 69 44 68 46 68 H54 C56 68 58 69 58 71 V84 Z" fill="#007D85" />
+</svg>

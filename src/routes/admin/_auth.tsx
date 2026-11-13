@@ -35,8 +35,8 @@ const routeTitles: Partial<Record<string, string>> = {
   "/admin/hero/detail": "Detail Hero",
   "/admin/partner": "Partner",
   "/admin/partner/detail": "Detail Partner",
-  "/admin/reimburse/request": "Ajukan Reimburse",
-  "/admin/reimburse/data": "Data Reimburse",
+  "/admin/reimburse/request": "Reimburse",
+  "/admin/reimburse/data": "Manajemen Reimburse",
   "/admin/volunteer": "Volunteer",
   "/admin/profile": "Profil Pengguna",
   "/admin/logs": "Logs Sistem",
@@ -58,6 +58,10 @@ const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/hero/detail": "Riwayat pengambilan donasi dan informasi hero",
   "/admin/partner": "Mitra penyumbang makanan dan kontribusinya untuk BBJ",
   "/admin/partner/detail": "Profil donatur dan riwayat kontribusi aksi",
+  "/admin/reimburse/request":
+    "Ajukan penggantian biaya operasional dan pantau statusnya",
+  "/admin/reimburse/data":
+    "Verifikasi klaim biaya operasional dan catat pencairannya",
 };
 
 /**
@@ -101,6 +105,7 @@ function AdminLayout() {
         <Header
           title={currentTitle}
           subtitle={currentSubtitle}
+          avatar={headerOverride?.avatar}
           onMenuToggle={() => setMobileSidebarOpen(true)}
           onBack={headerOverride?.onBack}
           backHref={headerOverride?.backHref}

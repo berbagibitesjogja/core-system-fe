@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
+import { getPresetAvatarSrc } from "#/lib/avatars";
 import { RECENT_ACTIVITIES } from "./dashboard-data";
 import type { ActivityItem } from "./dashboard-data";
 import cariKosongSvg from "#/assets/illustrations/magnifying-empty-box.svg";
@@ -62,10 +63,12 @@ export function DashboardActivityCard({
                 className="flex items-center gap-3 py-3 first:pt-1 last:pb-1"
               >
                 <Avatar
+                  src={item.avatarSrc ?? getPresetAvatarSrc(item.actor)}
+                  alt={item.actor}
                   name={item.actor}
                   size="sm"
                   shape="circle"
-                  className="bg-bondi-50 border-bondi-200 text-brand-strong font-semibold shrink-0"
+                  className="shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
                 />
 
                 <div className="flex-1 min-w-0 text-xs sm:text-sm text-neutral-600 leading-snug">

@@ -10,6 +10,8 @@ export interface DialogProps {
   description?: string;
   children?: React.ReactNode;
   tone?: "default" | "danger";
+  icon?: React.ReactNode;
+  iconTone?: "brand" | "success" | "danger";
   confirmText?: string;
   cancelText?: string;
   onConfirm?: () => void;
@@ -24,6 +26,8 @@ export function Dialog({
   description,
   children,
   tone = "default",
+  icon,
+  iconTone,
   confirmText,
   cancelText = "Batal",
   onConfirm,
@@ -47,6 +51,12 @@ export function Dialog({
   if (!isOpen) return null;
 
   const isDanger = tone === "danger";
+  const resolvedIconTone = iconTone ?? (isDanger ? "danger" : "brand");
+  const iconToneClasses: Record<"brand" | "success" | "danger", string> = {
+    brand: "bg-bondi-50 text-brand",
+    success: "bg-green-50 text-green-700",
+    danger: "bg-red-50 text-red-600",
+  };
   const defaultConfirmText = isDanger ? "Hapus" : "Simpan";
   const effectiveConfirmText = confirmText || defaultConfirmText;
 
@@ -71,14 +81,15 @@ export function Dialog({
           <div
             className={cn(
               "size-12 rounded-full flex items-center justify-center shrink-0",
-              isDanger ? "bg-red-50 text-red-600" : "bg-bondi-50 text-brand",
+              iconToneClasses[resolvedIconTone],
             )}
           >
-            {isDanger ? (
-              <AlertTriangle className="size-6" />
-            ) : (
-              <HelpCircle className="size-6" />
-            )}
+            {icon ??
+              (isDanger ? (
+                <AlertTriangle className="size-6" />
+              ) : (
+                <HelpCircle className="size-6" />
+              ))}
           </div>
           <div className="space-y-1">
             <h3 className="font-heading-h3 text-xl font-bold text-neutral-900 leading-tight">

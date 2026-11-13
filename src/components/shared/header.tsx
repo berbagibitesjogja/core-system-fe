@@ -2,12 +2,21 @@ import * as React from "react";
 import { ArrowLeft, Menu as MenuIcon } from "lucide-react";
 import { UserProfileMenu } from "./user-profile-menu";
 import type { UserProfileMenuProps } from "./user-profile-menu";
+import { Avatar } from "#/components/ui/avatar";
+import type { AvatarShape } from "#/components/ui/avatar";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+
+export interface HeaderAvatarProps {
+  src?: string;
+  name: string;
+  shape?: AvatarShape;
+}
 
 export interface HeaderProps {
   title?: string;
   subtitle?: string;
+  avatar?: HeaderAvatarProps;
   onMenuToggle?: () => void;
   user?: UserProfileMenuProps;
   actions?: React.ReactNode;
@@ -38,6 +47,7 @@ export function formatIndonesianDate(date: Date = new Date()): string {
 export function Header({
   title = "Dashboard",
   subtitle,
+  avatar,
   onMenuToggle,
   user,
   actions,
@@ -102,14 +112,28 @@ export function Header({
             </button>
           )}
 
-          <h1 className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7 truncate">
-            {title}
-          </h1>
-          {displaySubtitle && (
-            <p className="font-sans text-xs text-neutral-500 leading-4 mt-0.5 truncate">
-              {displaySubtitle}
-            </p>
-          )}
+          <div className="flex items-center gap-3 min-w-0">
+            {avatar && (
+              <Avatar
+                src={avatar.src}
+                alt={avatar.name}
+                name={avatar.name}
+                size="md"
+                shape={avatar.shape ?? "circle"}
+                className="shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
+              />
+            )}
+            <div className="flex flex-col min-w-0">
+              <h1 className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7 truncate">
+                {title}
+              </h1>
+              {displaySubtitle && (
+                <p className="font-sans text-xs text-neutral-500 leading-4 mt-0.5 truncate">
+                  {displaySubtitle}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

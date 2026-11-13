@@ -4,6 +4,7 @@ import { ChevronDown, HelpCircle, LogOut, Settings, User } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { Menu, MenuItem } from "#/components/ui/menu";
+import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 
 export interface UserProfileMenuItemConfig {
@@ -94,6 +95,7 @@ export function UserProfileMenu({
   }, [isOpen]);
 
   const subtitle = division ? `${role} · ${division}` : role;
+  const resolvedAvatarSrc = avatarSrc ?? getPresetAvatarSrc(name);
 
   return (
     <div ref={containerRef} className={cn("relative inline-block", className)}>
@@ -117,11 +119,12 @@ export function UserProfileMenu({
         )}
       >
         <Avatar
-          src={avatarSrc}
+          src={resolvedAvatarSrc}
+          alt={name}
           name={name}
           size="md"
           shape="circle"
-          className="bg-bondi-50 border-bondi-200 text-bondi-900 shrink-0"
+          className="shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
         />
 
         <div
@@ -165,12 +168,24 @@ export function UserProfileMenu({
                   {role}
                 </Badge>
               </div>
-              <p className="font-label text-sm font-semibold text-neutral-900 truncate mt-1">
-                {name}
-              </p>
-              <p className="font-sans text-xs text-neutral-500 truncate">
-                {email}
-              </p>
+              <div className="mt-1.5 flex items-center gap-2.5 min-w-0">
+                <Avatar
+                  src={resolvedAvatarSrc}
+                  alt={name}
+                  name={name}
+                  size="sm"
+                  shape="circle"
+                  className="shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
+                />
+                <div className="min-w-0">
+                  <p className="font-sans text-sm font-semibold leading-5 text-neutral-900 truncate">
+                    {name}
+                  </p>
+                  <p className="font-sans text-xs font-normal leading-4 text-neutral-500 truncate">
+                    {email}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Menu Navigasi Profil Dinamis */}

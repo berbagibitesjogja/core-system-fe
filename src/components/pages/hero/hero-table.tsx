@@ -22,7 +22,9 @@ import {
   EmptyState,
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { getHeroAvatarSrc } from "#/lib/avatars";
 import { formatHeroCount } from "./hero-data";
 import type { HeroRecord, HeroUserRole } from "./hero-data";
 
@@ -52,6 +54,18 @@ const HERO_STATUS_BADGE = {
     tone: "danger" as const,
   },
 };
+
+// Identitas hero lengkap dengan foto profil, nama, dan nomor telepon
+function HeroIdentity({ hero }: { hero: HeroRecord }) {
+  return (
+    <EntityIdentity
+      entityType="hero"
+      name={hero.name}
+      subtitle={hero.phone}
+      avatarSrc={getHeroAvatarSrc(hero)}
+    />
+  );
+}
 
 /**
  * HeroTable: Tabel daftar hero dengan arsitektur Data-Driven menggunakan TanStack Table serta tampilan kartu responsif di mobile.
@@ -83,23 +97,9 @@ export function HeroTable({
         accessorKey: "name",
         header: "Nama Hero",
         meta: {
-          className: "min-w-[220px]",
+          className: "min-w-[240px]",
         },
-        cell: ({ row }) => {
-          const hero = row.original;
-          return (
-            <div className="flex flex-col min-w-0">
-              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
-                {hero.name}
-              </span>
-              {hero.phone && (
-                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
-                  {hero.phone}
-                </span>
-              )}
-            </div>
-          );
-        },
+        cell: ({ row }) => <HeroIdentity hero={row.original} />,
       },
       {
         id: "sectorBeneficiary",
@@ -275,14 +275,7 @@ export function HeroTable({
               <div key={hero.id} className="p-4 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
-                      {hero.name}
-                    </p>
-                    {hero.phone && (
-                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
-                        {hero.phone}
-                      </p>
-                    )}
+                    <HeroIdentity hero={hero} />
                   </div>
                   <Badge tone={statusMeta.tone} styleVariant="soft" dot>
                     {statusMeta.label}

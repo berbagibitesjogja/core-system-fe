@@ -66,6 +66,7 @@ export function DonationToolbar({
         {/* Kolom Pencarian */}
         <div className="flex-1 min-w-0">
           <Input
+            className="w-full max-w-none"
             showLabel={false}
             placeholder="Cari nama donatur..."
             value={searchQuery}
@@ -89,6 +90,7 @@ export function DonationToolbar({
         {/* Kolom Tanggal Mulai */}
         <div className="w-full md:w-[200px] shrink-0">
           <Input
+            className="w-full max-w-none"
             showLabel={false}
             placeholder="Dari Tanggal"
             type="text"
@@ -109,6 +111,7 @@ export function DonationToolbar({
         {/* Kolom Tanggal Akhir */}
         <div className="w-full md:w-[200px] shrink-0">
           <Input
+            className="w-full max-w-none"
             showLabel={false}
             placeholder="Sampai Tanggal"
             type="text"

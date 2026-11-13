@@ -1,3 +1,4 @@
+import { getPresetAvatarByIndex } from "#/lib/avatars";
 import { defaultDonations } from "./donation-data";
 import type { DonationItem, DonationProgram } from "./donation-data";
 
@@ -9,6 +10,7 @@ export interface DonationHeroClaimRecord {
   id: string;
   heroId: string;
   name: string;
+  avatarSrc?: string;
   sectorName: string;
   beneficiaryName: string;
   claimCode: string;
@@ -513,7 +515,10 @@ export function getDonationDetailById(
       documentationUrl: "https://drive.google.com",
       notes:
         "Penjemputan berlangsung lancar pukul 16.00 WIB. Seluruh roti dikemas ulang oleh tim relawan sebelum disalurkan ke titik penerima.",
-      heroes: hollandBakeryHeroes,
+      heroes: hollandBakeryHeroes.map((hero, index) => ({
+        ...hero,
+        avatarSrc: hero.avatarSrc ?? getPresetAvatarByIndex(index),
+      })),
       surplusFoods: hollandBakerySurplusFoods,
     };
   }
@@ -528,6 +533,7 @@ export function getDonationDetailById(
     .map((hero, idx) => ({
       ...hero,
       id: `${baseItem.id}-claim-${idx + 1}`,
+      avatarSrc: hero.avatarSrc ?? getPresetAvatarByIndex(idx),
       status:
         baseItem.status === "Selesai" || idx % 3 !== 2
           ? ("sudah-diambil" as const)

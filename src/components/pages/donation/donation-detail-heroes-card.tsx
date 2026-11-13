@@ -5,8 +5,7 @@ import {
   useLegacyTable as useReactTable,
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
-import { Plus, Search, Trash2, User, X } from "lucide-react";
-import { Avatar } from "#/components/ui/avatar";
+import { Plus, Search, Trash2, X } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
@@ -23,6 +22,8 @@ import {
   EmptyState,
   IllustrationSantaiKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
+import { getHeroAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type {
@@ -123,7 +124,7 @@ export function DonationDetailHeroesCard({
       if (hero.status === "tidak-jadi-ambil") {
         return (
           <div className="flex items-center justify-end gap-2">
-            <Badge tone="danger" styleVariant="soft">
+            <Badge tone="danger" styleVariant="soft" dot>
               Tidak Jadi Ambil
             </Badge>
           </div>
@@ -134,7 +135,7 @@ export function DonationDetailHeroesCard({
       return (
         <div className="flex items-center justify-end gap-2">
           {isPickedUp ? (
-            <Badge tone="success" styleVariant="soft">
+            <Badge tone="success" styleVariant="soft" dot>
               Sudah Diambil
             </Badge>
           ) : (
@@ -194,24 +195,15 @@ export function DonationDetailHeroesCard({
           const hero = row.original;
           const isForfeited = hero.status === "tidak-jadi-ambil";
           return (
-            <div className="flex items-center gap-3 min-w-0">
-              <Avatar
-                name={hero.name}
-                size="sm"
-                shape="circle"
-                className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-              />
-              <span
-                className={cn(
-                  "font-sans font-normal text-sm leading-5 truncate",
-                  isForfeited
-                    ? "text-neutral-500 line-through"
-                    : "text-neutral-900",
-                )}
-              >
-                {hero.name}
-              </span>
-            </div>
+            <EntityIdentity
+              entityType="hero"
+              name={hero.name}
+              avatarSrc={
+                hero.avatarSrc ??
+                getHeroAvatarSrc({ id: hero.heroId, name: hero.name })
+              }
+              strikethrough={isForfeited}
+            />
           );
         },
       },
@@ -366,37 +358,25 @@ export function DonationDetailHeroesCard({
                         }}
                         className="w-full h-auto justify-start items-center gap-3 rounded-sm px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
                       >
-                        <User
-                          className={cn(
-                            "size-[18px] shrink-0",
-                            isDisabled
-                              ? "text-neutral-400"
-                              : "text-neutral-600",
-                          )}
+                        <EntityIdentity
+                          entityType="hero"
+                          name={candidate.name}
+                          subtitle={subtitleText}
+                          avatarSrc={getHeroAvatarSrc({
+                            id: candidate.id,
+                            name: candidate.name,
+                          })}
+                          avatarClassName={
+                            isDisabled ? "opacity-50" : undefined
+                          }
+                          nameClassName={
+                            isDisabled ? "text-neutral-400" : undefined
+                          }
+                          subtitleClassName={
+                            isDisabled ? "text-neutral-400" : undefined
+                          }
+                          className="flex-1"
                         />
-
-                        <div className="flex-1 min-w-0">
-                          <p
-                            className={cn(
-                              "font-sans font-normal text-sm leading-5 truncate",
-                              isDisabled
-                                ? "text-neutral-400"
-                                : "text-neutral-900",
-                            )}
-                          >
-                            {candidate.name}
-                          </p>
-                          <p
-                            className={cn(
-                              "font-sans font-normal text-xs leading-4 truncate",
-                              isDisabled
-                                ? "text-neutral-400"
-                                : "text-neutral-600",
-                            )}
-                          >
-                            {subtitleText}
-                          </p>
-                        </div>
 
                         {candidate.isBlocked && (
                           <Badge
@@ -509,29 +489,17 @@ export function DonationDetailHeroesCard({
                   className={cn("p-4 space-y-3", isForfeited && "bg-red-50/30")}
                 >
                   <div className="flex items-center justify-between gap-3 min-w-0">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <Avatar
-                        name={hero.name}
-                        size="sm"
-                        shape="circle"
-                        className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className={cn(
-                            "font-sans font-semibold text-sm truncate",
-                            isForfeited
-                              ? "text-neutral-500 line-through"
-                              : "text-neutral-900",
-                          )}
-                        >
-                          {hero.name}
-                        </p>
-                        <p className="font-sans text-xs text-neutral-600 truncate">
-                          {hero.sectorName} · {hero.beneficiaryName}
-                        </p>
-                      </div>
-                    </div>
+                    <EntityIdentity
+                      entityType="hero"
+                      name={hero.name}
+                      subtitle={`${hero.sectorName} · ${hero.beneficiaryName}`}
+                      avatarSrc={
+                        hero.avatarSrc ??
+                        getHeroAvatarSrc({ id: hero.heroId, name: hero.name })
+                      }
+                      strikethrough={isForfeited}
+                      className="flex-1"
+                    />
                     <span className="font-sans text-xs text-neutral-500 tabular-nums shrink-0">
                       #{index + 1}
                     </span>

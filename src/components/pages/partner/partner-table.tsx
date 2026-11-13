@@ -10,9 +10,9 @@ import {
   EmptyState,
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { ProgressBar } from "#/components/shared/progress-bar";
-import { Avatar } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "#/components/ui/table";
 import { Tooltip } from "#/components/ui/tooltip";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { calculatePartnerProgress, formatPartnerNumber } from "./partner-data";
 import type { PartnerRecord, PartnerUserRole } from "./partner-data";
@@ -98,22 +99,12 @@ export function PartnerTable({
         cell: ({ row }) => {
           const partner = row.original;
           return (
-            <div className="flex items-center gap-3 min-w-0">
-              <Avatar
-                name={partner.name}
-                size="sm"
-                shape="rounded"
-                className="rounded-sm bg-bondi-50 border-bondi-200 text-bondi-900 font-semibold"
-              />
-              <div className="flex flex-col min-w-0">
-                <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
-                  {partner.name}
-                </span>
-                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
-                  {partner.type}
-                </span>
-              </div>
-            </div>
+            <EntityIdentity
+              entityType="partner"
+              name={partner.name}
+              subtitle={partner.type}
+              avatarSrc={getPartnerAvatarSrc(partner)}
+            />
           );
         },
       },
@@ -330,22 +321,13 @@ export function PartnerTable({
             return (
               <div key={partner.id} className="p-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <Avatar
-                      name={partner.name}
-                      size="sm"
-                      shape="rounded"
-                      className="rounded-sm bg-bondi-50 border-bondi-200 text-bondi-900 font-semibold"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
-                        {partner.name}
-                      </p>
-                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
-                        {partner.type}
-                      </p>
-                    </div>
-                  </div>
+                  <EntityIdentity
+                    entityType="partner"
+                    name={partner.name}
+                    subtitle={partner.type}
+                    avatarSrc={getPartnerAvatarSrc(partner)}
+                    className="flex-1"
+                  />
                   <span className="font-['Inter'] text-[12px] text-neutral-500 shrink-0">
                     #{(currentPage - 1) * perPage + index + 1}
                   </span>

@@ -23,6 +23,7 @@ export interface HeroDetailProfile {
   id: string;
   name: string;
   phone?: string;
+  avatarSrc?: string;
   beneficiaryId: string;
   beneficiaryName: string;
   sectorId: string;

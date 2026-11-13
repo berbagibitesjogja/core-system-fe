@@ -1,3 +1,5 @@
+import { getPresetAvatarByIndex } from "#/lib/avatars";
+
 export interface DashboardMetric {
   title: string;
   value: string;
@@ -155,6 +157,7 @@ export interface ActivityItem {
   id: string;
   actor: string;
   initials: string;
+  avatarSrc?: string;
   action: string;
   target: string;
   timeAgo: string;
@@ -216,6 +219,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-1",
     actor: "Rani Kusuma",
     initials: "RK",
+    avatarSrc: getPresetAvatarByIndex(0),
     action: "memperbarui data",
     target: "Donasi",
     timeAgo: "2 menit yang lalu",
@@ -224,6 +228,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-2",
     actor: "Bima Aditya",
     initials: "BA",
+    avatarSrc: getPresetAvatarByIndex(1),
     action: "menambahkan",
     target: "Hero",
     timeAgo: "15 menit yang lalu",
@@ -232,6 +237,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-3",
     actor: "Sari Wulandari",
     initials: "SW",
+    avatarSrc: getPresetAvatarByIndex(2),
     action: "masuk ke",
     target: "Sistem",
     timeAgo: "32 menit yang lalu",
@@ -240,6 +246,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-4",
     actor: "Dian Pratiwi",
     initials: "DP",
+    avatarSrc: getPresetAvatarByIndex(3),
     action: "menambahkan",
     target: "Partner",
     timeAgo: "1 jam yang lalu",
@@ -248,6 +255,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-5",
     actor: "Fajar Nugroho",
     initials: "FN",
+    avatarSrc: getPresetAvatarByIndex(4),
     action: "mengajukan",
     target: "Reimburse",
     timeAgo: "3 jam yang lalu",
@@ -256,6 +264,7 @@ export const RECENT_ACTIVITIES: ActivityItem[] = [
     id: "act-6",
     actor: "Rani Kusuma",
     initials: "RK",
+    avatarSrc: getPresetAvatarByIndex(0),
     action: "menghapus data",
     target: "Beneficiary",
     timeAgo: "5 jam yang lalu",
