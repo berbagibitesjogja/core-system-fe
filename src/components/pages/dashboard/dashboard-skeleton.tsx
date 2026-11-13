@@ -17,16 +17,16 @@ export function DashboardSkeleton({
     <div className="space-y-6 animate-pulse">
       {/* 1. Welcome Banner Skeleton */}
       <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-bondi-50 p-6 md:p-8 min-h-[188px] flex items-center justify-between border border-bondi-100">
-        <div className="space-y-3 z-10 max-w-md">
+        <div className="space-y-3 z-10 max-w-[62%] sm:max-w-[65%] lg:max-w-xl">
           <Skeleton className="h-8 w-48 rounded-lg bg-bondi-200/60" />
-          <Skeleton className="h-4 w-72 rounded-md bg-bondi-200/40" />
-          <Skeleton className="h-4 w-60 rounded-md bg-bondi-200/40" />
+          <Skeleton className="h-4 w-72 max-w-full rounded-md bg-bondi-200/40" />
+          <Skeleton className="h-4 w-60 max-w-full rounded-md bg-bondi-200/40" />
         </div>
 
         {/* Trail & Charity Background Ornaments */}
         <div
           aria-hidden="true"
-          className="absolute -right-6 -top-6 w-[480px] h-[190px] pointer-events-none opacity-40"
+          className="absolute -right-4 -top-6 w-[340px] sm:w-[440px] lg:w-[540px] h-[190px] pointer-events-none opacity-20 [mask-image:linear-gradient(to_left,black_60%,transparent_100%)]"
         >
           <img
             src={dashboardTrailSvg}
@@ -36,7 +36,7 @@ export function DashboardSkeleton({
         </div>
         <div
           aria-hidden="true"
-          className="absolute right-4 -top-2 size-56 pointer-events-none opacity-40"
+          className="absolute -right-2 sm:right-4 -bottom-4 sm:top-[-6px] size-40 sm:size-52 lg:size-60 pointer-events-none opacity-30 shrink-0"
         >
           <img
             src={dashboardCharitySvg}

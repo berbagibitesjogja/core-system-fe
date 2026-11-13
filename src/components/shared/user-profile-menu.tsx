@@ -161,7 +161,7 @@ export function UserProfileMenu({
       {/* Popover Dropdown Menu */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 z-50 animate-in fade-in-50 zoom-in-95 duration-150">
-          <Menu className="w-64 p-2 shadow-lg border border-neutral-200 rounded-2xl bg-white space-y-1">
+          <Menu className="w-64 p-2 shadow-lg border border-neutral-200 rounded-md bg-white space-y-1">
             {/* Header info akun */}
             <div className="px-3 py-2 border-b border-neutral-100 mb-1">
               <div className="flex items-center justify-between gap-2">

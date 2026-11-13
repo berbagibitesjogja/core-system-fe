@@ -152,7 +152,7 @@ export function ProfileSettingsTab({
             <div
               role="listbox"
               aria-label="Pilihan Divisi"
-              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-lg shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
+              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
             >
               {PROFILE_DIVISION_OPTIONS.map((opt) => {
                 const isSelected = opt.value === values.division;
@@ -238,7 +238,7 @@ export function ProfileSettingsTab({
               <div
                 role="listbox"
                 aria-label="Pilihan Role Sistem"
-                className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-lg shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
+                className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
               >
                 {PROFILE_ROLE_OPTIONS.map((opt) => {
                   const isSelected = opt.value === values.role;

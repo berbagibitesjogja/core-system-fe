@@ -318,7 +318,7 @@ export function DonationDetailHeroesCard({
                     </IconButton>
                   ) : undefined
                 }
-                className="max-w-none [&>div]:bg-neutral-100 [&>div]:border-transparent [&>div]:rounded-sm [&>div]:h-9 [&>div]:px-3 [&>div]:shadow-none [&>div]:hover:border-transparent [&>div]:focus-within:bg-neutral-100 [&>div]:focus-within:border-brand-vivid [&>div]:focus-within:shadow-none"
+                className="max-w-none [&>div]:bg-neutral-100 [&>div]:border-transparent [&>div]:rounded-md [&>div]:h-9 [&>div]:px-3 [&>div]:shadow-none [&>div]:hover:border-transparent [&>div]:focus-within:bg-neutral-100 [&>div]:focus-within:border-brand-vivid [&>div]:focus-within:shadow-none"
               />
 
               {isQuotaFull && (
@@ -356,7 +356,7 @@ export function DonationDetailHeroesCard({
                           setSearchTerm("");
                           setIsAddOpen(false);
                         }}
-                        className="w-full h-auto justify-start items-center gap-3 rounded-sm px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
+                        className="w-full h-auto justify-start items-center gap-3 rounded-md px-3 py-2 text-left font-normal hover:bg-neutral-100 active:translate-y-0 disabled:opacity-100"
                       >
                         <EntityIdentity
                           entityType="hero"

@@ -15,20 +15,20 @@ export function DashboardWelcomeBanner({
 }: DashboardWelcomeBannerProps) {
   return (
     <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-bondi-50 p-6 md:p-8 min-h-[180px] md:min-h-[188px] flex items-center justify-between border border-bondi-100">
-      {/* Teks Sambutan */}
-      <div className="relative z-10 max-w-md lg:max-w-xl space-y-2">
+      {/* Teks Sambutan - Area Aman dengan Pembatasan Lebar agar Tidak Bertabrakan dengan Ilustrasi */}
+      <div className="relative z-10 max-w-[62%] sm:max-w-[65%] lg:max-w-xl space-y-2">
         <h2 className="font-heading-h1 text-2xl sm:text-3xl lg:text-[32px] font-bold text-neutral-900 leading-tight tracking-tight">
           Halo, <span className="text-brand">{userName}!</span>
         </h2>
-        <p className="font-sans text-sm text-neutral-600 leading-relaxed max-w-lg">
+        <p className="font-sans text-sm font-medium text-neutral-800 leading-relaxed">
           {description}
         </p>
       </div>
 
-      {/* Ornamen Latar Belakang Trail */}
+      {/* Ornamen Latar Belakang Trail dengan Masking Gradasi & Opasitas Lebih Halus */}
       <div
         aria-hidden="true"
-        className="absolute -right-6 -top-6 w-[380px] sm:w-[480px] lg:w-[580px] h-[190px] pointer-events-none select-none opacity-60 sm:opacity-90"
+        className="absolute -right-4 -top-6 w-[340px] sm:w-[440px] lg:w-[540px] h-[190px] pointer-events-none select-none opacity-25 sm:opacity-40 [mask-image:linear-gradient(to_left,black_60%,transparent_100%)]"
       >
         <img
           src={dashboardTrailSvg}
@@ -40,7 +40,7 @@ export function DashboardWelcomeBanner({
       {/* Ilustrasi Utama Charity */}
       <div
         aria-hidden="true"
-        className="absolute -right-2 sm:right-4 -bottom-4 sm:top-[-6px] size-44 sm:size-56 lg:size-60 pointer-events-none select-none shrink-0"
+        className="absolute -right-2 sm:right-4 -bottom-4 sm:top-[-6px] size-40 sm:size-52 lg:size-60 pointer-events-none select-none shrink-0"
       >
         <img
           src={dashboardCharitySvg}
