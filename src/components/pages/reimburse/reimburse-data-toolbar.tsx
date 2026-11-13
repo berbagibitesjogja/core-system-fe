@@ -26,12 +26,12 @@ export function ReimburseDataToolbar({
   onClearSearch,
 }: ReimburseDataToolbarProps) {
   return (
-    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center">
       {/* Kelompok filter status */}
       <div
         role="group"
         aria-label="Filter status pengajuan reimburse"
-        className="flex flex-wrap items-center gap-2"
+        className="flex shrink-0 flex-wrap items-center gap-2"
       >
         {filterOptions.map((option) => (
           <FilterChip
@@ -46,7 +46,7 @@ export function ReimburseDataToolbar({
       </div>
 
       {/* Kolom pencarian */}
-      <div className="w-full lg:w-[340px]">
+      <div className="min-w-0 w-full flex-1">
         <Input
           type="text"
           value={searchQuery}
@@ -55,6 +55,7 @@ export function ReimburseDataToolbar({
           aria-label="Cari pengajuan reimburse"
           showLabel={false}
           showHelper={false}
+          className="w-full max-w-none"
           leadingIcon={<Search className="size-4 text-neutral-400" />}
           trailingIcon={
             searchQuery.trim().length > 0 ? (

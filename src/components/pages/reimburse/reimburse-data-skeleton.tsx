@@ -14,13 +14,13 @@ export function ReimburseDataSkeleton() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="flex shrink-0 flex-wrap gap-2">
           {FILTER_PLACEHOLDERS.map((item) => (
             <Skeleton key={item} className="h-9 w-36 rounded-full" />
           ))}
         </div>
-        <Skeleton className="h-10 w-full rounded-xl lg:w-[340px]" />
+        <Skeleton className="h-11 w-full flex-1 rounded-xl" />
       </div>
 
       <div className="space-y-3 rounded-2xl border border-neutral-200 bg-surface p-4">
