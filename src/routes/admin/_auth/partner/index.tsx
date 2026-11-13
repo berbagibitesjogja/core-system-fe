@@ -237,9 +237,12 @@ function PartnerPage() {
         hasActiveFilters={hasActiveFilters}
         onResetFilters={handleResetFilters}
         userRole={userRole}
-        onViewDetail={(partner) => {
-          toast.info(`Menampilkan detail donatur ${partner.name}.`);
-        }}
+        onViewDetail={(partner) =>
+          navigate({
+            to: "/admin/partner/detail",
+            search: { id: partner.id },
+          })
+        }
         onEditPartner={(partner) =>
           navigate({
             to: "/admin/partner/edit",

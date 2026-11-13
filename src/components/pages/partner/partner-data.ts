@@ -33,7 +33,7 @@ export interface PartnerStatItem {
   unit: string;
   subtext: string;
   styleVariant: "brand" | "default" | "accent";
-  iconName: "sparkles" | "building" | "plus";
+  iconName: "sparkles" | "building" | "plus" | "users" | "leaf" | "package";
   illustrationSrc: string;
   illustrationAlt: string;
 }
