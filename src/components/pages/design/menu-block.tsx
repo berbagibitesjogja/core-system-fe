@@ -45,7 +45,7 @@ export function MenuBlock({ onCopy, copiedToken }: MenuBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=21-421"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Baris pilihan di dropdown (lebar 260px, tinggi 52px). Plain: menu
         navigasi (Ajukan Reimburse, Data Reimburse, Logs) dan pilihan tunggal.
         Checkbox: multi-select beneficiary. Disabled + badge Diblokir: hero yang
@@ -71,7 +71,7 @@ export function MenuBlock({ onCopy, copiedToken }: MenuBlockProps) {
                 label="Ajukan Reimburse"
                 meta="Klaim bensin &amp; operasional"
               />
-              <div className="bg-[#eef1f2] rounded-xl">
+              <div className="bg-neutral-100 rounded-xl">
                 <MenuItem
                   type="plain"
                   icon={<FileText className="size-4" />}
@@ -108,7 +108,7 @@ export function MenuBlock({ onCopy, copiedToken }: MenuBlockProps) {
                 meta="Kategori: Panti Asuhan"
                 selected={false}
               />
-              <div className="bg-[#eef1f2] rounded-xl">
+              <div className="bg-neutral-100 rounded-xl">
                 <MenuItem
                   type="checkbox"
                   label="Komunitas Dapur Berkah (Hover)"

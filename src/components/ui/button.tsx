@@ -52,38 +52,35 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (effectiveState === "disabled") {
       if (variant === "secondary") {
         stateStyle =
-          "bg-[var(--color-bg-disabled,#eef1f2)] border border-[var(--color-border-default,#e2e7e8)] text-[var(--color-text-disabled,#9aa5a8)] shadow-none";
+          "bg-neutral-100 border border-neutral-200 text-neutral-400 shadow-none";
       } else if (variant === "ghost") {
-        stateStyle =
-          "bg-transparent text-[var(--color-text-disabled,#9aa5a8)] shadow-none";
+        stateStyle = "bg-transparent text-neutral-400 shadow-none";
       } else {
         stateStyle =
-          "bg-[var(--color-bg-disabled,#eef1f2)] text-[var(--color-text-disabled,#9aa5a8)] shadow-none border-transparent";
+          "bg-neutral-100 text-neutral-400 shadow-none border-transparent";
       }
     } else if (effectiveState === "hover") {
       switch (variant) {
         case "primary":
-          stateStyle =
-            "bg-[var(--color-bg-brand-hover,#005e64)] text-white shadow-none";
+          stateStyle = "bg-brand-hover text-white shadow-none";
           break;
         case "accent":
           stateStyle =
-            "bg-[var(--color-bg-accent-hover,#ffce2e)] text-[var(--color-text-on-accent,#142023)] border-[1.5px] border-[var(--color-border-ink,#142023)] shadow-none";
+            "bg-accent-hover text-neutral-900 border-[1.5px] border-neutral-900 shadow-none";
           break;
         case "secondary":
           stateStyle =
-            "bg-[var(--color-bg-subtle,#eef1f2)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)]";
+            "bg-neutral-100 border border-neutral-300 text-neutral-900";
           break;
         case "ghost":
-          stateStyle =
-            "bg-[var(--color-bg-brand-subtle,#e6f5f6)] text-[var(--color-text-brand,#007d85)]";
+          stateStyle = "bg-brand-subtle text-brand";
           break;
         case "danger":
-          stateStyle = "bg-[var(--color-bg-danger-hover,#b91c1c)] text-white";
+          stateStyle = "bg-red-700 text-white";
           break;
         case "outline":
           stateStyle =
-            "bg-[var(--color-bg-subtle,#eef1f2)] border border-[var(--color-border-ink,#142023)] text-[var(--color-text-primary,#142023)]";
+            "bg-neutral-100 border border-neutral-900 text-neutral-900";
           break;
       }
     } else {
@@ -91,27 +88,25 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       switch (variant) {
         case "primary":
           stateStyle =
-            "bg-[var(--color-bg-brand,#007d85)] text-white drop-shadow-[0px_2px_0px_#142023] hover:bg-[var(--color-bg-brand-hover,#005e64)] hover:drop-shadow-none";
+            "bg-brand text-white shadow-pop-sm hover:bg-brand-hover hover:shadow-none";
           break;
         case "accent":
           stateStyle =
-            "bg-[var(--color-bg-accent,#ffda57)] border-[1.5px] border-[var(--color-border-ink,#142023)] text-[var(--color-text-on-accent,#142023)] drop-shadow-[0px_2px_0px_#142023] hover:bg-[var(--color-bg-accent-hover,#ffce2e)] hover:drop-shadow-none";
+            "bg-accent border-[1.5px] border-neutral-900 text-neutral-900 shadow-pop-sm hover:bg-accent-hover hover:shadow-none";
           break;
         case "secondary":
           stateStyle =
-            "bg-[var(--color-bg-surface,white)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+            "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
           break;
         case "ghost":
-          stateStyle =
-            "bg-transparent text-[var(--color-text-brand,#007d85)] hover:bg-[var(--color-bg-brand-subtle,#e6f5f6)]";
+          stateStyle = "bg-transparent text-brand hover:bg-brand-subtle";
           break;
         case "danger":
-          stateStyle =
-            "bg-[var(--color-bg-danger,#dc2626)] text-white hover:bg-[var(--color-bg-danger-hover,#b91c1c)]";
+          stateStyle = "bg-red-600 text-white hover:bg-red-700";
           break;
         case "outline":
           stateStyle =
-            "bg-[var(--color-bg-surface,white)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+            "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
           break;
       }
     }

@@ -44,7 +44,7 @@ export function BeneficiaryFormSkeleton() {
         </div>
 
         {/* Footer Form */}
-        <div className="p-6 bg-[#eef1f2] border-t border-[#e2e7e8] flex items-center justify-end gap-3">
+        <div className="p-6 bg-neutral-100 border-t border-neutral-200 flex items-center justify-end gap-3">
           <Skeleton className="h-11 w-20 rounded-full" />
           <Skeleton className="h-11 w-40 rounded-full" />
         </div>

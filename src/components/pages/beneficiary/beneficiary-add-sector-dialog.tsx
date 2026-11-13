@@ -87,7 +87,7 @@ export function BeneficiaryAddSectorDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b1416]/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget && !isSubmitting) {
           onClose();

@@ -30,7 +30,7 @@ export function SwitchBlock({ onCopy, copiedToken }: SwitchBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=18-295&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Switch untuk pengaturan yang langsung berlaku: Donasi (CSR) dan Umumkan
         (broadcast ke relawan) di form donasi. Track 48×28px pill, Thumb 22×22px
         white circle with 2px stroke and pop-shadow.
@@ -54,7 +54,7 @@ export function SwitchBlock({ onCopy, copiedToken }: SwitchBlockProps) {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 On = False
               </td>
               <td className="py-4 px-4">
@@ -66,7 +66,7 @@ export function SwitchBlock({ onCopy, copiedToken }: SwitchBlockProps) {
             </tr>
 
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 On = True
               </td>
               <td className="py-4 px-4">

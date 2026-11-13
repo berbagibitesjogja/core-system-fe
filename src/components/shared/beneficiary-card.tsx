@@ -32,27 +32,27 @@ const categoryBadgeConfig: Record<
 > = {
   universitas: {
     tone: "brand",
-    className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
   },
   kampus: {
     tone: "brand",
-    className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
   },
   yayasan: {
     tone: "accent",
-    className: "bg-[#fff1b8] text-[#142023] border-transparent px-2",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
   },
   "panti asuhan": {
     tone: "accent",
-    className: "bg-[#fff1b8] text-[#142023] border-transparent px-2",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
   },
   "masyarakat umum": {
     tone: "info",
-    className: "bg-[#eff6ff] text-[#1d4ed8] border-transparent px-2",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
   },
   "komunitas warga": {
     tone: "info",
-    className: "bg-[#eff6ff] text-[#1d4ed8] border-transparent px-2",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
   },
 };
 
@@ -61,7 +61,7 @@ export function getCategoryBadgeConfig(type: string) {
   return (
     categoryBadgeConfig[type.trim().toLowerCase()] ?? {
       tone: "brand" as const,
-      className: "bg-[#e6f5f6] text-[#00464b] border-transparent px-2",
+      className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
     }
   );
 }
@@ -95,7 +95,7 @@ export function BeneficiaryCard({
   return (
     <div
       className={cn(
-        "w-full max-w-[352px] rounded-[16px] border border-[#e2e7e8] bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
+        "w-full max-w-[352px] rounded-[16px] border border-neutral-200 bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
         className,
       )}
     >
@@ -106,11 +106,11 @@ export function BeneficiaryCard({
           name={avatarName || name}
           size="lg"
           shape="rounded"
-          className="size-[64px] rounded-[16px] bg-[#e6f5f6] border border-[#b0e0e3] text-[#00464b] font-['Gabarito'] font-semibold text-[20px] shrink-0"
+          className="size-[64px] rounded-[16px] bg-bondi-50 border border-bondi-200 text-bondi-900 font-['Gabarito'] font-semibold text-[20px] shrink-0"
         />
 
         <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-[#142023] line-clamp-2">
+          <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-neutral-900 line-clamp-2">
             {name}
           </p>
           <Badge
@@ -123,7 +123,7 @@ export function BeneficiaryCard({
         </div>
 
         {rank && (
-          <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#6b777a] shrink-0">
+          <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-500 shrink-0">
             {rank}
           </span>
         )}
@@ -132,30 +132,30 @@ export function BeneficiaryCard({
       {/* Statistik Heroes & Impact */}
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
+          <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
             Heroes
           </p>
           <div className="flex gap-1 items-baseline">
-            <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-[#142023]">
+            <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-neutral-900">
               {heroesCount}
             </span>
-            <span className="font-['Inter'] font-semibold text-[14px] text-[#4d585b]">
+            <span className="font-['Inter'] font-semibold text-[14px] text-neutral-600">
               Orang
             </span>
           </div>
         </div>
 
-        <div className="w-px self-stretch bg-[#e2e7e8] shrink-0" />
+        <div className="w-px self-stretch bg-neutral-200 shrink-0" />
 
         <div className="flex flex-col gap-1 flex-1 min-w-0">
-          <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
+          <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
             Impact
           </p>
           <div className="flex gap-1 items-baseline">
-            <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-[#142023]">
+            <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-neutral-900">
               {impactCount}
             </span>
-            <span className="font-['Inter'] font-semibold text-[14px] text-[#4d585b]">
+            <span className="font-['Inter'] font-semibold text-[14px] text-neutral-600">
               {impactUnit}
             </span>
           </div>
@@ -165,7 +165,7 @@ export function BeneficiaryCard({
       {/* Indikator porsi kontribusi */}
       <div className="flex flex-col gap-2 w-full">
         <ProgressBar value={progressValue} color="brand" />
-        <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#6b777a]">
+        <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
           {shareText || `${sharePercent}% dari total heroes BBJ`}
         </p>
       </div>
@@ -199,7 +199,7 @@ export function BeneficiaryCard({
             tooltip="Hapus penerima"
             aria-label="Hapus penerima"
             onClick={onDelete}
-            className="text-[#dc2626] hover:bg-red-50 hover:border-red-200 hover:text-[#b91c1c]"
+            className="text-red-600 hover:bg-red-50 hover:border-red-200 hover:text-red-700"
           >
             <Trash2 />
           </IconButton>

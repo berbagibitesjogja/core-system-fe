@@ -37,7 +37,7 @@ export function DonationLeaveDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop Gelap Sesuai Figma #0b1416 dengan Opacity 55% */}
       <div
-        className="fixed inset-0 bg-[#0b1416]/55 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-neutral-950/55 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 
@@ -83,7 +83,7 @@ export function DonationLeaveDialog({
             variant="primary"
             size="md"
             onClick={onConfirm}
-            className="drop-shadow-[0px_2px_0px_#142023]"
+            className="shadow-pop-sm"
           >
             Keluar tanpa simpan
           </Button>

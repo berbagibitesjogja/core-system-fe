@@ -57,7 +57,7 @@ export function ActionsFormSection({
             <span className="font-mono text-xs uppercase tracking-wider text-brand font-semibold block">
               Figma Category · Actions &amp; Form
             </span>
-            <h2 className="font-heading-h2 text-[#142023]">
+            <h2 className="font-heading-h2 text-neutral-900">
               Actions &amp; Form Components
             </h2>
           </div>

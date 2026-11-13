@@ -43,6 +43,7 @@ export function DonationDetailSkeleton() {
                   className="px-5 py-4 flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-3">
+                    <Skeleton className="h-4 w-5 rounded shrink-0" />
                     <Skeleton className="size-8 rounded-full" />
                     <Skeleton className="h-4 w-32 rounded" />
                   </div>
@@ -76,7 +77,10 @@ export function DonationDetailSkeleton() {
                   key={row}
                   className="px-5 py-4 flex items-center justify-between gap-4"
                 >
-                  <Skeleton className="h-4 w-32 rounded" />
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-4 w-5 rounded shrink-0" />
+                    <Skeleton className="h-4 w-32 rounded" />
+                  </div>
                   <Skeleton className="h-4 w-14 rounded hidden md:block" />
                   <Skeleton className="h-4 w-20 rounded" />
                   <Skeleton className="h-4 w-40 rounded hidden md:block" />

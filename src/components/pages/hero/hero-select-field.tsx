@@ -118,7 +118,7 @@ export function HeroSelectField({
       {showLabel && label && (
         <label
           htmlFor={fieldId}
-          className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023]"
+          className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900"
         >
           {label}
         </label>
@@ -138,22 +138,22 @@ export function HeroSelectField({
         className={cn(
           "h-[44px] w-full px-3 rounded-md flex items-center justify-between gap-2 text-left text-[14px] font-['Inter'] transition-all outline-none",
           disabled
-            ? "bg-[var(--color-bg-disabled,#eef1f2)] border border-[var(--color-border-default,#e2e7e8)] text-[var(--color-text-disabled,#9aa5a8)] cursor-not-allowed"
+            ? "bg-neutral-100 border border-neutral-200 text-neutral-400 cursor-not-allowed"
             : error
-              ? "bg-white border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] text-[#142023] cursor-pointer"
+              ? "bg-white border-[1.5px] border-red-500 shadow-focus-ring-danger text-neutral-900 cursor-pointer"
               : isOpen
-                ? "bg-white border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3] text-[#142023] cursor-pointer"
-                : "bg-white border border-[var(--color-border-input,#8a9499)] text-[#142023] hover:border-[var(--color-border-ink,#142023)] cursor-pointer",
+                ? "bg-white border-[1.5px] border-bondi-500 shadow-focus-ring text-neutral-900 cursor-pointer"
+                : "bg-white border border-border-input text-neutral-900 hover:border-neutral-900 cursor-pointer",
         )}
       >
         <span
           className={cn(
             "truncate flex-1",
             disabled
-              ? "text-[var(--color-text-disabled,#9aa5a8)]"
+              ? "text-neutral-400"
               : selectedOption
-                ? "text-[#142023]"
-                : "text-[#6b777a]",
+                ? "text-neutral-900"
+                : "text-neutral-500",
           )}
         >
           {selectedOption ? selectedOption.label : placeholder}
@@ -161,8 +161,8 @@ export function HeroSelectField({
         <ChevronDown
           className={cn(
             "size-5 shrink-0 transition-transform duration-150",
-            disabled ? "text-[#9aa5a8]" : "text-[#4d585b]",
-            isOpen && "rotate-180 text-[#007d85]",
+            disabled ? "text-neutral-400" : "text-neutral-600",
+            isOpen && "rotate-180 text-brand",
           )}
         />
       </button>
@@ -173,7 +173,7 @@ export function HeroSelectField({
         <div
           role="listbox"
           className={cn(
-            "absolute left-0 top-full mt-1.5 z-50 w-full min-w-[260px] bg-white border border-[#e2e7e8] rounded-xl p-1.5 shadow-[0px_8px_12px_rgba(20,32,35,0.1)] flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100 motion-reduce:animate-none",
+            "absolute left-0 top-full mt-1.5 z-50 w-full min-w-[260px] bg-white border border-neutral-200 rounded-xl p-1.5 shadow-[0px_8px_12px_rgba(20,32,35,0.1)] flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100 motion-reduce:animate-none",
             menuClassName,
           )}
         >
@@ -188,7 +188,7 @@ export function HeroSelectField({
                 placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                leadingIcon={<Search className="size-4 text-[#6b777a]" />}
+                leadingIcon={<Search className="size-4 text-neutral-500" />}
                 trailingIcon={
                   searchQuery ? (
                     <Tooltip content="Hapus pencarian" placement="top">
@@ -223,8 +223,8 @@ export function HeroSelectField({
                   className={cn(
                     "w-full px-3 py-2 rounded-lg text-left flex items-center justify-between gap-3 transition-colors cursor-pointer",
                     isSelected
-                      ? "bg-[#e6f5f6] text-[#00464b]"
-                      : "text-[#142023] hover:bg-[#eef1f2]",
+                      ? "bg-bondi-50 text-bondi-900"
+                      : "text-neutral-900 hover:bg-neutral-100",
                   )}
                 >
                   <div className="flex flex-col min-w-0 flex-1">
@@ -232,20 +232,20 @@ export function HeroSelectField({
                       {option.label}
                     </span>
                     {option.meta && (
-                      <span className="font-['Inter'] text-[12px] leading-[16px] text-[#4d585b] truncate">
+                      <span className="font-['Inter'] text-[12px] leading-[16px] text-neutral-600 truncate">
                         {option.meta}
                       </span>
                     )}
                   </div>
                   {isSelected && (
-                    <Check className="size-4 shrink-0 text-[#007d85]" />
+                    <Check className="size-4 shrink-0 text-brand" />
                   )}
                 </button>
               );
             })}
 
             {filteredOptions.length === 0 && (
-              <p className="px-3 py-4 text-center font-['Inter'] text-[12px] text-[#6b777a]">
+              <p className="px-3 py-4 text-center font-['Inter'] text-[12px] text-neutral-500">
                 {emptyText}
               </p>
             )}

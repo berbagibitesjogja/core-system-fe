@@ -123,7 +123,7 @@ export function Tooltip({
                 left: `${coords.left}px`,
               }}
               className={cn(
-                "z-[9999] pointer-events-none px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-[#142023] rounded-lg shadow-lg whitespace-nowrap select-none transition-opacity duration-150 animate-in fade-in zoom-in-95",
+                "z-[9999] pointer-events-none px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap select-none transition-opacity duration-150 animate-in fade-in zoom-in-95",
                 className,
               )}
             >
@@ -136,9 +136,9 @@ export function Tooltip({
                 className={cn(
                   "absolute -translate-x-1/2 w-0 h-0 border-x-[6px] border-x-transparent",
                   coords.actualPlacement === "top" &&
-                    "top-full border-t-[6px] border-t-[#142023]",
+                    "top-full border-t-[6px] border-t-neutral-900",
                   coords.actualPlacement === "bottom" &&
-                    "bottom-full border-b-[6px] border-b-[#142023]",
+                    "bottom-full border-b-[6px] border-b-neutral-900",
                 )}
               />
             </div>,
@@ -151,7 +151,7 @@ export function Tooltip({
         <div
           role="tooltip"
           className={cn(
-            "absolute z-50 px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-[#142023] rounded-lg shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95 select-none",
+            "absolute z-50 px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95 select-none",
             placement === "top" &&
               "bottom-full mb-1.5 left-1/2 -translate-x-1/2",
             placement === "bottom" &&
@@ -165,9 +165,9 @@ export function Tooltip({
             className={cn(
               "absolute left-1/2 -translate-x-1/2 w-0 h-0 border-x-[6px] border-x-transparent",
               placement === "top" &&
-                "top-full border-t-[6px] border-t-[#142023]",
+                "top-full border-t-[6px] border-t-neutral-900",
               placement === "bottom" &&
-                "bottom-full border-b-[6px] border-b-[#142023]",
+                "bottom-full border-b-[6px] border-b-neutral-900",
             )}
           />
         </div>

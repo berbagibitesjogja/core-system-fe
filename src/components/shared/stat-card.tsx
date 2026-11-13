@@ -43,7 +43,7 @@ export function StatCard({
 
   const iconBgClasses = {
     default: "bg-bondi-50 text-brand",
-    brand: "bg-[#005e64] text-white",
+    brand: "bg-bondi-800 text-white",
     accent: "bg-white border-[1.5px] border-neutral-900 text-neutral-900",
   }[styleVariant];
 

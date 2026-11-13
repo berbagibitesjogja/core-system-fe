@@ -22,6 +22,7 @@ import {
   IllustrationSantaiKosong,
 } from "#/components/shared/empty-state";
 import { Pagination } from "#/components/shared/pagination";
+import { cn } from "#/lib/utils";
 import { DETAIL_DONATIONS_PER_PAGE } from "./beneficiary-detail-data";
 import type { BeneficiaryDonationRecord } from "./beneficiary-detail-data";
 
@@ -69,7 +70,6 @@ export function BeneficiaryDetailDonationsTable({
         accessorKey: "dateLabel",
         header: "Tanggal",
         meta: {
-          className: "uppercase tracking-[0.04em]",
           sort: sortDirection,
           onSort: onSortToggle,
         },
@@ -88,9 +88,6 @@ export function BeneficiaryDetailDonationsTable({
         id: "recipients",
         accessorKey: "recipientCount",
         header: "Penerima",
-        meta: {
-          className: "uppercase tracking-[0.04em]",
-        },
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
             {row.original.recipientCount.toLocaleString("id-ID")} Orang
@@ -101,9 +98,6 @@ export function BeneficiaryDetailDonationsTable({
         id: "donor",
         accessorKey: "donorName",
         header: "Donatur",
-        meta: {
-          className: "uppercase tracking-[0.04em]",
-        },
         cell: ({ row }) => (
           <span className="font-sans font-medium text-sm text-neutral-900">
             {row.original.donorName}
@@ -114,9 +108,6 @@ export function BeneficiaryDetailDonationsTable({
         id: "food",
         accessorKey: "foodKg",
         header: "Makanan",
-        meta: {
-          className: "uppercase tracking-[0.04em]",
-        },
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
             {row.original.foodKg.toLocaleString("id-ID")} Kg
@@ -127,7 +118,7 @@ export function BeneficiaryDetailDonationsTable({
         id: "actions",
         header: "Aksi",
         meta: {
-          className: "uppercase tracking-[0.04em] w-[72px]",
+          className: "w-[72px]",
           align: "right",
         },
         cell: ({ row }) => (
@@ -152,6 +143,7 @@ export function BeneficiaryDetailDonationsTable({
   const table = useReactTable({
     data,
     columns,
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -200,7 +192,10 @@ export function BeneficiaryDetailDonationsTable({
                       return (
                         <TableHead
                           key={header.id}
-                          className={meta?.className}
+                          className={cn(
+                            "uppercase tracking-[0.04em]",
+                            meta?.className,
+                          )}
                           align={meta?.align}
                           sort={meta?.sort}
                           onSort={meta?.onSort}
@@ -225,7 +220,11 @@ export function BeneficiaryDetailDonationsTable({
                       const meta = cell.column.columnDef.meta;
 
                       return (
-                        <TableCell key={cell.id} align={meta?.align}>
+                        <TableCell
+                          key={cell.id}
+                          className={meta?.className}
+                          align={meta?.align}
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),

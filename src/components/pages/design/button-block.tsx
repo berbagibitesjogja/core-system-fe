@@ -30,7 +30,7 @@ export function ButtonBlock({ onCopy, copiedToken }: ButtonBlockProps) {
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=16-273&t=SzCwTYJWBfVK4FdY-4"
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+        <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
           Tombol aksi. Primary: 1 aksi utama per layar. Accent: CTA fun (mis.
           Bagikan Impact, Download Poster). Secondary: aksi pendamping. Ghost:
           aksi ringan/tersier. Danger: hapus/batal (hanya role super dan core).
@@ -86,7 +86,7 @@ export function ButtonBlock({ onCopy, copiedToken }: ButtonBlockProps) {
               ["primary", "accent", "secondary", "ghost", "danger"] as const
             ).map((variant) => (
               <tr key={variant} className="hover:bg-neutral-50/50">
-                <td className="py-4 px-4 font-['Inter'] font-semibold text-sm capitalize text-[#142023]">
+                <td className="py-4 px-4 font-['Inter'] font-semibold text-sm capitalize text-neutral-900">
                   {variant}
                 </td>
                 <td className="py-4 px-4">

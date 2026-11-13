@@ -28,7 +28,7 @@ export function FilterChipBlock({ onCopy, copiedToken }: FilterChipBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=18-311&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Filter kategori satu-pilihan di toolbar: CSR / Food Rescue, Semua /
         Universitas / Yayasan / Masyarakat Umum, status reimburse. Selected
         memakai tinta gelap (#142023) + angka kuning (#ffda57) agar terasa fun
@@ -56,7 +56,7 @@ export function FilterChipBlock({ onCopy, copiedToken }: FilterChipBlockProps) {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Dengan Counter
               </td>
               <td className="py-4 px-4">
@@ -83,7 +83,7 @@ export function FilterChipBlock({ onCopy, copiedToken }: FilterChipBlockProps) {
             </tr>
 
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Tanpa Counter
               </td>
               <td className="py-4 px-4">

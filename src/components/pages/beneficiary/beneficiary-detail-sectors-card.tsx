@@ -47,9 +47,6 @@ export function BeneficiaryDetailSectorsCard({
         id: "name",
         accessorKey: "name",
         header: "Nama",
-        meta: {
-          className: "uppercase tracking-[0.04em]",
-        },
         cell: ({ row }) => (
           <span
             className="block max-w-[175px] truncate font-sans font-medium text-sm text-neutral-900"
@@ -63,9 +60,6 @@ export function BeneficiaryDetailSectorsCard({
         id: "count",
         accessorKey: "heroesCount",
         header: "Jumlah",
-        meta: {
-          className: "uppercase tracking-[0.04em]",
-        },
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
             {row.original.heroesCount.toLocaleString("id-ID")} Orang
@@ -76,7 +70,7 @@ export function BeneficiaryDetailSectorsCard({
         id: "actions",
         header: "Aksi",
         meta: {
-          className: "uppercase tracking-[0.04em] w-[68px]",
+          className: "w-[68px]",
           align: "right",
         },
         cell: ({ row }) => (
@@ -101,6 +95,7 @@ export function BeneficiaryDetailSectorsCard({
   const table = useReactTable({
     data: sectors,
     columns,
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -151,7 +146,10 @@ export function BeneficiaryDetailSectorsCard({
                       return (
                         <TableHead
                           key={header.id}
-                          className={meta?.className}
+                          className={cn(
+                            "uppercase tracking-[0.04em]",
+                            meta?.className,
+                          )}
                           align={meta?.align}
                         >
                           {header.isPlaceholder
@@ -182,7 +180,11 @@ export function BeneficiaryDetailSectorsCard({
                         const meta = cell.column.columnDef.meta;
 
                         return (
-                          <TableCell key={cell.id} align={meta?.align}>
+                          <TableCell
+                            key={cell.id}
+                            className={meta?.className}
+                            align={meta?.align}
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext(),

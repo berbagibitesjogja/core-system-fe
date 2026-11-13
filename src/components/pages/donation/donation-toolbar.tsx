@@ -53,11 +53,11 @@ export function DonationToolbar({
         <Button
           variant="primary"
           size="md"
-          className="rounded-full shadow-pop-xs shrink-0"
+          leftIcon={<Plus className="size-5" />}
+          className="shrink-0 w-full sm:w-auto"
           onClick={onAddDonation}
         >
-          <Plus className="size-5 mr-2" />
-          <span>Tambah Donasi</span>
+          Tambah Donasi
         </Button>
       </div>
 

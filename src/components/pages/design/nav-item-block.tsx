@@ -36,7 +36,7 @@ export function NavItemBlock({ onCopy, copiedToken }: NavItemBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-220"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Item navigasi sidebar desktop (lebar 240px, tinggi minimal 40px).
         Kelompok menu: Utama (Home, Gallery), Operasional (Donasi,
         Beneficiaries, Heroes, Partner), Tim (Volunteer, Presensi, Reimburse),
@@ -75,7 +75,7 @@ export function NavItemBlock({ onCopy, copiedToken }: NavItemBlockProps) {
               Latar neutral-100 (#EEF1F2), teks neutral-700.
             </p>
             <div className="pt-2">
-              <div className="bg-[#eef1f2] rounded-xl">
+              <div className="bg-neutral-100 rounded-xl">
                 <NavItem
                   label="Beneficiaries"
                   icon={<Users className="size-5" />}

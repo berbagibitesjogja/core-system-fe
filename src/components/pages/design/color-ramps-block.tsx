@@ -21,7 +21,7 @@ function PaletteRow({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h4 className="font-['Inter'] font-semibold text-xs sm:text-sm text-[#142023]">
+        <h4 className="font-['Inter'] font-semibold text-xs sm:text-sm text-neutral-900">
           {title}
         </h4>
         <span className="font-mono text-[10px] sm:text-[11px] text-neutral-500">
@@ -45,7 +45,7 @@ function PaletteRow({
             >
               <div className="flex items-center justify-between w-full">
                 <span
-                  className={`text-[11px] sm:text-xs font-bold ${isDark ? "text-white" : "text-[#142023]"}`}
+                  className={`text-[11px] sm:text-xs font-bold ${isDark ? "text-white" : "text-neutral-900"}`}
                 >
                   {s.step}
                 </span>
@@ -53,20 +53,20 @@ function PaletteRow({
                   <Check className="size-3 text-green-400 shrink-0" />
                 ) : (
                   <Copy
-                    className={`size-3 opacity-0 group-hover:opacity-75 transition-opacity shrink-0 ${isDark ? "text-white" : "text-[#142023]"}`}
+                    className={`size-3 opacity-0 group-hover:opacity-75 transition-opacity shrink-0 ${isDark ? "text-white" : "text-neutral-900"}`}
                   />
                 )}
               </div>
               <div>
                 {s.note && (
                   <span
-                    className={`text-[8px] sm:text-[9px] font-semibold block leading-tight truncate ${isDark ? "text-white/80" : "text-[#142023]/80"}`}
+                    className={`text-[8px] sm:text-[9px] font-semibold block leading-tight truncate ${isDark ? "text-white/80" : "text-neutral-900/80"}`}
                   >
                     {s.note}
                   </span>
                 )}
                 <span
-                  className={`text-[9px] sm:text-[10px] font-mono leading-none ${isDark ? "text-white/90" : "text-[#142023]/90"}`}
+                  className={`text-[9px] sm:text-[10px] font-mono leading-none ${isDark ? "text-white/90" : "text-neutral-900/90"}`}
                 >
                   {s.hex}
                 </span>

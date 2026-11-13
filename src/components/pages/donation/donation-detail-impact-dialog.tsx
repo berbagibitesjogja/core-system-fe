@@ -254,7 +254,7 @@ export function DonationDetailImpactDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b1416]/60 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -266,7 +266,7 @@ export function DonationDetailImpactDialog({
         <div className="grid grid-cols-1 md:grid-cols-[310px_1fr] gap-6 items-stretch">
           {/* Kolom Kiri: Pratinjau Poster 9:16 */}
           <div className="flex items-center justify-center">
-            <div className="aspect-[9/16] w-full max-w-[300px] mx-auto rounded-lg bg-[#009ca6] text-white p-5 relative overflow-hidden flex flex-col justify-between shadow-md select-none">
+            <div className="aspect-[9/16] w-full max-w-[300px] mx-auto rounded-lg bg-bondi-500 text-white p-5 relative overflow-hidden flex flex-col justify-between shadow-md select-none">
               <img
                 src={ribbonTrailLoopSvg}
                 alt=""
@@ -285,7 +285,7 @@ export function DonationDetailImpactDialog({
                   <h3 className="font-heading font-bold text-[26px] leading-[1.1] tracking-tight">
                     Impact Report
                   </h3>
-                  <span className="inline-flex items-center rounded-full bg-[#f5bc00] px-3 py-1 font-sans text-[11px] font-bold text-[#142023] max-w-full truncate">
+                  <span className="inline-flex items-center rounded-full bg-sunny-500 px-3 py-1 font-sans text-[11px] font-bold text-neutral-900 max-w-full truncate">
                     bersama {detail.donorName}
                   </span>
                 </div>
@@ -329,7 +329,7 @@ export function DonationDetailImpactDialog({
                   </p>
                 </div>
                 <div
-                  className="size-10 shrink-0 rounded-sm bg-white text-[#142023] flex items-center justify-center shadow-xs"
+                  className="size-10 shrink-0 rounded-sm bg-white text-neutral-900 flex items-center justify-center shadow-xs"
                   aria-label="QR Code berbagibitesjogja.com"
                 >
                   <QrCode className="size-7" />

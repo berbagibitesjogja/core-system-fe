@@ -35,7 +35,7 @@ export function AvatarBlock({ onCopy, copiedToken }: AvatarBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=17-237"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Foto profil Google SSO (Type Image) atau inisial (Type Initial). Bentuk
         Circle untuk orang (admin, volunteer, hero). Bentuk Rounded untuk
         lembaga (beneficiary, sponsor/logo mitra). Small 32px, Medium 40px,

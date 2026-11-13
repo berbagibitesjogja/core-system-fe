@@ -32,7 +32,7 @@ export function CheckboxBlock({ onCopy, copiedToken }: CheckboxBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=18-275&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Pilihan on/off di form: Basi / Tidak Layak, Blokir Hero, multi-select
         beneficiary di dropdown. Area klik mencakup label.
       </p>
@@ -55,7 +55,7 @@ export function CheckboxBlock({ onCopy, copiedToken }: CheckboxBlockProps) {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Checked = False
               </td>
               <td className="py-4 px-4">
@@ -75,7 +75,7 @@ export function CheckboxBlock({ onCopy, copiedToken }: CheckboxBlockProps) {
             </tr>
 
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Checked = True
               </td>
               <td className="py-4 px-4">
@@ -95,7 +95,7 @@ export function CheckboxBlock({ onCopy, copiedToken }: CheckboxBlockProps) {
             </tr>
 
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Checked = Indeterminate
               </td>
               <td className="py-4 px-4">

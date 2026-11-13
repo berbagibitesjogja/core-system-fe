@@ -55,20 +55,20 @@ export function GoogleSignInButton({
       className={cn(
         "relative flex h-[44px] w-full max-w-[400px] items-center justify-center gap-2 px-5 rounded-full font-['Inter'] text-[14px] font-semibold leading-[20px] transition-all duration-150 select-none outline-none cursor-pointer whitespace-nowrap",
         isDisabled
-          ? "bg-[#eef1f2] border border-[#e2e7e8] text-[#9aa5a8] cursor-not-allowed pointer-events-none opacity-80"
+          ? "bg-neutral-100 border border-neutral-200 text-neutral-400 cursor-not-allowed pointer-events-none opacity-80"
           : isHover
-            ? "bg-[#eef1f2] border border-[#cdd4d6] text-[#142023]"
+            ? "bg-neutral-100 border border-neutral-300 text-neutral-900"
             : isCurrentlyLoading
-              ? "bg-white border border-[#cdd4d6] text-[#142023] cursor-wait"
-              : "bg-white border border-[#cdd4d6] text-[#142023] hover:bg-[#eef1f2]",
-        "focus-visible:ring-3 focus-visible:ring-[#b0e0e3]",
+              ? "bg-white border border-neutral-300 text-neutral-900 cursor-wait"
+              : "bg-white border border-neutral-300 text-neutral-900 hover:bg-neutral-100",
+        "focus-visible:ring-3 focus-visible:ring-bondi-200",
         className,
       )}
       {...props}
     >
       <div className="size-[20px] shrink-0 relative flex items-center justify-center">
         {isCurrentlyLoading ? (
-          <Loader2 className="size-[18px] animate-spin text-[#142023]" />
+          <Loader2 className="size-[18px] animate-spin text-neutral-900" />
         ) : (
           <GoogleIcon
             className={cn(

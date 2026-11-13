@@ -246,7 +246,7 @@ export function HeroFormDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b1416]/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget && !isSubmitting) {
           onClose();
@@ -265,11 +265,11 @@ export function HeroFormDialog({
           <div className="flex flex-col gap-1">
             <h2
               id="hero-form-modal-title"
-              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-[#142023]"
+              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-neutral-900"
             >
               {isEdit ? "Edit Data Hero" : "Tambah Hero Baru"}
             </h2>
-            <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-[#6b777a]">
+            <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-neutral-500">
               {isEdit
                 ? `Perbarui profil ${hero?.name ?? "hero"}.`
                 : "Daftarkan penerima makanan agar bisa menerima alokasi donasi."}
@@ -343,7 +343,7 @@ export function HeroFormDialog({
 
           {/* Opsi Blokir Hero (Khusus Mode Edit) */}
           {isEdit && (
-            <div className="bg-[#fef2f2] rounded-xl px-4 py-3 flex flex-col gap-1 w-full">
+            <div className="bg-red-50 rounded-xl px-4 py-3 flex flex-col gap-1 w-full">
               <Checkbox
                 id="hero-form-blocked"
                 checked={formData.isBlocked}
@@ -353,7 +353,7 @@ export function HeroFormDialog({
                 disabled={isSubmitting}
                 label="Blokir hero ini"
               />
-              <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-[#4d585b]">
+              <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-600">
                 Hero yang diblokir tidak bisa menerima alokasi donasi baru.
                 Riwayatnya tetap tersimpan.
               </p>

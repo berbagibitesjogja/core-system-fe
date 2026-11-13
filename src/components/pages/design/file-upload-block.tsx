@@ -42,7 +42,7 @@ export function FileUploadBlock({ onCopy, copiedToken }: FileUploadBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=21-347&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Unggah berkas foto makanan, bukti serah terima, nota reimburse, atau
         dokumen mitra. Mendukung drag &amp; drop, pembacaan ukuran file, dan
         status analyzing AI.

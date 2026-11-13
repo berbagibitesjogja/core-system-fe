@@ -26,7 +26,7 @@ export function TooltipBlock({ onCopy, copiedToken }: TooltipBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=20-371"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Label singkat untuk tombol ikon (lihat, edit, hapus, FAB) yang muncul
         saat hover atau long-press. Box berlatar belakang warna tinta gelap
         (#142023) dengan panah segitiga 12×6px mengarah ke elemen target.

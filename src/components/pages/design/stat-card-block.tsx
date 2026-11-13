@@ -34,7 +34,7 @@ export function StatCardBlock({ onCopy, copiedToken }: StatCardBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-189"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Kartu metrik untuk Dampak Kami, detail sponsor, beneficiary, dan hero.
         Default untuk sebagian besar metrik, Brand dan Accent hanya untuk 1
         metrik sorotan per baris. Angka memakai Gabarito (Number/XL 40px) dengan
