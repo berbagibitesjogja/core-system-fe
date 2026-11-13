@@ -2,6 +2,7 @@ import * as React from "react";
 import { AlertTriangle, FileText, Sparkles, Upload, X } from "lucide-react";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { ProgressBar } from "./progress-bar";
 
 export type FileUploadState =
   "default" | "dragover" | "analyzing" | "uploaded" | "error";
@@ -11,6 +12,7 @@ export interface FileUploadProps {
   description?: string;
   state?: FileUploadState;
   forcedState?: FileUploadState;
+  analyzingProgress?: number;
   fileName?: string;
   fileSize?: string;
   errorMessage?: string;
@@ -25,6 +27,7 @@ export function FileUpload({
   description = "JPG, PNG, atau PDF. Maks 5MB",
   state = "default",
   forcedState,
+  analyzingProgress,
   fileName = "struk-gocar-10sept.jpg",
   fileSize = "1,2 MB",
   errorMessage,
@@ -179,9 +182,14 @@ export function FileUpload({
 
           {/* Progress Bar for Analyzing */}
           {currentState === "analyzing" && (
-            <div className="w-[200px] h-[6px] rounded-full bg-sunny-100 overflow-hidden mt-1">
-              <div className="h-full bg-bondi-700 rounded-full w-[60%] animate-pulse" />
-            </div>
+            <ProgressBar
+              value={analyzingProgress ?? 60}
+              indeterminate={typeof analyzingProgress !== "number"}
+              color="brand"
+              trackColor="sunny"
+              ariaLabel="Progres analisis invoice"
+              className="w-[200px] mt-1"
+            />
           )}
         </div>
       )}

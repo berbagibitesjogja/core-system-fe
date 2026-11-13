@@ -67,6 +67,9 @@ export interface ReimburseTextFieldConfig {
 export const REIMBURSE_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 export const REIMBURSE_DEMO_DETECTED_AMOUNT = 46500;
 export const REIMBURSE_UPLOAD_DEFAULT_DESC = "JPG, PNG, atau PDF. Maks 5MB";
+export const REIMBURSE_ANALYZE_MIN_DURATION_MS = 5000;
+export const REIMBURSE_ANALYZE_HOLD_PROGRESS = 95;
+export const REIMBURSE_ANALYZE_COMPLETE_HOLD_MS = 250;
 
 // Konfigurasi field teks pada row tujuan 2 kolom
 export const reimburseDestinationFields: readonly ReimburseTextFieldConfig[] = [
@@ -278,10 +281,27 @@ export function estimateReimburseAmount(note: string): number {
   return REIMBURSE_DEMO_DETECTED_AMOUNT;
 }
 
+/**
+ * Menghitung persentase progress analisis AI (0% -> 95% dalam minimal 5 detik).
+ * Jika respons belum selesai setelah 5 detik, persentase bertahan (stuck) di 95%.
+ */
+export function computeReimburseAnalyzeProgress(elapsedMs: number): number {
+  const ratio = Math.min(
+    1,
+    Math.max(0, elapsedMs / REIMBURSE_ANALYZE_MIN_DURATION_MS),
+  );
+  const eased = 1 - Math.pow(1 - ratio, 2);
+  return Math.min(
+    REIMBURSE_ANALYZE_HOLD_PROGRESS,
+    Math.round(eased * REIMBURSE_ANALYZE_HOLD_PROGRESS),
+  );
+}
+
 export interface ReimbursePresetState {
   formValues: ReimburseRequestFormValues;
   uploadState: "default" | "analyzing" | "uploaded" | "error";
   uploadErrorMessage?: string;
+  analyzingProgress?: number;
   alert: ReimburseAlertState | null;
   isAnalyzing: boolean;
   historyItems: ReimburseHistoryItem[];
@@ -302,6 +322,7 @@ export function getReimbursePresetState(
           file: REIMBURSE_SAMPLE_FILE,
         },
         uploadState: "analyzing",
+        analyzingProgress: 0,
         alert: null,
         isAnalyzing: true,
         historyItems: defaultReimburseHistory,

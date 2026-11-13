@@ -23,6 +23,7 @@ export interface ReimburseRequestFormProps {
   fieldErrors: ReimburseRequestFieldErrors;
   uploadState: FileUploadState;
   uploadErrorMessage?: string;
+  analyzingProgress?: number;
   alert: ReimburseAlertState | null;
   isAnalyzing: boolean;
   onFieldChange: (
@@ -44,6 +45,7 @@ export function ReimburseRequestForm({
   fieldErrors,
   uploadState,
   uploadErrorMessage,
+  analyzingProgress,
   alert,
   isAnalyzing,
   onFieldChange,
@@ -144,6 +146,7 @@ export function ReimburseRequestForm({
             description={REIMBURSE_UPLOAD_DEFAULT_DESC}
             accept=".jpg,.jpeg,.png,.pdf"
             state={effectiveUploadState}
+            analyzingProgress={analyzingProgress}
             fileName={values.file?.name}
             fileSize={values.file?.sizeLabel}
             errorMessage={effectiveUploadError}
