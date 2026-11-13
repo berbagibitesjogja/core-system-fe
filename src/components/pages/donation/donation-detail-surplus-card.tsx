@@ -1,3 +1,10 @@
+import * as React from "react";
+import { flexRender } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  useLegacyTable as useReactTable,
+} from "@tanstack/react-table/legacy";
+import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -14,6 +21,7 @@ import {
   EmptyState,
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
+import { cn } from "#/lib/utils";
 import type { DonationSurplusFoodItem } from "./donation-detail-data";
 
 export interface DonationDetailSurplusCardProps {
@@ -32,6 +40,124 @@ export function DonationDetailSurplusCard({
   onEditFood,
   onDeleteFood,
 }: DonationDetailSurplusCardProps) {
+  // Definisi kolom tabel Data-Driven (TanStack Table ColumnDef)
+  const columns = React.useMemo<Array<ColumnDef<DonationSurplusFoodItem>>>(
+    () => [
+      {
+        id: "rank",
+        header: "#",
+        meta: {
+          className: "w-[56px]",
+        },
+        cell: ({ row }) => (
+          <span className="font-sans font-normal text-sm leading-5 text-neutral-900 tabular-nums">
+            {row.index + 1}
+          </span>
+        ),
+      },
+      {
+        id: "name",
+        accessorKey: "name",
+        header: "Nama Makanan",
+        cell: ({ row }) => {
+          const item = row.original;
+          return (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-sans font-semibold text-sm text-neutral-900">
+                {item.name}
+              </span>
+              {item.isSpoiled && (
+                <Badge tone="danger" styleVariant="soft" dot>
+                  Basi / Tidak Layak
+                </Badge>
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        id: "quantity",
+        accessorKey: "quantity",
+        header: "Jumlah",
+        cell: ({ row }) => (
+          <span className="font-sans text-sm text-neutral-600 tabular-nums">
+            {row.original.quantity !== undefined
+              ? `${row.original.quantity} pcs`
+              : "-"}
+          </span>
+        ),
+      },
+      {
+        id: "weight",
+        accessorKey: "weight",
+        header: "Berat",
+        meta: {
+          className: "whitespace-nowrap",
+        },
+        cell: ({ row }) => (
+          <span className="font-sans font-medium text-sm text-neutral-900 tabular-nums">
+            {row.original.weight.toLocaleString("id-ID")} {row.original.unit}
+          </span>
+        ),
+      },
+      {
+        id: "notes",
+        accessorKey: "notes",
+        header: "Keterangan",
+        meta: {
+          className: "max-w-[260px]",
+        },
+        cell: ({ row }) => (
+          <span className="font-sans text-sm text-neutral-600 line-clamp-2">
+            {row.original.notes?.trim() ? row.original.notes : "-"}
+          </span>
+        ),
+      },
+      {
+        id: "actions",
+        header: "Aksi",
+        meta: {
+          align: "right",
+        },
+        cell: ({ row }) => {
+          const item = row.original;
+          return (
+            <div className="flex items-center justify-end gap-1">
+              <IconButton
+                type="button"
+                variant="ghost"
+                size="sm"
+                aria-label={`Edit ${item.name}`}
+                tooltip="Edit makanan"
+                onClick={() => onEditFood(item)}
+              >
+                <Pencil className="size-[18px]" />
+              </IconButton>
+              <IconButton
+                type="button"
+                variant="danger"
+                size="sm"
+                aria-label={`Hapus ${item.name}`}
+                tooltip="Hapus makanan"
+                onClick={() => onDeleteFood(item)}
+              >
+                <Trash2 className="size-[18px]" />
+              </IconButton>
+            </div>
+          );
+        },
+      },
+    ],
+    [onEditFood, onDeleteFood],
+  );
+
+  const table = useReactTable({
+    data: foods,
+    columns,
+    getRowId: (row) => row.id,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <section className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-hidden">
       {/* Header Kartu Daftar Surplus Food */}
@@ -74,85 +200,54 @@ export function DonationDetailSurplusCard({
           <div className="hidden md:block">
             <Table containerClassName="rounded-none border-0 shadow-none">
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-[56px] uppercase tracking-[0.04em]">
-                    #
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Nama Makanan
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Jumlah
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Berat
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Keterangan
-                  </TableHead>
-                  <TableHead
-                    align="right"
-                    className="uppercase tracking-[0.04em]"
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
                   >
-                    Aksi
-                  </TableHead>
-                </TableRow>
+                    {headerGroup.headers.map((header) => {
+                      const meta = header.column.columnDef.meta;
+
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={cn(
+                            "uppercase tracking-[0.04em]",
+                            meta?.className,
+                          )}
+                          align={meta?.align}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {foods.map((item, index) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="w-[56px] font-sans font-normal text-sm leading-5 text-neutral-900 tabular-nums">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-sans font-semibold text-sm text-neutral-900">
-                          {item.name}
-                        </span>
-                        {item.isSpoiled && (
-                          <Badge tone="danger" styleVariant="soft" dot>
-                            Basi / Tidak Layak
-                          </Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-sans text-sm text-neutral-600 tabular-nums">
-                      {item.quantity !== undefined
-                        ? `${item.quantity} pcs`
-                        : "-"}
-                    </TableCell>
-                    <TableCell className="font-sans font-medium text-sm text-neutral-900 tabular-nums whitespace-nowrap">
-                      {item.weight.toLocaleString("id-ID")} {item.unit}
-                    </TableCell>
-                    <TableCell className="font-sans text-sm text-neutral-600 max-w-[260px]">
-                      <span className="line-clamp-2">
-                        {item.notes?.trim() ? item.notes : "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell align="right">
-                      <div className="flex items-center justify-end gap-1">
-                        <IconButton
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          aria-label={`Edit ${item.name}`}
-                          tooltip="Edit makanan"
-                          onClick={() => onEditFood(item)}
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      const meta = cell.column.columnDef.meta;
+
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={meta?.className}
+                          align={meta?.align}
                         >
-                          <Pencil className="size-[18px]" />
-                        </IconButton>
-                        <IconButton
-                          type="button"
-                          variant="danger"
-                          size="sm"
-                          aria-label={`Hapus ${item.name}`}
-                          tooltip="Hapus makanan"
-                          onClick={() => onDeleteFood(item)}
-                        >
-                          <Trash2 className="size-[18px]" />
-                        </IconButton>
-                      </div>
-                    </TableCell>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))}
               </TableBody>
