@@ -5,6 +5,16 @@ import statDonationActive from "#/assets/illustrations/lunch-box.svg";
 export type DonationProgram = "Food Rescue" | "CSR";
 export type DonationStatus = "Aktif" | "Selesai";
 
+// Pemetaan warna Badge untuk setiap status aksi donasi
+export const DONATION_STATUS_BADGE_TONE: Record<
+  DonationStatus | "Penuh",
+  "brand" | "warning" | "success"
+> = {
+  Aktif: "brand",
+  Penuh: "warning",
+  Selesai: "success",
+};
+
 export interface DonationItem {
   id: string;
   date: string;

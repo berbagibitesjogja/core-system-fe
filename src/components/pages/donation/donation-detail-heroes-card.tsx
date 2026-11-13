@@ -124,7 +124,7 @@ export function DonationDetailHeroesCard({
       if (hero.status === "tidak-jadi-ambil") {
         return (
           <div className="flex items-center justify-end gap-2">
-            <Badge tone="danger" styleVariant="soft">
+            <Badge tone="danger" styleVariant="soft" dot>
               Tidak Jadi Ambil
             </Badge>
           </div>
@@ -135,7 +135,7 @@ export function DonationDetailHeroesCard({
       return (
         <div className="flex items-center justify-end gap-2">
           {isPickedUp ? (
-            <Badge tone="success" styleVariant="soft">
+            <Badge tone="success" styleVariant="soft" dot>
               Sudah Diambil
             </Badge>
           ) : (

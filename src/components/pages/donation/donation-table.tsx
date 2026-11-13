@@ -25,6 +25,7 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
+import { DONATION_STATUS_BADGE_TONE } from "./donation-data";
 import type { DonationItem } from "./donation-data";
 
 declare module "@tanstack/react-table" {
@@ -146,23 +147,15 @@ export function DonationTable({
         meta: {
           className: "min-w-[140px] w-[140px]",
         },
-        cell: ({ row }) => {
-          const isActive = row.original.status === "Aktif";
-          return (
-            <Badge
-              dot
-              tone={isActive ? "brand" : "neutral"}
-              styleVariant="soft"
-              className={
-                isActive
-                  ? "bg-bondi-50 text-brand-dark border-transparent"
-                  : "bg-neutral-100 text-neutral-600 border-transparent"
-              }
-            >
-              {row.original.status}
-            </Badge>
-          );
-        },
+        cell: ({ row }) => (
+          <Badge
+            tone={DONATION_STATUS_BADGE_TONE[row.original.status]}
+            styleVariant="soft"
+            dot
+          >
+            {row.original.status}
+          </Badge>
+        ),
       },
       {
         id: "actions",
