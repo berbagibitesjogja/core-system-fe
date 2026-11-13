@@ -75,6 +75,9 @@ export function DonationDetailSurplusCard({
             <Table containerClassName="rounded-none border-0 shadow-none">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[56px] uppercase tracking-[0.04em]">
+                    #
+                  </TableHead>
                   <TableHead className="uppercase tracking-[0.04em]">
                     Nama Makanan
                   </TableHead>
@@ -96,8 +99,11 @@ export function DonationDetailSurplusCard({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {foods.map((item) => (
+                {foods.map((item, index) => (
                   <TableRow key={item.id}>
+                    <TableCell className="w-[56px] font-sans font-normal text-sm leading-5 text-neutral-900 tabular-nums">
+                      {index + 1}
+                    </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-sans font-semibold text-sm text-neutral-900">

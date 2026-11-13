@@ -334,6 +334,9 @@ export function DonationDetailHeroesCard({
             <Table containerClassName="rounded-none border-0 shadow-none">
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[56px] uppercase tracking-[0.04em]">
+                    #
+                  </TableHead>
                   <TableHead className="uppercase tracking-[0.04em]">
                     Nama
                   </TableHead>
@@ -352,7 +355,7 @@ export function DonationDetailHeroesCard({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {visibleHeroes.map((hero) => {
+                {visibleHeroes.map((hero, index) => {
                   const isForfeited = hero.status === "tidak-jadi-ambil";
 
                   return (
@@ -360,6 +363,9 @@ export function DonationDetailHeroesCard({
                       key={hero.id}
                       className={isForfeited ? "bg-red-50/30" : undefined}
                     >
+                      <TableCell className="w-[56px] font-sans font-normal text-sm leading-5 text-neutral-900 tabular-nums">
+                        {index + 1}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3 min-w-0">
                           <Avatar
@@ -405,7 +411,7 @@ export function DonationDetailHeroesCard({
 
           {/* Kartu Mobile */}
           <div className="md:hidden divide-y divide-neutral-100 border-t border-neutral-100">
-            {visibleHeroes.map((hero) => {
+            {visibleHeroes.map((hero, index) => {
               const isForfeited = hero.status === "tidak-jadi-ambil";
 
               return (
@@ -413,28 +419,33 @@ export function DonationDetailHeroesCard({
                   key={hero.id}
                   className={cn("p-4 space-y-3", isForfeited && "bg-red-50/30")}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Avatar
-                      name={hero.name}
-                      size="sm"
-                      shape="circle"
-                      className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={cn(
-                          "font-sans font-semibold text-sm truncate",
-                          isForfeited
-                            ? "text-neutral-500 line-through"
-                            : "text-neutral-900",
-                        )}
-                      >
-                        {hero.name}
-                      </p>
-                      <p className="font-sans text-xs text-neutral-600 truncate">
-                        {hero.sectorName} · {hero.beneficiaryName}
-                      </p>
+                  <div className="flex items-center justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Avatar
+                        name={hero.name}
+                        size="sm"
+                        shape="circle"
+                        className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={cn(
+                            "font-sans font-semibold text-sm truncate",
+                            isForfeited
+                              ? "text-neutral-500 line-through"
+                              : "text-neutral-900",
+                          )}
+                        >
+                          {hero.name}
+                        </p>
+                        <p className="font-sans text-xs text-neutral-600 truncate">
+                          {hero.sectorName} · {hero.beneficiaryName}
+                        </p>
+                      </div>
                     </div>
+                    <span className="font-sans text-xs text-neutral-500 tabular-nums shrink-0">
+                      #{index + 1}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
