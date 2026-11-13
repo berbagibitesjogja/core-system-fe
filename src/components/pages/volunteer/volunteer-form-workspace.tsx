@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { toast } from "#/components/ui/toast";
 import { VolunteerForm } from "./volunteer-form";
-import { VolunteerFormSkeleton } from "./volunteer-form-skeleton";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
 import type { VolunteerFormValues } from "./volunteer-data";
@@ -15,8 +14,9 @@ export interface VolunteerFormWorkspaceProps {
 }
 
 /**
- * VolunteerFormWorkspace: Orkestrator tata letak bersama untuk halaman Tambah dan Edit Volunteer.
- * Mengelola override header kembali, loading skeleton, dialog konfirmasi keluar, notifikasi toast, dan tips card.
+ * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah Volunteer.
+ * Form tampil langsung tanpa skeleton (sama seperti halaman Tambah Donasi);
+ * skeleton hanya dipakai di halaman detail.
  */
 export function VolunteerFormWorkspace({
   mode,
@@ -27,18 +27,8 @@ export function VolunteerFormWorkspace({
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
-
-  // DEV ONLY: Simulasi loading skeleton 3 detik
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleRequestLeave = React.useCallback(() => {
     if (isSubmitting) return;
@@ -92,10 +82,6 @@ export function VolunteerFormWorkspace({
       setIsSubmitting(false);
     }
   };
-
-  if (isLoading) {
-    return <VolunteerFormSkeleton />;
-  }
 
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">

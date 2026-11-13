@@ -290,7 +290,7 @@ export function VolunteerForm({
                 aria-labelledby="volunteer-division-label"
                 onClick={() => setDivisionDropdownOpen((prev) => !prev)}
                 className={cn(
-                  "h-[44px] w-full px-3.5 rounded-lg flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface cursor-pointer select-none",
+                  "h-[44px] w-full px-3.5 rounded-md flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface cursor-pointer select-none",
                   divisionDropdownOpen
                     ? "border-2 border-brand shadow-focus-ring text-neutral-900"
                     : errors.division
@@ -320,7 +320,7 @@ export function VolunteerForm({
                 <div
                   role="listbox"
                   aria-label="Daftar Divisi"
-                  className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-lg shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto"
+                  className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto"
                 >
                   {FORM_DIVISIONS.map((opt) => {
                     const isSelected = opt.label === values.division;

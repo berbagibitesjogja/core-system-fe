@@ -142,7 +142,7 @@ export function VolunteerDetailSettingsTab({
               setRoleOpen(false);
             }}
             className={cn(
-              "h-[44px] w-full px-3.5 rounded-lg flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface cursor-pointer select-none",
+              "h-[44px] w-full px-3.5 rounded-md flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface cursor-pointer select-none",
               divisionOpen
                 ? "border-2 border-brand shadow-focus-ring text-neutral-900"
                 : errors.division
@@ -165,7 +165,7 @@ export function VolunteerDetailSettingsTab({
           {divisionOpen && (
             <div
               role="listbox"
-              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-lg shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-56 overflow-y-auto"
+              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-56 overflow-y-auto"
             >
               {FORM_DIVISIONS.map((opt) => {
                 const isSelected = opt.label === values.division;
@@ -216,7 +216,7 @@ export function VolunteerDetailSettingsTab({
               setDivisionOpen(false);
             }}
             className={cn(
-              "h-[44px] w-full px-3.5 rounded-lg flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface select-none",
+              "h-[44px] w-full px-3.5 rounded-md flex items-center justify-between gap-2 text-left font-sans text-sm transition-all outline-none bg-surface select-none",
               !canEditRole
                 ? "bg-neutral-100 border border-neutral-200 text-neutral-500 cursor-not-allowed"
                 : roleOpen
@@ -245,7 +245,7 @@ export function VolunteerDetailSettingsTab({
           {roleOpen && canEditRole && (
             <div
               role="listbox"
-              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-lg shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
+              className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
             >
               {VOLUNTEER_ROLE_OPTIONS.map((opt) => {
                 const isSelected = opt.id === values.role;

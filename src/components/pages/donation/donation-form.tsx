@@ -339,7 +339,7 @@ export function DonationForm({
 
             {/* Menu Popover Dropdown Pilihan Sponsor */}
             {sponsorDropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto flex flex-col p-1.5 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-white border border-neutral-200 rounded-md shadow-lg max-h-60 overflow-y-auto flex flex-col p-1.5 animate-in fade-in zoom-in-95 duration-100">
                 <div className="flex items-center gap-2 px-2.5 py-1.5 border-b border-neutral-100 mb-1">
                   <Search className="size-4 text-neutral-400 shrink-0" />
                   <input
@@ -360,7 +360,7 @@ export function DonationForm({
                         type="button"
                         onClick={() => handleSelectSponsor(s)}
                         className={cn(
-                          "w-full px-3 py-2 rounded-sm text-left text-xs font-sans flex items-center justify-between transition-colors cursor-pointer",
+                          "w-full px-3 py-2 rounded-md text-left text-xs font-sans flex items-center justify-between transition-colors cursor-pointer",
                           isSelected
                             ? "bg-bondi-50 text-brand-dark font-semibold"
                             : "text-neutral-800 hover:bg-neutral-50",
@@ -664,7 +664,7 @@ export function DonationForm({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Kolom Pencarian Beneficiary di dalam Dropdown */}
-              <div className="bg-neutral-100 rounded-lg px-3 py-2 flex items-center gap-2 mb-1">
+              <div className="bg-neutral-100 rounded-md px-3 py-2 flex items-center gap-2 mb-1">
                 <Search className="size-4 text-neutral-500 shrink-0" />
                 <input
                   type="text"
@@ -696,7 +696,7 @@ export function DonationForm({
                       type="button"
                       onClick={() => handleToggleBeneficiary(ben)}
                       className={cn(
-                        "w-full px-3 py-2 rounded-lg text-left flex items-center gap-3 transition-colors cursor-pointer",
+                        "w-full px-3 py-2 rounded-md text-left flex items-center gap-3 transition-colors cursor-pointer",
                         isSelected ? "bg-bondi-50/70" : "hover:bg-neutral-100",
                       )}
                     >

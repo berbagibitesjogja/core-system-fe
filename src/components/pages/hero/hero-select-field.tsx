@@ -173,7 +173,7 @@ export function HeroSelectField({
         <div
           role="listbox"
           className={cn(
-            "absolute left-0 top-full mt-1.5 z-50 w-full min-w-[260px] bg-white border border-neutral-200 rounded-xl p-1.5 shadow-[0px_8px_12px_rgba(20,32,35,0.1)] flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100 motion-reduce:animate-none",
+            "absolute left-0 top-full mt-1.5 z-50 w-full min-w-[260px] bg-white border border-neutral-200 rounded-md p-1.5 shadow-[0px_8px_12px_rgba(20,32,35,0.1)] flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100 motion-reduce:animate-none",
             menuClassName,
           )}
         >
@@ -221,7 +221,7 @@ export function HeroSelectField({
                     setIsOpen(false);
                   }}
                   className={cn(
-                    "w-full px-3 py-2 rounded-lg text-left flex items-center justify-between gap-3 transition-colors cursor-pointer",
+                    "w-full px-3 py-2 rounded-md text-left flex items-center justify-between gap-3 transition-colors cursor-pointer",
                     isSelected
                       ? "bg-bondi-50 text-bondi-900"
                       : "text-neutral-900 hover:bg-neutral-100",
