@@ -1,4 +1,5 @@
 export * from "./stat-card";
+export * from "./stat-card-skeleton";
 export * from "./filter-chip";
 export * from "./tag";
 export * from "./pagination";

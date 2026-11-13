@@ -13,6 +13,7 @@ import {
   ProfileActivityTab,
   ProfileLeaveDialog,
   ProfileSettingsTab,
+  ProfileSkeleton,
   ProfileSummaryCard,
   areProfileFormValuesEqual,
   defaultProfileActivities,
@@ -82,6 +83,17 @@ function ProfilePage() {
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
   const setSidebarUserRole = adminLayout?.setSidebarUserRole;
+
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const initialPreset = React.useMemo(
     () => getInitialProfilePreset(roleParam, demoParam),
@@ -294,6 +306,16 @@ function ProfilePage() {
     allowLeaveRef.current = true;
     navigate({ to: "/admin/dashboard" });
   }, [blocker, navigate]);
+
+  // Tampilkan skeleton saat loading aktif
+  if (isLoading) {
+    return (
+      <ProfileSkeleton
+        activeTab={activeTab}
+        showActivityTab={savedRoleMeta.canViewActivity}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">

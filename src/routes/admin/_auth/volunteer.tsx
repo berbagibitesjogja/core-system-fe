@@ -86,6 +86,17 @@ function VolunteerPage() {
     loading,
   } = Route.useSearch();
 
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [volunteers, setVolunteers] = React.useState<VolunteerRecord[]>(
     INITIAL_VOLUNTEER_RECORDS,
   );
@@ -268,7 +279,7 @@ function VolunteerPage() {
     }, 250);
   };
 
-  if (loading) {
+  if (loading || isLoading) {
     return <VolunteerPageSkeleton />;
   }
 
