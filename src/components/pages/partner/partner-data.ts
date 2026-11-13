@@ -115,7 +115,7 @@ export const defaultPartners: PartnerRecord[] = [
     donationCount: 24,
     impactKg: 96,
     lastDonationDate: "24 Okt 2026",
-    canDelete: false,
+    canDelete: true,
   },
   {
     id: "ptr-8",
@@ -137,7 +137,7 @@ export const defaultPartners: PartnerRecord[] = [
     donationCount: 15,
     impactKg: 120,
     lastDonationDate: "5 Nov 2026",
-    canDelete: false,
+    canDelete: true,
   },
   {
     id: "ptr-10",
@@ -148,7 +148,7 @@ export const defaultPartners: PartnerRecord[] = [
     donationCount: 12,
     impactKg: 40,
     lastDonationDate: "30 Okt 2026",
-    canDelete: false,
+    canDelete: true,
   },
   {
     id: "ptr-11",

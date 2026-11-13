@@ -17,7 +17,7 @@ import type {
   PartnerRecord,
   PartnerUserRole,
 } from "#/components/pages/partner";
-import { Alert } from "#/components/ui/alert";
+import { toast } from "#/components/ui/toast";
 
 // Skema validasi parameter pencarian URL untuk halaman Partner
 const partnerSearchSchema = z.object({
@@ -60,13 +60,9 @@ function PartnerPage() {
   const [deleteTarget, setDeleteTarget] = React.useState<PartnerRecord | null>(
     null,
   );
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [isCannotDeleteOpen, setIsCannotDeleteOpen] = React.useState(false);
-  const [feedbackToast, setFeedbackToast] = React.useState<{
-    tone: "success" | "info";
-    title: string;
-    description: string;
-  } | null>(null);
 
   const userRole: PartnerUserRole = role ?? "super_admin";
 
@@ -77,15 +73,6 @@ function PartnerPage() {
     }, 3000);
     return () => window.clearTimeout(timer);
   }, []);
-
-  // Auto-dismiss alert toast setelah 4 detik
-  React.useEffect(() => {
-    if (!feedbackToast) return;
-    const timer = window.setTimeout(() => {
-      setFeedbackToast(null);
-    }, 4000);
-    return () => window.clearTimeout(timer);
-  }, [feedbackToast]);
 
   const stats = React.useMemo(() => computePartnerStats(partners), [partners]);
   const filterOptions = React.useMemo(
@@ -194,26 +181,25 @@ function PartnerPage() {
     }));
   };
 
+  const handleDeleteTrigger = (partner: PartnerRecord) => {
+    setDeleteTarget(partner);
+    if (!partner.canDelete) {
+      setIsCannotDeleteOpen(true);
+    } else {
+      setIsDeleteDialogOpen(true);
+    }
+  };
+
   const handleConfirmDelete = () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
 
     window.setTimeout(() => {
-      setIsDeleting(false);
-      if (!deleteTarget.canDelete) {
-        setDeleteTarget(null);
-        setIsCannotDeleteOpen(true);
-        return;
-      }
-
-      const removedName = deleteTarget.name;
       setPartners((prev) => prev.filter((item) => item.id !== deleteTarget.id));
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
-      setFeedbackToast({
-        tone: "success",
-        title: "Donatur berhasil dihapus",
-        description: `Data ${removedName} telah dihapus dari daftar partner.`,
-      });
+      toast.success("Donatur berhasil dihapus");
     }, 250);
   };
 
@@ -223,19 +209,6 @@ function PartnerPage() {
 
   return (
     <div className="space-y-6 w-full">
-      {/* Notifikasi Aksi */}
-      {feedbackToast && (
-        <div className="fixed bottom-6 right-6 z-40 w-full max-w-sm shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200 motion-reduce:animate-none">
-          <Alert
-            tone={feedbackToast.tone}
-            title={feedbackToast.title}
-            description={feedbackToast.description}
-            onClose={() => setFeedbackToast(null)}
-            className="bg-white shadow-md"
-          />
-        </div>
-      )}
-
       {/* Baris Kartu Ringkasan Metrik Donatur */}
       <PartnerStats stats={stats} />
 
@@ -247,12 +220,7 @@ function PartnerPage() {
         searchQuery={search ?? ""}
         onSearchChange={handleSearchChange}
         onAddPartner={() => {
-          setFeedbackToast({
-            tone: "info",
-            title: "Tambah Donatur",
-            description:
-              "Formulir tambah mitra donatur akan tersedia pada tahap integrasi berikutnya.",
-          });
+          toast.info("Formulir tambah donatur akan segera tersedia.");
         }}
       />
 
@@ -272,27 +240,24 @@ function PartnerPage() {
         onResetFilters={handleResetFilters}
         userRole={userRole}
         onViewDetail={(partner) => {
-          setFeedbackToast({
-            tone: "info",
-            title: `Detail ${partner.name}`,
-            description: `${partner.type} · ${partner.donationCount} Aksi (${partner.impactKg} Kg).`,
-          });
+          toast.info(`Menampilkan detail donatur ${partner.name}.`);
         }}
         onEditPartner={(partner) => {
-          setFeedbackToast({
-            tone: "info",
-            title: `Edit ${partner.name}`,
-            description:
-              "Formulir ubah data mitra donatur akan tersedia pada tahap integrasi berikutnya.",
-          });
+          toast.info(
+            `Formulir edit data ${partner.name} akan segera tersedia.`,
+          );
         }}
-        onDeletePartner={(partner) => setDeleteTarget(partner)}
+        onDeletePartner={handleDeleteTrigger}
       />
 
       {/* Modal Konfirmasi Hapus Donatur */}
       <PartnerDeleteDialog
-        isOpen={Boolean(deleteTarget)}
-        onClose={() => !isDeleting && setDeleteTarget(null)}
+        isOpen={isDeleteDialogOpen}
+        onClose={() => {
+          if (isDeleting) return;
+          setIsDeleteDialogOpen(false);
+          setDeleteTarget(null);
+        }}
         onConfirm={handleConfirmDelete}
         partner={deleteTarget}
         isLoading={isDeleting}
@@ -301,7 +266,10 @@ function PartnerPage() {
       {/* Modal Peringatan Donatur Tidak Dapat Dihapus (409) */}
       <PartnerCannotDeleteDialog
         isOpen={isCannotDeleteOpen}
-        onClose={() => setIsCannotDeleteOpen(false)}
+        onClose={() => {
+          setIsCannotDeleteOpen(false);
+          setDeleteTarget(null);
+        }}
       />
     </div>
   );
