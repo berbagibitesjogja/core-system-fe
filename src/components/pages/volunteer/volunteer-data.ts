@@ -308,10 +308,3 @@ export function getVolunteerStats(
     },
   ];
 }
-
-// Mengubah nomor telepon tampilan (0812-xxxx-xxxx) menjadi tautan WhatsApp
-export function formatVolunteerWhatsappUrl(phone: string): string {
-  const digits = phone.replace(/\D/g, "");
-  const normalized = digits.startsWith("0") ? `62${digits.slice(1)}` : digits;
-  return `https://wa.me/${normalized}`;
-}

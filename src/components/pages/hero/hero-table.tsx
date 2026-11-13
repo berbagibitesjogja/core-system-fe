@@ -24,6 +24,7 @@ import {
 } from "#/components/shared/empty-state";
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { WhatsappLink } from "#/components/shared/whatsapp-link";
 import { getHeroAvatarSrc } from "#/lib/avatars";
 import { formatHeroCount } from "./hero-data";
 import type { HeroRecord, HeroUserRole } from "./hero-data";
@@ -61,7 +62,7 @@ function HeroIdentity({ hero }: { hero: HeroRecord }) {
     <EntityIdentity
       entityType="hero"
       name={hero.name}
-      subtitle={hero.phone}
+      subtitle={hero.phone ? <WhatsappLink phone={hero.phone} /> : undefined}
       avatarSrc={getHeroAvatarSrc(hero)}
     />
   );

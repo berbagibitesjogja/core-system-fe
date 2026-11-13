@@ -12,6 +12,7 @@ export * from "./nav-item";
 export * from "./bottom-nav-item";
 export * from "./beneficiary-card";
 export * from "./entity-identity";
+export * from "./whatsapp-link";
 export * from "./user-profile-menu";
 export * from "./admin-layout-context";
 export * from "./header";

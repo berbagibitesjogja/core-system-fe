@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MessageCircle, Search, Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
   getCoreRowModel,
@@ -24,10 +24,10 @@ import {
 } from "#/components/shared/empty-state";
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { WhatsappLink } from "#/components/shared/whatsapp-link";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import {
   formatVolunteerCount,
-  formatVolunteerWhatsappUrl,
   VOLUNTEER_DIVISION_BADGE_TONE,
 } from "./volunteer-data";
 import type { VolunteerRecord, VolunteerUserRole } from "./volunteer-data";
@@ -54,17 +54,7 @@ function VolunteerIdentity({ volunteer }: { volunteer: VolunteerRecord }) {
       entityType="volunteer"
       name={volunteer.name}
       avatarSrc={getPresetAvatarSrc(volunteer.name)}
-      subtitle={
-        <a
-          href={formatVolunteerWhatsappUrl(volunteer.phone)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-sans text-xs font-semibold leading-4 text-brand hover:underline"
-        >
-          <MessageCircle className="size-3.5 shrink-0" aria-hidden="true" />
-          <span>{volunteer.phone}</span>
-        </a>
-      }
+      subtitle={<WhatsappLink phone={volunteer.phone} />}
     />
   );
 }
