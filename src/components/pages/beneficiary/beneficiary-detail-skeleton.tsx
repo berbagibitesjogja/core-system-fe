@@ -53,7 +53,10 @@ export function BeneficiaryDetailSkeleton() {
                   <Skeleton className="h-3 w-14 rounded" />
                 </div>
                 <Skeleton className="h-4 w-16 rounded" />
-                <Skeleton className="h-4 w-32 rounded hidden sm:block" />
+                <div className="hidden sm:flex items-center gap-3">
+                  <Skeleton className="size-8 rounded-sm shrink-0" />
+                  <Skeleton className="h-4 w-28 rounded" />
+                </div>
                 <Skeleton className="h-4 w-12 rounded hidden sm:block" />
                 <Skeleton className="size-9 rounded-full" />
               </div>

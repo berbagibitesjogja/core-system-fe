@@ -67,7 +67,7 @@ export function DonationSkeleton() {
                 <Skeleton className="h-3 w-16 rounded" />
               </div>
               <div className="flex-1 flex items-center gap-3">
-                <Skeleton className="size-8 rounded-full" />
+                <Skeleton className="size-8 rounded-sm" />
                 <div className="space-y-1.5 flex-1">
                   <Skeleton className="h-4 w-40 rounded" />
                   <Skeleton className="h-3 w-20 rounded" />

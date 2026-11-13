@@ -64,7 +64,10 @@ export function HeroDetailSkeleton() {
                 <Skeleton className="h-3.5 w-28 rounded" />
                 <Skeleton className="h-3 w-14 rounded" />
               </div>
-              <Skeleton className="h-3.5 w-36 rounded hidden sm:block" />
+              <div className="hidden sm:flex items-center gap-3">
+                <Skeleton className="size-8 rounded-sm shrink-0" />
+                <Skeleton className="h-3.5 w-32 rounded" />
+              </div>
               <Skeleton className="h-3.5 w-40 rounded hidden md:block" />
               <Skeleton className="h-3.5 w-24 rounded hidden md:block" />
               <Skeleton className="h-3.5 w-16 rounded hidden lg:block" />

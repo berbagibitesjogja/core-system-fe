@@ -6,7 +6,6 @@ import {
   useLegacyTable as useReactTable,
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
-import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
@@ -23,7 +22,9 @@ import {
   EmptyState,
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import type { DonationItem } from "./donation-data";
 
 declare module "@tanstack/react-table" {
@@ -118,22 +119,12 @@ export function DonationTable({
           className: "min-w-[260px]",
         },
         cell: ({ row }) => (
-          <div className="flex items-center gap-3">
-            <Avatar
-              name={row.original.donorName}
-              size="sm"
-              shape="circle"
-              className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-            />
-            <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-neutral-900 text-sm truncate">
-                {row.original.donorName}
-              </span>
-              <span className="text-xs text-neutral-500 font-normal truncate">
-                {row.original.program}
-              </span>
-            </div>
-          </div>
+          <EntityIdentity
+            entityType="partner"
+            name={row.original.donorName}
+            subtitle={row.original.program}
+            avatarSrc={getPartnerAvatarSrc({ name: row.original.donorName })}
+          />
         ),
       },
       {

@@ -21,7 +21,9 @@ import {
   EmptyState,
   IllustrationSantaiKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { DETAIL_DONATIONS_PER_PAGE } from "./beneficiary-detail-data";
 import type { BeneficiaryDonationRecord } from "./beneficiary-detail-data";
@@ -99,9 +101,11 @@ export function BeneficiaryDetailDonationsTable({
         accessorKey: "donorName",
         header: "Donatur",
         cell: ({ row }) => (
-          <span className="font-sans font-medium text-sm text-neutral-900">
-            {row.original.donorName}
-          </span>
+          <EntityIdentity
+            entityType="partner"
+            name={row.original.donorName}
+            avatarSrc={getPartnerAvatarSrc({ name: row.original.donorName })}
+          />
         ),
       },
       {
@@ -246,14 +250,12 @@ export function BeneficiaryDetailDonationsTable({
                 className="p-4 flex items-start justify-between gap-3"
               >
                 <div className="min-w-0 space-y-2">
-                  <div>
-                    <p className="font-sans font-medium text-sm text-neutral-900 truncate">
-                      {item.donorName}
-                    </p>
-                    <p className="font-sans text-xs text-neutral-500">
-                      {item.dayLabel}, {item.dateLabel}
-                    </p>
-                  </div>
+                  <EntityIdentity
+                    entityType="partner"
+                    name={item.donorName}
+                    subtitle={`${item.dayLabel}, ${item.dateLabel}`}
+                    avatarSrc={getPartnerAvatarSrc({ name: item.donorName })}
+                  />
                   <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
                     <span>
                       Penerima:{" "}

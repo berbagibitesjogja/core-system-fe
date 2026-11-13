@@ -10,8 +10,8 @@ import {
   EmptyState,
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
-import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "#/components/ui/table";
+import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { formatRupiah, REIMBURSE_STATUS_BADGE_TONE } from "./reimburse-data";
 import type { ReimburseDataItem } from "./reimburse-management-data";
@@ -73,23 +74,15 @@ export function ReimburseDataTable({
         cell: ({ row }) => {
           const item = row.original;
           return (
-            <div className="flex min-w-0 items-center gap-3">
-              <Avatar
-                src={item.applicantAvatarSrc}
-                name={item.applicantName}
-                size="sm"
-                shape="circle"
-                className="shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
-              />
-              <div className="flex min-w-0 flex-col gap-0.5">
-                <p className="truncate text-sm font-semibold text-neutral-900">
-                  {item.applicantName}
-                </p>
-                <p className="truncate text-xs font-medium text-neutral-500">
-                  {item.method} · {item.destinationNumber}
-                </p>
-              </div>
-            </div>
+            <EntityIdentity
+              entityType="volunteer"
+              name={item.applicantName}
+              subtitle={`${item.method} · ${item.destinationNumber}`}
+              avatarSrc={
+                item.applicantAvatarSrc ??
+                getPresetAvatarSrc(item.applicantName)
+              }
+            />
           );
         },
       },

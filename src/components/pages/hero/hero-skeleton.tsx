@@ -55,8 +55,12 @@ export function HeroSkeleton() {
               key={row}
               className="px-4 h-16 flex items-center justify-between gap-4"
             >
-              <div className="flex-1 min-w-0">
-                <Skeleton className="h-3 w-40 rounded" />
+              <div className="flex flex-1 min-w-0 items-center gap-3">
+                <Skeleton className="size-8 rounded-full shrink-0" />
+                <div className="flex flex-1 flex-col gap-1.5 min-w-0">
+                  <Skeleton className="h-3.5 w-36 rounded" />
+                  <Skeleton className="h-3 w-24 rounded" />
+                </div>
               </div>
               <div className="w-[300px] hidden sm:block shrink-0">
                 <Skeleton className="h-3 w-44 rounded" />

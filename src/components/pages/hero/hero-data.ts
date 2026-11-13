@@ -1,3 +1,4 @@
+import { PRESET_AVATARS, getHeroAvatarSrc } from "#/lib/avatars";
 import statHeroBlocked from "#/assets/illustrations/volunteer-thinking.svg";
 import statHeroMonth from "#/assets/illustrations/volunteer-relaxing.svg";
 import statHeroTotal from "#/assets/illustrations/charity-family.svg";
@@ -9,6 +10,7 @@ export type HeroUserRole = "super_admin" | "core" | "staff";
 export interface HeroRecord {
   id: string;
   name: string;
+  avatarSrc?: string;
   phone?: string;
   beneficiaryId: string;
   beneficiaryName: string;
@@ -18,6 +20,9 @@ export interface HeroRecord {
   actionCount: number;
   canDelete: boolean;
 }
+
+export const HERO_AVATAR_PRESETS = PRESET_AVATARS;
+export { getHeroAvatarSrc };
 
 export interface HeroSectorOption {
   id: string;
@@ -127,7 +132,7 @@ export const defaultHeroBeneficiaryOptions: HeroBeneficiaryOption[] = [
   },
 ];
 
-export const defaultHeroes: HeroRecord[] = [
+const defaultHeroesSeed: HeroRecord[] = [
   {
     id: "hero-1",
     name: "Fariha Ramadhani",
@@ -389,6 +394,15 @@ export const defaultHeroes: HeroRecord[] = [
     canDelete: true,
   },
 ];
+
+export const defaultHeroes: HeroRecord[] = defaultHeroesSeed.map(
+  (hero, index) => ({
+    ...hero,
+    avatarSrc: HERO_AVATAR_PRESETS[index % HERO_AVATAR_PRESETS.length],
+  }),
+);
+
+// Re-export getHeroAvatarSrc agar import lokal modul hero tetap kompatibel
 
 // Menormalkan nomor telepon ke digit murni untuk pemeriksaan duplikasi
 export function normalizePhoneNumber(phone?: string): string {

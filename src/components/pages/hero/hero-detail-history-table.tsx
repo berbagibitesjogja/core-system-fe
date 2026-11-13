@@ -21,7 +21,9 @@ import {
   EmptyState,
   IllustrationSantaiKosong,
 } from "#/components/shared/empty-state";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { formatHeroCount } from "./hero-data";
 import { HERO_DETAIL_PER_PAGE_OPTIONS } from "./hero-detail-data";
 import type { HeroDonationHistoryRecord } from "./hero-detail-data";
@@ -98,9 +100,11 @@ export function HeroDetailHistoryTable({
           className: "min-w-[180px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
-            {row.original.donorName}
-          </span>
+          <EntityIdentity
+            entityType="partner"
+            name={row.original.donorName}
+            avatarSrc={getPartnerAvatarSrc({ name: row.original.donorName })}
+          />
         ),
       },
       {
@@ -283,14 +287,15 @@ export function HeroDetailHistoryTable({
               return (
                 <div key={record.id} className="p-4 flex flex-col gap-2.5">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-['Inter'] font-semibold text-[14px] text-neutral-900">
-                        {record.donorName}
-                      </p>
-                      <p className="font-['Inter'] text-[12px] text-neutral-600">
-                        {record.dateLabel} · {record.dayLabel}
-                      </p>
-                    </div>
+                    <EntityIdentity
+                      entityType="partner"
+                      name={record.donorName}
+                      subtitle={`${record.dateLabel} · ${record.dayLabel}`}
+                      avatarSrc={getPartnerAvatarSrc({
+                        name: record.donorName,
+                      })}
+                      className="flex-1"
+                    />
                     <Badge tone={statusMeta.tone} styleVariant="soft" dot>
                       {statusMeta.label}
                     </Badge>

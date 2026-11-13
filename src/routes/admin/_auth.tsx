@@ -105,6 +105,7 @@ function AdminLayout() {
         <Header
           title={currentTitle}
           subtitle={currentSubtitle}
+          avatar={headerOverride?.avatar}
           onMenuToggle={() => setMobileSidebarOpen(true)}
           onBack={headerOverride?.onBack}
           backHref={headerOverride?.backHref}

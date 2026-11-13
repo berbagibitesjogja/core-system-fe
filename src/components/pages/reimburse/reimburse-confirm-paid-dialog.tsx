@@ -1,6 +1,8 @@
 import * as React from "react";
 import { FileUpload } from "#/components/shared/file-upload";
+import { Avatar } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
+import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import {
   detectUploadedFileType,
@@ -164,16 +166,35 @@ export function ReimburseConfirmPaidDialog({
               className="flex items-center justify-between gap-4 text-sm"
             >
               <span className="text-neutral-500">{row.label}</span>
-              <span
-                className={cn(
-                  "text-right",
-                  row.emphasize
-                    ? "font-bold text-neutral-900 tabular-nums"
-                    : "font-medium text-neutral-800",
-                )}
-              >
-                {row.value}
-              </span>
+              {row.id === "applicant" ? (
+                <div className="flex min-w-0 items-center justify-end gap-2">
+                  <Avatar
+                    src={
+                      item.applicantAvatarSrc ??
+                      getPresetAvatarSrc(item.applicantName)
+                    }
+                    alt={item.applicantName}
+                    name={item.applicantName}
+                    size="sm"
+                    shape="circle"
+                    className="size-6 shrink-0 border-bondi-200 bg-bondi-50 text-[10px] text-bondi-800"
+                  />
+                  <span className="truncate font-semibold text-neutral-900">
+                    {row.value}
+                  </span>
+                </div>
+              ) : (
+                <span
+                  className={cn(
+                    "text-right",
+                    row.emphasize
+                      ? "font-bold text-neutral-900 tabular-nums"
+                      : "font-medium text-neutral-800",
+                  )}
+                >
+                  {row.value}
+                </span>
+              )}
             </div>
           ))}
         </div>
@@ -189,6 +210,7 @@ export function ReimburseConfirmPaidDialog({
           errorMessage={uploadError ?? undefined}
           onFileSelect={handleFileSelect}
           onRemove={handleRemoveFile}
+          className="w-full max-w-none"
         />
 
         <div className="flex items-center justify-end gap-3 pt-1">
