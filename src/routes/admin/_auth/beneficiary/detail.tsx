@@ -253,7 +253,7 @@ function BeneficiaryDetailPage() {
         </Badge>
 
         <Button
-          variant="secondary"
+          variant="primary"
           size="md"
           leftIcon={<Pencil className="size-4" />}
           onClick={() =>
@@ -263,7 +263,7 @@ function BeneficiaryDetailPage() {
             })
           }
         >
-          Edit Data
+          Edit Beneficiary
         </Button>
       </div>
 
