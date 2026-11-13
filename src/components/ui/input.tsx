@@ -95,10 +95,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div
-        className={cn(
-          "flex flex-col gap-[6px] items-start w-full max-w-[320px]",
-          className,
-        )}
+        className={cn("flex flex-col gap-[6px] items-start w-full", className)}
       >
         {showLabel && label && (
           <label
