@@ -411,6 +411,7 @@ export function VolunteerForm({
             error={errors.name}
             disabled={isSubmitting}
             required
+            className="w-full max-w-none"
           />
         </div>
 
@@ -428,6 +429,7 @@ export function VolunteerForm({
               helperText="Harus sama dengan akun Google untuk masuk."
               disabled={isSubmitting}
               required
+              className="w-full max-w-none"
             />
           </div>
 
@@ -443,25 +445,22 @@ export function VolunteerForm({
               helperText="Nomor aktif untuk koordinasi kegiatan."
               disabled={isSubmitting}
               required
+              className="w-full max-w-none"
             />
           </div>
         </div>
 
         {/* Field: Alamat Domisili */}
         <div className="flex flex-col gap-1.5 w-full">
-          <label className="font-sans text-sm font-semibold text-neutral-900 leading-5">
-            Alamat Domisili
-          </label>
           <Textarea
+            label="Alamat Domisili"
             placeholder="Contoh: Jl. Kaliurang Km 5, Sleman"
             value={values.address}
             onChange={(e) => handleFieldChange("address", e.target.value)}
+            helperText="Opsional"
             disabled={isSubmitting}
-            className="min-h-[108px] resize-y"
+            className="w-full max-w-none min-h-[108px] resize-y"
           />
-          <span className="font-sans text-xs font-medium text-neutral-500">
-            Opsional
-          </span>
         </div>
       </div>
 
