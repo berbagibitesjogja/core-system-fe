@@ -48,7 +48,7 @@ export const Route = createFileRoute("/admin/_auth/beneficiary/")({
  * BeneficiaryPage: Halaman manajemen kelompok penerima manfaat (Universitas, Yayasan, Masyarakat Umum).
  */
 function BeneficiaryPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.fullPath });
 
   // Simulasi loading skeleton selama 3 detik saat awal render
   const [isLoading, setIsLoading] = React.useState(true);

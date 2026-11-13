@@ -55,6 +55,7 @@ const routeSubtitles: Partial<Record<string, string>> = {
   "/admin/hero":
     "Penerima makanan yang terdaftar beserta riwayat pengambilannya",
   "/admin/hero/detail": "Riwayat pengambilan donasi dan informasi hero",
+  "/admin/partner": "Mitra penyumbang makanan dan kontribusinya untuk BBJ",
 };
 
 /**
