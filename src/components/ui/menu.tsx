@@ -31,7 +31,7 @@ export function MenuItem({
         if (!disabled && onSelect) onSelect();
       }}
       className={cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors cursor-pointer select-none",
+        "flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors cursor-pointer select-none",
         selected
           ? "bg-bondi-50 text-brand font-semibold"
           : "text-neutral-800 hover:bg-neutral-100",
@@ -101,7 +101,7 @@ export function Menu({
     <div
       role="menu"
       className={cn(
-        "w-72 rounded-2xl border border-neutral-200 bg-white p-2 shadow-md space-y-1",
+        "w-72 rounded-md border border-neutral-200 bg-white p-2 shadow-md space-y-1",
         className,
       )}
       {...props}
@@ -114,7 +114,7 @@ export function Menu({
             value={searchValue}
             onChange={(e) => onSearchChange?.(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-neutral-200 bg-neutral-50 focus:bg-white focus:outline-none focus:border-brand transition-colors"
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-md border border-neutral-200 bg-neutral-50 focus:bg-white focus:outline-none focus:border-brand transition-colors"
           />
         </div>
       )}
