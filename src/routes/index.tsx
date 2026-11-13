@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
+import { LayoutDashboard, Sparkles } from "lucide-react";
 import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -19,10 +19,17 @@ function Home() {
         Sistem manajemen donasi makanan surplus berbasis komunitas. Selamat
         datang di portal admin BBJ.
       </p>
-      <div className="flex items-center gap-3">
-        <Link to="/design">
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        <Link to="/admin/login">
           <Button variant="primary" size="md">
-            <Sparkles className="size-4" /> Buka Katalog Design System (/design)
+            <LayoutDashboard className="size-4" />
+            <span>Dashboard Admin</span>
+          </Button>
+        </Link>
+        <Link to="/design">
+          <Button variant="secondary" size="md">
+            <Sparkles className="size-4" />
+            <span>Buka Katalog Design System (/design)</span>
           </Button>
         </Link>
       </div>
