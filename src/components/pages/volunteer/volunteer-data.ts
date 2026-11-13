@@ -49,6 +49,63 @@ export interface VolunteerDivisionOption {
   label: string;
 }
 
+export interface VolunteerRoleOption {
+  id: VolunteerSystemRole;
+  title: string;
+  description: string;
+}
+
+export interface VolunteerFormValues {
+  division: string;
+  role: VolunteerSystemRole;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}
+
+export const defaultVolunteerFormValues: VolunteerFormValues = {
+  division: "",
+  role: "member",
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+};
+
+export const defaultEditVolunteerData: VolunteerFormValues = {
+  division: "Food",
+  role: "staff",
+  name: "Bima Aditya",
+  email: "bima.aditya@gmail.com",
+  phone: "0896-5521-0087",
+  address: "Jl. Kaliurang Km 5, Sleman",
+};
+
+// 4 Opsi role yang dapat dipilih dalam formulir volunteer (Figma 150:20894 - 150:21114)
+export const VOLUNTEER_ROLE_OPTIONS: VolunteerRoleOption[] = [
+  {
+    id: "member",
+    title: "Volunteer / Anggota",
+    description: "Ikut kegiatan, tidak bisa masuk panel admin.",
+  },
+  {
+    id: "staff",
+    title: "Staff",
+    description: "Kelola data harian, tanpa hapus data.",
+  },
+  {
+    id: "core",
+    title: "Pengurus Inti",
+    description: "Kelola dan hapus data seluruh modul.",
+  },
+  {
+    id: "super",
+    title: "Super Admin",
+    description: "Akses penuh, termasuk log aktivitas.",
+  },
+];
+
 // Daftar opsi filter divisi pada toolbar halaman Volunteer
 export const VOLUNTEER_DIVISION_OPTIONS: VolunteerDivisionOption[] = [
   { id: "all", label: "Semua Divisi" },

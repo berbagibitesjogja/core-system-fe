@@ -26,16 +26,19 @@ const validDivisionIds = new Set(
 
 // Skema validasi parameter URL tipe-aman untuk halaman Volunteer
 const volunteerSearchSchema = z.object({
-  division: z.string().catch("all"),
+  division: z.string().optional().catch("all"),
   search: z.string().optional().catch(""),
-  page: z.coerce.number().int().positive().catch(1),
-  per_page: z.coerce.number().int().positive().catch(10),
-  role: z.enum(["super_admin", "core", "staff"]).catch("super_admin"),
-  modal: z.enum(["none", "delete", "cannot-delete"]).catch("none"),
-  loading: z.coerce.boolean().catch(false),
+  page: z.coerce.number().int().positive().optional().catch(1),
+  per_page: z.coerce.number().int().positive().optional().catch(10),
+  role: z
+    .enum(["super_admin", "core", "staff"])
+    .optional()
+    .catch("super_admin"),
+  modal: z.enum(["none", "delete", "cannot-delete"]).optional().catch("none"),
+  loading: z.coerce.boolean().optional().catch(false),
 });
 
-export const Route = createFileRoute("/admin/_auth/volunteer")({
+export const Route = createFileRoute("/admin/_auth/volunteer/")({
   validateSearch: (search: Record<string, unknown>) => {
     const rawDivision =
       typeof search.division === "string" ? search.division.trim() : "all";
@@ -77,13 +80,13 @@ function VolunteerPage() {
   const navigate = useNavigate();
   const layoutContext = useAdminLayout();
   const {
-    division,
+    division = "all",
     search = "",
-    page,
-    per_page,
-    role,
-    modal,
-    loading,
+    page = 1,
+    per_page = 10,
+    role = "super_admin",
+    modal = "none",
+    loading = false,
   } = Route.useSearch();
 
   // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
@@ -294,9 +297,7 @@ function VolunteerPage() {
         onDivisionChange={handleDivisionChange}
         searchQuery={search}
         onSearchChange={handleSearchChange}
-        onAddVolunteer={() =>
-          toast.info("Formulir tambah volunteer akan segera tersedia.")
-        }
+        onAddVolunteer={() => navigate({ to: "/admin/volunteer/add" })}
       />
 
       {/* Tabel Daftar Volunteer & Paginasi */}
@@ -312,7 +313,10 @@ function VolunteerPage() {
         onResetFilters={handleResetFilters}
         userRole={role}
         onViewDetail={(volunteer) =>
-          toast.info(`Membuka detail volunteer ${volunteer.name}.`)
+          navigate({
+            to: "/admin/volunteer/edit",
+            search: { id: volunteer.id },
+          })
         }
         onDeleteVolunteer={(volunteer) => {
           setCannotDeleteTarget(null);
