@@ -1,6 +1,7 @@
 import * as React from "react";
 import { MapPin, MessageCircle } from "lucide-react";
-import { Avatar } from "#/components/ui/avatar";
+import { EntityIdentity } from "#/components/shared/entity-identity";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { formatPartnerNumber } from "./partner-data";
 import { buildPartnerProfileContactItems } from "./partner-detail-data";
 import type {
@@ -49,22 +50,13 @@ export function PartnerDetailProfileCard({
       </h2>
 
       {/* Identitas Utama Donatur */}
-      <div className="flex items-center gap-3 min-w-0">
-        <Avatar
-          name={detail.name}
-          size="lg"
-          shape="rounded"
-          className="rounded-2xl bg-bondi-50 border-bondi-200 text-bondi-900 font-heading font-semibold"
-        />
-        <div className="min-w-0 flex-1 flex flex-col gap-1">
-          <p className="font-sans text-base font-semibold leading-6 text-neutral-900 truncate">
-            {detail.name}
-          </p>
-          <p className="font-sans text-xs font-medium leading-4 text-neutral-500 truncate">
-            {identitySubtitle}
-          </p>
-        </div>
-      </div>
+      <EntityIdentity
+        entityType="partner"
+        size="lg"
+        name={detail.name}
+        subtitle={identitySubtitle}
+        avatarSrc={getPartnerAvatarSrc(detail)}
+      />
 
       {/* Daftar Informasi Kontak & Alamat (Data-Driven) */}
       <div className="flex flex-col gap-4">

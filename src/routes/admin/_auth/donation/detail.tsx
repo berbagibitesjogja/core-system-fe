@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Camera, Sparkles, Users } from "lucide-react";
 import { z } from "zod";
 import {
+  DONATION_STATUS_BADGE_TONE,
   DonationDetailHeroesCard,
   DonationDetailImpactDialog,
   DonationDetailSidebar,
@@ -126,12 +127,7 @@ function DonationDetailPage() {
     return "Aktif" as const;
   }, [detail.status, heroesSummary.isQuotaFull]);
 
-  const statusTone =
-    computedStatus === "Aktif"
-      ? "brand"
-      : computedStatus === "Penuh"
-        ? "warning"
-        : "neutral";
+  const statusTone = DONATION_STATUS_BADGE_TONE[computedStatus];
 
   const handleAddHero = React.useCallback(
     (candidate: DonationHeroSearchOption) => {

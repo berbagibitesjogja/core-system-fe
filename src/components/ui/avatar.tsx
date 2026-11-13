@@ -23,6 +23,10 @@ export function Avatar({
 }: AvatarProps) {
   const [imageError, setImageError] = React.useState(false);
 
+  React.useEffect(() => {
+    setImageError(false);
+  }, [src]);
+
   const sizeClasses = {
     sm: "size-8 text-xs",
     md: "size-10 text-sm",

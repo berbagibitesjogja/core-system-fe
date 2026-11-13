@@ -9,10 +9,12 @@ import {
   X,
 } from "lucide-react";
 import { Alert } from "#/components/ui/alert";
+import { Avatar } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Switch } from "#/components/ui/switch";
+import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Tag } from "#/components/shared/tag";
 import {
   defaultBeneficiaryOptions,
@@ -24,6 +26,7 @@ import type {
   DonationFormData,
   SponsorOption,
 } from "./donation-data";
+import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 
 export interface DonationFormProps {
@@ -309,9 +312,21 @@ export function DonationForm({
                 !formData.donorName && "text-neutral-500",
               )}
             >
-              <span className="truncate">
-                {formData.donorName || "Donatur / Sponsor"}
-              </span>
+              <div className="flex items-center gap-2.5 min-w-0">
+                {formData.donorName && (
+                  <Avatar
+                    src={getPartnerAvatarSrc({ name: formData.donorName })}
+                    alt={formData.donorName}
+                    name={formData.donorName}
+                    size="sm"
+                    shape="rounded"
+                    className="size-6 rounded-sm shrink-0 border-bondi-200 bg-bondi-50 text-bondi-800"
+                  />
+                )}
+                <span className="truncate">
+                  {formData.donorName || "Donatur / Sponsor"}
+                </span>
+              </div>
               <ChevronDown
                 className={cn(
                   "size-4.5 text-neutral-500 transition-transform duration-150 shrink-0",
@@ -351,14 +366,19 @@ export function DonationForm({
                             : "text-neutral-800 hover:bg-neutral-50",
                         )}
                       >
-                        <div className="flex flex-col min-w-0">
-                          <span className="truncate">{s.name}</span>
-                          {s.category && (
-                            <span className="text-[11px] text-neutral-500">
-                              {s.category}
-                            </span>
-                          )}
-                        </div>
+                        <EntityIdentity
+                          entityType="partner"
+                          name={s.name}
+                          subtitle={s.category}
+                          avatarSrc={getPartnerAvatarSrc({
+                            id: s.id,
+                            name: s.name,
+                          })}
+                          nameClassName={
+                            isSelected ? "text-brand-dark" : undefined
+                          }
+                          className="flex-1"
+                        />
                         {isSelected && (
                           <Check className="size-4 text-brand shrink-0 ml-2" />
                         )}

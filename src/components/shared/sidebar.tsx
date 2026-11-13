@@ -13,7 +13,6 @@ import {
   Upload,
   Users,
   Utensils,
-  Wallet,
 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
@@ -102,24 +101,16 @@ export const defaultSidebarGroups: SidebarGroupConfig[] = [
     title: "TIM",
     items: [
       {
-        id: "reimburse",
-        label: "Reimburse",
-        icon: Wallet,
-        hasChildren: true,
-        children: [
-          {
-            id: "reimburse-request",
-            label: "Ajukan Reimburse",
-            to: "/admin/reimburse/request",
-            icon: Upload,
-          },
-          {
-            id: "reimburse-data",
-            label: "Data Reimburse",
-            to: "/admin/reimburse/data",
-            icon: ClipboardCheck,
-          },
-        ],
+        id: "reimburse-request",
+        label: "Ajukan Reimburse",
+        to: "/admin/reimburse/request",
+        icon: Upload,
+      },
+      {
+        id: "reimburse-data",
+        label: "Data Reimburse",
+        to: "/admin/reimburse/data",
+        icon: ClipboardCheck,
       },
       {
         id: "presensi",
@@ -175,17 +166,29 @@ export function Sidebar({
   onLogout,
   className,
 }: SidebarProps) {
-  const isReimburseActive = Boolean(
-    activePath && activePath.startsWith("/admin/reimburse"),
+  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
+    {},
   );
-  const [reimburseOpen, setReimburseOpen] = React.useState(isReimburseActive);
 
-  // Otomatis buka accordion Reimburse jika user membuka atau berada pada halaman anak Reimburse
+  // Sinkronkan status dropdown jika custom sidebar groups masih memakai submenu
   React.useEffect(() => {
-    if (isReimburseActive) {
-      setReimburseOpen(true);
+    const activeParentIds: Record<string, boolean> = {};
+    for (const group of groups) {
+      for (const item of group.items) {
+        if (
+          item.children?.some(
+            (child) =>
+              activePath === child.to || activePath.startsWith(child.to),
+          )
+        ) {
+          activeParentIds[item.id] = true;
+        }
+      }
     }
-  }, [isReimburseActive]);
+    if (Object.keys(activeParentIds).length > 0) {
+      setOpenGroups((prev) => ({ ...prev, ...activeParentIds }));
+    }
+  }, [activePath, groups]);
 
   // TODO: ketika integrasi api: sembunyikan grup SISTEM / Logs ketika user role bukan super admin
   const isSuperAdmin = userRole === "super_admin";
@@ -247,6 +250,7 @@ export function Sidebar({
                           activePath.startsWith(child.to),
                       ),
                     );
+                    const isGroupOpen = Boolean(openGroups[item.id]);
 
                     return (
                       <div key={item.id}>
@@ -254,12 +258,17 @@ export function Sidebar({
                           label={item.label}
                           icon={<Icon className="size-5" />}
                           hasChildren
-                          isOpen={reimburseOpen}
+                          isOpen={isGroupOpen}
                           isActive={isParentActive}
-                          onClick={() => setReimburseOpen(!reimburseOpen)}
+                          onClick={() =>
+                            setOpenGroups((prev) => ({
+                              ...prev,
+                              [item.id]: !isGroupOpen,
+                            }))
+                          }
                         />
 
-                        {reimburseOpen && (
+                        {isGroupOpen && (
                           <div className="mt-1 space-y-1 pl-7">
                             {item.children.map((child) => {
                               const ChildIcon = child.icon;

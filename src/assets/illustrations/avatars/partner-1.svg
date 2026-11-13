@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none">
+  <!-- Background Square (Soft Cream) -->
+  <rect width="100" height="100" fill="#FEF3C7" />
+
+  <!-- Storefront Card -->
+  <rect x="20" y="34" width="60" height="48" rx="6" fill="#FFFFFF" stroke="#005E64" stroke-width="2.5" />
+
+  <!-- Striped Awning -->
+  <path d="M16 32 C16 24 22 20 28 20 H72 C78 20 84 24 84 32 V39 C84 42 80 44 76 44 C72 44 69 41 69 38 C69 41 66 44 62 44 C58 44 55 41 55 38 C55 41 52 44 48 44 C44 44 41 41 41 38 C41 41 38 44 34 44 C30 44 27 41 27 38 C27 41 24 44 20 44 C17 44 16 42 16 39 V32 Z" fill="#009CA6" stroke="#005E64" stroke-width="2.5" stroke-linejoin="round" />
+  <path d="M31 20 V38 M45 20 V38 M59 20 V38 M71 20 V38" stroke="#CCFBF1" stroke-width="4" />
+
+  <!-- Warm Bakery Loaf / Croissant Emblem -->
+  <ellipse cx="50" cy="61" rx="18" ry="11" fill="#F59E0B" stroke="#92400E" stroke-width="2.2" />
+  <path d="M40 53 L43 69 M50 50 V72 M60 53 L57 69" stroke="#92400E" stroke-width="2" stroke-linecap="round" />
+  <ellipse cx="44" cy="56" rx="4" ry="1.8" fill="#FEF3C7" opacity="0.7" />
+</svg>

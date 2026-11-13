@@ -11,6 +11,7 @@ export * from "./option-card";
 export * from "./nav-item";
 export * from "./bottom-nav-item";
 export * from "./beneficiary-card";
+export * from "./entity-identity";
 export * from "./user-profile-menu";
 export * from "./header";
 export * from "./sidebar";
