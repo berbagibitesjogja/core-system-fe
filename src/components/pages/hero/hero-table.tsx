@@ -89,11 +89,11 @@ export function HeroTable({
           const hero = row.original;
           return (
             <div className="flex flex-col min-w-0">
-              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                 {hero.name}
               </span>
               {hero.phone && (
-                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
                   {hero.phone}
                 </span>
               )}
@@ -112,10 +112,10 @@ export function HeroTable({
           const hero = row.original;
           return (
             <div className="flex flex-col min-w-0">
-              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                 {hero.sectorName}
               </span>
-              <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+              <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
                 {hero.beneficiaryName}
               </span>
             </div>
@@ -146,7 +146,7 @@ export function HeroTable({
           className: "w-[130px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
             {formatHeroCount(row.original.actionCount)} Aksi
           </span>
         ),
@@ -185,7 +185,7 @@ export function HeroTable({
                   size="sm"
                   tooltip="Hapus hero"
                   aria-label={`Hapus ${hero.name}`}
-                  className="bg-white border-[#cdd4d6] hover:border-red-300"
+                  className="bg-white border-neutral-300 hover:border-red-300"
                   onClick={() => onDeleteHero?.(hero)}
                 >
                   <Trash2 className="size-[18px]" />
@@ -275,11 +275,11 @@ export function HeroTable({
               <div key={hero.id} className="p-4 flex flex-col gap-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+                    <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                       {hero.name}
                     </p>
                     {hero.phone && (
-                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
                         {hero.phone}
                       </p>
                     )}
@@ -291,14 +291,14 @@ export function HeroTable({
 
                 <div className="flex items-center justify-between gap-3 text-[12px]">
                   <div className="min-w-0">
-                    <p className="font-['Inter'] font-semibold text-[#142023] truncate">
+                    <p className="font-['Inter'] font-semibold text-neutral-900 truncate">
                       {hero.sectorName}
                     </p>
-                    <p className="font-['Inter'] text-[#4d585b] truncate">
+                    <p className="font-['Inter'] text-neutral-600 truncate">
                       {hero.beneficiaryName}
                     </p>
                   </div>
-                  <span className="font-['Inter'] font-medium text-[#142023] shrink-0">
+                  <span className="font-['Inter'] font-medium text-neutral-900 shrink-0">
                     {formatHeroCount(hero.actionCount)} Aksi
                   </span>
                 </div>
@@ -327,7 +327,7 @@ export function HeroTable({
                       size="sm"
                       tooltip="Hapus hero"
                       aria-label={`Hapus ${hero.name}`}
-                      className="bg-white border-[#cdd4d6] hover:border-red-300"
+                      className="bg-white border-neutral-300 hover:border-red-300"
                       onClick={() => onDeleteHero?.(hero)}
                     >
                       <Trash2 className="size-[18px]" />

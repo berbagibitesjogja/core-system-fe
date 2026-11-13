@@ -36,7 +36,7 @@ export function EmptyStateBlock({ onCopy, copiedToken }: EmptyStateBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=21-287"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Kondisi data kosong atau pencarian tanpa hasil. Default (lebar 400px)
         untuk halaman/tabel utama, Compact (lebar 320px) untuk kartu dan
         dropdown. Dua varian visual: Icon (container rounded-2xl bg-bondi-50)

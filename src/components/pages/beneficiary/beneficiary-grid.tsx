@@ -98,7 +98,7 @@ export function BeneficiaryGrid({
 
       {/* Footer jumlah tampilan & tombol tampilkan lainnya */}
       <div className="flex flex-wrap items-center justify-between gap-4 w-full">
-        <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-[#6b777a]">
+        <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-neutral-500">
           Menampilkan {visibleItems.length} dari {totalFilteredCount} penerima
         </p>
 

@@ -1,4 +1,10 @@
 import * as React from "react";
+import { flexRender } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  useLegacyTable as useReactTable,
+} from "@tanstack/react-table/legacy";
+import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Plus, Search, Trash2, User, X } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
@@ -112,55 +118,152 @@ export function DonationDetailHeroesCard({
     );
   }, [searchableHeroes, searchTerm]);
 
-  const renderHeroActionButtons = (hero: DonationHeroClaimRecord) => {
-    if (hero.status === "tidak-jadi-ambil") {
+  const renderHeroActionButtons = React.useCallback(
+    (hero: DonationHeroClaimRecord) => {
+      if (hero.status === "tidak-jadi-ambil") {
+        return (
+          <div className="flex items-center justify-end gap-2">
+            <Badge tone="danger" styleVariant="soft">
+              Tidak Jadi Ambil
+            </Badge>
+          </div>
+        );
+      }
+
+      const isPickedUp = hero.status === "sudah-diambil";
       return (
         <div className="flex items-center justify-end gap-2">
-          <Badge tone="danger" styleVariant="soft">
-            Tidak Jadi Ambil
-          </Badge>
+          {isPickedUp ? (
+            <Badge tone="success" styleVariant="soft">
+              Sudah Diambil
+            </Badge>
+          ) : (
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={() => onConfirmPickup(hero)}
+            >
+              Konfirmasi Ambil
+            </Button>
+          )}
+          <IconButton
+            type="button"
+            variant="danger"
+            size="sm"
+            aria-label={
+              isPickedUp
+                ? `Keluarkan ${hero.name} (kuota hangus)`
+                : `Keluarkan ${hero.name} dari donasi`
+            }
+            tooltip={
+              isPickedUp
+                ? "Keluarkan hero (kuota hangus)"
+                : "Keluarkan hero dari donasi"
+            }
+            onClick={() => onRemoveHero(hero)}
+          >
+            <Trash2 className="size-[18px]" />
+          </IconButton>
         </div>
       );
-    }
+    },
+    [onConfirmPickup, onRemoveHero],
+  );
 
-    const isPickedUp = hero.status === "sudah-diambil";
-    return (
-      <div className="flex items-center justify-end gap-2">
-        {isPickedUp ? (
-          <Badge tone="success" styleVariant="soft">
-            Sudah Diambil
-          </Badge>
-        ) : (
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={() => onConfirmPickup(hero)}
-          >
-            Konfirmasi Ambil
-          </Button>
-        )}
-        <IconButton
-          type="button"
-          variant="danger"
-          size="sm"
-          aria-label={
-            isPickedUp
-              ? `Keluarkan ${hero.name} (kuota hangus)`
-              : `Keluarkan ${hero.name} dari donasi`
-          }
-          tooltip={
-            isPickedUp
-              ? "Keluarkan hero (kuota hangus)"
-              : "Keluarkan hero dari donasi"
-          }
-          onClick={() => onRemoveHero(hero)}
-        >
-          <Trash2 className="size-[18px]" />
-        </IconButton>
-      </div>
-    );
-  };
+  // Definisi kolom tabel Data-Driven (TanStack Table ColumnDef)
+  const columns = React.useMemo<Array<ColumnDef<DonationHeroClaimRecord>>>(
+    () => [
+      {
+        id: "rank",
+        header: "#",
+        meta: {
+          className: "w-[56px]",
+        },
+        cell: ({ row }) => (
+          <span className="font-sans font-normal text-sm leading-5 text-neutral-900 tabular-nums">
+            {row.index + 1}
+          </span>
+        ),
+      },
+      {
+        id: "name",
+        accessorKey: "name",
+        header: "Nama",
+        cell: ({ row }) => {
+          const hero = row.original;
+          const isForfeited = hero.status === "tidak-jadi-ambil";
+          return (
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar
+                name={hero.name}
+                size="sm"
+                shape="circle"
+                className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
+              />
+              <span
+                className={cn(
+                  "font-sans font-normal text-sm leading-5 truncate",
+                  isForfeited
+                    ? "text-neutral-500 line-through"
+                    : "text-neutral-900",
+                )}
+              >
+                {hero.name}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        id: "origin",
+        accessorKey: "sectorName",
+        header: "Asal",
+        cell: ({ row }) => {
+          const hero = row.original;
+          return (
+            <div className="flex flex-col items-start min-w-0">
+              <p className="font-sans font-semibold text-sm leading-5 text-neutral-900 truncate">
+                {hero.sectorName}
+              </p>
+              <p className="font-sans font-normal text-xs leading-4 text-neutral-600 truncate">
+                {hero.beneficiaryName}
+              </p>
+            </div>
+          );
+        },
+      },
+      {
+        id: "claimCode",
+        accessorKey: "claimCode",
+        header: "Kode",
+        meta: {
+          className: "w-[110px]",
+        },
+        cell: ({ row }) => (
+          <span className="font-sans font-normal text-sm text-neutral-900 tabular-nums">
+            {row.original.claimCode}
+          </span>
+        ),
+      },
+      {
+        id: "actions",
+        header: "Aksi",
+        meta: {
+          align: "right",
+        },
+        cell: ({ row }) => renderHeroActionButtons(row.original),
+      },
+    ],
+    [renderHeroActionButtons],
+  );
+
+  const table = useReactTable({
+    data: visibleHeroes,
+    columns,
+    getRowId: (row) => row.id,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <section className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-visible">
@@ -333,69 +436,61 @@ export function DonationDetailHeroesCard({
           <div className="hidden md:block">
             <Table containerClassName="rounded-none border-0 shadow-none">
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Nama
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em]">
-                    Asal
-                  </TableHead>
-                  <TableHead className="uppercase tracking-[0.04em] w-[110px]">
-                    Kode
-                  </TableHead>
-                  <TableHead
-                    align="right"
-                    className="uppercase tracking-[0.04em]"
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
                   >
-                    Aksi
-                  </TableHead>
-                </TableRow>
+                    {headerGroup.headers.map((header) => {
+                      const meta = header.column.columnDef.meta;
+
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className={cn(
+                            "uppercase tracking-[0.04em]",
+                            meta?.className,
+                          )}
+                          align={meta?.align}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
               <TableBody>
-                {visibleHeroes.map((hero) => {
-                  const isForfeited = hero.status === "tidak-jadi-ambil";
+                {table.getRowModel().rows.map((row) => {
+                  const isForfeited =
+                    row.original.status === "tidak-jadi-ambil";
 
                   return (
                     <TableRow
-                      key={hero.id}
+                      key={row.id}
                       className={isForfeited ? "bg-red-50/30" : undefined}
                     >
-                      <TableCell>
-                        <div className="flex items-center gap-3 min-w-0">
-                          <Avatar
-                            name={hero.name}
-                            size="sm"
-                            shape="circle"
-                            className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-                          />
-                          <span
-                            className={cn(
-                              "font-sans font-normal text-sm leading-5 truncate",
-                              isForfeited
-                                ? "text-neutral-500 line-through"
-                                : "text-neutral-900",
-                            )}
+                      {row.getVisibleCells().map((cell) => {
+                        const meta = cell.column.columnDef.meta;
+
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={meta?.className}
+                            align={meta?.align}
                           >
-                            {hero.name}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col items-start min-w-0">
-                          <p className="font-sans font-semibold text-sm leading-5 text-neutral-900 truncate">
-                            {hero.sectorName}
-                          </p>
-                          <p className="font-sans font-normal text-xs leading-4 text-neutral-600 truncate">
-                            {hero.beneficiaryName}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-sans font-normal text-sm text-neutral-900 tabular-nums">
-                        {hero.claimCode}
-                      </TableCell>
-                      <TableCell align="right">
-                        {renderHeroActionButtons(hero)}
-                      </TableCell>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                   );
                 })}
@@ -405,7 +500,7 @@ export function DonationDetailHeroesCard({
 
           {/* Kartu Mobile */}
           <div className="md:hidden divide-y divide-neutral-100 border-t border-neutral-100">
-            {visibleHeroes.map((hero) => {
+            {visibleHeroes.map((hero, index) => {
               const isForfeited = hero.status === "tidak-jadi-ambil";
 
               return (
@@ -413,28 +508,33 @@ export function DonationDetailHeroesCard({
                   key={hero.id}
                   className={cn("p-4 space-y-3", isForfeited && "bg-red-50/30")}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Avatar
-                      name={hero.name}
-                      size="sm"
-                      shape="circle"
-                      className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={cn(
-                          "font-sans font-semibold text-sm truncate",
-                          isForfeited
-                            ? "text-neutral-500 line-through"
-                            : "text-neutral-900",
-                        )}
-                      >
-                        {hero.name}
-                      </p>
-                      <p className="font-sans text-xs text-neutral-600 truncate">
-                        {hero.sectorName} · {hero.beneficiaryName}
-                      </p>
+                  <div className="flex items-center justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Avatar
+                        name={hero.name}
+                        size="sm"
+                        shape="circle"
+                        className="size-8 bg-bondi-50 text-brand-dark border-bondi-200 font-semibold shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={cn(
+                            "font-sans font-semibold text-sm truncate",
+                            isForfeited
+                              ? "text-neutral-500 line-through"
+                              : "text-neutral-900",
+                          )}
+                        >
+                          {hero.name}
+                        </p>
+                        <p className="font-sans text-xs text-neutral-600 truncate">
+                          {hero.sectorName} · {hero.beneficiaryName}
+                        </p>
+                      </div>
                     </div>
+                    <span className="font-sans text-xs text-neutral-500 tabular-nums shrink-0">
+                      #{index + 1}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">

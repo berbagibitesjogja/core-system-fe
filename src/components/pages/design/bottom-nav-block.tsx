@@ -36,7 +36,7 @@ export function BottomNavBlock({ onCopy, copiedToken }: BottomNavBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-236"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Navigasi bawah untuk mobile (maksimal 5 item): Home, Donasi, Heroes,
         Reimburse, Menu (membuka drawer berisi menu lainnya). Indikator aktif
         berbentuk pill kuning cerah (bg-accent #ffda57) bergaris tinta tebal

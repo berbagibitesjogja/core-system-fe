@@ -296,12 +296,12 @@ function HeroDetailPage() {
         </div>
 
         <Button
-          variant="secondary"
+          variant="primary"
           size="md"
           leftIcon={<Pencil className="size-4" />}
           onClick={() => setIsEditOpen(true)}
         >
-          Edit Data
+          Edit Hero
         </Button>
       </div>
 

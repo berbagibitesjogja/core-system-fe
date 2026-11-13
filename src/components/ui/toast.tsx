@@ -31,7 +31,7 @@ export function Toast({
     <div
       role="status"
       className={cn(
-        "bg-[#142023] text-white flex items-center gap-3 px-4 py-3 rounded-md w-[380px] max-w-full shadow-[0px_8px_16px_rgba(20,32,35,0.18)] transition-all select-none pointer-events-auto",
+        "bg-neutral-900 text-white flex items-center gap-3 px-4 py-3 rounded-md w-[380px] max-w-full shadow-[0px_8px_16px_rgba(20,32,35,0.18)] transition-all select-none pointer-events-auto",
         className,
       )}
     >

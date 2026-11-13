@@ -16,20 +16,22 @@ export function ProgressBar({
   const clampedValue = Math.min(100, Math.max(0, value));
 
   const fillColors = {
-    brand: "bg-[#007d85]",
-    accent: "bg-[#f5bc00]",
-    success: "bg-[#15803d]",
+    brand: "bg-bondi-700",
+    accent: "bg-sunny-500",
+    success: "bg-green-600",
   }[color];
 
   return (
     <div className={cn("w-full space-y-1.5", className)}>
       {showLabel && (
-        <div className="flex justify-between font-['Inter'] text-[12px] text-[#6b777a]">
+        <div className="flex justify-between font-['Inter'] text-[12px] text-neutral-500">
           <span>Progres</span>
-          <span className="font-semibold text-[#142023]">{clampedValue}%</span>
+          <span className="font-semibold text-neutral-900">
+            {clampedValue}%
+          </span>
         </div>
       )}
-      <div className="h-[6px] w-full overflow-hidden rounded-[999px] bg-[#e2e7e8]">
+      <div className="h-[6px] w-full overflow-hidden rounded-[999px] bg-neutral-200">
         <div
           className={cn(
             "h-[6px] rounded-[999px] transition-all duration-300",

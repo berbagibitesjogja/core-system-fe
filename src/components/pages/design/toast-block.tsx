@@ -32,7 +32,7 @@ export function ToastBlock({ onCopy, copiedToken }: ToastBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=20-312"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Notifikasi sementara setelah aksi (simpan, hapus, gagal). Muncul di
         kanan atas (desktop) atau atas tengah (mobile), hilang otomatis 4 detik,
         error tetap sampai ditutup. Berlatar belakang warna tinta gelap pekat

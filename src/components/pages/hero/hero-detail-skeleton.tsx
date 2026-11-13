@@ -45,7 +45,7 @@ export function HeroDetailSkeleton() {
           <Skeleton className="h-6 w-16 rounded-full" />
         </div>
 
-        <div className="bg-[#eef1f2] border-b border-neutral-200 px-4 h-11 flex items-center justify-between gap-4">
+        <div className="bg-neutral-100 border-b border-neutral-200 px-4 h-11 flex items-center justify-between gap-4">
           <Skeleton className="h-3.5 w-20 rounded" />
           <Skeleton className="h-3.5 w-28 rounded hidden sm:block" />
           <Skeleton className="h-3.5 w-28 rounded hidden md:block" />

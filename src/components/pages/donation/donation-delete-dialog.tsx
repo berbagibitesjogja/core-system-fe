@@ -42,7 +42,7 @@ export function DonationDeleteDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop Gelap Sesuai Figma #0b1416 dengan Opacity 55% */}
       <div
-        className="fixed inset-0 bg-[#0b1416]/55 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-neutral-950/55 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 

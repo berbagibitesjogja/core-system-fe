@@ -43,50 +43,45 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         case "primary":
         case "secondary":
           stateStyle =
-            "bg-[var(--color-bg-disabled,#eef1f2)] text-[var(--color-text-disabled,#9aa5a8)] border-transparent pointer-events-none";
+            "bg-neutral-100 text-neutral-400 border-transparent pointer-events-none";
           break;
         case "ghost":
         case "danger":
           stateStyle =
-            "bg-transparent text-[var(--color-text-disabled,#9aa5a8)] border-transparent pointer-events-none";
+            "bg-transparent text-neutral-400 border-transparent pointer-events-none";
           break;
       }
     } else if (effectiveState === "hover") {
       switch (variant) {
         case "primary":
-          stateStyle = "bg-[var(--color-bg-brand-hover,#005e64)] text-white";
+          stateStyle = "bg-brand-hover text-white";
           break;
         case "secondary":
           stateStyle =
-            "bg-[var(--color-bg-subtle,#eef1f2)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)]";
+            "bg-neutral-100 border border-neutral-300 text-neutral-900";
           break;
         case "ghost":
-          stateStyle =
-            "bg-[var(--color-bg-subtle,#eef1f2)] text-[var(--color-text-primary,#142023)]";
+          stateStyle = "bg-neutral-100 text-neutral-900";
           break;
         case "danger":
-          stateStyle =
-            "bg-[var(--color-bg-danger-subtle,#fef2f2)] text-[var(--color-text-danger,#dc2626)]";
+          stateStyle = "bg-red-50 text-red-600";
           break;
       }
     } else {
       // Default
       switch (variant) {
         case "primary":
-          stateStyle =
-            "bg-[var(--color-bg-brand,#007d85)] text-white hover:bg-[var(--color-bg-brand-hover,#005e64)]";
+          stateStyle = "bg-brand text-white hover:bg-brand-hover";
           break;
         case "secondary":
           stateStyle =
-            "bg-[var(--color-bg-surface,white)] border border-[var(--color-border-strong,#cdd4d6)] text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+            "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
           break;
         case "ghost":
-          stateStyle =
-            "bg-transparent text-[var(--color-text-primary,#142023)] hover:bg-[var(--color-bg-subtle,#eef1f2)]";
+          stateStyle = "bg-transparent text-neutral-900 hover:bg-neutral-100";
           break;
         case "danger":
-          stateStyle =
-            "bg-transparent text-[var(--color-text-danger,#dc2626)] hover:bg-[var(--color-bg-danger-subtle,#fef2f2)]";
+          stateStyle = "bg-transparent text-red-600 hover:bg-red-50";
           break;
       }
     }

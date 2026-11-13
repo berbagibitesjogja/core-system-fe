@@ -81,10 +81,10 @@ export function HeroDetailHistoryTable({
         },
         cell: ({ row }) => (
           <div className="flex flex-col min-w-0">
-            <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+            <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
               {row.original.dateLabel}
             </span>
-            <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+            <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
               {row.original.dayLabel}
             </span>
           </div>
@@ -98,7 +98,7 @@ export function HeroDetailHistoryTable({
           className: "min-w-[180px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+          <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
             {row.original.donorName}
           </span>
         ),
@@ -111,7 +111,7 @@ export function HeroDetailHistoryTable({
           className: "w-[230px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] truncate">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 truncate">
             {row.original.locationName}
           </span>
         ),
@@ -123,7 +123,7 @@ export function HeroDetailHistoryTable({
           className: "w-[150px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
             {row.original.portions} Porsi (
             {formatHeroCount(row.original.weightGrams)} gr)
           </span>
@@ -137,7 +137,7 @@ export function HeroDetailHistoryTable({
           className: "w-[120px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
             {row.original.claimCode}
           </span>
         ),
@@ -194,7 +194,7 @@ export function HeroDetailHistoryTable({
     <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col shadow-xs w-full overflow-hidden">
       {/* Header Kartu Tabel */}
       <div className="p-5 flex items-center justify-between gap-3 w-full">
-        <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[24px] text-[#142023]">
+        <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[24px] text-neutral-900">
           Riwayat Donasi Yang Diterima
         </h2>
         <Badge tone="neutral" styleVariant="soft">
@@ -284,10 +284,10 @@ export function HeroDetailHistoryTable({
                 <div key={record.id} className="p-4 flex flex-col gap-2.5">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="font-['Inter'] font-semibold text-[14px] text-[#142023]">
+                      <p className="font-['Inter'] font-semibold text-[14px] text-neutral-900">
                         {record.donorName}
                       </p>
-                      <p className="font-['Inter'] text-[12px] text-[#4d585b]">
+                      <p className="font-['Inter'] text-[12px] text-neutral-600">
                         {record.dateLabel} · {record.dayLabel}
                       </p>
                     </div>
@@ -296,16 +296,16 @@ export function HeroDetailHistoryTable({
                     </Badge>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 text-[12px] text-[#4d585b]">
+                  <div className="flex items-center justify-between gap-3 text-[12px] text-neutral-600">
                     <span className="truncate">{record.locationName}</span>
-                    <span className="font-medium text-[#142023] shrink-0">
+                    <span className="font-medium text-neutral-900 shrink-0">
                       {record.portions} Porsi (
                       {formatHeroCount(record.weightGrams)} gr)
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="font-['Inter'] text-[12px] font-medium text-[#4d585b]">
+                    <span className="font-['Inter'] text-[12px] font-medium text-neutral-600">
                       Kode: {record.claimCode}
                     </span>
                     <IconButton

@@ -31,7 +31,7 @@ export function BeneficiaryDeleteDialog({
       description={
         <>
           Apakah Anda yakin ingin menghapus penerima manfaat{" "}
-          <span className="font-semibold text-[#142023]">
+          <span className="font-semibold text-neutral-900">
             {beneficiary?.name || "ini"}
           </span>
           ? Tindakan ini tidak dapat dibatalkan.

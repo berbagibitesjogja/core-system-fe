@@ -31,7 +31,7 @@ export function PaginationBlock({ onCopy, copiedToken }: PaginationBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-308"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Paginasi server-side. Kiri: rentang data (&quot;1 - 10 dari 392&quot;).
         Kanan: tombol prev bulat, nomor halaman (Page Item 36×36px), tombol next
         bulat. Halaman aktif berwarna tinta (bg-neutral-900). Di mobile

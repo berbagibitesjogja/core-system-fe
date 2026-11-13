@@ -27,7 +27,7 @@ export function SkeletonBlock({ onCopy, copiedToken }: SkeletonBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=20-378"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Placeholder loading untuk kartu metrik, avatar profil, grafik, dan baris
         tabel. Animasi shimmer kiri ke kanan 1.2 detik (pulse). Susun Skeleton
         mengikuti bentuk konten akhir sehingga transisi data terasa halus tanpa

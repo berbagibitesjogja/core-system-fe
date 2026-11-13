@@ -85,7 +85,7 @@ export const DEFAULT_QUICK_ACTIONS: QuickActionItem[] = [
     title: "Tambah Donasi",
     subtitle: "Catat aksi food rescue baru",
     iconName: "plus",
-    href: "/admin/donation",
+    href: "/admin/donation/add",
   },
   {
     id: "request-reimburse",

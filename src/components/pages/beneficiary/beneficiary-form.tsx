@@ -141,7 +141,7 @@ export function BeneficiaryForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "bg-white border border-[#e2e7e8] rounded-2xl overflow-hidden flex flex-col w-full",
+        "bg-white border border-neutral-200 rounded-2xl overflow-hidden flex flex-col w-full",
         className,
       )}
     >
@@ -159,10 +159,10 @@ export function BeneficiaryForm({
 
         {/* Judul Bagian Formulir */}
         <div className="flex flex-col gap-1">
-          <h2 className="font-heading text-[18px] leading-[24px] font-semibold text-[#142023]">
+          <h2 className="font-heading text-[18px] leading-[24px] font-semibold text-neutral-900">
             Data Penerima
           </h2>
-          <p className="font-body text-[12px] leading-[16px] text-[#6b777a]">
+          <p className="font-body text-[12px] leading-[16px] text-neutral-500">
             Pilih jenis kelompok, lalu tulis nama resminya.
           </p>
         </div>
@@ -171,7 +171,7 @@ export function BeneficiaryForm({
         <div className="flex flex-col gap-2 w-full">
           <label
             id="beneficiary-category-label"
-            className="font-sans text-[14px] leading-[20px] font-semibold text-[#142023]"
+            className="font-sans text-[14px] leading-[20px] font-semibold text-neutral-900"
           >
             Pilih Jenis
           </label>
@@ -223,7 +223,7 @@ export function BeneficiaryForm({
       </div>
 
       {/* Footer Aksi Formulir */}
-      <footer className="bg-[#eef1f2] border-t border-[#e2e7e8] p-6 flex items-center justify-end gap-3">
+      <footer className="bg-neutral-100 border-t border-neutral-200 p-6 flex items-center justify-end gap-3">
         <Button
           type="button"
           variant="secondary"

@@ -67,7 +67,7 @@ export function DocBlock({
               </span>
             )}
             <div className="flex flex-wrap items-center gap-2 mt-0.5">
-              <h3 className="font-['Gabarito'] font-bold text-xl sm:text-2xl text-[#142023] tracking-tight">
+              <h3 className="font-['Gabarito'] font-bold text-xl sm:text-2xl text-neutral-900 tracking-tight">
                 {title}
               </h3>
               {nodeId && (
@@ -124,7 +124,7 @@ export function DocBlock({
       </div>
 
       {description && (
-        <p className="font-['Josefin_Sans'] font-normal text-xs sm:text-sm leading-relaxed text-[#4d585b] max-w-[900px]">
+        <p className="font-['Josefin_Sans'] font-normal text-xs sm:text-sm leading-relaxed text-neutral-600 max-w-[900px]">
           {description}
         </p>
       )}

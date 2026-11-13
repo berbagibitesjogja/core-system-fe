@@ -39,12 +39,12 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
     let trackStyle = "";
     if (isActuallyDisabled) {
       trackStyle = effectiveChecked
-        ? "bg-[var(--color-bondi-200,#b0e0e3)] cursor-not-allowed"
-        : "bg-[var(--color-bg-muted,#e2e7e8)] cursor-not-allowed";
+        ? "bg-bondi-200 cursor-not-allowed"
+        : "bg-neutral-200 cursor-not-allowed";
     } else {
       trackStyle = effectiveChecked
-        ? "bg-[var(--color-bg-brand,#007d85)] cursor-pointer"
-        : "bg-[var(--color-border-input,#8a9499)] hover:bg-[var(--color-neutral-600,#4d585b)] cursor-pointer";
+        ? "bg-brand cursor-pointer"
+        : "bg-border-input hover:bg-neutral-600 cursor-pointer";
     }
 
     return (
@@ -81,8 +81,8 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
             className={cn(
               "font-['Inter'] font-semibold text-[14px] leading-[20px] whitespace-nowrap",
               isActuallyDisabled
-                ? "text-[var(--color-text-disabled,#9aa5a8)] cursor-not-allowed"
-                : "text-[var(--color-text-primary,#142023)] cursor-pointer",
+                ? "text-neutral-400 cursor-not-allowed"
+                : "text-neutral-900 cursor-pointer",
             )}
           >
             {label}
