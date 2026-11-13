@@ -1,5 +1,6 @@
 import * as React from "react";
 import { AlertTriangle, FileText, Sparkles, Upload, X } from "lucide-react";
+import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
 
 export type FileUploadState =
@@ -7,6 +8,7 @@ export type FileUploadState =
 
 export interface FileUploadProps {
   label?: string;
+  description?: string;
   state?: FileUploadState;
   forcedState?: FileUploadState;
   fileName?: string;
@@ -20,6 +22,7 @@ export interface FileUploadProps {
 
 export function FileUpload({
   label = "Upload Invoice",
+  description = "JPG, PNG, atau PDF. Maks 5MB",
   state = "default",
   forcedState,
   fileName = "struk-gocar-10sept.jpg",
@@ -86,17 +89,19 @@ export function FileUpload({
               </span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onRemove?.();
-            }}
-            className="size-[24px] inline-flex items-center justify-center text-[#4d585b] hover:text-[#142023] transition-colors cursor-pointer rounded"
-            aria-label="Hapus berkas"
-          >
-            <X className="size-[18px]" />
-          </button>
+          <Tooltip content="Hapus berkas">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove?.();
+              }}
+              className="size-[24px] inline-flex items-center justify-center text-[#4d585b] hover:text-[#142023] transition-colors cursor-pointer rounded"
+              aria-label="Hapus berkas"
+            >
+              <X className="size-[18px]" />
+            </button>
+          </Tooltip>
         </div>
       ) : (
         /* Dropzone Frame */
@@ -168,7 +173,7 @@ export function FileUpload({
                 "Bukan invoice sah atau tidak memuat nominal. Unggah struk yang jelas."
               : currentState === "analyzing"
                 ? "Membaca nominal dari struk, biasanya kurang dari 8 detik"
-                : "JPG, PNG, atau PDF. Maks 5MB"}
+                : description}
           </p>
 
           {/* Progress Bar for Analyzing */}

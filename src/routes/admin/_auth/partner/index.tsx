@@ -21,15 +21,15 @@ import { toast } from "#/components/ui/toast";
 
 // Skema validasi parameter pencarian URL untuk halaman Partner
 const partnerSearchSchema = z.object({
-  category: z.enum(["all", "perusahaan", "individu"]).catch("all"),
+  category: z.enum(["all", "perusahaan", "individu"]).optional().catch("all"),
   search: z.string().optional().catch(""),
-  sort: z.enum(["desc", "asc"]).catch("desc"),
-  page: z.coerce.number().int().positive().catch(1),
-  per_page: z.coerce.number().int().positive().catch(10),
+  sort: z.enum(["desc", "asc"]).optional().catch("desc"),
+  page: z.coerce.number().int().positive().optional().catch(1),
+  per_page: z.coerce.number().int().positive().optional().catch(10),
   role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/admin/_auth/partner")({
+export const Route = createFileRoute("/admin/_auth/partner/")({
   validateSearch: (search: Record<string, unknown>) =>
     partnerSearchSchema.parse({
       category: search.category,
@@ -46,11 +46,11 @@ function PartnerPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const searchParams = Route.useSearch();
   const {
-    category,
-    search,
-    sort,
-    page,
-    per_page: perPage,
+    category = "all",
+    search = "",
+    sort = "desc",
+    page = 1,
+    per_page: perPage = 10,
     role,
   } = searchParams;
 
@@ -90,7 +90,7 @@ function PartnerPage() {
 
   // Filter & urutkan data sesuai URL search params
   const filteredPartners = React.useMemo(() => {
-    const keyword = (search ?? "").trim().toLowerCase();
+    const keyword = search.trim().toLowerCase();
     return partners
       .filter((partner) => {
         const matchesCategory =
@@ -116,7 +116,7 @@ function PartnerPage() {
     return filteredPartners.slice(startIndex, startIndex + perPage);
   }, [filteredPartners, safeCurrentPage, perPage]);
 
-  const hasActiveFilters = Boolean((search ?? "").trim()) || category !== "all";
+  const hasActiveFilters = Boolean(search.trim()) || category !== "all";
 
   const updateSearchParams = React.useCallback(
     (
@@ -217,11 +217,9 @@ function PartnerPage() {
         filterOptions={filterOptions}
         activeCategory={category}
         onCategoryChange={handleCategoryChange}
-        searchQuery={search ?? ""}
+        searchQuery={search}
         onSearchChange={handleSearchChange}
-        onAddPartner={() => {
-          toast.info("Formulir tambah donatur akan segera tersedia.");
-        }}
+        onAddPartner={() => navigate({ to: "/admin/partner/add" })}
       />
 
       {/* Tabel Data Partner */}
@@ -242,11 +240,12 @@ function PartnerPage() {
         onViewDetail={(partner) => {
           toast.info(`Menampilkan detail donatur ${partner.name}.`);
         }}
-        onEditPartner={(partner) => {
-          toast.info(
-            `Formulir edit data ${partner.name} akan segera tersedia.`,
-          );
-        }}
+        onEditPartner={(partner) =>
+          navigate({
+            to: "/admin/partner/edit",
+            search: { id: partner.id },
+          })
+        }
         onDeletePartner={handleDeleteTrigger}
       />
 

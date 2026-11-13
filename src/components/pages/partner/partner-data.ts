@@ -19,6 +19,11 @@ export interface PartnerRecord {
   lastDonationDate: string;
   isNewThisMonth?: boolean;
   canDelete: boolean;
+  logoFileName?: string;
+  logoFileSize?: string;
+  address?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface PartnerStatItem {
@@ -50,6 +55,11 @@ export const defaultPartners: PartnerRecord[] = [
     impactKg: 645,
     lastDonationDate: "10 Nov 2026",
     canDelete: false,
+    logoFileName: "logo-holland-bakery.png",
+    logoFileSize: "312 KB",
+    address: "Jl. Jenderal Sudirman No. 37, Terban, Gondokusuman, Yogyakarta",
+    email: "csr@hollandbakery.co.id",
+    phone: "0274-512-345",
   },
   {
     id: "ptr-2",
@@ -61,6 +71,9 @@ export const defaultPartners: PartnerRecord[] = [
     impactKg: 402,
     lastDonationDate: "31 Okt 2026",
     canDelete: false,
+    address: "Jl. Faridan M Noto No. 7, Kotabaru, Gondokusuman, Yogyakarta",
+    email: "humas@mirotabakery.co.id",
+    phone: "0274-563-890",
   },
   {
     id: "ptr-3",
@@ -72,6 +85,9 @@ export const defaultPartners: PartnerRecord[] = [
     impactKg: 512,
     lastDonationDate: "7 Nov 2026",
     canDelete: false,
+    address: "Jl. Laksda Adisucipto No. 81, Caturtunggal, Depok, Sleman",
+    email: "sustainability@royalambarrukmo.com",
+    phone: "0274-488-488",
   },
   {
     id: "ptr-4",
@@ -570,3 +586,56 @@ export function computePartnerFilterOptions(
     { id: "individu", label: "Individu", count: individualCount },
   ];
 }
+
+export type PartnerCategory = Exclude<PartnerCategoryId, "all">;
+
+export interface PartnerFormValues {
+  category: PartnerCategory | "";
+  name: string;
+  logoFileName?: string;
+  logoFileSize?: string;
+  address: string;
+  email: string;
+  phone: string;
+}
+
+export interface PartnerCategoryOption {
+  id: PartnerCategory;
+  title: string;
+  description: string;
+}
+
+// Daftar opsi jenis donatur untuk pilihan kartu kategori (data-driven)
+export const defaultPartnerCategoryOptions: PartnerCategoryOption[] = [
+  {
+    id: "perusahaan",
+    title: "Perusahaan",
+    description: "Hotel, restoran, bakery, dan bisnis lain",
+  },
+  {
+    id: "individu",
+    title: "Individu",
+    description: "Perorangan atau komunitas",
+  },
+];
+
+export interface PartnerTipItem {
+  id: string;
+  text: string;
+}
+
+// Daftar panduan pendaftaran donatur pada panel kanan halaman Tambah/Edit
+export const defaultPartnerTips: PartnerTipItem[] = [
+  {
+    id: "tip-1",
+    text: "Cek dulu daftar Partner supaya donatur yang sama tidak terdaftar dua kali.",
+  },
+  {
+    id: "tip-2",
+    text: "Logo persegi tampil paling rapi di poster Impact Report.",
+  },
+  {
+    id: "tip-3",
+    text: "Isi nomor WhatsApp agar tim mudah koordinasi penjemputan.",
+  },
+];
