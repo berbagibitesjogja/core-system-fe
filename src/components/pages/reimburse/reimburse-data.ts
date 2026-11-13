@@ -22,6 +22,16 @@ export interface ReimburseUploadedFileMeta {
   previewUrl?: string;
 }
 
+export interface ReimburseTransferProof {
+  fileName: string;
+  fileSize: string;
+  fileType: "image" | "pdf";
+  filePreviewUrl?: string;
+  transferredAtLabel: string;
+  transferredBy: string;
+  referenceNumber?: string;
+}
+
 export interface ReimburseHistoryItem {
   id: string;
   method: string;
@@ -34,6 +44,7 @@ export interface ReimburseHistoryItem {
   fileSize: string;
   fileType: "image" | "pdf";
   filePreviewUrl?: string;
+  transferProof?: ReimburseTransferProof;
   isHighlighted?: boolean;
 }
 
@@ -175,6 +186,14 @@ export const defaultReimburseHistory: ReimburseHistoryItem[] = [
     fileName: "resi-kurir-31okt.jpg",
     fileSize: "740 KB",
     fileType: "image",
+    transferProof: {
+      fileName: "bukti-transfer-shopeepay-31okt.jpg",
+      fileSize: "410 KB",
+      fileType: "image",
+      transferredAtLabel: "31 Okt 2026, 16:40 WIB",
+      transferredBy: "Bendahara BBJ",
+      referenceNumber: "TRF-BBJ-20261031-03",
+    },
   },
   {
     id: "rmb-4",
@@ -187,6 +206,14 @@ export const defaultReimburseHistory: ReimburseHistoryItem[] = [
     fileName: "struk-bbm-parkir-27okt.jpg",
     fileSize: "620 KB",
     fileType: "image",
+    transferProof: {
+      fileName: "bukti-transfer-gopay-27okt.jpg",
+      fileSize: "385 KB",
+      fileType: "image",
+      transferredAtLabel: "27 Okt 2026, 19:15 WIB",
+      transferredBy: "Bendahara BBJ",
+      referenceNumber: "TRF-BBJ-20261027-11",
+    },
   },
   {
     id: "rmb-5",

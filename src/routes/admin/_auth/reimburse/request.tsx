@@ -11,6 +11,7 @@ import {
   ReimburseFilePreviewDialog,
   ReimburseHistoryCard,
   ReimburseRequestForm,
+  ReimburseTransferProofDialog,
   computeReimburseAnalyzeProgress,
   detectSimulatedErrorFromFile,
   detectUploadedFileType,
@@ -95,6 +96,8 @@ function ReimburseRequestPage() {
   >(initialPreset.historyItems);
   const [previewItem, setPreviewItem] =
     React.useState<ReimburseHistoryItem | null>(null);
+  const [transferProofItem, setTransferProofItem] =
+    React.useState<ReimburseHistoryItem | null>(null);
 
   const submitTimerRef = React.useRef<number | null>(null);
   const progressIntervalRef = React.useRef<number | null>(null);
@@ -162,6 +165,8 @@ function ReimburseRequestPage() {
     setIsAnalyzing(preset.isAnalyzing);
     setAnalyzingProgress(preset.analyzingProgress ?? 0);
     setHistoryItems(preset.historyItems);
+    setPreviewItem(null);
+    setTransferProofItem(null);
 
     if (demoState === "analyzing") {
       startProgressRamp();
@@ -415,12 +420,19 @@ function ReimburseRequestPage() {
       <ReimburseHistoryCard
         items={historyItems}
         onPreviewFile={(item) => setPreviewItem(item)}
+        onPreviewTransferProof={(item) => setTransferProofItem(item)}
       />
 
       {/* Modal Pratinjau Berkas Invoice */}
       <ReimburseFilePreviewDialog
         item={previewItem}
         onClose={() => setPreviewItem(null)}
+      />
+
+      {/* Modal Pratinjau Bukti Transfer (khusus status Selesai) */}
+      <ReimburseTransferProofDialog
+        item={transferProofItem}
+        onClose={() => setTransferProofItem(null)}
       />
     </div>
   );

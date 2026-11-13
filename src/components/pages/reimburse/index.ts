@@ -33,6 +33,7 @@ export type {
   ReimburseRequestFormValues,
   ReimburseSubmitErrorCode,
   ReimburseTextFieldConfig,
+  ReimburseTransferProof,
   ReimburseUploadedFileMeta,
 } from "./reimburse-data";
 
@@ -44,5 +45,8 @@ export type { ReimburseHistoryCardProps } from "./reimburse-history-card";
 
 export { ReimburseFilePreviewDialog } from "./reimburse-file-preview-dialog";
 export type { ReimburseFilePreviewDialogProps } from "./reimburse-file-preview-dialog";
+
+export { ReimburseTransferProofDialog } from "./reimburse-transfer-proof-dialog";
+export type { ReimburseTransferProofDialogProps } from "./reimburse-transfer-proof-dialog";
 
 export { ReimburseRequestSkeleton } from "./reimburse-request-skeleton";
