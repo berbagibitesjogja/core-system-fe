@@ -42,11 +42,11 @@ export function BeneficiaryTipsCard({
         {tips.map((tip) => (
           <li key={tip.id} className="flex items-start gap-2">
             <Check
-              className="size-[18px] text-[#007d85] shrink-0 mt-0.5"
+              className="size-[18px] text-bondi-700 shrink-0 mt-0.5"
               strokeWidth={2.25}
               aria-hidden="true"
             />
-            <p className="font-body text-[12px] leading-[16px] text-[#4d585b]">
+            <p className="font-body text-[12px] leading-[16px] text-neutral-600">
               {tip.text}
             </p>
           </li>

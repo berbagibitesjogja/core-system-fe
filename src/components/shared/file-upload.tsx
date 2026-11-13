@@ -55,7 +55,7 @@ export function FileUpload({
       )}
     >
       {label && (
-        <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023]">
+        <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900">
           {label}
         </span>
       )}
@@ -75,16 +75,16 @@ export function FileUpload({
 
       {currentState === "uploaded" ? (
         /* Uploaded horizontal card (matching Node 21:320) */
-        <div className="w-full bg-white border border-[#cdd4d6] border-solid rounded-[12px] p-3 flex items-center justify-between gap-3 shadow-2xs">
+        <div className="w-full bg-white border border-neutral-300 border-solid rounded-[12px] p-3 flex items-center justify-between gap-3 shadow-2xs">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="size-[40px] rounded-[8px] bg-[#e6f5f6] flex items-center justify-center shrink-0 text-[#007d85]">
+            <div className="size-[40px] rounded-[8px] bg-bondi-50 flex items-center justify-center shrink-0 text-bondi-700">
               <FileText className="size-5" />
             </div>
             <div className="min-w-0 flex flex-col">
-              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+              <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                 {fileName}
               </span>
-              <span className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-[#4d585b]">
+              <span className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-neutral-600">
                 {fileSize}
               </span>
             </div>
@@ -96,7 +96,7 @@ export function FileUpload({
                 e.stopPropagation();
                 onRemove?.();
               }}
-              className="size-[24px] inline-flex items-center justify-center text-[#4d585b] hover:text-[#142023] transition-colors cursor-pointer rounded"
+              className="size-[24px] inline-flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer rounded"
               aria-label="Hapus berkas"
             >
               <X className="size-[18px]" />
@@ -120,28 +120,29 @@ export function FileUpload({
           className={cn(
             "w-full rounded-[12px] p-6 flex flex-col items-center justify-center gap-2 text-center transition-all cursor-pointer select-none",
             currentState === "default" &&
-              "bg-[#eef1f2] border-[1.5px] border-[#cdd4d6] border-dashed hover:bg-[#e7ecee] hover:border-[#b8c2c5]",
+              "bg-neutral-100 border-[1.5px] border-neutral-300 border-dashed hover:bg-neutral-200/70 hover:border-neutral-400",
             currentState === "dragover" &&
-              "bg-[#e6f5f6] border-[1.5px] border-[#009ca6] border-dashed",
+              "bg-bondi-50 border-[1.5px] border-bondi-500 border-dashed",
             currentState === "analyzing" &&
-              "bg-[#fff9e0] border-[1.5px] border-[#f5bc00] border-dashed cursor-wait",
+              "bg-sunny-50 border-[1.5px] border-sunny-500 border-dashed cursor-wait",
             currentState === "error" &&
-              "bg-[#fef2f2] border-[1.5px] border-[#ef4444] border-dashed",
+              "bg-red-50 border-[1.5px] border-red-500 border-dashed",
           )}
         >
           {/* Icon Badge */}
           <div
             className={cn(
               "size-[44px] rounded-full flex items-center justify-center bg-white shadow-2xs shrink-0",
-              currentState === "analyzing" && "border-[1.5px] border-[#142023]",
+              currentState === "analyzing" &&
+                "border-[1.5px] border-neutral-900",
             )}
           >
             {currentState === "analyzing" ? (
-              <Sparkles className="size-[22px] text-[#142023]" />
+              <Sparkles className="size-[22px] text-neutral-900" />
             ) : currentState === "error" ? (
-              <AlertTriangle className="size-[22px] text-[#ef4444]" />
+              <AlertTriangle className="size-[22px] text-red-500" />
             ) : (
-              <Upload className="size-[22px] text-[#142023]" />
+              <Upload className="size-[22px] text-bondi-600" />
             )}
           </div>
 
@@ -149,7 +150,7 @@ export function FileUpload({
           <p
             className={cn(
               "font-['Inter'] font-semibold text-[14px] leading-[20px] whitespace-nowrap",
-              currentState === "error" ? "text-[#b91c1c]" : "text-[#142023]",
+              currentState === "error" ? "text-red-700" : "text-neutral-900",
             )}
           >
             {currentState === "error"
@@ -165,7 +166,7 @@ export function FileUpload({
           <p
             className={cn(
               "font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] max-w-[320px]",
-              currentState === "error" ? "text-[#b91c1c]" : "text-[#4d585b]",
+              currentState === "error" ? "text-red-700" : "text-neutral-600",
             )}
           >
             {currentState === "error"
@@ -178,8 +179,8 @@ export function FileUpload({
 
           {/* Progress Bar for Analyzing */}
           {currentState === "analyzing" && (
-            <div className="w-[200px] h-[6px] rounded-full bg-[#fff1b8] overflow-hidden mt-1">
-              <div className="h-full bg-[#007d85] rounded-full w-[60%] animate-pulse" />
+            <div className="w-[200px] h-[6px] rounded-full bg-sunny-100 overflow-hidden mt-1">
+              <div className="h-full bg-bondi-700 rounded-full w-[60%] animate-pulse" />
             </div>
           )}
         </div>

@@ -31,7 +31,7 @@ export function PartnerDeleteDialog({
       description={
         <>
           Apakah Anda yakin ingin menghapus data{" "}
-          <span className="font-semibold text-[#142023]">
+          <span className="font-semibold text-neutral-900">
             {partner?.name || "donatur ini"}
           </span>
           ? Semua data donasi terkait juga akan terpengaruh.

@@ -29,7 +29,7 @@ export function BeneficiaryCardBlock({
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=137-563&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Kartu profil penerima manfaat (panti asuhan, yayasan, komunitas warga)
         dengan metrik relawan Heroes, kilogram dampak surplus pangan, indikator
         kuota bulanan (6px Progress Bar), serta aksi Detail, Edit, dan Hapus

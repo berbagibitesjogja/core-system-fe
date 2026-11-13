@@ -33,7 +33,7 @@ export function ProgressBarBlock({
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=138-7817&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Indikator progres kuota penyaluran makanan surplus dan kuota penerima
         manfaat. Track 6px pill (#e2e7e8) dengan rounded-[999px] dan fill bar
         tosca brand (#007d85), kuning accent (#f5bc00), atau hijau success
@@ -125,7 +125,7 @@ export function ProgressBarBlock({
             step="1"
             value={sliderProgress}
             onChange={(e) => setSliderProgress(Number(e.target.value))}
-            className="flex-1 accent-[#007d85] cursor-pointer"
+            className="flex-1 accent-bondi-700 cursor-pointer"
           />
           <span className="font-mono text-sm font-bold text-neutral-800 w-12 text-right">
             {sliderProgress}%

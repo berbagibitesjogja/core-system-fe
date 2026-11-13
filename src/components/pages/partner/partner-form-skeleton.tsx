@@ -7,9 +7,9 @@ export function PartnerFormSkeleton() {
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-pulse">
       {/* Kolom Kiri: Skeleton Kartu Formulir Donatur */}
-      <div className="flex-1 min-w-0 w-full bg-white border border-[#e2e7e8] rounded-2xl overflow-hidden flex flex-col">
+      <div className="flex-1 min-w-0 w-full bg-white border border-neutral-200 rounded-2xl overflow-hidden flex flex-col">
         {/* Seksi 1: Identitas Donatur */}
-        <div className="p-6 border-b border-[#e2e7e8] flex flex-col gap-6">
+        <div className="p-6 border-b border-neutral-200 flex flex-col gap-6">
           <div className="flex flex-col gap-1.5">
             <Skeleton className="h-6 w-40 rounded-md" />
             <Skeleton className="h-4 w-72 rounded-md" />
@@ -22,7 +22,7 @@ export function PartnerFormSkeleton() {
               {[1, 2].map((item) => (
                 <div
                   key={item}
-                  className="p-4 rounded-xl border border-[#e2e7e8] flex flex-col gap-3 bg-white"
+                  className="p-4 rounded-xl border border-neutral-200 flex flex-col gap-3 bg-white"
                 >
                   <div className="flex items-center justify-between w-full">
                     <Skeleton className="size-10 rounded-lg" />
@@ -77,7 +77,7 @@ export function PartnerFormSkeleton() {
         </div>
 
         {/* Footer Form */}
-        <div className="p-6 bg-[#eef1f2] border-t border-[#e2e7e8] flex items-center justify-end gap-3">
+        <div className="p-6 bg-neutral-100 border-t border-neutral-200 flex items-center justify-end gap-3">
           <Skeleton className="h-11 w-20 rounded-full" />
           <Skeleton className="h-11 w-40 rounded-full" />
         </div>

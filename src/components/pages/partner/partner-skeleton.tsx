@@ -44,7 +44,7 @@ export function PartnerSkeleton() {
       {/* Table Card Skeleton */}
       <div className="bg-white border border-neutral-200 rounded-lg flex flex-col shadow-xs overflow-hidden w-full">
         {/* Header Tabel */}
-        <div className="bg-[#eef1f2] border-b border-neutral-200 px-4 h-11 flex items-center justify-between gap-4">
+        <div className="bg-neutral-100 border-b border-neutral-200 px-4 h-11 flex items-center justify-between gap-4">
           <Skeleton className="h-3.5 w-6 rounded" />
           <Skeleton className="h-3.5 w-24 rounded flex-1 max-w-[160px]" />
           <Skeleton className="h-3.5 w-24 rounded hidden sm:block" />
@@ -89,7 +89,7 @@ export function PartnerSkeleton() {
 
         {/* Footer Tabel */}
         <div className="px-5 py-4 flex items-center justify-between gap-4">
-          <span className="font-['Josefin_Sans'] text-[14px] leading-[20px] text-[#4d585b]">
+          <span className="font-['Josefin_Sans'] text-[14px] leading-[20px] text-neutral-600">
             Memuat data donatur…
           </span>
           <Skeleton className="h-9 w-56 rounded-sm hidden sm:block" />

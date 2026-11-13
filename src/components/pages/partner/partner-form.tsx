@@ -185,12 +185,12 @@ export function PartnerForm({
       onSubmit={handleSubmit}
       noValidate
       className={cn(
-        "bg-white border border-[#e2e7e8] rounded-2xl overflow-hidden flex flex-col w-full",
+        "bg-white border border-neutral-200 rounded-2xl overflow-hidden flex flex-col w-full",
         className,
       )}
     >
       {/* Seksi 1: Identitas Donatur */}
-      <div className="p-6 border-b border-[#e2e7e8] flex flex-col gap-6">
+      <div className="p-6 border-b border-neutral-200 flex flex-col gap-6">
         {hasErrors && (
           <Alert
             tone="danger"
@@ -202,10 +202,10 @@ export function PartnerForm({
 
         {/* Header Seksi Identitas */}
         <div className="flex flex-col gap-1">
-          <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-[#142023]">
+          <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
             Identitas Donatur
           </h2>
-          <p className="font-body font-normal text-[12px] leading-[16px] text-[#6b777a]">
+          <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
             Jenis, nama, dan logo yang tampil di laporan dampak.
           </p>
         </div>
@@ -214,7 +214,7 @@ export function PartnerForm({
         <div className="flex flex-col gap-2 w-full">
           <label
             id="partner-category-label"
-            className="font-heading font-semibold text-sm leading-5 text-[#142023]"
+            className="font-heading font-semibold text-sm leading-5 text-neutral-900"
           >
             Pilih Jenis
           </label>
@@ -290,10 +290,10 @@ export function PartnerForm({
       <div className="p-6 flex flex-col gap-6">
         {/* Header Seksi Kontak */}
         <div className="flex flex-col gap-1">
-          <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-[#142023]">
+          <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
             Kontak
           </h2>
-          <p className="font-body font-normal text-[12px] leading-[16px] text-[#6b777a]">
+          <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
             Opsional. Dipakai tim untuk koordinasi penjemputan makanan.
           </p>
         </div>
@@ -344,7 +344,7 @@ export function PartnerForm({
       </div>
 
       {/* Footer Form */}
-      <footer className="bg-[#eef1f2] border-t border-[#e2e7e8] p-6 flex items-center justify-end gap-3">
+      <footer className="bg-neutral-100 border-t border-neutral-200 p-6 flex items-center justify-end gap-3">
         <Button
           type="button"
           variant="secondary"

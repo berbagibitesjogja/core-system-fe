@@ -31,7 +31,7 @@ export function InputBlock({ onCopy, copiedToken }: InputBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=18-221&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Field input formulir: teks, nomor porsi, email donatur, lokasi
         penjemputan. Dilengkapi label semi-bold, helper text / error message,
         slot leading/trailing icon, dan ring fokus tosca 3px.

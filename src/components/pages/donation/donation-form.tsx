@@ -302,10 +302,10 @@ export function DonationForm({
               className={cn(
                 "h-11 px-3.5 rounded-md bg-white flex items-center justify-between text-left text-sm transition-all cursor-pointer outline-none",
                 errors.donorName
-                  ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca]"
+                  ? "border-[1.5px] border-red-500 shadow-focus-ring-danger"
                   : sponsorDropdownOpen
-                    ? "border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3]"
-                    : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
+                    ? "border-[1.5px] border-bondi-500 shadow-focus-ring"
+                    : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
                 !formData.donorName && "text-neutral-500",
               )}
             >
@@ -458,8 +458,8 @@ export function DonationForm({
                   className={cn(
                     "w-full h-11 px-3 text-center text-sm font-sans rounded-md bg-white transition-all outline-none",
                     errors.pickupHour
-                      ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] text-red-900"
-                      : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
+                      ? "border-[1.5px] border-red-500 shadow-focus-ring-danger text-red-900"
+                      : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
                   )}
                   aria-label="Jam pengambilan"
                 />
@@ -489,8 +489,8 @@ export function DonationForm({
                   className={cn(
                     "w-full h-11 px-3 text-center text-sm font-sans rounded-md bg-white transition-all outline-none",
                     errors.pickupMinute
-                      ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] text-red-900"
-                      : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
+                      ? "border-[1.5px] border-red-500 shadow-focus-ring-danger text-red-900"
+                      : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
                   )}
                   aria-label="Menit pengambilan"
                 />
@@ -593,10 +593,10 @@ export function DonationForm({
             className={cn(
               "min-h-[46px] p-2 pl-3 pr-10 rounded-md bg-white flex flex-wrap gap-2 items-center relative transition-all cursor-pointer outline-none w-full",
               errors.beneficiaries
-                ? "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca]"
+                ? "border-[1.5px] border-red-500 shadow-focus-ring-danger"
                 : beneficiaryDropdownOpen
-                  ? "border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3]"
-                  : "border border-[var(--color-border-input,#8a9499)] hover:border-[var(--color-border-ink,#142023)] focus:border-[1.5px] focus:border-[var(--color-border-focus,#009ca6)] focus:shadow-[0px_0px_0px_3px_#b0e0e3]",
+                  ? "border-[1.5px] border-bondi-500 shadow-focus-ring"
+                  : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
             )}
           >
             {formData.beneficiaryIds.length === 0 ? (
@@ -644,7 +644,7 @@ export function DonationForm({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Kolom Pencarian Beneficiary di dalam Dropdown */}
-              <div className="bg-[#eef1f2] rounded-lg px-3 py-2 flex items-center gap-2 mb-1">
+              <div className="bg-neutral-100 rounded-lg px-3 py-2 flex items-center gap-2 mb-1">
                 <Search className="size-4 text-neutral-500 shrink-0" />
                 <input
                   type="text"
@@ -800,7 +800,7 @@ export function DonationForm({
           size="md"
           isLoading={isSubmitting}
           disabled={isSubmitting}
-          className="drop-shadow-[0px_2px_0px_#142023]"
+          className="shadow-pop-sm"
         >
           {isSubmitting
             ? "Menyimpan..."

@@ -33,7 +33,7 @@ export function AlertBlock({ onCopy, copiedToken }: AlertBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=20-359"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Banner inline yang menetap di halaman: error login (not_registered,
         unauthorized_role, session_expired), hasil validasi form di atas
         formulir, penolakan invoice AI, peringatan kuota. Dilengkapi judul Inter

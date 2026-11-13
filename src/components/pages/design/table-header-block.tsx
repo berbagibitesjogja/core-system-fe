@@ -42,7 +42,7 @@ export function TableHeaderBlock({
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-252"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Header kolom tabel. Tinggi 44px, latar belakang subtle neutral-100
         (#EEF1F2), border-b 1px, teks Inter Bold 11px uppercase dengan tracking
         0.66px. Rata kanan untuk angka (Kuota, Berat, Jumlah, Nominal). Sorted
@@ -58,7 +58,7 @@ export function TableHeaderBlock({
             </span>
             <span className="text-[11px] text-neutral-500">Teks Biasa</span>
           </div>
-          <div className="h-11 rounded-xl border border-neutral-200 bg-[#eef1f2] px-4 flex items-center justify-between">
+          <div className="h-11 rounded-xl border border-neutral-200 bg-neutral-100 px-4 flex items-center justify-between">
             <span className="font-label text-[11px] font-bold uppercase tracking-wider text-neutral-600">
               NAMA DONATUR
             </span>
@@ -73,7 +73,7 @@ export function TableHeaderBlock({
             </span>
             <span className="text-[11px] text-neutral-500">Urutan Default</span>
           </div>
-          <div className="h-11 rounded-xl border border-bondi-200 bg-[#eef1f2] px-4 flex items-center justify-between shadow-xs">
+          <div className="h-11 rounded-xl border border-bondi-200 bg-neutral-100 px-4 flex items-center justify-between shadow-xs">
             <span className="font-label text-[11px] font-bold uppercase tracking-wider text-neutral-900">
               TANGGAL DONASI
             </span>
@@ -90,7 +90,7 @@ export function TableHeaderBlock({
               Kolom Angka/Berat
             </span>
           </div>
-          <div className="h-11 rounded-xl border border-neutral-200 bg-[#eef1f2] px-4 flex items-center justify-end gap-1.5">
+          <div className="h-11 rounded-xl border border-neutral-200 bg-neutral-100 px-4 flex items-center justify-end gap-1.5">
             <span className="font-label text-[11px] font-bold uppercase tracking-wider text-neutral-600">
               BERAT TOTAL (KG)
             </span>
@@ -105,7 +105,7 @@ export function TableHeaderBlock({
             </span>
             <span className="text-[11px] text-neutral-500">Angka Terbesar</span>
           </div>
-          <div className="h-11 rounded-xl border border-bondi-200 bg-[#eef1f2] px-4 flex items-center justify-end gap-1.5 shadow-xs">
+          <div className="h-11 rounded-xl border border-bondi-200 bg-neutral-100 px-4 flex items-center justify-end gap-1.5 shadow-xs">
             <span className="font-label text-[11px] font-bold uppercase tracking-wider text-neutral-900">
               ESTIMASI PORSI
             </span>
@@ -130,7 +130,7 @@ export function TableHeaderBlock({
         <div className="overflow-x-auto rounded-xl border border-neutral-200 bg-white shadow-xs -mx-1 px-1">
           <table className="w-full min-w-[500px] text-left">
             <thead>
-              <tr className="bg-[#eef1f2] border-b border-neutral-200">
+              <tr className="bg-neutral-100 border-b border-neutral-200">
                 <TableHead
                   sort={sortColumn === "donatur" ? sortDirection : "none"}
                   onSort={() => handleSort("donatur")}

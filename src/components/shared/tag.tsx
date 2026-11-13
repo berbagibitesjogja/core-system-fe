@@ -27,8 +27,8 @@ export function Tag({
       className={cn(
         "inline-flex items-center gap-1.5 h-[30px] px-3 py-1.5 rounded-[8px] font-['Inter'] text-[12px] font-semibold leading-[16px] transition-colors duration-150 select-none whitespace-nowrap",
         isHover
-          ? "bg-[#b0e0e3] border border-[#b0e0e3] text-[#00464b]"
-          : "bg-[#e6f5f6] border border-[#b0e0e3] text-[#00464b] hover:bg-[#b0e0e3]",
+          ? "bg-bondi-200 border border-bondi-200 text-bondi-900"
+          : "bg-bondi-50 border border-bondi-200 text-bondi-900 hover:bg-bondi-200",
         className,
       )}
       {...props}
@@ -41,7 +41,7 @@ export function Tag({
             e.stopPropagation();
             onRemove?.();
           }}
-          className="size-[14px] inline-flex items-center justify-center text-[#00464b] hover:text-[#00282b] transition-colors cursor-pointer rounded-xs"
+          className="size-[14px] inline-flex items-center justify-center text-bondi-900 hover:text-bondi-950 transition-colors cursor-pointer rounded-xs"
           aria-label="Hapus tag"
         >
           <X className="size-[14px] stroke-[2.5]" />

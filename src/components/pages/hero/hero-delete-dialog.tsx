@@ -31,7 +31,7 @@ export function HeroDeleteDialog({
       description={
         <>
           Apakah Anda yakin ingin menghapus data{" "}
-          <span className="font-semibold text-[#142023]">
+          <span className="font-semibold text-neutral-900">
             {hero?.name || "hero ini"}
           </span>
           ? Tindakan ini tidak dapat dibatalkan.

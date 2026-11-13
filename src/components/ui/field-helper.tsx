@@ -24,9 +24,7 @@ export const FieldHelper = React.forwardRef<HTMLDivElement, FieldHelperProps>(
         ref={ref}
         className={cn(
           "flex items-center gap-1 min-h-[16px] w-full text-[12px] leading-[16px] font-sans",
-          isError
-            ? "text-[var(--color-text-danger,#b91c1c)] text-red-600"
-            : "text-[var(--color-text-secondary,#4d585b)] text-neutral-500",
+          isError ? "text-red-700" : "text-neutral-600",
           className,
         )}
         {...props}

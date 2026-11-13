@@ -35,7 +35,7 @@ export function TagBlock({ onCopy, copiedToken }: TagBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=18-325&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Item terpilih yang bisa dihapus (×): beneficiary terpilih pada form
         donasi, filter aktif. Klik × menghapus pilihan. Warna tosca lembut
         Bondi-50 dengan teks tosca tua Bondi-900.
@@ -59,7 +59,7 @@ export function TagBlock({ onCopy, copiedToken }: TagBlockProps) {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Removable (dengan ×)
               </td>
               <td className="py-4 px-4">
@@ -79,7 +79,7 @@ export function TagBlock({ onCopy, copiedToken }: TagBlockProps) {
             </tr>
 
             <tr className="hover:bg-neutral-50/50">
-              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-[#142023]">
+              <td className="py-4 px-4 font-['Inter'] font-semibold text-sm text-neutral-900">
                 Non-removable
               </td>
               <td className="py-4 px-4">

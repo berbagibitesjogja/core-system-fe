@@ -288,7 +288,7 @@ function DesignShowcasePage() {
         <button
           type="button"
           onClick={scrollToTop}
-          className="fixed bottom-6 left-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[var(--color-bg-brand,#007d85)] text-white shadow-pop-md hover:bg-[var(--color-bg-brand-hover,#005e64)] active:translate-y-0.5 transition-all duration-200 cursor-pointer font-['Inter'] font-semibold text-xs border-[1.5px] border-[#142023] animate-in fade-in slide-in-from-bottom-4 select-none"
+          className="fixed bottom-6 left-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand text-white shadow-pop-md hover:bg-brand-hover active:translate-y-0.5 transition-all duration-200 cursor-pointer font-['Inter'] font-semibold text-xs border-[1.5px] border-neutral-900 animate-in fade-in slide-in-from-bottom-4 select-none"
           title="Kembali ke atas"
           aria-label="Kembali ke atas"
         >

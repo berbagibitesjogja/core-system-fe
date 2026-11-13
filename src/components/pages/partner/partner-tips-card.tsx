@@ -19,34 +19,34 @@ export function PartnerTipsCard({
   return (
     <aside
       className={cn(
-        "bg-bondi-50 border border-bondi-200/60 rounded-2xl p-6 flex flex-col gap-4 w-full lg:w-[320px] shrink-0",
+        "bg-brand-subtle rounded-2xl p-6 flex flex-col gap-4 w-full lg:w-[320px] shrink-0",
         className,
       )}
     >
       {/* Ilustrasi Tips Donatur */}
-      <div className="h-[204px] w-full rounded-2xl overflow-hidden bg-bondi-50 flex items-center justify-center shrink-0">
+      <div className="h-[204px] w-full rounded-2xl overflow-hidden shrink-0">
         <img
           src={volunteerChecklistIllustration}
           alt="Ilustrasi tips mendaftarkan donatur"
-          className="w-full h-full object-cover pointer-events-none select-none"
+          className="size-full object-cover pointer-events-none select-none"
         />
       </div>
 
       {/* Judul Panel Tips */}
-      <h3 className="font-heading font-semibold text-base leading-6 text-[#005e64]">
+      <h3 className="font-heading text-[18px] leading-[24px] font-semibold text-neutral-900">
         Tips mendaftarkan donatur
       </h3>
 
       {/* Daftar Butir Panduan */}
       <ul className="flex flex-col gap-4 m-0 p-0 list-none">
         {tips.map((tip) => (
-          <li key={tip.id} className="flex items-start gap-2">
+          <li key={tip.id} className="flex items-start gap-2 w-full">
             <Check
-              className="size-[18px] text-[#007d85] shrink-0 mt-0.5"
-              strokeWidth={2.25}
+              className="size-[18px] text-bondi-600 shrink-0"
+              strokeWidth={2}
               aria-hidden="true"
             />
-            <p className="font-body font-normal text-sm leading-5 text-[#142023]">
+            <p className="flex-1 min-w-0 font-body font-normal text-[12px] leading-[16px] text-neutral-600">
               {tip.text}
             </p>
           </li>

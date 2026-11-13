@@ -83,7 +83,7 @@ export function PartnerTable({
           className: "w-[56px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023]">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900">
             {(currentPage - 1) * perPage + row.index + 1}
           </span>
         ),
@@ -103,13 +103,13 @@ export function PartnerTable({
                 name={partner.name}
                 size="sm"
                 shape="rounded"
-                className="rounded-sm bg-[#e6f5f6] border-[#b0e0e3] text-[#00464b] font-semibold"
+                className="rounded-sm bg-bondi-50 border-bondi-200 text-bondi-900 font-semibold"
               />
               <div className="flex flex-col min-w-0">
-                <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+                <span className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                   {partner.name}
                 </span>
-                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+                <span className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
                   {partner.type}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export function PartnerTable({
             <button
               type="button"
               onClick={onToggleSort}
-              className="inline-flex items-center gap-1 font-bold text-[11px] leading-[16px] tracking-[0.66px] uppercase text-[#4d585b] hover:text-[#142023] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 font-bold text-[11px] leading-[16px] tracking-[0.66px] uppercase text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
               aria-label={
                 sortDirection === "desc"
                   ? "Urutkan donasi paling sedikit"
@@ -160,7 +160,7 @@ export function PartnerTable({
           );
           return (
             <div className="flex items-center gap-3 w-full">
-              <span className="w-[64px] shrink-0 font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+              <span className="w-[64px] shrink-0 font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
                 {formatPartnerNumber(partner.donationCount)} Aksi
               </span>
               <ProgressBar value={progress} className="flex-1 min-w-0" />
@@ -176,7 +176,7 @@ export function PartnerTable({
           className: "w-[110px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
             {formatPartnerNumber(row.original.impactKg)} Kg
           </span>
         ),
@@ -189,7 +189,7 @@ export function PartnerTable({
           className: "w-[140px]",
         },
         cell: ({ row }) => (
-          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-[#142023] whitespace-nowrap">
+          <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
             {row.original.lastDonationDate}
           </span>
         ),
@@ -228,7 +228,7 @@ export function PartnerTable({
                   size="sm"
                   tooltip="Hapus donatur"
                   aria-label={`Hapus ${partner.name}`}
-                  className="bg-white border-[#cdd4d6] hover:border-red-300"
+                  className="bg-white border-neutral-300 hover:border-red-300"
                   onClick={() => onDeletePartner?.(partner)}
                 >
                   <Trash2 className="size-[18px]" />
@@ -335,30 +335,30 @@ export function PartnerTable({
                       name={partner.name}
                       size="sm"
                       shape="rounded"
-                      className="rounded-sm bg-[#e6f5f6] border-[#b0e0e3] text-[#00464b] font-semibold"
+                      className="rounded-sm bg-bondi-50 border-bondi-200 text-bondi-900 font-semibold"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-[#142023] truncate">
+                      <p className="font-['Inter'] font-semibold text-[14px] leading-[20px] text-neutral-900 truncate">
                         {partner.name}
                       </p>
-                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-[#4d585b] truncate">
+                      <p className="font-['Inter'] font-normal text-[12px] leading-[16px] text-neutral-600 truncate">
                         {partner.type}
                       </p>
                     </div>
                   </div>
-                  <span className="font-['Inter'] text-[12px] text-[#6b777a] shrink-0">
+                  <span className="font-['Inter'] text-[12px] text-neutral-500 shrink-0">
                     #{(currentPage - 1) * perPage + index + 1}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-3 text-[12px]">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="font-['Inter'] font-medium text-[#142023] shrink-0">
+                    <span className="font-['Inter'] font-medium text-neutral-900 shrink-0">
                       {formatPartnerNumber(partner.donationCount)} Aksi
                     </span>
                     <ProgressBar value={progress} className="max-w-[120px]" />
                   </div>
-                  <div className="flex items-center gap-2 text-[#4d585b] shrink-0">
+                  <div className="flex items-center gap-2 text-neutral-600 shrink-0">
                     <span>{formatPartnerNumber(partner.impactKg)} Kg</span>
                     <span>·</span>
                     <span>{partner.lastDonationDate}</span>
@@ -389,7 +389,7 @@ export function PartnerTable({
                       size="sm"
                       tooltip="Hapus donatur"
                       aria-label={`Hapus ${partner.name}`}
-                      className="bg-white border-[#cdd4d6] hover:border-red-300"
+                      className="bg-white border-neutral-300 hover:border-red-300"
                       onClick={() => onDeletePartner?.(partner)}
                     >
                       <Trash2 className="size-[18px]" />

@@ -32,7 +32,7 @@ export function GoogleSignInBlock({
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=32-536&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Satu-satunya jalan masuk admin (PRD: Google Identity Services). Klik
         membuka Google Account Chooser. Loading: setelah token diterima dan
         dikirim ke POST /api/v1/auth/google. Jika popup ditutup, kembali ke

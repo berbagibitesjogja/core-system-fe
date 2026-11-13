@@ -30,7 +30,7 @@ export function OptionCardBlock({ onCopy, copiedToken }: OptionCardBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=138-11319&t=SzCwTYJWBfVK4FdY-4"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Pilihan tunggal berbentuk kartu (radio). Gunakan untuk 2–4 opsi yang
         perlu dibandingkan, mis. jenis beneficiary atau tipe donatur. 220px
         width, 40px icon badge, custom radio circle.

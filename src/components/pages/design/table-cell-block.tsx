@@ -30,7 +30,7 @@ export function TableCellBlock({ onCopy, copiedToken }: TableCellBlockProps) {
       onCopy={onCopy}
       figmaUrl="https://www.figma.com/design/ZJKa78CI7k6ob5lhfGYIUv/BBJ-2026?node-id=19-298"
     >
-      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b] max-w-[900px]">
+      <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600 max-w-[900px]">
         Sel isi tabel, tinggi standar 64px, garis bawah 1px
         (border-neutral-100). 6 tipe: Text, Text + Subtext, Avatar + Text,
         Number (rata kanan), Badge (status), dan Actions (Lihat, Edit, Hapus -
@@ -52,7 +52,7 @@ export function TableCellBlock({ onCopy, copiedToken }: TableCellBlockProps) {
         <div className="overflow-x-auto rounded-2xl border border-neutral-200 bg-white shadow-xs -mx-1 px-1">
           <table className="w-full min-w-[700px] text-left">
             <thead>
-              <tr className="bg-[#eef1f2] border-b border-neutral-200">
+              <tr className="bg-neutral-100 border-b border-neutral-200">
                 <TableHead className="w-56">1. TYPE: TEXT + SUBTEXT</TableHead>
                 <TableHead className="w-64">2. TYPE: AVATAR + TEXT</TableHead>
                 <TableHead className="w-40" align="right">

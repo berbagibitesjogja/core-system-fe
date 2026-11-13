@@ -72,25 +72,24 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     switch (effectiveState) {
       case "error":
         fieldStyles =
-          "border-[1.5px] border-[var(--color-border-danger,#ef4444)] shadow-[0px_0px_0px_3px_#fecaca] bg-white";
+          "border-[1.5px] border-red-500 shadow-focus-ring-danger bg-white";
         break;
       case "focus":
         fieldStyles =
-          "border-[1.5px] border-[var(--color-border-focus,#009ca6)] shadow-[0px_0px_0px_3px_#b0e0e3] bg-white";
+          "border-[1.5px] border-bondi-500 shadow-focus-ring bg-white";
         break;
       case "hover":
-        fieldStyles =
-          "border border-[var(--color-border-ink,#142023)] bg-white";
+        fieldStyles = "border border-neutral-900 bg-white";
         break;
       case "disabled":
         fieldStyles =
-          "border border-[var(--color-border-default,#e2e7e8)] bg-[var(--color-bg-disabled,#eef1f2)] text-[var(--color-text-disabled,#9aa5a8)] cursor-not-allowed";
+          "border border-neutral-200 bg-neutral-100 text-neutral-400 cursor-not-allowed";
         break;
       case "filled":
       case "default":
       default:
         fieldStyles =
-          "border border-[var(--color-border-input,#8a9499)] bg-white hover:border-[var(--color-border-ink,#142023)] focus-within:border-[1.5px] focus-within:border-[var(--color-border-focus,#009ca6)] focus-within:shadow-[0px_0px_0px_3px_#b0e0e3]";
+          "border border-border-input bg-white hover:border-neutral-900 focus-within:border-[1.5px] focus-within:border-bondi-500 focus-within:shadow-focus-ring";
         break;
     }
 
@@ -106,9 +105,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             htmlFor={inputId}
             className={cn(
               "font-['Inter'] font-semibold text-[14px] leading-[20px] select-none whitespace-nowrap",
-              isActuallyDisabled
-                ? "text-[var(--color-text-disabled,#9aa5a8)]"
-                : "text-[var(--color-text-primary,#142023)]",
+              isActuallyDisabled ? "text-neutral-400" : "text-neutral-900",
             )}
           >
             {label}
@@ -126,9 +123,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <div
               className={cn(
                 "shrink-0 size-[20px] flex items-center justify-center [&_svg]:size-[18px]",
-                isActuallyDisabled
-                  ? "text-[var(--color-text-disabled,#9aa5a8)]"
-                  : "text-[var(--color-text-tertiary,#6b777a)]",
+                isActuallyDisabled ? "text-neutral-400" : "text-neutral-500",
               )}
             >
               {effectiveLeadingIcon}
@@ -146,10 +141,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               "flex-1 bg-transparent font-['Inter'] font-normal text-[14px] leading-[20px] outline-none min-w-0",
               isActuallyDisabled
-                ? "text-[var(--color-text-disabled,#9aa5a8)] cursor-not-allowed"
+                ? "text-neutral-400 cursor-not-allowed"
                 : effectiveState === "default"
-                  ? "text-[var(--color-text-tertiary,#6b777a)] placeholder:text-[var(--color-text-tertiary,#6b777a)]"
-                  : "text-[var(--color-text-primary,#142023)]",
+                  ? "text-neutral-500 placeholder:text-neutral-500"
+                  : "text-neutral-900",
             )}
             {...props}
           />
@@ -158,9 +153,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <div
               className={cn(
                 "shrink-0 size-[20px] flex items-center justify-center [&_svg]:size-[18px]",
-                isActuallyDisabled
-                  ? "text-[var(--color-text-disabled,#9aa5a8)]"
-                  : "text-[var(--color-text-tertiary,#6b777a)]",
+                isActuallyDisabled ? "text-neutral-400" : "text-neutral-500",
               )}
             >
               {effectiveTrailingIcon}

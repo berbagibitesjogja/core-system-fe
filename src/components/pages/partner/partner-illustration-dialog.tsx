@@ -45,7 +45,7 @@ export function PartnerIllustrationDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b1416]/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/55 backdrop-blur-[1px] animate-in fade-in duration-150 motion-reduce:animate-none"
       onClick={(e) => {
         if (e.target === e.currentTarget && !disableDismiss) {
           onClose();
@@ -70,11 +70,11 @@ export function PartnerIllustrationDialog({
           <div className="flex flex-col gap-1.5 flex-1 min-w-0 text-center sm:text-left">
             <h2
               id={titleId}
-              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-[#142023]"
+              className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-neutral-900"
             >
               {title}
             </h2>
-            <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-[#4d585b]">
+            <p className="font-['Josefin_Sans'] font-normal text-[14px] leading-[20px] text-neutral-600">
               {description}
             </p>
           </div>

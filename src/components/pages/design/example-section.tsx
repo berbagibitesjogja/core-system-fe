@@ -169,7 +169,7 @@ export function ExampleSection() {
       title="Contoh Layar Admin: Daftar Donasi"
       subtitle="Figma Node 23:334 · Implementasi Penuh 100% Komponen Reusable BBJ"
       description="Layar administratif utuh yang dibangun 100% menggunakan susunan komponen reusable yang telah dibuat (bukan markup HTML mentah): NavItem, Button, FilterChip, Input, Table, Badge, IconButton, Pagination, Dialog, dan sistem notifikasi toast."
-      copyCode={`<div className="flex flex-col lg:flex-row min-h-[760px] bg-[#f5f7f7] rounded-[24px] border border-neutral-200">
+      copyCode={`<div className="flex flex-col lg:flex-row min-h-[760px] bg-neutral-50 rounded-[24px] border border-neutral-200">
   {/* Sidebar NavItem, Main Content Table, Pagination, Dialog */}
 </div>`}
       copyTokenKey="example-page-code"
@@ -196,9 +196,9 @@ export function ExampleSection() {
       {/* =========================================================================
           LIVE MOCKUP: Contoh Layar Admin (Figma Node 23:334)
       ========================================================================= */}
-      <div className="rounded-[20px] sm:rounded-[24px] border border-neutral-200 bg-[#f5f7f7] shadow-sm overflow-hidden flex flex-col lg:flex-row min-h-[720px] w-full">
+      <div className="rounded-[20px] sm:rounded-[24px] border border-neutral-200 bg-neutral-50 shadow-sm overflow-hidden flex flex-col lg:flex-row min-h-[720px] w-full">
         {/* SIDEBAR DESKTOP */}
-        <aside className="w-full lg:w-[240px] bg-white border-b lg:border-b-0 lg:border-r border-[#e2e7e8] flex flex-col justify-between shrink-0 p-4 select-none">
+        <aside className="w-full lg:w-[240px] bg-white border-b lg:border-b-0 lg:border-r border-neutral-200 flex flex-col justify-between shrink-0 p-4 select-none">
           <div className="space-y-4">
             {/* Brand Logo & Name */}
             <div className="flex items-center gap-2.5 pb-3 pl-2 pt-1 border-b lg:border-b-0 border-neutral-100">
