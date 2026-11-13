@@ -13,5 +13,6 @@ export * from "./bottom-nav-item";
 export * from "./beneficiary-card";
 export * from "./entity-identity";
 export * from "./user-profile-menu";
+export * from "./admin-layout-context";
 export * from "./header";
 export * from "./sidebar";
