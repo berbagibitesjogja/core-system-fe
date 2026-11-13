@@ -18,8 +18,11 @@ export function ReimburseDataSkeleton() {
     <div className="space-y-6 w-full animate-pulse motion-reduce:animate-none">
       {/* Baris Stat Cards Skeleton */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {STAT_PLACEHOLDERS.map((item) => (
-          <StatCardSkeleton key={item} />
+        {STAT_PLACEHOLDERS.map((item, index) => (
+          <StatCardSkeleton
+            key={item}
+            styleVariant={index === 0 ? "brand" : "default"}
+          />
         ))}
       </div>
 

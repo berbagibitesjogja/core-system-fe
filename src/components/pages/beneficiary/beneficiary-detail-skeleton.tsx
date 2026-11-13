@@ -1,3 +1,4 @@
+import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
 const donationRowSlots = [1, 2, 3, 4, 5, 6];
@@ -17,20 +18,11 @@ export function BeneficiaryDetailSkeleton() {
 
       {/* Stat Cards Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-        {[1, 2, 3].map((i) => (
-          <div
+        {[1, 2, 3].map((i, index) => (
+          <StatCardSkeleton
             key={i}
-            className="rounded-2xl border border-neutral-200 bg-white p-5 space-y-4 shadow-xs"
-          >
-            <div className="flex items-center gap-3">
-              <Skeleton className="size-10 rounded-md" />
-              <Skeleton className="h-4 w-36 rounded-md" />
-            </div>
-            <div className="space-y-2 pt-1">
-              <Skeleton className="h-9 w-28 rounded-lg" />
-              <Skeleton className="h-3.5 w-44 rounded-md" />
-            </div>
-          </div>
+            styleVariant={index === 0 ? "brand" : "default"}
+          />
         ))}
       </div>
 

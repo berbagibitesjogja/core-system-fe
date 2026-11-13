@@ -13,8 +13,11 @@ export function VolunteerPageSkeleton() {
     <div className="space-y-6 w-full animate-pulse motion-reduce:animate-none">
       {/* Baris Stat Cards Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-        {VOLUNTEER_SKELETON_STATS.map((item) => (
-          <StatCardSkeleton key={item} />
+        {VOLUNTEER_SKELETON_STATS.map((item, index) => (
+          <StatCardSkeleton
+            key={item}
+            styleVariant={index === 0 ? "brand" : "default"}
+          />
         ))}
       </div>
 
