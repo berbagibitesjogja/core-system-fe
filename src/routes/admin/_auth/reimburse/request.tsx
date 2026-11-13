@@ -11,6 +11,7 @@ import {
   ReimburseFilePreviewDialog,
   ReimburseHistoryCard,
   ReimburseRequestForm,
+  ReimburseRequestSkeleton,
   ReimburseTransferProofDialog,
   computeReimburseAnalyzeProgress,
   detectSimulatedErrorFromFile,
@@ -29,7 +30,7 @@ import type {
 } from "#/components/pages/reimburse";
 import type { FileUploadState } from "#/components/shared/file-upload";
 import { toast } from "#/components/ui/toast";
-import { useAdminLayout } from "#/routes/admin/_auth";
+import { useAdminLayout } from "#/components/shared/admin-layout-context";
 
 // Skema validasi URL search params tipe-aman Zod untuk meninjau seluruh state Figma
 const reimburseRequestSearchSchema = z.object({
@@ -104,6 +105,17 @@ function ReimburseRequestPage() {
   const completeTimerRef = React.useRef<number | null>(null);
   const objectUrlsRef = React.useRef<Set<string>>(new Set());
   const skipPresetSyncRef = React.useRef(false);
+
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Membersihkan seluruh timer & interval animasi analisis invoice
   const clearAnalyzeTimers = React.useCallback(() => {
@@ -397,6 +409,11 @@ function ReimburseRequestPage() {
       }, REIMBURSE_ANALYZE_COMPLETE_HOLD_MS);
     }, REIMBURSE_ANALYZE_MIN_DURATION_MS);
   };
+
+  // Tampilkan skeleton saat loading aktif
+  if (isLoading) {
+    return <ReimburseRequestSkeleton />;
+  }
 
   return (
     <div className="flex flex-col xl:flex-row items-start gap-6 w-full">

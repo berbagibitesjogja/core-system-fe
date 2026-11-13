@@ -1,19 +1,18 @@
 import * as React from "react";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { AdminLayoutContext } from "#/components/shared/admin-layout-context";
+import type { AdminLayoutContextType } from "#/components/shared/admin-layout-context";
 import { Header } from "#/components/shared/header";
 import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
 
-export interface AdminLayoutContextType {
-  setHeaderOverride: (props: Partial<HeaderProps> | null) => void;
-}
+import type { SidebarProps } from "#/components/shared/sidebar";
 
-export const AdminLayoutContext =
-  React.createContext<AdminLayoutContextType | null>(null);
-
-export function useAdminLayout(): AdminLayoutContextType | null {
-  return React.useContext(AdminLayoutContext);
-}
+export {
+  AdminLayoutContext,
+  useAdminLayout,
+  type AdminLayoutContextType,
+} from "#/components/shared/admin-layout-context";
 
 export const Route = createFileRoute("/admin/_auth")({
   component: AdminLayout,
@@ -38,7 +37,9 @@ const routeTitles: Partial<Record<string, string>> = {
   "/admin/reimburse/request": "Reimburse",
   "/admin/reimburse/data": "Manajemen Reimburse",
   "/admin/volunteer": "Volunteer",
-  "/admin/profile": "Profil Pengguna",
+  "/admin/volunteer/add": "Tambah Volunteer",
+  "/admin/volunteer/detail": "Detail Volunteer",
+  "/admin/profile": "Profil Saya",
   "/admin/logs": "Logs Sistem",
 };
 
@@ -62,6 +63,10 @@ const routeSubtitles: Partial<Record<string, string>> = {
     "Ajukan penggantian biaya operasional dan pantau statusnya",
   "/admin/reimburse/data":
     "Verifikasi klaim biaya operasional dan catat pencairannya",
+  "/admin/volunteer": "Anggota tim dan relawan Berbagi Bites Jogja",
+  "/admin/volunteer/add": "Daftarkan anggota baru ke dalam sistem BBJ",
+  "/admin/volunteer/detail": "Profil dan pengaturan anggota",
+  "/admin/profile": "Kelola data akun yang sedang kamu pakai",
 };
 
 /**
@@ -73,6 +78,9 @@ function AdminLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
   const [headerOverride, setHeaderOverride] =
     React.useState<Partial<HeaderProps> | null>(null);
+  const [sidebarUserRole, setSidebarUserRole] = React.useState<
+    SidebarProps["userRole"] | null
+  >(null);
   const location = useLocation();
 
   const currentTitle =
@@ -82,8 +90,17 @@ function AdminLayout() {
 
   // Memoize context value agar tidak memicu infinite render loop pada child routes
   const contextValue = React.useMemo<AdminLayoutContextType>(
-    () => ({ setHeaderOverride }),
+    () => ({ setHeaderOverride, setSidebarUserRole }),
     [],
+  );
+
+  const isProfileRoute = location.pathname === "/admin/profile";
+  const mergedHeaderUser = React.useMemo(
+    () => ({
+      isActive: isProfileRoute,
+      ...headerOverride?.user,
+    }),
+    [isProfileRoute, headerOverride?.user],
   );
 
   return (
@@ -91,6 +108,7 @@ function AdminLayout() {
       {/* Sidebar Navigasi Admin (Desktop Sticky + Mobile Drawer) */}
       <Sidebar
         activePath={location.pathname}
+        userRole={sidebarUserRole ?? "super_admin"}
         isMobileOpen={mobileSidebarOpen}
         onCloseMobile={() => setMobileSidebarOpen(false)}
         onLogout={() => {
@@ -106,6 +124,7 @@ function AdminLayout() {
           title={currentTitle}
           subtitle={currentSubtitle}
           avatar={headerOverride?.avatar}
+          user={mergedHeaderUser}
           onMenuToggle={() => setMobileSidebarOpen(true)}
           onBack={headerOverride?.onBack}
           backHref={headerOverride?.backHref}

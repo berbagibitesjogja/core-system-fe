@@ -88,6 +88,17 @@ function ReimburseDataPage() {
   const canCancel = canCancelReimburseByRole(currentRole);
   const hasRedirectedRef = React.useRef(false);
 
+  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [items, setItems] = React.useState<ReimburseDataItem[]>(() =>
     getReimburseDataInitialItems(demo),
   );
@@ -278,7 +289,7 @@ function ReimburseDataPage() {
     toast.success(REIMBURSE_CANCEL_SUCCESS_TOAST);
   };
 
-  if (!isAuthorized) {
+  if (!isAuthorized || isLoading) {
     return <ReimburseDataSkeleton />;
   }
 

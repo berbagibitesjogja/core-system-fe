@@ -28,7 +28,8 @@ export const defaultProfileMenuItems: UserProfileMenuItemConfig[] = [
     id: "settings",
     label: "Pengaturan Akun",
     icon: Settings,
-    action: "custom",
+    to: "/admin/profile",
+    action: "navigation",
   },
   {
     id: "help",
@@ -52,6 +53,7 @@ export interface UserProfileMenuProps {
   avatarSrc?: string;
   initials?: string;
   email?: string;
+  isActive?: boolean;
   menuItems?: UserProfileMenuItemConfig[];
   onLogout?: () => void;
   compactOnMobile?: boolean;
@@ -67,6 +69,7 @@ export function UserProfileMenu({
   division = "Divisi Operasional",
   avatarSrc,
   email = "dian.pratiwi@bbj.org",
+  isActive = false,
   menuItems = defaultProfileMenuItems,
   onLogout,
   compactOnMobile = true,
@@ -112,6 +115,11 @@ export function UserProfileMenu({
             ? "p-0 border-0 bg-transparent sm:gap-3 sm:py-1.5 sm:pl-1.5 sm:pr-3.5 sm:border sm:border-neutral-200 sm:bg-white sm:shadow-xs"
             : "gap-3 py-1.5 pl-1.5 pr-3.5 border border-neutral-200 bg-white shadow-xs",
           "hover:border-neutral-300 hover:bg-neutral-50/80 focus:outline-none focus:ring-2 focus:ring-brand/30",
+          isActive &&
+            !isOpen &&
+            (compactOnMobile
+              ? "ring-2 ring-brand-vivid sm:ring-0 sm:border-2 sm:border-brand-vivid sm:bg-surface sm:hover:border-brand-vivid"
+              : "border-2 border-brand-vivid bg-surface hover:border-brand-vivid"),
           isOpen &&
             (compactOnMobile
               ? "ring-2 ring-brand/30 sm:border-brand sm:ring-2 sm:ring-brand/20 sm:bg-neutral-50/90"
@@ -215,6 +223,11 @@ export function UserProfileMenu({
                       setIsOpen(false);
                       if (item.action === "logout") {
                         onLogout?.();
+                      } else if (item.id === "settings") {
+                        navigate({
+                          to: "/admin/profile",
+                          search: { tab: "settings" },
+                        });
                       } else if (item.to) {
                         navigate({ to: item.to });
                       }
