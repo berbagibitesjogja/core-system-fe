@@ -1,4 +1,5 @@
 export * from "./volunteer-data";
+export * from "./volunteer-select-field";
 export * from "./volunteer-stats";
 export * from "./volunteer-toolbar";
 export * from "./volunteer-table";
