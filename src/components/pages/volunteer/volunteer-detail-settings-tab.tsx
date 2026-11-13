@@ -9,10 +9,7 @@ import {
   VOLUNTEER_ROLE_META,
   VOLUNTEER_ROLE_OPTIONS,
 } from "./volunteer-data";
-import type {
-  VolunteerDivision,
-  VolunteerFormValues,
-} from "./volunteer-data";
+import type { VolunteerDivision, VolunteerFormValues } from "./volunteer-data";
 
 export interface VolunteerDetailSettingsTabProps {
   initialValues: VolunteerFormValues;
