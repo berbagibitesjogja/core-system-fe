@@ -30,7 +30,89 @@ export interface VolunteerRecord {
   division: VolunteerDivision;
   role: VolunteerSystemRole;
   hasActiveRelations?: boolean;
+  joinedDate?: string;
 }
+
+export interface VolunteerActivityItem {
+  id: string;
+  title: string;
+  category: string;
+  timestampLabel: string;
+}
+
+export const defaultVolunteerActivities: readonly VolunteerActivityItem[] = [
+  {
+    id: "act-1",
+    title: "Masuk ke panel admin",
+    category: "Sistem",
+    timestampLabel: "3 jam yang lalu",
+  },
+  {
+    id: "act-2",
+    title: "Memperbarui donasi Holland Bakery",
+    category: "Donasi",
+    timestampLabel: "Kemarin, 16.42",
+  },
+  {
+    id: "act-3",
+    title: "Menambahkan hero Nadia Putri",
+    category: "Heroes",
+    timestampLabel: "6 Nov 2026, 10.15",
+  },
+  {
+    id: "act-4",
+    title: "Mengajukan reimburse Rp85.000",
+    category: "Reimburse",
+    timestampLabel: "4 Nov 2026, 19.03",
+  },
+  {
+    id: "act-5",
+    title: "Menambahkan sektor Kedokteran Gigi",
+    category: "Beneficiary",
+    timestampLabel: "2 Nov 2026, 14.20",
+  },
+  {
+    id: "act-6",
+    title: "Masuk ke panel admin",
+    category: "Sistem",
+    timestampLabel: "2 Nov 2026, 08.11",
+  },
+];
+
+export const VOLUNTEER_ROLE_META: Record<
+  VolunteerSystemRole,
+  {
+    label: string;
+    styleVariant: "solid" | "soft";
+    tone: "neutral" | "brand";
+    helperText: string;
+  }
+> = {
+  super: {
+    label: "Super Admin",
+    styleVariant: "solid",
+    tone: "neutral",
+    helperText: "Akses penuh ke seluruh sistem dan audit log.",
+  },
+  core: {
+    label: "Pengurus Inti",
+    styleVariant: "solid",
+    tone: "neutral",
+    helperText: "Bisa kelola dan hapus data.",
+  },
+  staff: {
+    label: "Staff",
+    styleVariant: "soft",
+    tone: "neutral",
+    helperText: "Bisa melihat data internal dan menginput laporan.",
+  },
+  member: {
+    label: "Volunteer / Anggota",
+    styleVariant: "soft",
+    tone: "neutral",
+    helperText: "Hanya akses data publik dan tugas lapangan.",
+  },
+};
 
 export interface VolunteerStatItem {
   id: string;
@@ -153,6 +235,7 @@ const PRIMARY_VOLUNTEER_RECORDS: VolunteerRecord[] = [
     email: "fauzan.tris@ugm.ac.id",
     division: "IT",
     role: "core",
+    joinedDate: "3 Maret 2024",
   },
   {
     id: "vol-3",

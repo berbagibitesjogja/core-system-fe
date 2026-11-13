@@ -38,7 +38,7 @@ const routeTitles: Partial<Record<string, string>> = {
   "/admin/reimburse/data": "Manajemen Reimburse",
   "/admin/volunteer": "Volunteer",
   "/admin/volunteer/add": "Tambah Volunteer",
-  "/admin/volunteer/edit": "Edit Volunteer",
+  "/admin/volunteer/detail": "Detail Volunteer",
   "/admin/profile": "Profil Saya",
   "/admin/logs": "Logs Sistem",
 };
@@ -65,7 +65,7 @@ const routeSubtitles: Partial<Record<string, string>> = {
     "Verifikasi klaim biaya operasional dan catat pencairannya",
   "/admin/volunteer": "Anggota tim dan relawan Berbagi Bites Jogja",
   "/admin/volunteer/add": "Daftarkan anggota baru ke dalam sistem BBJ",
-  "/admin/volunteer/edit": "Perbarui informasi akun volunteer",
+  "/admin/volunteer/detail": "Profil dan pengaturan anggota",
   "/admin/profile": "Kelola data akun yang sedang kamu pakai",
 };
 

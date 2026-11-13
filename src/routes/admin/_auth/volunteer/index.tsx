@@ -314,7 +314,7 @@ function VolunteerPage() {
         userRole={role}
         onViewDetail={(volunteer) =>
           navigate({
-            to: "/admin/volunteer/edit",
+            to: "/admin/volunteer/detail",
             search: { id: volunteer.id },
           })
         }
