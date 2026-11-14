@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Pencil, Search, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
+import { Button, getButtonClasses } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
   Table,
@@ -163,14 +164,17 @@ export function HeroTable({
           const hero = row.original;
           return (
             <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Search className="size-4" />}
-                onClick={() => onViewDetail?.(hero)}
+              <Link
+                to="/admin/hero/detail"
+                search={{ id: hero.id }}
+                className={getButtonClasses({
+                  variant: "secondary",
+                  size: "sm",
+                })}
               >
+                <Search className="size-4" />
                 Detail
-              </Button>
+              </Link>
               <IconButton
                 variant="secondary"
                 size="sm"
@@ -298,14 +302,17 @@ export function HeroTable({
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-1">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<Search className="size-4" />}
-                    onClick={() => onViewDetail?.(hero)}
+                  <Link
+                    to="/admin/hero/detail"
+                    search={{ id: hero.id }}
+                    className={getButtonClasses({
+                      variant: "secondary",
+                      size: "sm",
+                    })}
                   >
+                    <Search className="size-4" />
                     Detail
-                  </Button>
+                  </Link>
                   <IconButton
                     variant="secondary"
                     size="sm"

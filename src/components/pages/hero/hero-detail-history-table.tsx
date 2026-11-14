@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Eye } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -7,7 +8,8 @@ import {
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
-import { IconButton } from "#/components/ui/icon-button";
+import { getIconButtonClasses } from "#/components/ui/icon-button";
+import { Tooltip } from "#/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -171,15 +173,19 @@ export function HeroDetailHistoryTable({
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <IconButton
-              variant="ghost"
-              size="sm"
-              tooltip="Lihat detail donasi"
-              aria-label={`Lihat detail donasi ${row.original.donorName}`}
-              onClick={() => onViewDonation?.(row.original)}
-            >
-              <Eye className="size-[18px]" />
-            </IconButton>
+            <Tooltip content="Lihat detail donasi" placement="top">
+              <Link
+                to="/admin/donation/detail"
+                search={{ id: row.original.id }}
+                aria-label={`Lihat detail donasi ${row.original.donorName}`}
+                className={getIconButtonClasses({
+                  variant: "ghost",
+                  size: "sm",
+                })}
+              >
+                <Eye className="size-[18px]" />
+              </Link>
+            </Tooltip>
           </div>
         ),
       },
@@ -313,15 +319,19 @@ export function HeroDetailHistoryTable({
                     <span className="font-['Inter'] text-[12px] font-medium text-neutral-600">
                       Kode: {record.claimCode}
                     </span>
-                    <IconButton
-                      variant="ghost"
-                      size="sm"
-                      tooltip="Lihat detail donasi"
-                      aria-label={`Lihat detail donasi ${record.donorName}`}
-                      onClick={() => onViewDonation?.(record)}
-                    >
-                      <Eye className="size-[18px]" />
-                    </IconButton>
+                    <Tooltip content="Lihat detail donasi" placement="top">
+                      <Link
+                        to="/admin/donation/detail"
+                        search={{ id: record.id }}
+                        aria-label={`Lihat detail donasi ${record.donorName}`}
+                        className={getIconButtonClasses({
+                          variant: "ghost",
+                          size: "sm",
+                        })}
+                      >
+                        <Eye className="size-[18px]" />
+                      </Link>
+                    </Tooltip>
                   </div>
                 </div>
               );

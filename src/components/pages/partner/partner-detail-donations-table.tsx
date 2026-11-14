@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { flexRender } from "@tanstack/react-table";
 import {
   getCoreRowModel,
@@ -13,7 +14,8 @@ import {
 import { Pagination } from "#/components/shared/pagination";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
-import { IconButton } from "#/components/ui/icon-button";
+import { getIconButtonClasses } from "#/components/ui/icon-button";
+import { Tooltip } from "#/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -120,16 +122,20 @@ export function PartnerDetailDonationsTable({
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <IconButton
-              variant="ghost"
-              size="sm"
-              tooltip="Lihat detail donasi"
-              aria-label={`Lihat detail donasi ${partnerName} tanggal ${row.original.dateLabel}`}
-              onClick={() => onViewDonation(row.original)}
-              className="text-neutral-700 hover:bg-neutral-100"
-            >
-              <Eye />
-            </IconButton>
+            <Tooltip content="Lihat detail donasi" placement="top">
+              <Link
+                to="/admin/donation/detail"
+                search={{ id: row.original.id }}
+                aria-label={`Lihat detail donasi ${partnerName} tanggal ${row.original.dateLabel}`}
+                className={getIconButtonClasses({
+                  variant: "ghost",
+                  size: "sm",
+                  className: "text-neutral-700 hover:bg-neutral-100",
+                })}
+              >
+                <Eye />
+              </Link>
+            </Tooltip>
           </div>
         ),
       },
@@ -276,16 +282,21 @@ export function PartnerDetailDonationsTable({
                   </div>
                 </div>
 
-                <IconButton
-                  variant="ghost"
-                  size="sm"
-                  tooltip="Lihat detail donasi"
-                  aria-label={`Lihat detail donasi ${partnerName} tanggal ${item.dateLabel}`}
-                  onClick={() => onViewDonation(item)}
-                  className="shrink-0 text-neutral-700 hover:bg-neutral-100"
-                >
-                  <Eye />
-                </IconButton>
+                <Tooltip content="Lihat detail donasi" placement="top">
+                  <Link
+                    to="/admin/donation/detail"
+                    search={{ id: item.id }}
+                    aria-label={`Lihat detail donasi ${partnerName} tanggal ${item.dateLabel}`}
+                    className={getIconButtonClasses({
+                      variant: "ghost",
+                      size: "sm",
+                      className:
+                        "shrink-0 text-neutral-700 hover:bg-neutral-100",
+                    })}
+                  >
+                    <Eye />
+                  </Link>
+                </Tooltip>
               </div>
             ))}
           </div>

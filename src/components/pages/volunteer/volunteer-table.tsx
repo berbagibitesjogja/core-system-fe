@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Search, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
+import { Button, getButtonClasses } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
   Table,
@@ -138,14 +139,17 @@ export function VolunteerTable({
           const volunteer = row.original;
           return (
             <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Search className="size-4" />}
-                onClick={() => onViewDetail?.(volunteer)}
+              <Link
+                to="/admin/volunteer/detail"
+                search={{ id: volunteer.id }}
+                className={getButtonClasses({
+                  variant: "secondary",
+                  size: "sm",
+                })}
               >
+                <Search className="size-4" />
                 Detail
-              </Button>
+              </Link>
               {canDeleteRole && (
                 <IconButton
                   variant="danger"
@@ -259,14 +263,17 @@ export function VolunteerTable({
                 </p>
 
                 <div className="flex items-center justify-end gap-2 pt-1">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<Search className="size-4" />}
-                    onClick={() => onViewDetail?.(volunteer)}
+                  <Link
+                    to="/admin/volunteer/detail"
+                    search={{ id: volunteer.id }}
+                    className={getButtonClasses({
+                      variant: "secondary",
+                      size: "sm",
+                    })}
                   >
+                    <Search className="size-4" />
                     Detail
-                  </Button>
+                  </Link>
                   {canDeleteRole && (
                     <IconButton
                       variant="danger"

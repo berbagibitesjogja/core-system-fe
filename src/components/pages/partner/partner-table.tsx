@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { flexRender } from "@tanstack/react-table";
 import {
   getCoreRowModel,
@@ -13,8 +14,9 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { ProgressBar } from "#/components/shared/progress-bar";
-import { Button } from "#/components/ui/button";
-import { IconButton } from "#/components/ui/icon-button";
+import { Button, getButtonClasses } from "#/components/ui/button";
+import { IconButton, getIconButtonClasses } from "#/components/ui/icon-button";
+import { Tooltip } from "#/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -24,7 +26,6 @@ import {
   TableHeader,
   TableRow,
 } from "#/components/ui/table";
-import { Tooltip } from "#/components/ui/tooltip";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
 import { calculatePartnerProgress, formatPartnerNumber } from "./partner-data";
@@ -196,23 +197,30 @@ export function PartnerTable({
           const partner = row.original;
           return (
             <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Search className="size-4" />}
-                onClick={() => onViewDetail?.(partner)}
+              <Link
+                to="/admin/partner/detail"
+                search={{ id: partner.id }}
+                className={getButtonClasses({
+                  variant: "secondary",
+                  size: "sm",
+                })}
               >
+                <Search className="size-4" />
                 Detail
-              </Button>
-              <IconButton
-                variant="secondary"
-                size="sm"
-                tooltip="Edit data donatur"
-                aria-label={`Edit data ${partner.name}`}
-                onClick={() => onEditPartner?.(partner)}
-              >
-                <Pencil className="size-[18px]" />
-              </IconButton>
+              </Link>
+              <Tooltip content="Edit data donatur" placement="top">
+                <Link
+                  to="/admin/partner/edit"
+                  search={{ id: partner.id }}
+                  aria-label={`Edit data ${partner.name}`}
+                  className={getIconButtonClasses({
+                    variant: "secondary",
+                    size: "sm",
+                  })}
+                >
+                  <Pencil className="size-[18px]" />
+                </Link>
+              </Tooltip>
               {canDeleteRole && (
                 <IconButton
                   variant="danger"
@@ -348,23 +356,30 @@ export function PartnerTable({
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-1">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<Search className="size-4" />}
-                    onClick={() => onViewDetail?.(partner)}
+                  <Link
+                    to="/admin/partner/detail"
+                    search={{ id: partner.id }}
+                    className={getButtonClasses({
+                      variant: "secondary",
+                      size: "sm",
+                    })}
                   >
+                    <Search className="size-4" />
                     Detail
-                  </Button>
-                  <IconButton
-                    variant="secondary"
-                    size="sm"
-                    tooltip="Edit data donatur"
-                    aria-label={`Edit data ${partner.name}`}
-                    onClick={() => onEditPartner?.(partner)}
-                  >
-                    <Pencil className="size-[18px]" />
-                  </IconButton>
+                  </Link>
+                  <Tooltip content="Edit data donatur" placement="top">
+                    <Link
+                      to="/admin/partner/edit"
+                      search={{ id: partner.id }}
+                      aria-label={`Edit data ${partner.name}`}
+                      className={getIconButtonClasses({
+                        variant: "secondary",
+                        size: "sm",
+                      })}
+                    >
+                      <Pencil className="size-[18px]" />
+                    </Link>
+                  </Tooltip>
                   {canDeleteRole && (
                     <IconButton
                       variant="danger"
