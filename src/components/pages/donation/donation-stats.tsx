@@ -1,5 +1,5 @@
 import { Clock, Package, Users } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { DonationStatItem } from "./donation-data";
 
 export interface DonationStatsProps {
@@ -18,7 +18,7 @@ const iconMap = {
  */
 export function DonationStats({ stats }: DonationStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -33,6 +33,6 @@ export function DonationStats({ stats }: DonationStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

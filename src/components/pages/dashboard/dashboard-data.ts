@@ -39,7 +39,7 @@ export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
       isPositive: true,
     },
     illustrationKey: "fast-food",
-    className: "relative min-h-[148px]",
+    className: "min-h-[148px]",
   },
   {
     id: "stat-food-saved",
@@ -54,7 +54,7 @@ export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
       isPositive: true,
     },
     illustrationKey: "organic-food",
-    className: "relative min-h-[148px] bg-white",
+    className: "min-h-[148px]",
   },
   {
     id: "stat-total-heroes",
@@ -69,7 +69,7 @@ export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
       isPositive: true,
     },
     illustrationKey: "charity-heroes",
-    className: "relative min-h-[148px] bg-white md:col-span-2 lg:col-span-1",
+    className: "min-h-[148px]",
   },
 ];
 

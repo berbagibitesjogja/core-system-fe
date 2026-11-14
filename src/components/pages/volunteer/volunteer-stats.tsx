@@ -1,5 +1,5 @@
 import { Heart, LayoutGrid, Users } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { VolunteerStatItem } from "./volunteer-data";
 
 export interface VolunteerStatsProps {
@@ -17,7 +17,7 @@ const VOLUNTEER_STAT_ICON_MAP = {
  */
 export function VolunteerStats({ stats }: VolunteerStatsProps) {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-3 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -32,6 +32,6 @@ export function VolunteerStats({ stats }: VolunteerStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

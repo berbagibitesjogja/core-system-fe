@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 import dashboardTrailSvg from "#/assets/illustrations/ribbon-trail.svg";
@@ -53,14 +54,14 @@ export function DashboardSkeleton({
           <Skeleton className="h-4 w-40 rounded-md" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <StatCardGrid className="gap-4 @[900px]:gap-6">
           {[1, 2, 3].map((i, index) => (
             <StatCardSkeleton
               key={i}
               styleVariant={index === 0 ? "brand" : "default"}
             />
           ))}
-        </div>
+        </StatCardGrid>
       </div>
 
       {/* 3. Charts Row Skeleton */}
