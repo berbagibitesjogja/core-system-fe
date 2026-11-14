@@ -134,9 +134,12 @@ export function BeneficiaryDetailSectorsCard({
         </div>
       ) : (
         <>
-          {/* Tabel Desktop & Tablet */}
-          <div className="hidden md:block w-full overflow-x-auto">
-            <Table containerClassName="rounded-none border-0 shadow-none">
+          {/* Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="w-full overflow-x-auto">
+            <Table
+              containerClassName="rounded-none border-0 shadow-none"
+              className="min-w-[400px]"
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -197,39 +200,6 @@ export function BeneficiaryDetailSectorsCard({
                 })}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-          <div className="md:hidden divide-y divide-neutral-100">
-            {sectors.map((sector) => (
-              <div
-                key={sector.id}
-                className={cn(
-                  "p-4 flex items-center justify-between gap-3",
-                  sector.isNew && "bg-bondi-50",
-                )}
-              >
-                <div className="min-w-0 space-y-0.5">
-                  <p className="font-sans font-medium text-sm text-neutral-900 truncate">
-                    {sector.name}
-                  </p>
-                  <p className="font-sans text-xs text-neutral-600">
-                    {sector.heroesCount.toLocaleString("id-ID")} Orang
-                  </p>
-                </div>
-
-                <IconButton
-                  variant="ghost"
-                  size="sm"
-                  tooltip={`Lihat detail sektor ${sector.name}`}
-                  aria-label={`Lihat detail sektor ${sector.name}`}
-                  onClick={() => onViewSector(sector)}
-                  className="shrink-0 text-neutral-700 hover:bg-neutral-100"
-                >
-                  <Eye />
-                </IconButton>
-              </div>
-            ))}
           </div>
         </>
       )}

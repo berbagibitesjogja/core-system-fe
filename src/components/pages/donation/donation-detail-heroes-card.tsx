@@ -412,9 +412,12 @@ export function DonationDetailHeroesCard({
         </div>
       ) : (
         <>
-          {/* Tabel Desktop */}
-          <div className="hidden md:block">
-            <Table containerClassName="rounded-none border-0 shadow-none">
+          {/* Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="w-full overflow-x-auto">
+            <Table
+              containerClassName="rounded-none border-0 shadow-none"
+              className="min-w-[800px]"
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
@@ -476,47 +479,6 @@ export function DonationDetailHeroesCard({
                 })}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Kartu Mobile */}
-          <div className="md:hidden divide-y divide-neutral-100 border-t border-neutral-100">
-            {visibleHeroes.map((hero, index) => {
-              const isForfeited = hero.status === "tidak-jadi-ambil";
-
-              return (
-                <div
-                  key={hero.id}
-                  className={cn("p-4 space-y-3", isForfeited && "bg-red-50/30")}
-                >
-                  <div className="flex items-center justify-between gap-3 min-w-0">
-                    <EntityIdentity
-                      entityType="hero"
-                      name={hero.name}
-                      subtitle={`${hero.sectorName} · ${hero.beneficiaryName}`}
-                      avatarSrc={
-                        hero.avatarSrc ??
-                        getHeroAvatarSrc({ id: hero.heroId, name: hero.name })
-                      }
-                      strikethrough={isForfeited}
-                      className="flex-1"
-                    />
-                    <span className="font-sans text-xs text-neutral-500 tabular-nums shrink-0">
-                      #{index + 1}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="font-sans text-xs text-neutral-600 tabular-nums">
-                      Kode:{" "}
-                      <span className="font-medium text-neutral-900">
-                        {hero.claimCode}
-                      </span>
-                    </span>
-                    {renderHeroActionButtons(hero)}
-                  </div>
-                </div>
-              );
-            })}
           </div>
 
           {/* Footer Tampilkan Lainnya */}

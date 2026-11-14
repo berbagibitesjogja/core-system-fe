@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { flexRender } from "@tanstack/react-table";
 import {
   getCoreRowModel,
@@ -13,7 +14,8 @@ import {
 import { Pagination } from "#/components/shared/pagination";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
-import { IconButton } from "#/components/ui/icon-button";
+import { getIconButtonClasses } from "#/components/ui/icon-button";
+import { Tooltip } from "#/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -120,16 +122,20 @@ export function PartnerDetailDonationsTable({
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <IconButton
-              variant="ghost"
-              size="sm"
-              tooltip="Lihat detail donasi"
-              aria-label={`Lihat detail donasi ${partnerName} tanggal ${row.original.dateLabel}`}
-              onClick={() => onViewDonation(row.original)}
-              className="text-neutral-700 hover:bg-neutral-100"
-            >
-              <Eye />
-            </IconButton>
+            <Tooltip content="Lihat detail donasi" placement="top">
+              <Link
+                to="/admin/donation/detail"
+                search={{ id: row.original.id }}
+                aria-label={`Lihat detail donasi ${partnerName} tanggal ${row.original.dateLabel}`}
+                className={getIconButtonClasses({
+                  variant: "ghost",
+                  size: "sm",
+                  className: "text-neutral-700 hover:bg-neutral-100",
+                })}
+              >
+                <Eye />
+              </Link>
+            </Tooltip>
           </div>
         ),
       },
@@ -186,9 +192,12 @@ export function PartnerDetailDonationsTable({
         </div>
       ) : (
         <>
-          {/* Tabel Desktop & Tablet */}
-          <div className="hidden md:block w-full overflow-x-auto">
-            <Table containerClassName="rounded-none border-0 shadow-none">
+          {/* Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="w-full overflow-x-auto">
+            <Table
+              containerClassName="rounded-none border-0 shadow-none"
+              className="min-w-[700px]"
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -242,52 +251,6 @@ export function PartnerDetailDonationsTable({
                 ))}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-          <div className="md:hidden divide-y divide-neutral-100">
-            {data.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 flex items-start justify-between gap-3"
-              >
-                <div className="min-w-0 space-y-1.5">
-                  <div>
-                    <p className="font-sans font-semibold text-sm text-neutral-900">
-                      {item.dateLabel}
-                    </p>
-                    <p className="font-sans text-xs text-neutral-500">
-                      {item.dayLabel}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
-                    <span>
-                      Kuota:{" "}
-                      <strong className="font-medium text-neutral-900">
-                        {item.quotaCount.toLocaleString("id-ID")} Orang
-                      </strong>
-                    </span>
-                    <span>
-                      Makanan:{" "}
-                      <strong className="font-medium text-neutral-900">
-                        {item.foodKg.toLocaleString("id-ID")} Kg
-                      </strong>
-                    </span>
-                  </div>
-                </div>
-
-                <IconButton
-                  variant="ghost"
-                  size="sm"
-                  tooltip="Lihat detail donasi"
-                  aria-label={`Lihat detail donasi ${partnerName} tanggal ${item.dateLabel}`}
-                  onClick={() => onViewDonation(item)}
-                  className="shrink-0 text-neutral-700 hover:bg-neutral-100"
-                >
-                  <Eye />
-                </IconButton>
-              </div>
-            ))}
           </div>
 
           {/* Footer Paginasi Riwayat Donasi */}

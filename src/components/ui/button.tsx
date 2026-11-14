@@ -17,6 +17,104 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   rightIcon?: React.ReactNode;
 }
 
+export interface GetButtonClassesOptions {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  effectiveState?: ButtonState;
+  className?: string;
+}
+
+/**
+ * Menghasilkan kelas utilitas Tailwind untuk Button maupun Link bergaya Button.
+ */
+export function getButtonClasses({
+  variant = "primary",
+  size = "md",
+  effectiveState = "default",
+  className,
+}: GetButtonClassesOptions = {}) {
+  const sizeClasses =
+    size === "sm"
+      ? "h-[36px] px-[16px] py-[8px] gap-[6px] text-[14px] leading-[20px]"
+      : "h-[44px] px-[20px] py-[12px] gap-[8px] text-[14px] leading-[20px]";
+
+  let stateStyle = "";
+  if (effectiveState === "disabled") {
+    if (variant === "secondary") {
+      stateStyle =
+        "bg-neutral-100 border border-neutral-200 text-neutral-400 shadow-none";
+    } else if (variant === "ghost") {
+      stateStyle = "bg-transparent text-neutral-400 shadow-none";
+    } else {
+      stateStyle =
+        "bg-neutral-100 text-neutral-400 shadow-none border-transparent";
+    }
+  } else if (effectiveState === "hover") {
+    switch (variant) {
+      case "primary":
+        stateStyle = "bg-brand-hover text-white shadow-none";
+        break;
+      case "accent":
+        stateStyle =
+          "bg-accent-hover text-neutral-900 border-[1.5px] border-neutral-900 shadow-none";
+        break;
+      case "secondary":
+        stateStyle =
+          "bg-neutral-100 border border-neutral-300 text-neutral-900";
+        break;
+      case "ghost":
+        stateStyle = "bg-brand-subtle text-brand";
+        break;
+      case "danger":
+        stateStyle = "bg-red-700 text-white";
+        break;
+      case "outline":
+        stateStyle =
+          "bg-neutral-100 border border-neutral-900 text-neutral-900";
+        break;
+    }
+  } else {
+    switch (variant) {
+      case "primary":
+        stateStyle =
+          "bg-brand text-white shadow-pop-sm hover:bg-brand-hover hover:shadow-none";
+        break;
+      case "accent":
+        stateStyle =
+          "bg-accent border-[1.5px] border-neutral-900 text-neutral-900 shadow-pop-sm hover:bg-accent-hover hover:shadow-none";
+        break;
+      case "secondary":
+        stateStyle =
+          "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
+        break;
+      case "ghost":
+        stateStyle = "bg-transparent text-brand hover:bg-brand-subtle";
+        break;
+      case "danger":
+        stateStyle = "bg-red-600 text-white hover:bg-red-700";
+        break;
+      case "outline":
+        stateStyle =
+          "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
+        break;
+    }
+  }
+
+  const isActuallyDisabled = effectiveState === "disabled";
+  const isActuallyLoading = effectiveState === "loading";
+
+  return cn(
+    "inline-flex flex-row items-center justify-center font-['Inter'] font-semibold select-none rounded-[var(--radius-full,999px)] transition-all duration-150 outline-none shrink-0 whitespace-nowrap [&>svg]:shrink-0 [&_svg]:shrink-0",
+    !isActuallyDisabled &&
+      !isActuallyLoading &&
+      "cursor-pointer active:translate-x-[1px] active:translate-y-[1px]",
+    isActuallyDisabled && "cursor-not-allowed pointer-events-none",
+    sizeClasses,
+    stateStyle,
+    className,
+  );
+}
+
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -41,91 +139,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const isActuallyDisabled = effectiveState === "disabled";
     const isActuallyLoading = effectiveState === "loading";
 
-    // Base sizing and typography
-    const sizeClasses =
-      size === "sm"
-        ? "h-[36px] px-[16px] py-[8px] gap-[6px] text-[14px] leading-[20px]"
-        : "h-[44px] px-[20px] py-[12px] gap-[8px] text-[14px] leading-[20px]";
-
-    // Variant styling mapped to Figma tokens
-    let stateStyle = "";
-    if (effectiveState === "disabled") {
-      if (variant === "secondary") {
-        stateStyle =
-          "bg-neutral-100 border border-neutral-200 text-neutral-400 shadow-none";
-      } else if (variant === "ghost") {
-        stateStyle = "bg-transparent text-neutral-400 shadow-none";
-      } else {
-        stateStyle =
-          "bg-neutral-100 text-neutral-400 shadow-none border-transparent";
-      }
-    } else if (effectiveState === "hover") {
-      switch (variant) {
-        case "primary":
-          stateStyle = "bg-brand-hover text-white shadow-none";
-          break;
-        case "accent":
-          stateStyle =
-            "bg-accent-hover text-neutral-900 border-[1.5px] border-neutral-900 shadow-none";
-          break;
-        case "secondary":
-          stateStyle =
-            "bg-neutral-100 border border-neutral-300 text-neutral-900";
-          break;
-        case "ghost":
-          stateStyle = "bg-brand-subtle text-brand";
-          break;
-        case "danger":
-          stateStyle = "bg-red-700 text-white";
-          break;
-        case "outline":
-          stateStyle =
-            "bg-neutral-100 border border-neutral-900 text-neutral-900";
-          break;
-      }
-    } else {
-      // Default & Loading
-      switch (variant) {
-        case "primary":
-          stateStyle =
-            "bg-brand text-white shadow-pop-sm hover:bg-brand-hover hover:shadow-none";
-          break;
-        case "accent":
-          stateStyle =
-            "bg-accent border-[1.5px] border-neutral-900 text-neutral-900 shadow-pop-sm hover:bg-accent-hover hover:shadow-none";
-          break;
-        case "secondary":
-          stateStyle =
-            "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
-          break;
-        case "ghost":
-          stateStyle = "bg-transparent text-brand hover:bg-brand-subtle";
-          break;
-        case "danger":
-          stateStyle = "bg-red-600 text-white hover:bg-red-700";
-          break;
-        case "outline":
-          stateStyle =
-            "bg-surface border border-neutral-300 text-neutral-900 hover:bg-neutral-100";
-          break;
-      }
-    }
-
     return (
       <button
         ref={ref}
         type="button"
         disabled={isActuallyDisabled || isActuallyLoading}
-        className={cn(
-          "inline-flex flex-row items-center justify-center font-['Inter'] font-semibold select-none rounded-[var(--radius-full,999px)] transition-all duration-150 outline-none shrink-0 whitespace-nowrap [&>svg]:shrink-0 [&_svg]:shrink-0",
-          !isActuallyDisabled &&
-            !isActuallyLoading &&
-            "cursor-pointer active:translate-x-[1px] active:translate-y-[1px]",
-          isActuallyDisabled && "cursor-not-allowed pointer-events-none",
-          sizeClasses,
-          stateStyle,
+        className={getButtonClasses({
+          variant,
+          size,
+          effectiveState,
           className,
-        )}
+        })}
         {...props}
       >
         {isActuallyLoading ? (

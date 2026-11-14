@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -8,7 +9,8 @@ import {
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
-import { IconButton } from "#/components/ui/icon-button";
+import { IconButton, getIconButtonClasses } from "#/components/ui/icon-button";
+import { Tooltip } from "#/components/ui/tooltip";
 import {
   Table,
   TableBody,
@@ -168,25 +170,33 @@ export function DonationTable({
           const item = row.original;
           return (
             <div className="flex items-center justify-end gap-1">
-              <IconButton
-                size="sm"
-                variant="ghost"
-                tooltip="Lihat detail donasi"
-                aria-label={`Lihat detail donasi ${item.donorName}`}
-                onClick={() => onViewItem?.(item)}
-              >
-                <Eye className="size-[18px]" />
-              </IconButton>
+              <Tooltip content="Lihat detail donasi" placement="top">
+                <Link
+                  to="/admin/donation/detail"
+                  search={{ id: item.id }}
+                  aria-label={`Lihat detail donasi ${item.donorName}`}
+                  className={getIconButtonClasses({
+                    size: "sm",
+                    variant: "ghost",
+                  })}
+                >
+                  <Eye className="size-[18px]" />
+                </Link>
+              </Tooltip>
 
-              <IconButton
-                size="sm"
-                variant="ghost"
-                tooltip="Edit data donasi"
-                aria-label={`Edit data donasi ${item.donorName}`}
-                onClick={() => onEditItem?.(item)}
-              >
-                <Pencil className="size-[18px]" />
-              </IconButton>
+              <Tooltip content="Edit data donasi" placement="top">
+                <Link
+                  to="/admin/donation/edit"
+                  search={{ id: item.id }}
+                  aria-label={`Edit data donasi ${item.donorName}`}
+                  className={getIconButtonClasses({
+                    size: "sm",
+                    variant: "ghost",
+                  })}
+                >
+                  <Pencil className="size-[18px]" />
+                </Link>
+              </Tooltip>
 
               {canDelete && (
                 <IconButton
