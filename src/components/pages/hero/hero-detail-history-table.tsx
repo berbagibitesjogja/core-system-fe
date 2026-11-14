@@ -228,8 +228,8 @@ export function HeroDetailHistoryTable({
         </div>
       ) : (
         <>
-          {/* Tampilan Tabel Desktop */}
-          <div className="hidden md:block overflow-x-auto w-full">
+          {/* Tampilan Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="overflow-x-auto w-full">
             <Table
               containerClassName="border-none shadow-none rounded-none"
               className="border-none shadow-none rounded-none w-full min-w-[960px]"
@@ -284,58 +284,6 @@ export function HeroDetailHistoryTable({
                 ))}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-          <div className="md:hidden divide-y divide-neutral-200 border-t border-neutral-200">
-            {data.map((record) => {
-              const statusMeta = HISTORY_STATUS_BADGE[record.status];
-              return (
-                <div key={record.id} className="p-4 flex flex-col gap-2.5">
-                  <div className="flex items-start justify-between gap-2">
-                    <EntityIdentity
-                      entityType="partner"
-                      name={record.donorName}
-                      subtitle={`${record.dateLabel} · ${record.dayLabel}`}
-                      avatarSrc={getPartnerAvatarSrc({
-                        name: record.donorName,
-                      })}
-                      className="flex-1"
-                    />
-                    <Badge tone={statusMeta.tone} styleVariant="soft" dot>
-                      {statusMeta.label}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3 text-[12px] text-neutral-600">
-                    <span className="truncate">{record.locationName}</span>
-                    <span className="font-medium text-neutral-900 shrink-0">
-                      {record.portions} Porsi (
-                      {formatHeroCount(record.weightGrams)} gr)
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="font-['Inter'] text-[12px] font-medium text-neutral-600">
-                      Kode: {record.claimCode}
-                    </span>
-                    <Tooltip content="Lihat detail donasi" placement="top">
-                      <Link
-                        to="/admin/donation/detail"
-                        search={{ id: record.id }}
-                        aria-label={`Lihat detail donasi ${record.donorName}`}
-                        className={getIconButtonClasses({
-                          variant: "ghost",
-                          size: "sm",
-                        })}
-                      >
-                        <Eye className="size-[18px]" />
-                      </Link>
-                    </Tooltip>
-                  </div>
-                </div>
-              );
-            })}
           </div>
 
           {/* Footer Paginasi */}

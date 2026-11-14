@@ -260,8 +260,8 @@ export function PartnerTable({
 
   return (
     <div className="bg-white border border-neutral-200 rounded-lg flex flex-col shadow-xs w-full overflow-hidden">
-      {/* Tampilan Tabel Desktop */}
-      <div className="hidden md:block overflow-x-auto w-full">
+      {/* Tampilan Tabel dengan Scroll Horizontal pada Layar Kecil */}
+      <div className="overflow-x-auto w-full">
         <Table
           containerClassName="border-none shadow-none rounded-none"
           className="border-none shadow-none rounded-none w-full min-w-[880px]"
@@ -317,87 +317,6 @@ export function PartnerTable({
           )}
         </Table>
       </div>
-
-      {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-      {data.length > 0 && (
-        <div className="md:hidden divide-y divide-neutral-200">
-          {data.map((partner, index) => {
-            const progress = calculatePartnerProgress(
-              partner.donationCount,
-              maxDonationCount,
-            );
-            return (
-              <div key={partner.id} className="p-4 flex flex-col gap-3">
-                <div className="flex items-center justify-between gap-3">
-                  <EntityIdentity
-                    entityType="partner"
-                    name={partner.name}
-                    subtitle={partner.type}
-                    avatarSrc={getPartnerAvatarSrc(partner)}
-                    className="flex-1"
-                  />
-                  <span className="font-['Inter'] text-[12px] text-neutral-500 shrink-0">
-                    #{(currentPage - 1) * perPage + index + 1}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-3 text-[12px]">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="font-['Inter'] font-medium text-neutral-900 shrink-0">
-                      {formatPartnerNumber(partner.donationCount)} Aksi
-                    </span>
-                    <ProgressBar value={progress} className="max-w-[120px]" />
-                  </div>
-                  <div className="flex items-center gap-2 text-neutral-600 shrink-0">
-                    <span>{formatPartnerNumber(partner.impactKg)} Kg</span>
-                    <span>·</span>
-                    <span>{partner.lastDonationDate}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-1">
-                  <Link
-                    to="/admin/partner/detail"
-                    search={{ id: partner.id }}
-                    className={getButtonClasses({
-                      variant: "secondary",
-                      size: "sm",
-                    })}
-                  >
-                    <Search className="size-4" />
-                    Detail
-                  </Link>
-                  <Tooltip content="Edit data donatur" placement="top">
-                    <Link
-                      to="/admin/partner/edit"
-                      search={{ id: partner.id }}
-                      aria-label={`Edit data ${partner.name}`}
-                      className={getIconButtonClasses({
-                        variant: "secondary",
-                        size: "sm",
-                      })}
-                    >
-                      <Pencil className="size-[18px]" />
-                    </Link>
-                  </Tooltip>
-                  {canDeleteRole && (
-                    <IconButton
-                      variant="danger"
-                      size="sm"
-                      tooltip="Hapus donatur"
-                      aria-label={`Hapus ${partner.name}`}
-                      className="bg-white border-neutral-300 hover:border-red-300"
-                      onClick={() => onDeletePartner?.(partner)}
-                    >
-                      <Trash2 className="size-[18px]" />
-                    </IconButton>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       {/* Tampilan Kondisi Kosong Pencarian / Filter */}
       {data.length === 0 && (

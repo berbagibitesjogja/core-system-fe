@@ -190,9 +190,12 @@ export function BeneficiaryDetailDonationsTable({
         </div>
       ) : (
         <>
-          {/* Tabel Desktop & Tablet */}
-          <div className="hidden md:block w-full overflow-x-auto">
-            <Table containerClassName="rounded-none border-0 shadow-none">
+          {/* Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="w-full overflow-x-auto">
+            <Table
+              containerClassName="rounded-none border-0 shadow-none"
+              className="min-w-[700px]"
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -246,55 +249,6 @@ export function BeneficiaryDetailDonationsTable({
                 ))}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-          <div className="md:hidden divide-y divide-neutral-100">
-            {data.map((item) => (
-              <div
-                key={item.id}
-                className="p-4 flex items-start justify-between gap-3"
-              >
-                <div className="min-w-0 space-y-2">
-                  <EntityIdentity
-                    entityType="partner"
-                    name={item.donorName}
-                    subtitle={`${item.dayLabel}, ${item.dateLabel}`}
-                    avatarSrc={getPartnerAvatarSrc({ name: item.donorName })}
-                  />
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-600">
-                    <span>
-                      Penerima:{" "}
-                      <strong className="font-medium text-neutral-900">
-                        {item.recipientCount.toLocaleString("id-ID")} Orang
-                      </strong>
-                    </span>
-                    <span>
-                      Makanan:{" "}
-                      <strong className="font-medium text-neutral-900">
-                        {item.foodKg.toLocaleString("id-ID")} Kg
-                      </strong>
-                    </span>
-                  </div>
-                </div>
-
-                <Tooltip content="Lihat detail donasi" placement="top">
-                  <Link
-                    to="/admin/donation/detail"
-                    search={{ id: item.id }}
-                    aria-label={`Lihat detail donasi ${item.donorName} tanggal ${item.dateLabel}`}
-                    className={getIconButtonClasses({
-                      variant: "ghost",
-                      size: "sm",
-                      className:
-                        "shrink-0 text-neutral-700 hover:bg-neutral-100",
-                    })}
-                  >
-                    <Eye />
-                  </Link>
-                </Tooltip>
-              </div>
-            ))}
           </div>
 
           {/* Footer Paginasi Riwayat Donasi */}

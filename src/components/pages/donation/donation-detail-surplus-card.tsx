@@ -196,9 +196,12 @@ export function DonationDetailSurplusCard({
         </div>
       ) : (
         <>
-          {/* Tabel Desktop */}
-          <div className="hidden md:block">
-            <Table containerClassName="rounded-none border-0 shadow-none">
+          {/* Tabel dengan Scroll Horizontal pada Layar Kecil */}
+          <div className="w-full overflow-x-auto">
+            <Table
+              containerClassName="rounded-none border-0 shadow-none"
+              className="min-w-[650px]"
+            >
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
@@ -252,63 +255,6 @@ export function DonationDetailSurplusCard({
                 ))}
               </TableBody>
             </Table>
-          </div>
-
-          {/* Kartu Mobile */}
-          <div className="md:hidden divide-y divide-neutral-100">
-            {foods.map((item) => (
-              <div key={item.id} className="p-4 space-y-2.5">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="space-y-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-sans font-semibold text-sm text-neutral-900">
-                        {item.name}
-                      </p>
-                      {item.isSpoiled && (
-                        <Badge tone="danger" styleVariant="soft" dot>
-                          Basi / Tidak Layak
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="font-sans text-xs text-neutral-500 tabular-nums">
-                      {item.quantity !== undefined
-                        ? `${item.quantity} pcs · `
-                        : ""}
-                      {item.weight.toLocaleString("id-ID")} {item.unit}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-1 shrink-0">
-                    <IconButton
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      aria-label={`Edit ${item.name}`}
-                      tooltip="Edit makanan"
-                      onClick={() => onEditFood(item)}
-                    >
-                      <Pencil className="size-[18px]" />
-                    </IconButton>
-                    <IconButton
-                      type="button"
-                      variant="danger"
-                      size="sm"
-                      aria-label={`Hapus ${item.name}`}
-                      tooltip="Hapus makanan"
-                      onClick={() => onDeleteFood(item)}
-                    >
-                      <Trash2 className="size-[18px]" />
-                    </IconButton>
-                  </div>
-                </div>
-
-                {item.notes?.trim() && (
-                  <p className="font-sans text-xs text-neutral-600 leading-relaxed">
-                    {item.notes}
-                  </p>
-                )}
-              </div>
-            ))}
           </div>
         </>
       )}
