@@ -1,5 +1,5 @@
 import { Leaf, Package, Utensils } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { HeroDetailStatItem } from "./hero-detail-data";
 
 export interface HeroDetailStatsProps {
@@ -17,7 +17,7 @@ const HERO_DETAIL_ICON_MAP = {
  */
 export function HeroDetailStats({ stats }: HeroDetailStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -32,6 +32,6 @@ export function HeroDetailStats({ stats }: HeroDetailStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

@@ -19,7 +19,7 @@ export function StatCardSkeleton({
   return (
     <div
       className={cn(
-        "rounded-2xl border p-5 space-y-4 shadow-xs",
+        "@container rounded-2xl border p-4 @[320px]:p-5 space-y-4 shadow-xs min-h-[144px] @[320px]:min-h-[156px]",
         isBrand ? "bg-brand border-transparent" : "bg-white border-neutral-200",
         className,
       )}
@@ -27,13 +27,13 @@ export function StatCardSkeleton({
       <div className="flex items-center gap-3">
         <Skeleton
           className={cn(
-            "size-10 rounded-md",
+            "size-10 rounded-md shrink-0",
             isBrand ? "bg-bondi-800/80" : undefined,
           )}
         />
         <Skeleton
           className={cn(
-            "h-4 w-36 rounded-md",
+            "h-4 w-36 max-w-full rounded-md",
             isBrand ? "bg-white/30" : undefined,
           )}
         />
@@ -41,13 +41,13 @@ export function StatCardSkeleton({
       <div className="space-y-2 pt-1">
         <Skeleton
           className={cn(
-            "h-9 w-28 rounded-lg",
+            "h-9 w-28 max-w-full rounded-lg",
             isBrand ? "bg-white/30" : undefined,
           )}
         />
         <Skeleton
           className={cn(
-            "h-3.5 w-44 rounded-md",
+            "h-3.5 w-44 max-w-full rounded-md",
             isBrand ? "bg-white/25" : undefined,
           )}
         />

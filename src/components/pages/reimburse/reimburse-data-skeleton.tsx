@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
@@ -17,14 +18,14 @@ export function ReimburseDataSkeleton() {
   return (
     <div className="space-y-6 w-full animate-pulse motion-reduce:animate-none">
       {/* Baris Stat Cards Skeleton */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <StatCardGrid>
         {STAT_PLACEHOLDERS.map((item, index) => (
           <StatCardSkeleton
             key={item}
             styleVariant={index === 0 ? "brand" : "default"}
           />
         ))}
-      </div>
+      </StatCardGrid>
 
       {/* Toolbar: Filter Chip Status & Kolom Pencarian */}
       <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center">
