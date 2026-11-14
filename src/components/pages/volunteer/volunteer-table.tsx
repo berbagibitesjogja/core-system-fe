@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Search, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
+import { Button, getButtonClasses } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
   Table,
@@ -138,14 +139,17 @@ export function VolunteerTable({
           const volunteer = row.original;
           return (
             <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Search className="size-4" />}
-                onClick={() => onViewDetail?.(volunteer)}
+              <Link
+                to="/admin/volunteer/detail"
+                search={{ id: volunteer.id }}
+                className={getButtonClasses({
+                  variant: "secondary",
+                  size: "sm",
+                })}
               >
+                <Search className="size-4" />
                 Detail
-              </Button>
+              </Link>
               {canDeleteRole && (
                 <IconButton
                   variant="danger"
@@ -175,8 +179,8 @@ export function VolunteerTable({
 
   return (
     <div className="bg-surface border border-neutral-200 rounded-lg flex flex-col shadow-xs w-full overflow-hidden">
-      {/* Tampilan Tabel Desktop */}
-      <div className="hidden md:block overflow-x-auto w-full">
+      {/* Tampilan Tabel dengan Scroll Horizontal pada Layar Kecil */}
+      <div className="overflow-x-auto w-full">
         <Table
           containerClassName="border-none shadow-none rounded-none"
           className="border-none shadow-none rounded-none w-full min-w-[880px]"
@@ -232,59 +236,6 @@ export function VolunteerTable({
           )}
         </Table>
       </div>
-
-      {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-      {data.length > 0 && (
-        <div className="md:hidden divide-y divide-neutral-200">
-          {data.map((volunteer) => {
-            const badgeTone = VOLUNTEER_DIVISION_BADGE_TONE[volunteer.division];
-            return (
-              <div key={volunteer.id} className="p-4 flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <VolunteerIdentity volunteer={volunteer} />
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <Badge tone={badgeTone} styleVariant="soft" dot={false}>
-                      {volunteer.division}
-                    </Badge>
-                    <span className="font-body text-xs text-neutral-500">
-                      ({volunteer.role})
-                    </span>
-                  </div>
-                </div>
-
-                <p className="font-sans text-xs text-neutral-600 truncate">
-                  {volunteer.email}
-                </p>
-
-                <div className="flex items-center justify-end gap-2 pt-1">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<Search className="size-4" />}
-                    onClick={() => onViewDetail?.(volunteer)}
-                  >
-                    Detail
-                  </Button>
-                  {canDeleteRole && (
-                    <IconButton
-                      variant="danger"
-                      size="sm"
-                      tooltip="Hapus volunteer"
-                      aria-label={`Hapus ${volunteer.name}`}
-                      className="bg-surface border-neutral-300 hover:border-red-300"
-                      onClick={() => onDeleteVolunteer?.(volunteer)}
-                    >
-                      <Trash2 className="size-[18px]" />
-                    </IconButton>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       {/* Tampilan Kondisi Kosong Pencarian / Filter */}
       {data.length === 0 && (

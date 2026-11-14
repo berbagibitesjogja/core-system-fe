@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "@tanstack/react-router";
 import { Pencil, Search, Trash2 } from "lucide-react";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@tanstack/react-table/legacy";
 import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import { Badge } from "#/components/ui/badge";
-import { Button } from "#/components/ui/button";
+import { Button, getButtonClasses } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
 import {
   Table,
@@ -163,14 +164,17 @@ export function HeroTable({
           const hero = row.original;
           return (
             <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Search className="size-4" />}
-                onClick={() => onViewDetail?.(hero)}
+              <Link
+                to="/admin/hero/detail"
+                search={{ id: hero.id }}
+                className={getButtonClasses({
+                  variant: "secondary",
+                  size: "sm",
+                })}
               >
+                <Search className="size-4" />
                 Detail
-              </Button>
+              </Link>
               <IconButton
                 variant="secondary"
                 size="sm"
@@ -209,8 +213,8 @@ export function HeroTable({
 
   return (
     <div className="bg-white border border-neutral-200 rounded-2xl flex flex-col shadow-xs w-full overflow-hidden">
-      {/* Tampilan Tabel Desktop */}
-      <div className="hidden md:block overflow-x-auto w-full">
+      {/* Tampilan Tabel dengan Scroll Horizontal pada Layar Kecil */}
+      <div className="overflow-x-auto w-full">
         <Table
           containerClassName="border-none shadow-none rounded-none"
           className="border-none shadow-none rounded-none w-full min-w-[880px]"
@@ -266,73 +270,6 @@ export function HeroTable({
           )}
         </Table>
       </div>
-
-      {/* Tampilan Kartu Tumpuk Mobile (<768px) */}
-      {data.length > 0 && (
-        <div className="md:hidden divide-y divide-neutral-200">
-          {data.map((hero) => {
-            const statusMeta = HERO_STATUS_BADGE[hero.status];
-            return (
-              <div key={hero.id} className="p-4 flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <HeroIdentity hero={hero} />
-                  </div>
-                  <Badge tone={statusMeta.tone} styleVariant="soft" dot>
-                    {statusMeta.label}
-                  </Badge>
-                </div>
-
-                <div className="flex items-center justify-between gap-3 text-[12px]">
-                  <div className="min-w-0">
-                    <p className="font-['Inter'] font-semibold text-neutral-900 truncate">
-                      {hero.sectorName}
-                    </p>
-                    <p className="font-['Inter'] text-neutral-600 truncate">
-                      {hero.beneficiaryName}
-                    </p>
-                  </div>
-                  <span className="font-['Inter'] font-medium text-neutral-900 shrink-0">
-                    {formatHeroCount(hero.actionCount)} Aksi
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-1">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<Search className="size-4" />}
-                    onClick={() => onViewDetail?.(hero)}
-                  >
-                    Detail
-                  </Button>
-                  <IconButton
-                    variant="secondary"
-                    size="sm"
-                    tooltip="Edit data hero"
-                    aria-label={`Edit data ${hero.name}`}
-                    onClick={() => onEditHero?.(hero)}
-                  >
-                    <Pencil className="size-[18px]" />
-                  </IconButton>
-                  {canDeleteRole && (
-                    <IconButton
-                      variant="danger"
-                      size="sm"
-                      tooltip="Hapus hero"
-                      aria-label={`Hapus ${hero.name}`}
-                      className="bg-white border-neutral-300 hover:border-red-300"
-                      onClick={() => onDeleteHero?.(hero)}
-                    >
-                      <Trash2 className="size-[18px]" />
-                    </IconButton>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
       {/* Tampilan Kondisi Kosong Pencarian / Filter */}
       {data.length === 0 && (
