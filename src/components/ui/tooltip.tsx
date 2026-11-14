@@ -106,12 +106,25 @@ export function Tooltip({
       className="relative inline-flex items-center justify-center"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
+      onFocus={() => {
+        // Jangan aktifkan tooltip jika fokus dipicu oleh interaksi sentuhan di mobile
+        if (
+          typeof window !== "undefined" &&
+          window.matchMedia("(hover: none)").matches
+        ) {
+          return;
+        }
+        setHovered(true);
+      }}
       onBlur={() => setHovered(false)}
+      onTouchStart={() => {
+        // Pastikan event touch di layar sentuh tidak pernah menyalakan tooltip
+        setHovered(false);
+      }}
     >
       {children}
 
-      {/* Render via Portal di luar DOM tabel / container */}
+      {/* Render via Portal di luar DOM tabel / container (hanya tampil di desktop/layar mouse md+) */}
       {usePortal && mounted && show && coords && typeof document !== "undefined"
         ? createPortal(
             <div
@@ -123,7 +136,7 @@ export function Tooltip({
                 left: `${coords.left}px`,
               }}
               className={cn(
-                "z-[9999] pointer-events-none px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap select-none transition-opacity duration-150 animate-in fade-in zoom-in-95",
+                "z-[9999] pointer-events-none hidden md:block px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap select-none transition-opacity duration-150 animate-in fade-in zoom-in-95",
                 className,
               )}
             >
@@ -146,12 +159,12 @@ export function Tooltip({
           )
         : null}
 
-      {/* Render Inline (Fallback / untuk preview statis dokumentasi UI) */}
+      {/* Render Inline (Fallback / untuk preview statis dokumentasi UI - hanya tampil di layar md+) */}
       {!usePortal && show && (
         <div
           role="tooltip"
           className={cn(
-            "absolute z-50 px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95 select-none",
+            "absolute z-50 hidden md:block px-2.5 py-1.5 text-xs font-semibold font-label text-white bg-neutral-900 rounded-lg shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-150 animate-in fade-in zoom-in-95 select-none",
             placement === "top" &&
               "bottom-full mb-1.5 left-1/2 -translate-x-1/2",
             placement === "bottom" &&
