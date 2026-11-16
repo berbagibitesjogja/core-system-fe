@@ -1,12 +1,19 @@
 import * as React from "react";
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AdminLayoutContext } from "#/components/shared/admin-layout-context";
 import type { AdminLayoutContextType } from "#/components/shared/admin-layout-context";
 import { Header } from "#/components/shared/header";
 import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
-
 import type { SidebarProps } from "#/components/shared/sidebar";
+import { getAuthSession, logout } from "#/services/authService";
 
 export {
   AdminLayoutContext,
@@ -15,6 +22,21 @@ export {
 } from "#/components/shared/admin-layout-context";
 
 export const Route = createFileRoute("/admin/_auth")({
+  beforeLoad: async ({ location }) => {
+    // Validasi sesi staf aktif sebelum merender rute terlindungi
+    const session = await getAuthSession();
+    if (!session.isAuthenticated || !session.isStaff || !session.user) {
+      throw redirect({
+        to: "/admin/login",
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+    return {
+      authUser: session.user,
+    };
+  },
   component: AdminLayout,
 });
 
@@ -75,6 +97,10 @@ const routeSubtitles: Partial<Record<string, string>> = {
  * Header (Top Bar) berada di dalam elemen <main> tanpa background bar terpisah.
  */
 function AdminLayout() {
+  const { authUser } = Route.useRouteContext();
+  const navigate = useNavigate();
+  const logoutFn = useServerFn(logout);
+
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
   const [headerOverride, setHeaderOverride] =
     React.useState<Partial<HeaderProps> | null>(null);
@@ -82,6 +108,19 @@ function AdminLayout() {
     SidebarProps["userRole"] | null
   >(null);
   const location = useLocation();
+
+  const handleLogout = async () => {
+    await logoutFn();
+    navigate({ to: "/admin/login" });
+  };
+
+  const effectiveRole: SidebarProps["userRole"] =
+    sidebarUserRole ??
+    (authUser.role === "super"
+      ? "super_admin"
+      : authUser.role === "core"
+        ? "core"
+        : "staff");
 
   const currentTitle =
     headerOverride?.title ?? routeTitles[location.pathname] ?? "Dashboard";
@@ -97,10 +136,20 @@ function AdminLayout() {
   const isProfileRoute = location.pathname === "/admin/profile";
   const mergedHeaderUser = React.useMemo(
     () => ({
+      name: authUser.name,
+      role:
+        authUser.role === "super"
+          ? "Super Admin"
+          : authUser.role === "core"
+            ? "Core Staff"
+            : "Staff",
+      division: authUser.division_name,
+      email: authUser.email,
       isActive: isProfileRoute,
+      onLogout: handleLogout,
       ...headerOverride?.user,
     }),
-    [isProfileRoute, headerOverride?.user],
+    [authUser, isProfileRoute, headerOverride?.user],
   );
 
   return (
@@ -108,13 +157,10 @@ function AdminLayout() {
       {/* Sidebar Navigasi Admin (Desktop Sticky + Mobile Drawer) */}
       <Sidebar
         activePath={location.pathname}
-        userRole={sidebarUserRole ?? "super_admin"}
+        userRole={effectiveRole}
         isMobileOpen={mobileSidebarOpen}
         onCloseMobile={() => setMobileSidebarOpen(false)}
-        onLogout={() => {
-          // TODO: integrasi aksi logout dengan session / auth service
-          window.location.href = "/admin/login";
-        }}
+        onLogout={handleLogout}
       />
 
       {/* Area Konten Utama: Main Container dengan Top Bar Header di dalamnya */}
