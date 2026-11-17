@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
@@ -10,6 +10,8 @@ import {
   LOGIN_STATE_ALERTS,
 } from "#/components/pages/login";
 import type { LoginAlertConfig } from "#/components/pages/login";
+import { toast } from "#/components/ui/toast";
+import { idAuth } from "#/locales/id/auth";
 import {
   getAuthSession,
   loginWithPassword,
@@ -24,22 +26,40 @@ const loginSearchSchema = z.object({
 export const Route = createFileRoute("/admin/login")({
   validateSearch: (search) => loginSearchSchema.parse(search),
   beforeLoad: async () => {
-    // Arahkan ke dashboard jika sudah login sebagai staf aktif
+    // Ambil data sesi pengguna untuk verifikasi status login
     const session = await getAuthSession();
-    if (session.isAuthenticated && session.isStaff) {
-      throw redirect({
-        to: "/admin/dashboard",
-      });
-    }
+    return {
+      session,
+    };
   },
   component: AdminLoginPage,
 });
 
 function AdminLoginPage() {
+  const { session } = Route.useRouteContext();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const loginFn = useServerFn(loginWithPassword);
   const logoutFn = useServerFn(logout);
+
+  const hasCheckedAuthRef = React.useRef(false);
+
+  // Jika pengguna sudah memiliki sesi staf aktif, lempar toast dan alihkan ke dashboard langsung dari halaman login
+  React.useEffect(() => {
+    if (
+      session.isAuthenticated &&
+      session.isStaff &&
+      session.user &&
+      !hasCheckedAuthRef.current
+    ) {
+      hasCheckedAuthRef.current = true;
+      toast.info(`Anda sudah login. Selamat datang, ${session.user.name}`);
+      navigate({
+        to: search.redirect || "/admin/dashboard",
+        replace: true,
+      });
+    }
+  }, [session, search.redirect, navigate]);
 
   // State form dan proses otentikasi
   const [email, setEmail] = React.useState("");
@@ -73,24 +93,24 @@ function AdminLoginPage() {
     let hasValidationError = false;
 
     if (!trimmedEmail) {
-      setEmailError("Email wajib diisi");
+      setEmailError(idAuth.login.fields.emailRequired);
       hasValidationError = true;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setEmailError("Format email tidak valid");
+      setEmailError(idAuth.login.fields.emailInvalid);
       hasValidationError = true;
     }
 
     if (!password) {
-      setPasswordError("Kata sandi wajib diisi");
+      setPasswordError(idAuth.login.fields.passwordRequired);
       hasValidationError = true;
     }
 
     if (hasValidationError) {
+      toast.warning(idAuth.login.alerts.incompleteDataDescription);
       setAlert({
         tone: "warning",
-        title: "Data belum lengkap",
-        description:
-          "Silakan masukkan email dan kata ssandi Anda dengan benar.",
+        title: idAuth.login.alerts.incompleteDataTitle,
+        description: idAuth.login.alerts.incompleteDataDescription,
       });
       return;
     }
@@ -110,16 +130,20 @@ function AdminLoginPage() {
       if (!response.data.user.is_staff) {
         // Bersihkan sesi karena akun bukan staf
         await logoutFn();
+        toast.error(idAuth.login.alerts.unauthorizedRoleDescription);
         setAlert(
           LOGIN_STATE_ALERTS["role-tidak-berwenang"] ?? {
             tone: "warning",
-            title: "Belum punya akses admin",
-            description:
-              "Akunmu terdaftar, tapi tidak memiliki hak akses sebagai admin. Minta pengurus inti untuk mengubah peranmu.",
+            title: idAuth.login.alerts.unauthorizedRoleTitle,
+            description: idAuth.login.alerts.unauthorizedRoleDescription,
           },
         );
         return;
       }
+
+      toast.success(
+        `Berhasil masuk! Selamat datang, ${response.data.user.name}`,
+      );
 
       // Navigasi ke rute tujuan setelah login berhasil
       navigate({
@@ -138,63 +162,68 @@ function AdminLoginPage() {
           err.code === "UNAUTHORIZED" ||
           err.code === "INVALID_CREDENTIALS"
         ) {
+          toast.error(idAuth.login.alerts.invalidCredentialsDescription);
           setAlert(
             LOGIN_STATE_ALERTS["salah-kata-sandi"] ?? {
               tone: "danger",
-              title: "Email atau kata sandi salah",
-              description: "Periksa lagi penulisannya, lalu coba masuk.",
+              title: idAuth.login.alerts.invalidCredentialsTitle,
+              description: idAuth.login.alerts.invalidCredentialsDescription,
             },
           );
           return;
         }
 
         if (err.status === 403 || err.code === "FORBIDDEN") {
+          toast.error(idAuth.login.alerts.accountDeactivatedDescription);
           setAlert({
             tone: "danger",
-            title: "Akun dinonaktifkan",
-            description:
-              "Akun telah dinonaktifkan. Silakan hubungi Administrator BBJ.",
+            title: idAuth.login.alerts.accountDeactivatedTitle,
+            description: idAuth.login.alerts.accountDeactivatedDescription,
           });
           return;
         }
 
         if (err.code === "EMAIL_NOT_VERIFIED") {
+          toast.warning(idAuth.login.alerts.emailUnverifiedDescription);
           setAlert({
             tone: "warning",
-            title: "Email belum diverifikasi",
-            description:
-              "Silakan verifikasi email Anda sebelum masuk ke sistem.",
+            title: idAuth.login.alerts.emailUnverifiedTitle,
+            description: idAuth.login.alerts.emailUnverifiedDescription,
           });
           return;
         }
 
         if (err.status === 429 || err.code === "RATE_LIMIT_EXCEEDED") {
+          toast.error(idAuth.login.alerts.rateLimitedDescription);
           setAlert({
             tone: "warning",
-            title: "Terlalu banyak percobaan",
-            description:
-              "Terlalu banyak permintaan. Mohon tunggu beberapa saat sebelum mencoba lagi.",
+            title: idAuth.login.alerts.rateLimitedTitle,
+            description: idAuth.login.alerts.rateLimitedDescription,
           });
           return;
         }
 
+        const fallbackErrorMsg =
+          err.message ||
+          "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.";
+        toast.error(fallbackErrorMsg);
         setAlert({
           tone: "danger",
           title: "Gagal masuk",
-          description:
-            err.message ||
-            "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.",
+          description: fallbackErrorMsg,
         });
         return;
       }
 
+      const nonApiErrorMsg =
+        err instanceof Error
+          ? err.message
+          : "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.";
+      toast.error(nonApiErrorMsg);
       setAlert({
         tone: "danger",
         title: "Gagal masuk",
-        description:
-          err instanceof Error
-            ? err.message
-            : "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.",
+        description: nonApiErrorMsg,
       });
     } finally {
       setIsSubmitting(false);
@@ -214,6 +243,11 @@ function AdminLoginPage() {
       });
     }, 600);
   };
+
+  // Jika sudah terotentikasi sebagai staf, jangan render form login (tunggu navigasi selesai)
+  if (session.isAuthenticated && session.isStaff) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white font-sans antialiased overflow-x-hidden">

@@ -35,6 +35,11 @@ export const idAuth = {
       googleFailedTitle: "Verifikasi akun Google gagal",
       googleFailedDescription: "Silakan coba masuk dengan Google sekali lagi.",
     },
+    toasts: {
+      alreadyLoggedIn: "Anda sudah login. Selamat datang",
+      loginSuccess: "Berhasil masuk! Selamat datang",
+      logoutSuccess: "Berhasil keluar dari sistem.",
+    },
   },
 
   // Galat spesifik domain autentikasi, akun, sesi, dan hak akses

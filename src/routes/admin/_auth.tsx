@@ -13,6 +13,7 @@ import { Header } from "#/components/shared/header";
 import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
 import type { SidebarProps } from "#/components/shared/sidebar";
+import { toast } from "#/components/ui/toast";
 import { getAuthSession, logout } from "#/services/authService";
 
 export {
@@ -111,6 +112,7 @@ function AdminLayout() {
 
   const handleLogout = async () => {
     await logoutFn();
+    toast.success("Berhasil keluar dari sistem.");
     navigate({ to: "/admin/login" });
   };
 
