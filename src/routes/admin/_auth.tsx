@@ -14,7 +14,7 @@ import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
 import type { SidebarProps } from "#/components/shared/sidebar";
 import { toast } from "#/components/ui/toast";
-import { idAuth } from "#/locales";
+import { idAuth, idNavigation } from "#/locales";
 import { getAuthSession, logout } from "#/services/authService";
 
 export {
@@ -41,57 +41,6 @@ export const Route = createFileRoute("/admin/_auth")({
   },
   component: AdminLayout,
 });
-
-const routeTitles: Partial<Record<string, string>> = {
-  "/admin/dashboard": "Dashboard",
-  "/admin": "Dashboard",
-  "/admin/": "Dashboard",
-  "/admin/donation": "Donasi",
-  "/admin/donation/add": "Tambah Donasi",
-  "/admin/donation/edit": "Edit Donasi",
-  "/admin/donation/detail": "Detail Donasi",
-  "/admin/beneficiary": "Beneficiaries",
-  "/admin/beneficiary/add": "Tambah Beneficiary",
-  "/admin/beneficiary/edit": "Edit Beneficiary",
-  "/admin/beneficiary/detail": "Detail Beneficiary",
-  "/admin/hero": "Heroes",
-  "/admin/hero/detail": "Detail Hero",
-  "/admin/partner": "Partner",
-  "/admin/partner/detail": "Detail Partner",
-  "/admin/reimburse/request": "Reimburse",
-  "/admin/reimburse/data": "Manajemen Reimburse",
-  "/admin/volunteer": "Volunteer",
-  "/admin/volunteer/add": "Tambah Volunteer",
-  "/admin/volunteer/detail": "Detail Volunteer",
-  "/admin/profile": "Profil Saya",
-  "/admin/logs": "Logs Sistem",
-};
-
-const routeSubtitles: Partial<Record<string, string>> = {
-  "/admin/donation": "Kelola aksi food rescue dan CSR beserta kuota heroes-nya",
-  "/admin/donation/add": "Buat aksi food rescue baru",
-  "/admin/donation/edit": "Perbarui informasi aksi donasi",
-  "/admin/donation/detail":
-    "Pantau daftar heroes, surplus food, dan ringkasan aksi",
-  "/admin/beneficiary":
-    "Kelompok penerima manfaat dan dampak yang mereka terima",
-  "/admin/beneficiary/add": "Daftarkan penerima manfaat baru",
-  "/admin/beneficiary/edit": "Perbarui data penerima manfaat",
-  "/admin/beneficiary/detail": "Riwayat donasi dan persebaran penerima manfaat",
-  "/admin/hero":
-    "Penerima makanan yang terdaftar beserta riwayat pengambilannya",
-  "/admin/hero/detail": "Riwayat pengambilan donasi dan informasi hero",
-  "/admin/partner": "Mitra penyumbang makanan dan kontribusinya untuk BBJ",
-  "/admin/partner/detail": "Profil donatur dan riwayat kontribusi aksi",
-  "/admin/reimburse/request":
-    "Ajukan penggantian biaya operasional dan pantau statusnya",
-  "/admin/reimburse/data":
-    "Verifikasi klaim biaya operasional dan catat pencairannya",
-  "/admin/volunteer": "Anggota tim dan relawan Berbagi Bites Jogja",
-  "/admin/volunteer/add": "Daftarkan anggota baru ke dalam sistem BBJ",
-  "/admin/volunteer/detail": "Profil dan pengaturan anggota",
-  "/admin/profile": "Kelola data akun yang sedang kamu pakai",
-};
 
 /**
  * AdminLayout: Layout route terlindungi untuk dashboard admin BBJ.
@@ -126,9 +75,11 @@ function AdminLayout() {
         : "staff");
 
   const currentTitle =
-    headerOverride?.title ?? routeTitles[location.pathname] ?? "Dashboard";
+    headerOverride?.title ??
+    idNavigation.routeTitles[location.pathname] ??
+    idNavigation.defaultTitle;
   const currentSubtitle =
-    headerOverride?.subtitle ?? routeSubtitles[location.pathname];
+    headerOverride?.subtitle ?? idNavigation.routeSubtitles[location.pathname];
 
   // Memoize context value agar tidak memicu infinite render loop pada child routes
   const contextValue = React.useMemo<AdminLayoutContextType>(
