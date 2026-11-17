@@ -45,29 +45,33 @@ function AdminLoginPage() {
 
   const hasCheckedAuthRef = React.useRef(false);
 
-  // Jika pengguna sudah memiliki sesi staf aktif, lempar toast dan alihkan ke dashboard langsung dari halaman login
+  // Jika pengguna memiliki sesi staf aktif yang sah dari server, alihkan ke dashboard dengan toast
   React.useEffect(() => {
-    const isStaffActive =
-      (profile.isAuthenticated && profile.isStaff) ||
-      (session.isAuthenticated && session.isStaff);
-    const activeName = profile.name || session.user?.name;
-
-    if (isStaffActive && activeName && !hasCheckedAuthRef.current) {
-      hasCheckedAuthRef.current = true;
-      toast.info(idAuth.login.toasts.alreadyLoggedIn(activeName));
-      navigate({
-        to: search.redirect || "/admin/dashboard",
-        replace: true,
-      });
+    // Validitas sesi wajib bersumber dari sesi server (cookie) yang sah agar tidak terjadi infinite redirect loop
+    if (session.isAuthenticated && session.isStaff) {
+      if (!hasCheckedAuthRef.current) {
+        hasCheckedAuthRef.current = true;
+        const activeName = session.user?.name || profile.name || "Staf";
+        toast.info(idAuth.login.toasts.alreadyLoggedIn(activeName));
+        const targetUrl =
+          search.redirect &&
+          search.redirect !== "/admin/login" &&
+          !search.redirect.includes("/admin/login")
+            ? search.redirect
+            : "/admin/dashboard";
+        navigate({
+          to: targetUrl,
+          replace: true,
+        });
+      }
+    } else {
+      // Jika sesi server tidak aktif atau sudah berakhir, bersihkan sisa cache lokal agar tidak terjadi desinkronisasi
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("bbj_user");
+        localStorage.removeItem("user");
+      }
     }
-  }, [
-    profile.isAuthenticated,
-    profile.isStaff,
-    profile.name,
-    session,
-    search.redirect,
-    navigate,
-  ]);
+  }, [session, profile.name, search.redirect, navigate]);
 
   // State form dan proses otentikasi
   const [email, setEmail] = React.useState("");
