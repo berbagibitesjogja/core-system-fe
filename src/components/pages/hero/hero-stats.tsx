@@ -1,5 +1,5 @@
 import { Check, Users, XCircle } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { HeroStatItem } from "./hero-data";
 
 export interface HeroStatsProps {
@@ -17,7 +17,7 @@ const HERO_STAT_ICON_MAP = {
  */
 export function HeroStats({ stats }: HeroStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -32,6 +32,6 @@ export function HeroStats({ stats }: HeroStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

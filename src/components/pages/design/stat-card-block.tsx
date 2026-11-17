@@ -1,7 +1,7 @@
 import * as React from "react";
 import { HeartHandshake, RotateCcw, Users, Utensils } from "lucide-react";
 import { Button, Skeleton } from "#/components/ui";
-import { StatCard } from "#/components/shared";
+import { StatCard, StatCardGrid } from "#/components/shared";
 import type { StatCardStyleVariant } from "#/components/shared";
 import { cn } from "#/lib/utils";
 import { DocBlock } from "./doc-block";
@@ -42,7 +42,7 @@ export function StatCardBlock({ onCopy, copiedToken }: StatCardBlockProps) {
       </p>
 
       {/* 3 Styles Grid */}
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      <StatCardGrid className="gap-5">
         {/* Style 1: Default */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -141,7 +141,7 @@ export function StatCardBlock({ onCopy, copiedToken }: StatCardBlockProps) {
             />
           )}
         </div>
-      </div>
+      </StatCardGrid>
 
       {/* Live Interactive Stat Card Tester */}
       <div className="rounded-2xl border border-neutral-200 bg-neutral-50/70 p-4 sm:p-5 space-y-4">

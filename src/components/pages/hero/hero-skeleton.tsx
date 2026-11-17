@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
@@ -10,14 +11,14 @@ export function HeroSkeleton() {
   return (
     <div className="space-y-6 w-full animate-pulse motion-reduce:animate-none">
       {/* Baris Stat Cards Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <StatCardGrid>
         {[1, 2, 3].map((i, index) => (
           <StatCardSkeleton
             key={i}
             styleVariant={index === 0 ? "brand" : "default"}
           />
         ))}
-      </div>
+      </StatCardGrid>
 
       {/* Toolbar Skeleton */}
       <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-xs w-full">

@@ -1,5 +1,5 @@
 import { Building, Leaf, Package, Plus, Sparkles, Users } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { PartnerStatItem } from "./partner-data";
 
 export interface PartnerStatsProps {
@@ -20,7 +20,7 @@ const PARTNER_STAT_ICON_MAP = {
  */
 export function PartnerStats({ stats }: PartnerStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -35,6 +35,6 @@ export function PartnerStats({ stats }: PartnerStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
@@ -12,14 +13,14 @@ export function VolunteerPageSkeleton() {
   return (
     <div className="space-y-6 w-full animate-pulse motion-reduce:animate-none">
       {/* Baris Stat Cards Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <StatCardGrid>
         {VOLUNTEER_SKELETON_STATS.map((item, index) => (
           <StatCardSkeleton
             key={item}
             styleVariant={index === 0 ? "brand" : "default"}
           />
         ))}
-      </div>
+      </StatCardGrid>
 
       {/* Toolbar Skeleton: Dropdown Divisi, Pencarian, Tombol Tambah */}
       <div className="bg-white border border-neutral-200 rounded-lg p-5 shadow-xs w-full">

@@ -1,5 +1,5 @@
 import { Leaf, Package, Users } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import statFastFoodSvg from "#/assets/illustrations/fast-food.svg";
 import statOrganicFoodSvg from "#/assets/illustrations/organic-food.svg";
 import statCharityHeroesSvg from "#/assets/illustrations/charity-family.svg";
@@ -60,7 +60,7 @@ export function DashboardImpactStats({
       </div>
 
       {/* Grid Kartu Metrik Dinamis */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      <StatCardGrid className="gap-4 @[900px]:gap-6">
         {stats.map((stat) => (
           <StatCard
             key={stat.id}
@@ -70,21 +70,13 @@ export function DashboardImpactStats({
             styleVariant={stat.styleVariant}
             icon={getIcon(stat.iconName, stat.styleVariant)}
             trend={stat.trend}
+            illustrationSrc={ILLUSTRATIONS[stat.illustrationKey]}
+            illustrationAlt=""
+            illustrationClassName="opacity-85"
             className={stat.className}
-          >
-            <div
-              aria-hidden="true"
-              className="absolute -right-10 top-2 size-48 lg:size-52 pointer-events-none select-none opacity-85"
-            >
-              <img
-                src={ILLUSTRATIONS[stat.illustrationKey]}
-                alt=""
-                className="size-full object-contain pointer-events-none select-none"
-              />
-            </div>
-          </StatCard>
+          />
         ))}
-      </div>
+      </StatCardGrid>
     </section>
   );
 }

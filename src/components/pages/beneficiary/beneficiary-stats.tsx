@@ -1,5 +1,5 @@
 import { Building, Leaf, Users } from "lucide-react";
-import { StatCard } from "#/components/shared/stat-card";
+import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import type { BeneficiaryStatItem } from "./beneficiary-data";
 
 export interface BeneficiaryStatsProps {
@@ -17,7 +17,7 @@ const iconMap = {
  */
 export function BeneficiaryStats({ stats }: BeneficiaryStatsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <StatCardGrid>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}
@@ -32,6 +32,6 @@ export function BeneficiaryStats({ stats }: BeneficiaryStatsProps) {
           className="shadow-xs"
         />
       ))}
-    </div>
+    </StatCardGrid>
   );
 }

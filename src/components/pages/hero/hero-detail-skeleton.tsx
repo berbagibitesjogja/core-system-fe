@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
@@ -21,14 +22,14 @@ export function HeroDetailSkeleton() {
       </div>
 
       {/* Stat Cards Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <StatCardGrid>
         {[1, 2, 3].map((i, index) => (
           <StatCardSkeleton
             key={i}
             styleVariant={index === 0 ? "brand" : "default"}
           />
         ))}
-      </div>
+      </StatCardGrid>
 
       {/* Tabel Riwayat Skeleton */}
       <div className="rounded-2xl border border-neutral-200 bg-white shadow-xs overflow-hidden w-full">

@@ -1,3 +1,4 @@
+import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
 
@@ -17,14 +18,14 @@ export function BeneficiaryDetailSkeleton() {
       </div>
 
       {/* Stat Cards Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <StatCardGrid>
         {[1, 2, 3].map((i, index) => (
           <StatCardSkeleton
             key={i}
             styleVariant={index === 0 ? "brand" : "default"}
           />
         ))}
-      </div>
+      </StatCardGrid>
 
       {/* Dua Kolom Tabel Skeleton */}
       <div className="flex flex-col xl:flex-row items-start gap-6 w-full">
