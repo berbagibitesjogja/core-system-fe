@@ -15,6 +15,8 @@ export interface LoginFormProps {
   onGoogleLogin: () => void;
   alert?: LoginAlertConfig | null;
   onCloseAlert?: () => void;
+  emailError?: string;
+  passwordError?: string;
 }
 
 export function LoginForm({
@@ -28,6 +30,8 @@ export function LoginForm({
   onGoogleLogin,
   alert,
   onCloseAlert,
+  emailError,
+  passwordError,
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -77,6 +81,7 @@ export function LoginForm({
           placeholder="nama@email.com"
           required
           autoComplete="email"
+          error={emailError}
           className="w-full max-w-none"
         />
 
@@ -90,6 +95,7 @@ export function LoginForm({
           placeholder="Masukkan kata sandi"
           required
           autoComplete="current-password"
+          error={passwordError}
           className="w-full max-w-none"
           trailingIcon={
             <button

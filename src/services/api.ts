@@ -1,10 +1,15 @@
 import axios from "axios";
-import { getRequest } from "@tanstack/react-start/server";
-import { parseCookie, stringifySetCookie } from "cookie";
+import type { InternalAxiosRequestConfig } from "axios";
+import {
+  deleteCookie,
+  getRequest,
+  setCookie,
+} from "@tanstack/react-start/server";
+import { parseCookie } from "cookie";
 import { env } from "#/env";
 
 export function getApiBaseUrl(): string {
-  // Jika di lingkungan server (Node.js/Nitro di dalam container), utamakan SERVER_URL dari runtime env (misal: http://backend)
+  // Jika di lingkungan server, utamakan SERVER_URL dari runtime env
   const serverRuntimeUrl =
     typeof process !== "undefined" ? process.env.SERVER_URL : undefined;
 
@@ -40,7 +45,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  // Pastikan baseURL selalu mengikuti konfigurasi runtime terbaru
+  // Selaraskan baseURL dengan runtime terkini
   config.baseURL = getApiBaseUrl();
 
   try {
@@ -53,7 +58,7 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   } catch {
-    // Request context unavailable
+    // Konteks permintaan tidak tersedia
   }
 
   if (config.data instanceof FormData) {
@@ -65,35 +70,96 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error: unknown) => {
+  async (error: unknown) => {
     if (axios.isAxiosError(error)) {
-      if (error.response?.status === 401) {
-        const tokenCookie = stringifySetCookie({
-          name: "token",
-          value: "",
-          httpOnly: true,
-          secure: env.VITE_ENV === "production",
-          sameSite: "strict",
-          path: "/",
-          maxAge: 0,
-        });
+      const originalRequest = error.config as
+        (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
+      const status = error.response?.status;
+      const url = originalRequest?.url ?? "";
 
-        const userCookie = stringifySetCookie({
-          name: "user",
-          value: "",
-          httpOnly: false,
-          secure: env.VITE_ENV === "production",
-          sameSite: "strict",
-          path: "/",
-          maxAge: 0,
-        });
+      const isAuthUrl =
+        url.includes("/v1/auth/login") || url.includes("/v1/auth/refresh");
 
-        return new Response(JSON.stringify({ success: true }), {
-          headers: {
-            "Set-Cookie": [tokenCookie, userCookie].join(", "),
-            "Content-Type": "application/json",
-          },
-        });
+      // Otomatis rotasi token jika mendapatkan respons 401
+      if (
+        status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !isAuthUrl
+      ) {
+        originalRequest._retry = true;
+
+        try {
+          const request = getRequest();
+          const cookieHeader = request.headers.get("cookie") ?? "";
+          const cookies = parseCookie(cookieHeader);
+          const refreshToken = cookies.refresh_token;
+
+          if (refreshToken) {
+            const refreshResponse = await axios.post<{
+              status: string;
+              message: string;
+              data: {
+                access_token: string;
+                refresh_token: string;
+                expires_in: number;
+              };
+            }>(
+              `${getApiBaseUrl()}/v1/auth/refresh`,
+              { refresh_token: refreshToken },
+              {
+                headers: { "Content-Type": "application/json" },
+                timeout: 10000,
+              },
+            );
+
+            const newTokens = refreshResponse.data.data;
+
+            // Simpan token baru hasil rotasi ke cookie sesi
+            try {
+              setCookie("token", newTokens.access_token, {
+                httpOnly: true,
+                secure: env.VITE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 7,
+              });
+
+              setCookie("refresh_token", newTokens.refresh_token, {
+                httpOnly: true,
+                secure: env.VITE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 7,
+              });
+            } catch {
+              // Abaikan jika konteks respons tidak tersedia
+            }
+
+            originalRequest.headers.Authorization = `Bearer ${newTokens.access_token}`;
+            return api(originalRequest);
+          }
+        } catch {
+          // Bersihkan cookie sesi jika rotasi token gagal
+          try {
+            deleteCookie("token", { path: "/" });
+            deleteCookie("refresh_token", { path: "/" });
+            deleteCookie("user", { path: "/" });
+          } catch {
+            // Abaikan jika konteks respons tidak tersedia
+          }
+        }
+      }
+
+      // Bersihkan sesi jika status 401 pada permintaan selain login
+      if (status === 401 && !url.includes("/v1/auth/login")) {
+        try {
+          deleteCookie("token", { path: "/" });
+          deleteCookie("refresh_token", { path: "/" });
+          deleteCookie("user", { path: "/" });
+        } catch {
+          // Abaikan jika konteks respons tidak tersedia
+        }
       }
 
       if (error.code === "ECONNABORTED") {

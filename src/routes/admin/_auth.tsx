@@ -1,12 +1,22 @@
 import * as React from "react";
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AdminLayoutContext } from "#/components/shared/admin-layout-context";
 import type { AdminLayoutContextType } from "#/components/shared/admin-layout-context";
 import { Header } from "#/components/shared/header";
 import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
-
 import type { SidebarProps } from "#/components/shared/sidebar";
+import { toast } from "#/components/ui/toast";
+import { useUserProfile } from "#/hooks";
+import { idAuth, idNavigation } from "#/locales";
+import { getAuthSession, logout } from "#/services/authService";
 
 export {
   AdminLayoutContext,
@@ -15,59 +25,23 @@ export {
 } from "#/components/shared/admin-layout-context";
 
 export const Route = createFileRoute("/admin/_auth")({
+  beforeLoad: async ({ location }) => {
+    // Validasi sesi staf aktif sebelum merender rute terlindungi
+    const session = await getAuthSession();
+    if (!session.isAuthenticated || !session.isStaff || !session.user) {
+      throw redirect({
+        to: "/admin/login",
+        search: {
+          redirect: location.href,
+        },
+      });
+    }
+    return {
+      authUser: session.user,
+    };
+  },
   component: AdminLayout,
 });
-
-const routeTitles: Partial<Record<string, string>> = {
-  "/admin/dashboard": "Dashboard",
-  "/admin": "Dashboard",
-  "/admin/": "Dashboard",
-  "/admin/donation": "Donasi",
-  "/admin/donation/add": "Tambah Donasi",
-  "/admin/donation/edit": "Edit Donasi",
-  "/admin/donation/detail": "Detail Donasi",
-  "/admin/beneficiary": "Beneficiaries",
-  "/admin/beneficiary/add": "Tambah Beneficiary",
-  "/admin/beneficiary/edit": "Edit Beneficiary",
-  "/admin/beneficiary/detail": "Detail Beneficiary",
-  "/admin/hero": "Heroes",
-  "/admin/hero/detail": "Detail Hero",
-  "/admin/partner": "Partner",
-  "/admin/partner/detail": "Detail Partner",
-  "/admin/reimburse/request": "Reimburse",
-  "/admin/reimburse/data": "Manajemen Reimburse",
-  "/admin/volunteer": "Volunteer",
-  "/admin/volunteer/add": "Tambah Volunteer",
-  "/admin/volunteer/detail": "Detail Volunteer",
-  "/admin/profile": "Profil Saya",
-  "/admin/logs": "Logs Sistem",
-};
-
-const routeSubtitles: Partial<Record<string, string>> = {
-  "/admin/donation": "Kelola aksi food rescue dan CSR beserta kuota heroes-nya",
-  "/admin/donation/add": "Buat aksi food rescue baru",
-  "/admin/donation/edit": "Perbarui informasi aksi donasi",
-  "/admin/donation/detail":
-    "Pantau daftar heroes, surplus food, dan ringkasan aksi",
-  "/admin/beneficiary":
-    "Kelompok penerima manfaat dan dampak yang mereka terima",
-  "/admin/beneficiary/add": "Daftarkan penerima manfaat baru",
-  "/admin/beneficiary/edit": "Perbarui data penerima manfaat",
-  "/admin/beneficiary/detail": "Riwayat donasi dan persebaran penerima manfaat",
-  "/admin/hero":
-    "Penerima makanan yang terdaftar beserta riwayat pengambilannya",
-  "/admin/hero/detail": "Riwayat pengambilan donasi dan informasi hero",
-  "/admin/partner": "Mitra penyumbang makanan dan kontribusinya untuk BBJ",
-  "/admin/partner/detail": "Profil donatur dan riwayat kontribusi aksi",
-  "/admin/reimburse/request":
-    "Ajukan penggantian biaya operasional dan pantau statusnya",
-  "/admin/reimburse/data":
-    "Verifikasi klaim biaya operasional dan catat pencairannya",
-  "/admin/volunteer": "Anggota tim dan relawan Berbagi Bites Jogja",
-  "/admin/volunteer/add": "Daftarkan anggota baru ke dalam sistem BBJ",
-  "/admin/volunteer/detail": "Profil dan pengaturan anggota",
-  "/admin/profile": "Kelola data akun yang sedang kamu pakai",
-};
 
 /**
  * AdminLayout: Layout route terlindungi untuk dashboard admin BBJ.
@@ -75,6 +49,11 @@ const routeSubtitles: Partial<Record<string, string>> = {
  * Header (Top Bar) berada di dalam elemen <main> tanpa background bar terpisah.
  */
 function AdminLayout() {
+  const { authUser } = Route.useRouteContext();
+  const profile = useUserProfile();
+  const navigate = useNavigate();
+  const logoutFn = useServerFn(logout);
+
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
   const [headerOverride, setHeaderOverride] =
     React.useState<Partial<HeaderProps> | null>(null);
@@ -83,10 +62,25 @@ function AdminLayout() {
   >(null);
   const location = useLocation();
 
+  const handleLogout = async () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("bbj_user");
+      localStorage.removeItem("user");
+    }
+    await logoutFn();
+    toast.success(idAuth.login.toasts.logoutSuccess);
+    navigate({ to: "/admin/login" });
+  };
+
+  const effectiveRole: SidebarProps["userRole"] =
+    sidebarUserRole ?? profile.sidebarRole;
+
   const currentTitle =
-    headerOverride?.title ?? routeTitles[location.pathname] ?? "Dashboard";
+    headerOverride?.title ??
+    idNavigation.routeTitles[location.pathname] ??
+    idNavigation.defaultTitle;
   const currentSubtitle =
-    headerOverride?.subtitle ?? routeSubtitles[location.pathname];
+    headerOverride?.subtitle ?? idNavigation.routeSubtitles[location.pathname];
 
   // Memoize context value agar tidak memicu infinite render loop pada child routes
   const contextValue = React.useMemo<AdminLayoutContextType>(
@@ -97,10 +91,25 @@ function AdminLayout() {
   const isProfileRoute = location.pathname === "/admin/profile";
   const mergedHeaderUser = React.useMemo(
     () => ({
+      name: profile.name || authUser.name,
+      role: profile.roleLabel,
+      division: profile.divisionName || authUser.division_name,
+      email: profile.email || authUser.email,
       isActive: isProfileRoute,
+      onLogout: handleLogout,
       ...headerOverride?.user,
     }),
-    [isProfileRoute, headerOverride?.user],
+    [
+      profile.name,
+      profile.roleLabel,
+      profile.divisionName,
+      profile.email,
+      authUser.name,
+      authUser.division_name,
+      authUser.email,
+      isProfileRoute,
+      headerOverride?.user,
+    ],
   );
 
   return (
@@ -108,13 +117,10 @@ function AdminLayout() {
       {/* Sidebar Navigasi Admin (Desktop Sticky + Mobile Drawer) */}
       <Sidebar
         activePath={location.pathname}
-        userRole={sidebarUserRole ?? "super_admin"}
+        userRole={effectiveRole}
         isMobileOpen={mobileSidebarOpen}
         onCloseMobile={() => setMobileSidebarOpen(false)}
-        onLogout={() => {
-          // TODO: integrasi aksi logout dengan session / auth service
-          window.location.href = "/admin/login";
-        }}
+        onLogout={handleLogout}
       />
 
       {/* Area Konten Utama: Main Container dengan Top Bar Header di dalamnya */}
