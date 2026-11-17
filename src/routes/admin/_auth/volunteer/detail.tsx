@@ -1,14 +1,23 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
-  INITIAL_VOLUNTEER_RECORDS,
+  VolunteerDetailSkeleton,
   VolunteerDetailWorkspace,
 } from "#/components/pages/volunteer";
 import type {
   VolunteerDetailTabKey,
+  VolunteerRecord,
   VolunteerUserRole,
 } from "#/components/pages/volunteer";
+import {
+  getVolunteerDetail,
+  mapStaffToVolunteerRecord,
+} from "#/services/volunteerService";
+import { useUserProfile } from "#/hooks";
+import { toast } from "#/components/ui/toast";
 
 // Skema validasi query param URL untuk halaman detail volunteer
 const volunteerDetailSearchSchema = z.object({
@@ -29,32 +38,59 @@ export const Route = createFileRoute("/admin/_auth/volunteer/detail")({
 
 /**
  * VolunteerDetailPage: Halaman Detail Volunteer (Figma 151:21395 - 151:22876).
+ * Menggunakan TanStack Query untuk pemanggilan data riil berdasarkan ID anggota.
  */
 function VolunteerDetailPage() {
   const { id, tab, role } = Route.useSearch();
+  const navigate = useNavigate();
+  const profile = useUserProfile();
+  const getVolunteerDetailFn = useServerFn(getVolunteerDetail);
 
-  // Cari data volunteer berdasarkan query id, atau fallback ke Fauzan Trisuladana (Figma 151:21395)
-  const volunteer = React.useMemo(() => {
-    if (id) {
-      const match = INITIAL_VOLUNTEER_RECORDS.find((v) => v.id === id);
-      if (match) return match;
-    }
-    // Fallback ke Fauzan Trisuladana (vol-2)
-    return (
-      INITIAL_VOLUNTEER_RECORDS.find((v) => v.id === "vol-2") ??
-      INITIAL_VOLUNTEER_RECORDS[0]
-    );
-  }, [id]);
+  const targetId = id || profile.user?.id || "";
 
-  const userRole: VolunteerUserRole = role ?? "super_admin";
+  const volunteerDetailQuery = useQuery({
+    queryKey: ["volunteer-detail", targetId],
+    queryFn: () => getVolunteerDetailFn({ data: { id: targetId } }),
+    enabled: Boolean(targetId),
+  });
+
+  const userRole: VolunteerUserRole = role ?? profile.sidebarRole;
   const initialTab: VolunteerDetailTabKey =
     tab === "settings" ? "settings" : "activity";
+
+  React.useEffect(() => {
+    if (!targetId && !profile.isLoading) {
+      toast.error("ID anggota tidak ditemukan.");
+      navigate({ to: "/admin/volunteer" });
+    }
+  }, [targetId, profile.isLoading, navigate]);
+
+  React.useEffect(() => {
+    if (volunteerDetailQuery.isError) {
+      toast.error("Data anggota staf tidak ditemukan.");
+      navigate({ to: "/admin/volunteer" });
+    }
+  }, [volunteerDetailQuery.isError, navigate]);
+
+  if (volunteerDetailQuery.isLoading || !volunteerDetailQuery.data?.data) {
+    return (
+      <VolunteerDetailSkeleton
+        showActivityTab={userRole === "super_admin"}
+        showDangerZone={userRole === "super_admin" || userRole === "core"}
+      />
+    );
+  }
+
+  const volunteer: VolunteerRecord = mapStaffToVolunteerRecord(
+    volunteerDetailQuery.data.data,
+  );
 
   return (
     <VolunteerDetailWorkspace
       volunteer={volunteer}
       userRole={userRole}
       initialTab={initialTab}
+      isLoading={false}
     />
   );
 }

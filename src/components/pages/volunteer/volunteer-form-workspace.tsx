@@ -1,11 +1,17 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { toast } from "#/components/ui/toast";
 import { VolunteerForm } from "./volunteer-form";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
+import { DIVISION_NAME_TO_ID } from "./volunteer-data";
 import type { VolunteerFormValues } from "./volunteer-data";
+import { createVolunteerInvitation } from "#/services/volunteerService";
+import { idVolunteer } from "#/locales";
+import { isApiError } from "#/services/errorService";
 
 export interface VolunteerFormWorkspaceProps {
   mode: "add" | "edit";
@@ -15,8 +21,8 @@ export interface VolunteerFormWorkspaceProps {
 
 /**
  * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah Volunteer.
- * Form tampil langsung tanpa skeleton (sama seperti halaman Tambah Donasi);
- * skeleton hanya dipakai di halaman detail.
+ * Form terhubung langsung ke Server Function pembuatan undangan dan mengedaluwarsakan
+ * query cache saat data berhasil disimpan.
  */
 export function VolunteerFormWorkspace({
   mode,
@@ -24,8 +30,11 @@ export function VolunteerFormWorkspace({
   demoState = "none",
 }: VolunteerFormWorkspaceProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
+
+  const createVolunteerInvitationFn = useServerFn(createVolunteerInvitation);
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
@@ -63,21 +72,47 @@ export function VolunteerFormWorkspace({
     setIsSubmitting(true);
 
     try {
-      // Simulasi request API penyimpanan volunteer
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      if (mode === "add") {
+        // Petakan role form ke role backend ('super' | 'core' | 'staff')
+        const backendRole: "super" | "core" | "staff" =
+          values.role === "super"
+            ? "super"
+            : values.role === "core"
+              ? "core"
+              : "staff";
 
-      toast.success(
-        mode === "add"
-          ? `Volunteer "${values.name}" berhasil ditambahkan ke daftar Volunteer.`
-          : `Perubahan data "${values.name}" berhasil disimpan.`,
-      );
+        const divisionId = DIVISION_NAME_TO_ID[values.division] ?? 3;
+
+        await createVolunteerInvitationFn({
+          data: {
+            email: values.email.trim(),
+            role: backendRole,
+            division_id: divisionId,
+            name: values.name.trim() || undefined,
+            phone_number: values.phone.trim() || undefined,
+          },
+        });
+
+        // Wajib mengedaluwarsakan seluruh query terkait pasca perubahan data
+        await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+        toast.success(idVolunteer.add.toasts.inviteSuccess(values.name));
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+        toast.success(`Perubahan data "${values.name}" berhasil disimpan.`);
+      }
+
       navigate({ to: "/admin/volunteer" });
-    } catch {
-      toast.error(
-        mode === "add"
-          ? "Gagal menambahkan volunteer. Silakan coba beberapa saat lagi."
-          : "Gagal menyimpan perubahan. Silakan coba beberapa saat lagi.",
-      );
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(error.message);
+      } else {
+        toast.error(
+          mode === "add"
+            ? idVolunteer.add.toasts.inviteFailed
+            : "Gagal menyimpan perubahan. Silakan coba beberapa saat lagi.",
+        );
+      }
+      throw error;
     } finally {
       setIsSubmitting(false);
     }

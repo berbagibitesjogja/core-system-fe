@@ -14,6 +14,7 @@ import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Textarea } from "#/components/ui/textarea";
+import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
 import {
   VOLUNTEER_DIVISION_OPTIONS,
@@ -58,13 +59,6 @@ const FORM_DIVISIONS = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all");
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[0-9+()-\s]{8,20}$/;
-
-// Daftar email & nomor yang disimulasikan sudah terdaftar (Figma 150:21212)
-const DUPLICATE_EMAILS: Record<string, string> = {
-  "rani.kusuma@gmail.com": "Rani Kusuma",
-  "dian.pratiwi@gmail.com": "Dian Pratiwi",
-  "fauzan.aditya@gmail.com": "Fauzan Aditya",
-};
 
 /**
  * VolunteerForm: Formulir Tambah dan Edit Volunteer (Figma 150:20833, 150:21212, 150:21549).
@@ -181,7 +175,7 @@ export function VolunteerForm({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isDivisionFailed) {
@@ -199,25 +193,33 @@ export function VolunteerForm({
       return;
     }
 
-    // Simulasi deteksi duplikasi akun (Figma 150:21212)
-    const normalizedEmail = values.email.trim().toLowerCase();
-    if (mode === "add" && DUPLICATE_EMAILS[normalizedEmail]) {
-      const owner = DUPLICATE_EMAILS[normalizedEmail];
-      setDuplicateConflict({ field: "email", ownerName: owner });
-      setErrors((prev) => ({
-        ...prev,
-        email: `Email ini sudah terdaftar atas nama ${owner}.`,
-      }));
-      return;
+    try {
+      await onSubmit({
+        ...values,
+        name: values.name.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
+        address: values.address.trim(),
+      });
+    } catch (err) {
+      if (isApiError(err)) {
+        if (
+          err.code === "VAL_002" ||
+          err.code === "VAL_003" ||
+          err.status === 400 ||
+          err.status === 409
+        ) {
+          setDuplicateConflict({
+            field: "email",
+            ownerName: values.name || "Pengurus Terdaftar",
+          });
+          setErrors((prev) => ({
+            ...prev,
+            email: err.message,
+          }));
+        }
+      }
     }
-
-    onSubmit({
-      ...values,
-      name: values.name.trim(),
-      email: values.email.trim(),
-      phone: values.phone.trim(),
-      address: values.address.trim(),
-    });
   };
 
   return (

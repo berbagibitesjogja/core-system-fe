@@ -1,10 +1,15 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Pencil, Sparkles } from "lucide-react";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
-import { defaultVolunteerActivities } from "./volunteer-data";
+import {
+  defaultVolunteerActivities,
+  DIVISION_NAME_TO_ID,
+} from "./volunteer-data";
 import type {
   VolunteerFormValues,
   VolunteerRecord,
@@ -17,6 +22,12 @@ import { VolunteerDetailDangerZone } from "./volunteer-detail-danger-zone";
 import { VolunteerDetailProfileCard } from "./volunteer-detail-profile-card";
 import { VolunteerDetailSettingsTab } from "./volunteer-detail-settings-tab";
 import { VolunteerDetailSkeleton } from "./volunteer-detail-skeleton";
+import {
+  deleteVolunteerStaff,
+  updateVolunteerStaff,
+} from "#/services/volunteerService";
+import { idVolunteer } from "#/locales";
+import { isApiError } from "#/services/errorService";
 
 export type VolunteerDetailTabKey = "activity" | "settings";
 
@@ -24,6 +35,7 @@ export interface VolunteerDetailWorkspaceProps {
   volunteer: VolunteerRecord;
   userRole?: VolunteerUserRole;
   initialTab?: VolunteerDetailTabKey;
+  isLoading?: boolean;
   onVolunteerUpdate?: (updated: VolunteerRecord) => void;
   onVolunteerDelete?: (deletedId: string) => void;
 }
@@ -35,18 +47,27 @@ export function VolunteerDetailWorkspace({
   volunteer: initialVolunteer,
   userRole = "super_admin",
   initialTab,
+  isLoading = false,
   onVolunteerUpdate,
   onVolunteerDelete,
 }: VolunteerDetailWorkspaceProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
+  const updateVolunteerStaffFn = useServerFn(updateVolunteerStaff);
+  const deleteVolunteerStaffFn = useServerFn(deleteVolunteerStaff);
+
   const [volunteer, setVolunteer] =
     React.useState<VolunteerRecord>(initialVolunteer);
-  const [isLoading, setIsLoading] = React.useState(true);
   const [isSaving, setIsSaving] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
+
+  // Sinkronisasi data saat initialVolunteer berubah dari query API
+  React.useEffect(() => {
+    setVolunteer(initialVolunteer);
+  }, [initialVolunteer]);
 
   const [deleteTarget, setDeleteTarget] =
     React.useState<VolunteerRecord | null>(null);
@@ -66,15 +87,6 @@ export function VolunteerDetailWorkspace({
     },
   );
 
-  // DEV ONLY: Simulasi loading skeleton 3 detik
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Set Top Bar Header
   React.useEffect(() => {
     if (!setHeaderOverride) return;
@@ -93,7 +105,23 @@ export function VolunteerDetailWorkspace({
   const handleSaveProfile = async (values: VolunteerFormValues) => {
     setIsSaving(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const backendRole: "super" | "core" | "staff" =
+        values.role === "super"
+          ? "super"
+          : values.role === "core"
+            ? "core"
+            : "staff";
+
+      const divisionId = DIVISION_NAME_TO_ID[values.division] ?? 3;
+
+      await updateVolunteerStaffFn({
+        data: {
+          id: volunteer.id,
+          role: backendRole,
+          division_id: divisionId,
+        },
+      });
+
       const updated: VolunteerRecord = {
         ...volunteer,
         name: values.name,
@@ -104,35 +132,58 @@ export function VolunteerDetailWorkspace({
       };
       setVolunteer(updated);
       onVolunteerUpdate?.(updated);
-      toast.success(
-        `Perubahan data profil "${updated.name}" berhasil disimpan.`,
-      );
-    } catch {
-      toast.error("Gagal menyimpan perubahan. Silakan coba lagi.");
+
+      // Mengedaluwarsakan seluruh query terkait pasca-perubahan data
+      await queryClient.invalidateQueries({
+        queryKey: ["volunteer-detail", volunteer.id],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+
+      toast.success(idVolunteer.detail.toasts.updateSuccess(updated.name));
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(error.message);
+      } else {
+        toast.error(idVolunteer.detail.toasts.updateFailed);
+      }
     } finally {
       setIsSaving(false);
     }
   };
 
   // Handler konfirmasi hapus volunteer
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
-    setTimeout(() => {
-      setIsDeleting(false);
-      if (deleteTarget.hasActiveRelations) {
+    try {
+      await deleteVolunteerStaffFn({ data: { id: deleteTarget.id } });
+      await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+
+      setDeleteTarget(null);
+      toast.success(idVolunteer.detail.toasts.deleteSuccess(deleteTarget.name));
+      onVolunteerDelete?.(deleteTarget.id);
+      navigate({ to: "/admin/volunteer" });
+    } catch (error) {
+      if (
+        isApiError(error) &&
+        (error.code === "ROLE_LAST_SUPER" ||
+          error.status === 400 ||
+          error.status === 409)
+      ) {
         const blocked = deleteTarget;
         setDeleteTarget(null);
         setCannotDeleteTarget(blocked);
-        return;
+      } else {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : idVolunteer.detail.toasts.deleteFailed,
+        );
       }
-
-      setDeleteTarget(null);
-      toast.success(`Volunteer "${deleteTarget.name}" berhasil dihapus.`);
-      onVolunteerDelete?.(deleteTarget.id);
-      navigate({ to: "/admin/volunteer" });
-    }, 300);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (isLoading) {
