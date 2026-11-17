@@ -36,8 +36,8 @@ export const idAuth = {
       googleFailedDescription: "Silakan coba masuk dengan Google sekali lagi.",
     },
     toasts: {
-      alreadyLoggedIn: "Anda sudah login. Selamat datang",
-      loginSuccess: "Berhasil masuk! Selamat datang",
+      alreadyLoggedIn: (name: string) => `Anda sudah login. Selamat datang, ${name}`,
+      loginSuccess: (name: string) => `Berhasil masuk! Selamat datang, ${name}`,
       logoutSuccess: "Berhasil keluar dari sistem.",
     },
   },

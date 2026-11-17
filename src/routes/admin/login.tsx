@@ -7,11 +7,10 @@ import {
   LoginForm,
   LoginShowcase,
   LoginFooter,
-  LOGIN_STATE_ALERTS,
 } from "#/components/pages/login";
 import type { LoginAlertConfig } from "#/components/pages/login";
 import { toast } from "#/components/ui/toast";
-import { idAuth } from "#/locales/id/auth";
+import { DEFAULT_ERROR_MESSAGE, idAuth } from "#/locales";
 import {
   getAuthSession,
   loginWithPassword,
@@ -53,7 +52,7 @@ function AdminLoginPage() {
       !hasCheckedAuthRef.current
     ) {
       hasCheckedAuthRef.current = true;
-      toast.info(`Anda sudah login. Selamat datang, ${session.user.name}`);
+      toast.info(idAuth.login.toasts.alreadyLoggedIn(session.user.name));
       navigate({
         to: search.redirect || "/admin/dashboard",
         replace: true,
@@ -131,19 +130,15 @@ function AdminLoginPage() {
         // Bersihkan sesi karena akun bukan staf
         await logoutFn();
         toast.error(idAuth.login.alerts.unauthorizedRoleDescription);
-        setAlert(
-          LOGIN_STATE_ALERTS["role-tidak-berwenang"] ?? {
-            tone: "warning",
-            title: idAuth.login.alerts.unauthorizedRoleTitle,
-            description: idAuth.login.alerts.unauthorizedRoleDescription,
-          },
-        );
+        setAlert({
+          tone: "warning",
+          title: idAuth.login.alerts.unauthorizedRoleTitle,
+          description: idAuth.login.alerts.unauthorizedRoleDescription,
+        });
         return;
       }
 
-      toast.success(
-        `Berhasil masuk! Selamat datang, ${response.data.user.name}`,
-      );
+      toast.success(idAuth.login.toasts.loginSuccess(response.data.user.name));
 
       // Navigasi ke rute tujuan setelah login berhasil
       navigate({
@@ -163,13 +158,11 @@ function AdminLoginPage() {
           err.code === "INVALID_CREDENTIALS"
         ) {
           toast.error(idAuth.login.alerts.invalidCredentialsDescription);
-          setAlert(
-            LOGIN_STATE_ALERTS["salah-kata-sandi"] ?? {
-              tone: "danger",
-              title: idAuth.login.alerts.invalidCredentialsTitle,
-              description: idAuth.login.alerts.invalidCredentialsDescription,
-            },
-          );
+          setAlert({
+            tone: "danger",
+            title: idAuth.login.alerts.invalidCredentialsTitle,
+            description: idAuth.login.alerts.invalidCredentialsDescription,
+          });
           return;
         }
 
@@ -203,9 +196,7 @@ function AdminLoginPage() {
           return;
         }
 
-        const fallbackErrorMsg =
-          err.message ||
-          "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.";
+        const fallbackErrorMsg = err.message || DEFAULT_ERROR_MESSAGE;
         toast.error(fallbackErrorMsg);
         setAlert({
           tone: "danger",
@@ -216,9 +207,7 @@ function AdminLoginPage() {
       }
 
       const nonApiErrorMsg =
-        err instanceof Error
-          ? err.message
-          : "Terjadi kendala pada sistem. Silakan coba beberapa saat lagi.";
+        err instanceof Error ? err.message : DEFAULT_ERROR_MESSAGE;
       toast.error(nonApiErrorMsg);
       setAlert({
         tone: "danger",
