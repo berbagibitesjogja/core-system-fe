@@ -10,6 +10,7 @@ import {
 } from "#/components/pages/login";
 import type { LoginAlertConfig } from "#/components/pages/login";
 import { toast } from "#/components/ui/toast";
+import { useUserProfile } from "#/hooks";
 import { DEFAULT_ERROR_MESSAGE, idAuth } from "#/locales";
 import {
   getAuthSession,
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/admin/login")({
 
 function AdminLoginPage() {
   const { session } = Route.useRouteContext();
+  const profile = useUserProfile();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const loginFn = useServerFn(loginWithPassword);
@@ -45,20 +47,27 @@ function AdminLoginPage() {
 
   // Jika pengguna sudah memiliki sesi staf aktif, lempar toast dan alihkan ke dashboard langsung dari halaman login
   React.useEffect(() => {
-    if (
-      session.isAuthenticated &&
-      session.isStaff &&
-      session.user &&
-      !hasCheckedAuthRef.current
-    ) {
+    const isStaffActive =
+      (profile.isAuthenticated && profile.isStaff) ||
+      (session.isAuthenticated && session.isStaff);
+    const activeName = profile.name || session.user?.name;
+
+    if (isStaffActive && activeName && !hasCheckedAuthRef.current) {
       hasCheckedAuthRef.current = true;
-      toast.info(idAuth.login.toasts.alreadyLoggedIn(session.user.name));
+      toast.info(idAuth.login.toasts.alreadyLoggedIn(activeName));
       navigate({
         to: search.redirect || "/admin/dashboard",
         replace: true,
       });
     }
-  }, [session, search.redirect, navigate]);
+  }, [
+    profile.isAuthenticated,
+    profile.isStaff,
+    profile.name,
+    session,
+    search.redirect,
+    navigate,
+  ]);
 
   // State form dan proses otentikasi
   const [email, setEmail] = React.useState("");
@@ -136,6 +145,10 @@ function AdminLoginPage() {
           description: idAuth.login.alerts.unauthorizedRoleDescription,
         });
         return;
+      }
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("bbj_user", JSON.stringify(response.data.user));
       }
 
       toast.success(idAuth.login.toasts.loginSuccess(response.data.user.name));
@@ -234,7 +247,10 @@ function AdminLoginPage() {
   };
 
   // Jika sudah terotentikasi sebagai staf, jangan render form login (tunggu navigasi selesai)
-  if (session.isAuthenticated && session.isStaff) {
+  if (
+    (profile.isAuthenticated && profile.isStaff) ||
+    (session.isAuthenticated && session.isStaff)
+  ) {
     return null;
   }
 

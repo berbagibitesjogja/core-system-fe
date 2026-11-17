@@ -14,6 +14,7 @@ import type { HeaderProps } from "#/components/shared/header";
 import { Sidebar } from "#/components/shared/sidebar";
 import type { SidebarProps } from "#/components/shared/sidebar";
 import { toast } from "#/components/ui/toast";
+import { useUserProfile } from "#/hooks";
 import { idAuth, idNavigation } from "#/locales";
 import { getAuthSession, logout } from "#/services/authService";
 
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/admin/_auth")({
  */
 function AdminLayout() {
   const { authUser } = Route.useRouteContext();
+  const profile = useUserProfile();
   const navigate = useNavigate();
   const logoutFn = useServerFn(logout);
 
@@ -61,18 +63,17 @@ function AdminLayout() {
   const location = useLocation();
 
   const handleLogout = async () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("bbj_user");
+      localStorage.removeItem("user");
+    }
     await logoutFn();
     toast.success(idAuth.login.toasts.logoutSuccess);
     navigate({ to: "/admin/login" });
   };
 
   const effectiveRole: SidebarProps["userRole"] =
-    sidebarUserRole ??
-    (authUser.role === "super"
-      ? "super_admin"
-      : authUser.role === "core"
-        ? "core"
-        : "staff");
+    sidebarUserRole ?? profile.sidebarRole;
 
   const currentTitle =
     headerOverride?.title ??
@@ -90,20 +91,25 @@ function AdminLayout() {
   const isProfileRoute = location.pathname === "/admin/profile";
   const mergedHeaderUser = React.useMemo(
     () => ({
-      name: authUser.name,
-      role:
-        authUser.role === "super"
-          ? "Super Admin"
-          : authUser.role === "core"
-            ? "Core Staff"
-            : "Staff",
-      division: authUser.division_name,
-      email: authUser.email,
+      name: profile.name || authUser.name,
+      role: profile.roleLabel,
+      division: profile.divisionName || authUser.division_name,
+      email: profile.email || authUser.email,
       isActive: isProfileRoute,
       onLogout: handleLogout,
       ...headerOverride?.user,
     }),
-    [authUser, isProfileRoute, headerOverride?.user],
+    [
+      profile.name,
+      profile.roleLabel,
+      profile.divisionName,
+      profile.email,
+      authUser.name,
+      authUser.division_name,
+      authUser.email,
+      isProfileRoute,
+      headerOverride?.user,
+    ],
   );
 
   return (

@@ -233,6 +233,14 @@ export const getAuthSession = createServerFn({ method: "GET" }).handler(
   },
 );
 
+// Mengambil profil pengguna terautentikasi saat ini
+export const getUserProfile = createServerFn({ method: "GET" }).handler(
+  async (): Promise<AuthUser | null> => {
+    const session = await getAuthSession();
+    return session.user;
+  },
+);
+
 // Keluar dari sesi dan membersihkan cookie
 export const logout = createServerFn({ method: "POST" }).handler(async () => {
   try {
