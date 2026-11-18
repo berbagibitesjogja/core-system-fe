@@ -21,6 +21,15 @@ export interface SponsorRecord {
   updated_at: string;
 }
 
+/**
+ * Tipe data representasi sponsor/partner yang aman dikirim ke browser client
+ * (Atribut audit database created_at & updated_at ditahan di tingkat Server Function)
+ */
+export type SanitizedSponsorRecord = Omit<
+  SponsorRecord,
+  "created_at" | "updated_at"
+>;
+
 export interface SponsorListMeta {
   page: number;
   limit: number;
@@ -31,14 +40,14 @@ export interface SponsorListMeta {
 export interface SponsorListResponse {
   status: "success" | "error";
   message: string;
-  data: SponsorRecord[];
+  data: SanitizedSponsorRecord[];
   meta: SponsorListMeta;
 }
 
 export interface SponsorDetailResponse {
   status: "success" | "error";
   message: string;
-  data: SponsorRecord;
+  data: SanitizedSponsorRecord;
 }
 
 export interface CreateSponsorPayload {
@@ -55,7 +64,7 @@ export interface CreateSponsorPayload {
 export interface CreateSponsorResponse {
   status: "success" | "error";
   message: string;
-  data: SponsorRecord;
+  data: SanitizedSponsorRecord;
 }
 
 export interface UpdateSponsorPayload {
@@ -73,7 +82,7 @@ export interface UpdateSponsorPayload {
 export interface UpdateSponsorResponse {
   status: "success" | "error";
   message: string;
-  data: SponsorRecord;
+  data: SanitizedSponsorRecord;
 }
 
 export interface DeleteSponsorResponse {
@@ -133,10 +142,21 @@ export function computePartnerInitials(name: string): string {
 }
 
 /**
+ * Menyaring data sponsor agar atribut audit teknis database (created_at & updated_at)
+ * ditahan di server dan tidak diteruskan ke browser pengguna.
+ */
+export function sanitizeSponsorRecord(
+  sponsor: SponsorRecord,
+): SanitizedSponsorRecord {
+  const { created_at: _created, updated_at: _updated, ...sanitized } = sponsor;
+  return sanitized;
+}
+
+/**
  * Mengubah DTO Sponsor Backend menjadi PartnerRecord untuk tampilan tabel dan statistik
  */
 export function mapSponsorToPartnerRecord(
-  sponsor: SponsorRecord,
+  sponsor: SanitizedSponsorRecord,
 ): PartnerRecord {
   const isCompany = sponsor.variant === "company";
   return {
@@ -150,7 +170,7 @@ export function mapSponsorToPartnerRecord(
     phone: formatPartnerPhone(sponsor.phone),
     donationCount: 0,
     impactKg: 0,
-    lastDonationDate: formatPartnerDate(sponsor.created_at),
+    lastDonationDate: "-",
     canDelete: true,
   };
 }
@@ -159,7 +179,7 @@ export function mapSponsorToPartnerRecord(
  * Mengubah DTO Sponsor Backend menjadi PartnerDetailData untuk halaman detail mitra
  */
 export function mapSponsorToPartnerDetailData(
-  sponsor: SponsorRecord,
+  sponsor: SanitizedSponsorRecord,
 ): PartnerDetailData {
   const isCompany = sponsor.variant === "company";
   return {
@@ -172,7 +192,7 @@ export function mapSponsorToPartnerDetailData(
     totalFoodKg: 0,
     avgFoodKgPerAction: 0,
     totalActions: 0,
-    lastActionLabel: formatPartnerDate(sponsor.created_at),
+    lastActionLabel: "-",
     address: sponsor.address ?? "-",
     email: sponsor.email ?? "-",
     phone: formatPartnerPhone(sponsor.phone),
@@ -196,10 +216,20 @@ export const getPartners = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     try {
-      const response = await api.get<SponsorListResponse>("/v1/sponsors", {
+      const response = await api.get<{
+        status: "success" | "error";
+        message: string;
+        data: SponsorRecord[];
+        meta: SponsorListMeta;
+      }>("/v1/sponsors", {
         params: data,
       });
-      return response.data;
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: response.data.data.map(sanitizeSponsorRecord),
+      };
     } catch (error) {
       return handleApiError(error);
     }
@@ -216,10 +246,17 @@ export const getPartnerDetail = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const response = await api.get<SponsorDetailResponse>(
-        `/v1/sponsors/${data.id}`,
-      );
-      return response.data;
+      const response = await api.get<{
+        status: "success" | "error";
+        message: string;
+        data: SponsorRecord;
+      }>(`/v1/sponsors/${data.id}`);
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: sanitizeSponsorRecord(response.data.data),
+      };
     } catch (error) {
       return handleApiError(error);
     }
@@ -236,11 +273,17 @@ export const createPartner = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     try {
-      const response = await api.post<CreateSponsorResponse>(
-        "/v1/sponsors",
-        data,
-      );
-      return response.data;
+      const response = await api.post<{
+        status: "success" | "error";
+        message: string;
+        data: SponsorRecord;
+      }>("/v1/sponsors", data);
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: sanitizeSponsorRecord(response.data.data),
+      };
     } catch (error) {
       return handleApiError(error);
     }
@@ -258,11 +301,17 @@ export const updatePartner = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const { id, ...payload } = data;
-      const response = await api.patch<UpdateSponsorResponse>(
-        `/v1/sponsors/${id}`,
-        payload,
-      );
-      return response.data;
+      const response = await api.patch<{
+        status: "success" | "error";
+        message: string;
+        data: SponsorRecord;
+      }>(`/v1/sponsors/${id}`, payload);
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: sanitizeSponsorRecord(response.data.data),
+      };
     } catch (error) {
       return handleApiError(error);
     }

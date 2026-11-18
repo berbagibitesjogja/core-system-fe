@@ -124,7 +124,7 @@ export function VolunteerDetailProfileCard({
               Bergabung
             </span>
             <span className="font-sans text-sm font-normal text-neutral-900 leading-5">
-              {volunteer.joinedDate || "3 Maret 2024"}
+              {volunteer.joinedDate || "-"}
             </span>
           </div>
         </div>
