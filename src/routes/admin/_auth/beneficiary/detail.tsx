@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Pencil } from "lucide-react";
 import { z } from "zod";
 import {
@@ -23,6 +25,10 @@ import { Button } from "#/components/ui/button";
 import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
 import { useAdminLayout } from "#/routes/admin/_auth";
+import {
+  getBeneficiaryDetail,
+  mapCategoryToBeneficiaryDetailProfile,
+} from "#/services/beneficiaryService";
 
 // Skema validasi parameter query URL untuk detail beneficiary
 const beneficiaryDetailSearchSchema = z.object({
@@ -75,26 +81,33 @@ function BeneficiaryDetailPage() {
   const state = searchParams.state;
 
   const navigate = useNavigate();
+  const getBeneficiaryDetailFn = useServerFn(getBeneficiaryDetail);
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const effectiveId = id.trim() ? id.trim() : "ben-1";
+  const trimmedId = id.trim();
+  const effectiveId = trimmedId ? trimmedId : "ben-1";
 
-  const detail = React.useMemo(
-    () => getBeneficiaryDetailById(effectiveId, state),
-    [effectiveId, state],
-  );
+  // Mengambil detail kategori penerima manfaat dari API backend
+  const beneficiaryQuery = useQuery({
+    queryKey: ["beneficiary-detail", trimmedId],
+    queryFn: async () => {
+      if (!trimmedId) return null;
+      return getBeneficiaryDetailFn({ data: { id: trimmedId } });
+    },
+    enabled: Boolean(trimmedId),
+  });
+
+  const detail = React.useMemo(() => {
+    const apiRecord = beneficiaryQuery.data?.data;
+    if (apiRecord && state !== "empty") {
+      return mapCategoryToBeneficiaryDetailProfile(apiRecord);
+    }
+    return getBeneficiaryDetailById(effectiveId, state);
+  }, [beneficiaryQuery.data, effectiveId, state]);
+
   const badgeConfig = getCategoryBadgeConfig(detail.type);
-
-  // Simulasi loading skeleton selama 3 detik setiap membuka/berganti beneficiary
-  const [isLoading, setIsLoading] = React.useState(true);
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [effectiveId, state]);
+  const isLoading = beneficiaryQuery.isLoading;
 
   // Daftar sektor dikelola agar penambahan sektor baru langsung memperbarui kartu statistik & tabel
   const [sectors, setSectors] = React.useState<BeneficiarySectorRecord[]>(
