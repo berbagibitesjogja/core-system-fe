@@ -50,6 +50,8 @@ export const Route = createFileRoute("/admin/login")({
 });
 
 function AdminLoginPage() {
+  const { session } = Route.useRouteContext();
+  const profile = useUserProfile();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const loginFn = useServerFn(loginWithPassword);
@@ -253,6 +255,14 @@ function AdminLoginPage() {
       });
     }, 600);
   };
+
+  // Jika sudah terotentikasi sebagai staf, jangan render form login (tunggu navigasi selesai)
+  if (
+    (profile.isAuthenticated && profile.isStaff) ||
+    (session.isAuthenticated && session.isStaff)
+  ) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white font-sans antialiased overflow-x-hidden">
