@@ -59,12 +59,16 @@ const extractErrorInfo = (err: unknown, customMessage?: string) => {
     const rawMessage = data?.message?.trim();
     const errors = normalizeErrors(data?.errors);
 
+    const apiMessages: Record<string, string> = dict.apiMessages;
+    const errorCodes: Record<string, string> = dict.errorCodes;
+    const httpStatus: Record<number, string> = dict.httpStatus;
+
     const message =
       customMessage ||
-      (rawMessage ? dict.apiMessages[rawMessage] : undefined) ||
-      (code ? dict.errorCodes[code] : undefined) ||
+      (rawMessage ? apiMessages[rawMessage] : undefined) ||
+      (code ? errorCodes[code] : undefined) ||
       rawMessage ||
-      (status ? dict.httpStatus[status] : undefined) ||
+      (status ? httpStatus[status] : undefined) ||
       dict.defaultMessage;
 
     return { message, errors, status, code, refId, rawMessage };

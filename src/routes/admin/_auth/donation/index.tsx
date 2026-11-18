@@ -1,11 +1,12 @@
 import * as React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import {
-  defaultDonations,
-  defaultDonationStats,
-  defaultProgramFilterOptions,
+  computeDonationStats,
+  computeProgramFilterOptions,
   DonationCannotDeleteDialog,
   DonationDeleteDialog,
   DonationSkeleton,
@@ -14,6 +15,15 @@ import {
   DonationToolbar,
 } from "#/components/pages/donation";
 import type { DonationItem } from "#/components/pages/donation";
+import { useUserProfile } from "#/hooks";
+import { idDonation } from "#/locales";
+import {
+  cancelDonation,
+  deleteDonation,
+  getDonations,
+  mapDonationToDonationItem,
+} from "#/services/donationService";
+import { isApiError } from "#/services/errorService";
 
 // Skema validasi Search Params URL tipe-aman Zod sesuai standar WP4 & GEMINI.md
 const donationSearchSchema = z.object({
@@ -51,17 +61,12 @@ export const Route = createFileRoute("/admin/_auth/donation/")({
  */
 function DonationPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const profile = useUserProfile();
 
-  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  const getDonationsFn = useServerFn(getDonations);
+  const deleteDonationFn = useServerFn(deleteDonation);
+  const cancelDonationFn = useServerFn(cancelDonation);
 
   // 1. Mengambil parameter kontrol langsung dari URL via Route.useSearch()
   const searchParams = Route.useSearch();
@@ -93,22 +98,54 @@ function DonationPage() {
     [navigate],
   );
 
-  // State Data Donasi Lokal (untuk operasi hapus di client)
-  const [donations, setDonations] =
-    React.useState<DonationItem[]>(defaultDonations);
+  // Query daftar donasi langsung dari API backend core-system
+  const donationsQuery = useQuery({
+    queryKey: ["donations", { page, per_page, search }],
+    queryFn: () =>
+      getDonationsFn({
+        data: {
+          page,
+          limit: per_page,
+          search: search.trim() || undefined,
+        },
+      }),
+  });
 
-  // State Dialog Modal
-  const [deleteTarget, setDeleteTarget] = React.useState<DonationItem | null>(
-    null,
+  // Query ikhtisar seluruh donasi untuk metrik ringkasan riil
+  const allDonationsQuery = useQuery({
+    queryKey: ["donations", "overview"],
+    queryFn: () => getDonationsFn({ data: { limit: 100 } }),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const rawDonations = donationsQuery.data?.data;
+  const donations = React.useMemo<DonationItem[]>(() => {
+    if (!Array.isArray(rawDonations)) return [];
+    return rawDonations.map(mapDonationToDonationItem);
+  }, [rawDonations]);
+
+  const rawAllDonations = allDonationsQuery.data?.data;
+  const allDonations = React.useMemo<DonationItem[]>(() => {
+    if (!Array.isArray(rawAllDonations)) return donations;
+    return rawAllDonations.map(mapDonationToDonationItem);
+  }, [rawAllDonations, donations]);
+
+  const stats = React.useMemo(
+    () => computeDonationStats(allDonations),
+    [allDonations],
   );
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
-    React.useState<boolean>(false);
-  const [isCannotDeleteDialogOpen, setIsCannotDeleteDialogOpen] =
-    React.useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
-  // 2. Pemrosesan Filter, Pencarian, Pengurutan, & Paginasi Berdasarkan URL Search Params
-  const { paginatedData, totalItems, totalPages } = React.useMemo(() => {
+  const filterOptions = React.useMemo(
+    () =>
+      computeProgramFilterOptions(
+        allDonations,
+        allDonationsQuery.data?.meta.total,
+      ),
+    [allDonations, allDonationsQuery.data?.meta.total],
+  );
+
+  // 2. Pemrosesan Filter, Rentang Tanggal, & Pengurutan Berdasarkan URL Search Params
+  const filteredDonations = React.useMemo(() => {
     let result = [...donations];
 
     // Filter berdasarkan Program (Food Rescue / CSR)
@@ -116,14 +153,6 @@ function DonationPage() {
       result = result.filter((item) => item.program === "Food Rescue");
     } else if (program === "csr") {
       result = result.filter((item) => item.program === "CSR");
-    }
-
-    // Filter berdasarkan Kata Kunci Pencarian (Nama Donatur)
-    if (search.trim()) {
-      const query = search.toLowerCase().trim();
-      result = result.filter((item) =>
-        item.donorName.toLowerCase().includes(query),
-      );
     }
 
     // Filter berdasarkan Rentang Tanggal
@@ -140,18 +169,24 @@ function DonationPage() {
       return sort === "asc" ? cmp : -cmp;
     });
 
-    // Perhitungan Total dan Slice Paginasi
-    const totalCount = result.length;
-    const pages = Math.max(1, Math.ceil(totalCount / per_page));
-    const start = (page - 1) * per_page;
-    const sliced = result.slice(start, start + per_page);
+    return result;
+  }, [donations, program, from, to, sort]);
 
-    return {
-      paginatedData: sliced,
-      totalItems: totalCount,
-      totalPages: pages,
-    };
-  }, [donations, program, search, from, to, sort, page, per_page]);
+  const totalCount =
+    donationsQuery.data?.meta.total ?? filteredDonations.length;
+  const totalPages =
+    donationsQuery.data?.meta.total_pages ??
+    Math.max(1, Math.ceil(totalCount / per_page));
+
+  // State Dialog Modal
+  const [deleteTarget, setDeleteTarget] = React.useState<DonationItem | null>(
+    null,
+  );
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
+    React.useState<boolean>(false);
+  const [isCannotDeleteDialogOpen, setIsCannotDeleteDialogOpen] =
+    React.useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
 
   // Handler Aksi Baris Tabel
   const handleSortToggle = () => {
@@ -165,10 +200,7 @@ function DonationPage() {
   const handleView = (item: DonationItem) => {
     navigate({
       to: "/admin/donation/detail",
-      search: {
-        id: item.id,
-        state: item.quotaClaimed === 0 ? "empty" : undefined,
-      },
+      search: { id: item.id },
     });
   };
 
@@ -181,30 +213,43 @@ function DonationPage() {
 
   const handleDeleteTrigger = (item: DonationItem) => {
     if (!item.canDelete) {
-      // Donasi sudah memiliki klaim/surplus, tampilkan modal pencegahan (Figma 119:3525)
+      // Donasi bukan draft (sudah open/completed/dll), tampilkan modal keterangan tidak bisa hapus
       setDeleteTarget(item);
       setIsCannotDeleteDialogOpen(true);
     } else {
-      // Donasi dapat dihapus, tampilkan modal konfirmasi (Figma 119:3350)
+      // Donasi draft dapat dihapus, tampilkan modal konfirmasi
       setDeleteTarget(item);
       setIsDeleteDialogOpen(true);
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
 
-    setTimeout(() => {
-      setDonations((prev) => prev.filter((d) => d.id !== deleteTarget.id));
-      setIsDeleting(false);
+    try {
+      if (deleteTarget.canDelete) {
+        await deleteDonationFn({ data: { id: deleteTarget.id } });
+      } else {
+        await cancelDonationFn({ data: { id: deleteTarget.id } });
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ["donations"] });
+      toast.success(
+        idDonation.list.toasts.deleteSuccess(deleteTarget.donorName),
+      );
       setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
-
-      // Tampilkan toast notifikasi berhasil dihapus sesuai Figma 119:3691
-      toast.success("Donasi berhasil dihapus");
-    }, 400);
+    } catch (err: unknown) {
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idDonation.list.toasts.deleteFailed);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleAddDonation = () => {
@@ -212,20 +257,25 @@ function DonationPage() {
   };
 
   // Tampilkan skeleton saat loading aktif
-  if (isLoading) {
+  if (donationsQuery.isLoading) {
     return <DonationSkeleton />;
   }
 
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* 1. Baris Kartu Statistik Donasi */}
-      <DonationStats stats={defaultDonationStats} />
+      <DonationStats stats={stats} />
 
       {/* 2. Toolbar Penyaringan & Pencarian (Tersinkronisasi dengan URL) */}
       <DonationToolbar
-        filterOptions={defaultProgramFilterOptions}
+        filterOptions={filterOptions}
         activeFilterId={program}
-        onFilterChange={(id) => updateSearch({ program: id as any, page: 1 })}
+        onFilterChange={(id) =>
+          updateSearch({
+            program: id === "food-rescue" || id === "csr" ? id : "all",
+            page: 1,
+          })
+        }
         searchQuery={search}
         onSearchChange={(query) => updateSearch({ search: query, page: 1 })}
         dateFrom={from}
@@ -237,8 +287,8 @@ function DonationPage() {
 
       {/* 3. Tabel Data Donasi & Paginasi (Tersinkronisasi dengan URL) */}
       <DonationTable
-        data={paginatedData}
-        totalCount={totalItems}
+        data={filteredDonations}
+        totalCount={totalCount}
         currentPage={page}
         totalPages={totalPages}
         onPageChange={(newPage) => updateSearch({ page: newPage })}
@@ -253,7 +303,7 @@ function DonationPage() {
         onViewItem={handleView}
         onEditItem={handleEdit}
         onDeleteItem={handleDeleteTrigger}
-        userRole="super_admin"
+        userRole={profile.sidebarRole}
       />
 
       {/* 4. Modal Dialog Konfirmasi Tindakan Hapus (Figma 119:3350) */}
