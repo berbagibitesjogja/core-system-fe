@@ -12,7 +12,6 @@ import type {
 export interface VolunteerFormWorkspaceProps {
   mode: "add" | "edit";
   initialData?: Partial<VolunteerFormValues>;
-  demoState?: "division-error" | "duplicate" | "none";
   divisionOptions?: VolunteerDivisionOption[];
   isDivisionError?: boolean;
   isDivisionFetching?: boolean;
@@ -28,7 +27,6 @@ export interface VolunteerFormWorkspaceProps {
 export function VolunteerFormWorkspace({
   mode,
   initialData,
-  demoState = "none",
   divisionOptions,
   isDivisionError,
   isDivisionFetching,
@@ -78,7 +76,6 @@ export function VolunteerFormWorkspace({
         <VolunteerForm
           mode={mode}
           initialData={initialData}
-          demoState={demoState}
           divisionOptions={divisionOptions}
           isDivisionError={isDivisionError}
           isDivisionFetching={isDivisionFetching}

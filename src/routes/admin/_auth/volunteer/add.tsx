@@ -2,7 +2,6 @@ import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import {
   getDivisionIdByName,
@@ -15,21 +14,7 @@ import { createVolunteerInvitation } from "#/services/volunteerService";
 import { idVolunteer } from "#/locales";
 import { isApiError } from "#/services/errorService";
 
-const volunteerAddSearchSchema = z.object({
-  demo: z
-    .enum(["division-error", "duplicate", "none"])
-    .optional()
-    .catch("none"),
-});
-
 export const Route = createFileRoute("/admin/_auth/volunteer/add")({
-  validateSearch: (search: Record<string, unknown>) =>
-    volunteerAddSearchSchema.parse({
-      demo:
-        search.demo === "division-error" || search.demo === "duplicate"
-          ? search.demo
-          : "none",
-    }),
   component: VolunteerAddPage,
 });
 
@@ -40,7 +25,6 @@ export const Route = createFileRoute("/admin/_auth/volunteer/add")({
 function VolunteerAddPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { demo } = Route.useSearch();
 
   const getDivisionsFn = useServerFn(getDivisions);
   const createVolunteerInvitationFn = useServerFn(createVolunteerInvitation);
@@ -101,7 +85,6 @@ function VolunteerAddPage() {
   return (
     <VolunteerFormWorkspace
       mode="add"
-      demoState={demo}
       divisionOptions={divisionOptions}
       isDivisionError={divisionsQuery.isError}
       isDivisionFetching={divisionsQuery.isFetching}

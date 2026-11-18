@@ -13,7 +13,6 @@ import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
-import { Textarea } from "#/components/ui/textarea";
 import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
 import {
@@ -35,7 +34,6 @@ export interface VolunteerFormProps {
   onCancel: () => void;
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
-  demoState?: "division-error" | "duplicate" | "none";
   divisionOptions?: VolunteerDivisionOption[];
   isDivisionError?: boolean;
   isDivisionFetching?: boolean;
@@ -73,44 +71,23 @@ export function VolunteerForm({
   onCancel,
   onSubmit,
   className,
-  demoState = "none",
   divisionOptions = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all"),
   isDivisionError = false,
   isDivisionFetching = false,
   onRetryDivision,
 }: VolunteerFormProps) {
-  const [values, setValues] = React.useState<VolunteerFormValues>(() => {
-    if (demoState === "duplicate") {
-      return {
-        division: "Operational Manager",
-        role: "core",
-        name: "Rani Kusuma",
-        email: "rani.kusuma@gmail.com",
-        phone: "0813-2270-6614",
-        address: "Jl. Gejayan No. 12, Sleman",
-      };
-    }
-    return {
-      ...defaultVolunteerFormValues,
-      ...initialData,
-    };
-  });
+  const [values, setValues] = React.useState<VolunteerFormValues>(() => ({
+    ...defaultVolunteerFormValues,
+    ...initialData,
+  }));
 
   const [errors, setErrors] = React.useState<VolunteerFormErrors>({});
   const [duplicateConflict, setDuplicateConflict] = React.useState<{
     field: "email" | "phone";
     ownerName: string;
-  } | null>(() => {
-    if (demoState === "duplicate") {
-      return { field: "email", ownerName: "Rani Kusuma" };
-    }
-    return null;
-  });
+  } | null>(null);
 
-  const [demoErrorDismissed, setDemoErrorDismissed] = React.useState(false);
-  const isDivisionFailed =
-    (demoState === "division-error" && !demoErrorDismissed) ||
-    Boolean(isDivisionError);
+  const isDivisionFailed = Boolean(isDivisionError);
   const isRetryingDivision = Boolean(isDivisionFetching);
 
   const [divisionDropdownOpen, setDivisionDropdownOpen] = React.useState(false);
@@ -135,7 +112,6 @@ export function VolunteerForm({
   }, [divisionDropdownOpen]);
 
   const handleRetryDivision = async () => {
-    setDemoErrorDismissed(true);
     onRetryDivision?.();
   };
 
@@ -174,7 +150,7 @@ export function VolunteerForm({
     val: VolunteerFormValues[TField],
   ) => {
     setValues((prev) => ({ ...prev, [field]: val }));
-    if (errors[field as keyof VolunteerFormErrors]) {
+    if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
     if (duplicateConflict && (field === "email" || field === "phone")) {
@@ -206,7 +182,6 @@ export function VolunteerForm({
         name: values.name.trim(),
         email: values.email.trim(),
         phone: values.phone.trim(),
-        address: values.address.trim(),
       });
     } catch (err) {
       if (isApiError(err)) {
@@ -457,19 +432,6 @@ export function VolunteerForm({
               className="w-full max-w-none"
             />
           </div>
-        </div>
-
-        {/* Field: Alamat Domisili */}
-        <div className="flex flex-col gap-1.5 w-full">
-          <Textarea
-            label="Alamat Domisili"
-            placeholder="Contoh: Jl. Kaliurang Km 5, Sleman"
-            value={values.address}
-            onChange={(e) => handleFieldChange("address", e.target.value)}
-            helperText="Opsional"
-            disabled={isSubmitting}
-            className="w-full max-w-none min-h-[108px] resize-y"
-          />
         </div>
       </div>
 

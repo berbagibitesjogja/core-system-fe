@@ -136,7 +136,6 @@ export function VolunteerDetailWorkspace({
     phone: volunteer.phone,
     division: volunteer.division,
     role: volunteer.role,
-    address: "Jl. Kaliurang Km 5, Sleman",
   };
 
   return (

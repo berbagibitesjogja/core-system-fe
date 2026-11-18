@@ -20,8 +20,6 @@ export type VolunteerSystemRole = "super" | "core" | "staff" | "member";
 
 export type VolunteerUserRole = "super_admin" | "core" | "staff";
 
-export type VolunteerDemoModal = "none" | "delete" | "cannot-delete";
-
 export type VolunteerBadgeTone =
   "neutral" | "brand" | "accent" | "success" | "warning" | "danger" | "info";
 
@@ -146,7 +144,6 @@ export interface VolunteerFormValues {
   name: string;
   email: string;
   phone: string;
-  address: string;
 }
 
 export const defaultVolunteerFormValues: VolunteerFormValues = {
@@ -155,7 +152,6 @@ export const defaultVolunteerFormValues: VolunteerFormValues = {
   name: "",
   email: "",
   phone: "",
-  address: "",
 };
 
 export const defaultEditVolunteerData: VolunteerFormValues = {
@@ -164,7 +160,6 @@ export const defaultEditVolunteerData: VolunteerFormValues = {
   name: "Bima Aditya",
   email: "bima.aditya@gmail.com",
   phone: "0896-5521-0087",
-  address: "Jl. Kaliurang Km 5, Sleman",
 };
 
 // 4 Opsi role yang dapat dipilih dalam formulir volunteer (Figma 150:20894 - 150:21114)

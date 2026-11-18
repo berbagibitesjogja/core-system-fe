@@ -17,7 +17,6 @@ import {
   VolunteerToolbar,
 } from "#/components/pages/volunteer";
 import type {
-  VolunteerDemoModal,
   VolunteerRecord,
   VolunteerUserRole,
 } from "#/components/pages/volunteer";
@@ -36,12 +35,7 @@ const volunteerSearchSchema = z.object({
   search: z.string().optional().catch(""),
   page: z.coerce.number().int().positive().optional().catch(1),
   per_page: z.coerce.number().int().positive().optional().catch(10),
-  role: z
-    .enum(["super_admin", "core", "staff"])
-    .optional()
-    .catch("super_admin"),
-  modal: z.enum(["none", "delete", "cannot-delete"]).optional().catch("none"),
-  loading: z.coerce.boolean().optional().catch(false),
+  role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/_auth/volunteer/")({
@@ -49,17 +43,11 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
     const rawDivision =
       typeof search.division === "string" ? search.division.trim() : "all";
 
-    const rawRole = typeof search.role === "string" ? search.role : "";
-    const normalizedRole: VolunteerUserRole =
-      rawRole === "staff"
-        ? "staff"
-        : rawRole === "core"
-          ? "core"
-          : "super_admin";
-
-    const rawModal = typeof search.modal === "string" ? search.modal : "none";
-    const normalizedModal: VolunteerDemoModal =
-      rawModal === "delete" || rawModal === "cannot-delete" ? rawModal : "none";
+    const rawRole = typeof search.role === "string" ? search.role : undefined;
+    const normalizedRole: VolunteerUserRole | undefined =
+      rawRole === "staff" || rawRole === "core" || rawRole === "super_admin"
+        ? rawRole
+        : undefined;
 
     return volunteerSearchSchema.parse({
       ...search,
@@ -68,11 +56,6 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
       page: search.page ?? 1,
       per_page: search.per_page ?? search.perpage ?? 10,
       role: normalizedRole,
-      modal: normalizedModal,
-      loading:
-        search.loading === true ||
-        search.loading === "true" ||
-        search.loading === "1",
     });
   },
   component: VolunteerPage,
@@ -87,9 +70,7 @@ function VolunteerPage() {
     search = "",
     page = 1,
     per_page = 10,
-    role = "super_admin",
-    modal = "none",
-    loading = false,
+    role,
   } = Route.useSearch();
 
   const getDivisionsFn = useServerFn(getDivisions);
@@ -180,20 +161,6 @@ function VolunteerPage() {
     };
   }, [role, layoutContext]);
 
-  // Sinkronisasi state modal dari query param URL (?modal=delete atau ?modal=cannot-delete)
-  React.useEffect(() => {
-    if (volunteers.length === 0) return;
-    const defaultTarget = volunteers[0] ?? null;
-
-    if (modal === "delete" && !deleteTarget) {
-      setDeleteTarget(defaultTarget);
-      setCannotDeleteTarget(null);
-    } else if (modal === "cannot-delete" && !cannotDeleteTarget) {
-      setCannotDeleteTarget(defaultTarget);
-      setDeleteTarget(null);
-    }
-  }, [modal, volunteers, deleteTarget, cannotDeleteTarget]);
-
   // Hitung metrik kartu statistik dari seluruh daftar anggota
   const stats = React.useMemo(
     () => getVolunteerStats(volunteers, totalCount),
@@ -210,8 +177,7 @@ function VolunteerPage() {
         search: string;
         page: number;
         per_page: number;
-        role: VolunteerUserRole;
-        modal: VolunteerDemoModal;
+        role?: VolunteerUserRole;
       }>,
     ) => {
       navigate({
@@ -221,14 +187,14 @@ function VolunteerPage() {
           search: updates.search ?? search,
           page: updates.page ?? page,
           per_page: updates.per_page ?? per_page,
-          role: updates.role ?? role,
-          modal: updates.modal ?? modal,
-          loading,
+          ...(updates.role !== undefined || role !== undefined
+            ? { role: updates.role ?? role }
+            : {}),
         },
         replace: true,
       });
     },
-    [navigate, division, search, page, per_page, role, modal, loading],
+    [navigate, division, search, page, per_page, role],
   );
 
   const handleDivisionChange = (newDivision: string) => {
@@ -254,9 +220,6 @@ function VolunteerPage() {
   const handleCloseModals = () => {
     setDeleteTarget(null);
     setCannotDeleteTarget(null);
-    if (modal !== "none") {
-      updateSearchParams({ modal: "none" });
-    }
   };
 
   const handleConfirmDelete = async () => {
@@ -290,7 +253,7 @@ function VolunteerPage() {
     }
   };
 
-  if (loading || volunteersQuery.isLoading) {
+  if (volunteersQuery.isLoading) {
     return <VolunteerPageSkeleton />;
   }
 
