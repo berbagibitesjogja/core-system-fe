@@ -21,6 +21,18 @@ export interface StaffMemberRecord {
   updated_at: string;
 }
 
+/**
+ * Tipe data representasi staf yang aman dikirim ke browser client
+ * (Atribut audit database created_at & updated_at ditahan di tingkat Server Function,
+ * serta created_at ditransformasi menjadi field domain joinedDate di level server)
+ */
+export type SanitizedStaffMemberRecord = Omit<
+  StaffMemberRecord,
+  "created_at" | "updated_at"
+> & {
+  joinedDate: string;
+};
+
 export interface StaffListMeta {
   page: number;
   limit: number;
@@ -31,14 +43,14 @@ export interface StaffListMeta {
 export interface StaffListResponse {
   status: "success" | "error";
   message: string;
-  data: StaffMemberRecord[];
+  data: SanitizedStaffMemberRecord[];
   meta: StaffListMeta;
 }
 
 export interface StaffDetailResponse {
   status: "success" | "error";
   message: string;
-  data: StaffMemberRecord;
+  data: SanitizedStaffMemberRecord;
 }
 
 export interface CreateStaffInvitationPayload {
@@ -75,7 +87,7 @@ export interface UpdateStaffPayload {
 export interface UpdateStaffResponse {
   status: "success" | "error";
   message: string;
-  data: StaffMemberRecord;
+  data: SanitizedStaffMemberRecord;
 }
 
 export interface DeleteStaffResponse {
@@ -127,10 +139,25 @@ export function formatStaffPhoneNumber(phone: string | null): string {
 }
 
 /**
+ * Menyaring data staf agar atribut audit teknis database (created_at & updated_at)
+ * ditahan di server dan tidak diteruskan ke browser pengguna, serta mentransformasi
+ * created_at menjadi field domain joinedDate di level server.
+ */
+export function sanitizeStaffMemberRecord(
+  staff: StaffMemberRecord,
+): SanitizedStaffMemberRecord {
+  const { created_at, updated_at: _updated, ...sanitized } = staff;
+  return {
+    ...sanitized,
+    joinedDate: formatStaffJoinedDate(created_at),
+  };
+}
+
+/**
  * Mengubah DTO Staff dari Backend menjadi VolunteerRecord untuk tampilan antarmuka
  */
 export function mapStaffToVolunteerRecord(
-  staff: StaffMemberRecord,
+  staff: SanitizedStaffMemberRecord,
 ): VolunteerRecord {
   return {
     id: staff.user_id,
@@ -140,7 +167,7 @@ export function mapStaffToVolunteerRecord(
     division: staff.division_name || "Volunteer",
     role: staff.role,
     hasActiveRelations: false,
-    joinedDate: formatStaffJoinedDate(staff.created_at),
+    joinedDate: staff.joinedDate,
   };
 }
 
@@ -160,7 +187,12 @@ export const getVolunteers = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     try {
-      const response = await api.get<StaffListResponse>("/v1/staff", {
+      const response = await api.get<{
+        status: "success" | "error";
+        message: string;
+        data: StaffMemberRecord[];
+        meta: StaffListMeta;
+      }>("/v1/staff", {
         params: {
           page: data.page ?? 1,
           limit: data.limit ?? 10,
@@ -169,7 +201,12 @@ export const getVolunteers = createServerFn({ method: "GET" })
           search: data.search?.trim() || undefined,
         },
       });
-      return response.data;
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: response.data.data.map(sanitizeStaffMemberRecord),
+      };
     } catch (error) {
       throw handleApiError(error);
     }
@@ -183,10 +220,17 @@ export const getVolunteerDetail = createServerFn({ method: "GET" })
   .validator((params: { id: string }) => params)
   .handler(async ({ data }) => {
     try {
-      const response = await api.get<StaffDetailResponse>(
-        `/v1/staff/${encodeURIComponent(data.id)}`,
-      );
-      return response.data;
+      const response = await api.get<{
+        status: "success" | "error";
+        message: string;
+        data: StaffMemberRecord;
+      }>(`/v1/staff/${encodeURIComponent(data.id)}`);
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: sanitizeStaffMemberRecord(response.data.data),
+      };
     } catch (error) {
       throw handleApiError(error);
     }
@@ -219,11 +263,17 @@ export const updateVolunteerStaff = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     try {
       const { id, ...updateFields } = data;
-      const response = await api.patch<UpdateStaffResponse>(
-        `/v1/staff/${encodeURIComponent(id)}`,
-        updateFields,
-      );
-      return response.data;
+      const response = await api.patch<{
+        status: "success" | "error";
+        message: string;
+        data: StaffMemberRecord;
+      }>(`/v1/staff/${encodeURIComponent(id)}`, updateFields);
+
+      // Tahan created_at dan updated_at di server function, jangan diteruskan ke browser
+      return {
+        ...response.data,
+        data: sanitizeStaffMemberRecord(response.data.data),
+      };
     } catch (error) {
       throw handleApiError(error);
     }

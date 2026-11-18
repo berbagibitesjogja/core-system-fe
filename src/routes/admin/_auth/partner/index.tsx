@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
   computePartnerFilterOptions,
@@ -18,6 +20,13 @@ import type {
   PartnerUserRole,
 } from "#/components/pages/partner";
 import { toast } from "#/components/ui/toast";
+import { idPartner } from "#/locales";
+import { isApiError } from "#/services/errorService";
+import {
+  deletePartner,
+  getPartners,
+  mapSponsorToPartnerRecord,
+} from "#/services/partnerService";
 
 // Skema validasi parameter pencarian URL untuk halaman Partner
 const partnerSearchSchema = z.object({
@@ -54,9 +63,10 @@ function PartnerPage() {
     role,
   } = searchParams;
 
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [partners, setPartners] =
-    React.useState<PartnerRecord[]>(defaultPartners);
+  const queryClient = useQueryClient();
+  const getPartnersFn = useServerFn(getPartners);
+  const deletePartnerFn = useServerFn(deletePartner);
+
   const [deleteTarget, setDeleteTarget] = React.useState<PartnerRecord | null>(
     null,
   );
@@ -66,13 +76,34 @@ function PartnerPage() {
 
   const userRole: PartnerUserRole = role ?? "super_admin";
 
-  // Simulasi loading awal 3 detik untuk state skeleton halaman Partner
-  React.useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const variantFilter =
+    category === "all"
+      ? undefined
+      : category === "perusahaan"
+        ? "company"
+        : "individual";
+
+  // Pengambilan data daftar donatur dari API backend
+  const partnersQuery = useQuery({
+    queryKey: ["partners", { page, perPage, search, category }],
+    queryFn: async () => {
+      return getPartnersFn({
+        data: {
+          page,
+          limit: perPage,
+          variant: variantFilter,
+          search: search.trim() || undefined,
+        },
+      });
+    },
+  });
+
+  // Pemetaan rekaman API backend ke bentuk presentasi PartnerRecord
+  const partners = React.useMemo<PartnerRecord[]>(() => {
+    const apiRecords = partnersQuery.data?.data;
+    if (!Array.isArray(apiRecords)) return defaultPartners;
+    return apiRecords.map(mapSponsorToPartnerRecord);
+  }, [partnersQuery.data]);
 
   const stats = React.useMemo(() => computePartnerStats(partners), [partners]);
   const filterOptions = React.useMemo(
@@ -108,13 +139,18 @@ function PartnerPage() {
       );
   }, [partners, category, search, sort]);
 
-  const totalCount = filteredPartners.length;
-  const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
+  const totalCount = partnersQuery.data?.meta.total ?? filteredPartners.length;
+  const totalPages =
+    partnersQuery.data?.meta.total_pages ??
+    Math.max(1, Math.ceil(totalCount / perPage));
   const safeCurrentPage = Math.min(page, totalPages);
   const paginatedPartners = React.useMemo(() => {
+    if (partnersQuery.data?.data) {
+      return filteredPartners;
+    }
     const startIndex = (safeCurrentPage - 1) * perPage;
     return filteredPartners.slice(startIndex, startIndex + perPage);
-  }, [filteredPartners, safeCurrentPage, perPage]);
+  }, [filteredPartners, partnersQuery.data?.data, safeCurrentPage, perPage]);
 
   const hasActiveFilters = Boolean(search.trim()) || category !== "all";
 
@@ -190,20 +226,32 @@ function PartnerPage() {
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
 
-    window.setTimeout(() => {
-      setPartners((prev) => prev.filter((item) => item.id !== deleteTarget.id));
-      setIsDeleting(false);
+    try {
+      await deletePartnerFn({ data: { id: deleteTarget.id } });
+      await queryClient.invalidateQueries({ queryKey: ["partners"] });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
+      toast.success(idPartner.list.toasts.deleteSuccess(deleteTarget.name));
       setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
-      toast.success("Donatur berhasil dihapus");
-    }, 250);
+    } catch (err: unknown) {
+      if (isApiError(err) && (err.status === 409 || err.code === "CONFLICT")) {
+        setIsDeleteDialogOpen(false);
+        setIsCannotDeleteOpen(true);
+      } else if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idPartner.list.toasts.deleteFailed);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  if (isLoading) {
+  if (partnersQuery.isLoading) {
     return <PartnerSkeleton />;
   }
 
