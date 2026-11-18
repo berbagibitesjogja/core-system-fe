@@ -3,6 +3,7 @@ import { idBeneficiary } from "./beneficiary";
 import { idCommonErrors } from "./errors";
 import { idNavigation } from "./navigation";
 import { idPartner } from "./partner";
+import { idReimburse } from "./reimburse";
 import { idVolunteer } from "./volunteer";
 
 // Menggabungkan seluruh pesan galat dari modul fitur dan galat umum
@@ -13,6 +14,7 @@ export const idErrors = {
     ...idVolunteer.errors.apiMessages,
     ...idPartner.errors.apiMessages,
     ...idBeneficiary.errors.apiMessages,
+    ...idReimburse.errors.apiMessages,
   },
   errorCodes: {
     ...idCommonErrors.errorCodes,
@@ -20,6 +22,7 @@ export const idErrors = {
     ...idVolunteer.errors.errorCodes,
     ...idPartner.errors.errorCodes,
     ...idBeneficiary.errors.errorCodes,
+    ...idReimburse.errors.errorCodes,
   },
   httpStatus: idCommonErrors.httpStatus,
   defaultMessage: idCommonErrors.defaultMessage,
@@ -32,7 +35,16 @@ export const idLocale = {
   commonErrors: idCommonErrors,
   navigation: idNavigation,
   partner: idPartner,
+  reimburse: idReimburse,
   volunteer: idVolunteer,
 };
 
-export { idAuth, idBeneficiary, idCommonErrors, idNavigation, idPartner, idVolunteer };
+export {
+  idAuth,
+  idBeneficiary,
+  idCommonErrors,
+  idNavigation,
+  idPartner,
+  idReimburse,
+  idVolunteer,
+};

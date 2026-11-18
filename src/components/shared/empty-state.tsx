@@ -74,7 +74,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center",
+        "flex flex-col items-center justify-center text-center mx-auto",
         isCompact
           ? "w-full max-w-[320px] p-6"
           : "w-full max-w-[400px] px-6 py-10",

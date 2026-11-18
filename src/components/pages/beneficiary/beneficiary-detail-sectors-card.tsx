@@ -122,7 +122,7 @@ export function BeneficiaryDetailSectorsCard({
 
       {/* State Kosong Belum Ada Sektor */}
       {sectors.length === 0 ? (
-        <div className="flex items-center justify-center px-6 py-10">
+        <div className="flex flex-col items-center justify-center px-6 py-12 w-full text-center">
           <EmptyState
             size="compact"
             visual="illustration"

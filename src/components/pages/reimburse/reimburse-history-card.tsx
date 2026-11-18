@@ -47,7 +47,7 @@ export function ReimburseHistoryCard({
 
       {/* Konten Daftar atau Empty State */}
       {items.length === 0 ? (
-        <div className="flex w-full items-center justify-center py-4">
+        <div className="flex flex-col w-full items-center justify-center py-6 text-center">
           <EmptyState
             size="compact"
             visual="illustration"

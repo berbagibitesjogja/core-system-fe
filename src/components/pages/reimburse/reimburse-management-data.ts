@@ -10,8 +10,11 @@ import lunchBoxIllustration from "#/assets/illustrations/lunch-box.svg";
 import { formatRupiah } from "./reimburse-data";
 import type {
   ReimburseHistoryItem,
+  ReimburseHistoryStatus,
   ReimburseTransferProof,
 } from "./reimburse-data";
+import type { SanitizedReimbursementRecord } from "#/services/reimburseService";
+import { formatReimburseDate } from "#/services/reimburseService";
 
 export type ReimburseDataRole = "super_admin" | "core" | "bendahara" | "staff";
 
@@ -318,5 +321,51 @@ export function createDefaultTransferProof(
     transferredAtLabel: "Baru saja dicatat",
     transferredBy: "Admin BBJ",
     referenceNumber: `TRF-BBJ-${item.id.toUpperCase()}`,
+  };
+}
+
+/**
+ * Memetakan record reimbursement dari Server Function ke ReimburseDataItem untuk tabel admin
+ */
+export function mapReimbursementToDataItem(
+  record: SanitizedReimbursementRecord,
+  applicantName?: string,
+  applicantAvatarSrc?: string,
+): ReimburseDataItem {
+  const statusMap: Record<string, ReimburseHistoryStatus> = {
+    pending: "Proses",
+    completed: "Selesai",
+    rejected: "Ditolak",
+  };
+  const status: ReimburseHistoryStatus = statusMap[record.status] ?? "Proses";
+
+  const transferProof: ReimburseTransferProof | undefined =
+    record.status === "completed"
+      ? {
+          fileName: `bukti-transfer-${record.id.slice(0, 8)}.jpg`,
+          fileSize: "420 KB",
+          fileType: "image",
+          transferredAtLabel: formatReimburseDate(record.paid_at),
+          transferredBy: record.paid_by
+            ? `Bendahara (${record.paid_by.slice(0, 8)})`
+            : "Bendahara BBJ",
+          referenceNumber: `TRF-BBJ-${record.id.slice(0, 8).toUpperCase()}`,
+        }
+      : undefined;
+
+  return {
+    id: record.id,
+    applicantName: applicantName ?? `Staf (${record.user_id.slice(0, 8)})`,
+    applicantAvatarSrc,
+    method: record.method,
+    destinationNumber: record.target,
+    dateLabel: record.submittedDate,
+    amount: record.amount,
+    note: record.notes ?? "-",
+    status,
+    fileName: `invoice-${record.id.slice(0, 8)}.pdf`,
+    fileSize: "1,2 MB",
+    fileType: "pdf",
+    transferProof,
   };
 }

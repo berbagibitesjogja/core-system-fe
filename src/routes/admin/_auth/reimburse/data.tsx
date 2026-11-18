@@ -1,17 +1,13 @@
 import * as React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { toast } from "#/components/ui/toast";
 import {
   buildReimburseDataStats,
   buildReimburseStatusFilterOptions,
-  canCancelReimburseByRole,
-  createDefaultTransferProof,
   getReimburseDataInitialItems,
-  isReimburseDataAuthorized,
-  REIMBURSE_ACCESS_DENIED_MESSAGE,
-  REIMBURSE_CANCEL_SUCCESS_TOAST,
-  REIMBURSE_PAID_SUCCESS_TOAST,
+  mapReimbursementToDataItem,
   ReimburseCancelDialog,
   ReimburseConfirmPaidDialog,
   ReimburseDataSkeleton,
@@ -24,10 +20,19 @@ import {
 import type {
   ReimburseDataDemoState,
   ReimburseDataItem,
-  ReimburseDataRole,
   ReimburseDataStatusFilter,
   ReimburseTransferProof,
 } from "#/components/pages/reimburse";
+import { toast } from "#/components/ui/toast";
+import { useUserProfile } from "#/hooks";
+import { idReimburse } from "#/locales";
+import { isApiError } from "#/services/errorService";
+import {
+  deleteReimbursement,
+  getReimbursements,
+  updateReimbursement,
+} from "#/services/reimburseService";
+import { getVolunteers } from "#/services/volunteerService";
 
 const reimburseDataSearchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1),
@@ -36,7 +41,8 @@ const reimburseDataSearchSchema = z.object({
   search: z.string().optional().catch(""),
   role: z
     .enum(["super_admin", "core", "bendahara", "staff"])
-    .catch("super_admin"),
+    .optional()
+    .catch(undefined),
   demo: z.enum(["default", "paid", "empty"]).optional().catch(undefined),
 });
 
@@ -60,7 +66,7 @@ export const Route = createFileRoute("/admin/_auth/reimburse/data")({
         rawRole === "bendahara" ||
         rawRole === "staff"
           ? rawRole
-          : "super_admin",
+          : undefined,
       demo:
         rawDemo === "default" || rawDemo === "paid" || rawDemo === "empty"
           ? rawDemo
@@ -82,26 +88,92 @@ function ReimburseDataPage() {
   } = Route.useSearch();
   const searchQuery = search ?? "";
 
-  // TODO: Integrasikan role pengguna dari sesi autentikasi backend setelah endpoint auth tersedia
-  const currentRole: ReimburseDataRole = role;
-  const isAuthorized = isReimburseDataAuthorized(currentRole);
-  const canCancel = canCancelReimburseByRole(currentRole);
+  const profile = useUserProfile();
+  const queryClient = useQueryClient();
+
+  const getReimbursementsFn = useServerFn(getReimbursements);
+  const updateReimbursementFn = useServerFn(updateReimbursement);
+  const deleteReimbursementFn = useServerFn(deleteReimbursement);
+  const getVolunteersFn = useServerFn(getVolunteers);
+
+  // Evaluasi hak akses: Super Admin, Core Team, atau Divisi Bendahara
+  const isAuthorized =
+    profile.isSuperAdmin ||
+    profile.isCore ||
+    profile.divisionName.toLowerCase().includes("bendahara") ||
+    role === "super_admin" ||
+    role === "core" ||
+    role === "bendahara";
+
+  const canCancel =
+    profile.isSuperAdmin ||
+    profile.isCore ||
+    role === "super_admin" ||
+    role === "core";
+
   const hasRedirectedRef = React.useRef(false);
 
-  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
-  const [isLoading, setIsLoading] = React.useState(true);
-
   React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!profile.isLoading && !isAuthorized && !hasRedirectedRef.current) {
+      hasRedirectedRef.current = true;
+      toast.error(idReimburse.data.toasts.accessDenied);
+      navigate({ to: "/admin/dashboard", replace: true });
+    } else if (isAuthorized) {
+      hasRedirectedRef.current = false;
+    }
+  }, [isAuthorized, profile.isLoading, navigate]);
 
-  const [items, setItems] = React.useState<ReimburseDataItem[]>(() =>
-    getReimburseDataInitialItems(demo),
-  );
+  // Query daftar reimbursement dari backend core-system
+  const apiStatus =
+    status === "proses"
+      ? "pending"
+      : status === "selesai"
+        ? "completed"
+        : undefined;
+
+  const reimbursementsQuery = useQuery({
+    queryKey: [
+      "reimbursements",
+      { page, limit: perPage, status, search: searchQuery },
+    ],
+    queryFn: () =>
+      getReimbursementsFn({
+        data: {
+          page,
+          limit: perPage,
+          status: apiStatus,
+          search: searchQuery || undefined,
+        },
+      }),
+    enabled: isAuthorized && !demo,
+  });
+
+  // Query staf/volunteer untuk pemetaan nama pemohon dan foto profil riil
+  const volunteersQuery = useQuery({
+    queryKey: ["volunteers", "staff-map"],
+    queryFn: () => getVolunteersFn({ data: { limit: 100 } }),
+    staleTime: 1000 * 60 * 10,
+    enabled: isAuthorized && !demo,
+  });
+
+  const staffMap = React.useMemo(() => {
+    const map = new Map<string, { name: string; avatar?: string }>();
+    if (
+      volunteersQuery.data &&
+      "data" in volunteersQuery.data &&
+      Array.isArray(volunteersQuery.data.data)
+    ) {
+      for (const staff of volunteersQuery.data.data) {
+        map.set(staff.user_id, {
+          name: staff.name,
+          avatar: staff.profile_pic ?? staff.pfp_external_url ?? undefined,
+        });
+      }
+    }
+    return map;
+  }, [volunteersQuery.data]);
+
+  // Dialog targets
   const [confirmPaidTarget, setConfirmPaidTarget] =
     React.useState<ReimburseDataItem | null>(null);
   const [cancelTarget, setCancelTarget] =
@@ -110,35 +182,6 @@ function ReimburseDataPage() {
     React.useState<ReimburseDataItem | null>(null);
   const [previewTransferItem, setPreviewTransferItem] =
     React.useState<ReimburseDataItem | null>(null);
-
-  const itemsRef = React.useRef(items);
-  itemsRef.current = items;
-
-  React.useEffect(() => {
-    setItems(getReimburseDataInitialItems(demo));
-  }, [demo]);
-
-  // Bersihkan object URL bukti transfer lokal saat unmount
-  React.useEffect(() => {
-    return () => {
-      for (const item of itemsRef.current) {
-        const proofUrl = item.transferProof?.filePreviewUrl;
-        if (proofUrl?.startsWith("blob:")) {
-          URL.revokeObjectURL(proofUrl);
-        }
-      }
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (!isAuthorized && !hasRedirectedRef.current) {
-      hasRedirectedRef.current = true;
-      toast.error(REIMBURSE_ACCESS_DENIED_MESSAGE);
-      navigate({ to: "/admin/dashboard", replace: true });
-    } else if (isAuthorized) {
-      hasRedirectedRef.current = false;
-    }
-  }, [isAuthorized, navigate]);
 
   const updateSearch = React.useCallback(
     (
@@ -155,6 +198,14 @@ function ReimburseDataPage() {
             prev.demo === "empty"
               ? prev.demo
               : undefined;
+          const validRole:
+            "super_admin" | "core" | "bendahara" | "staff" | undefined =
+            prev.role === "super_admin" ||
+            prev.role === "core" ||
+            prev.role === "bendahara" ||
+            prev.role === "staff"
+              ? prev.role
+              : undefined;
           const current: ReimburseDataSearch = {
             page: prev.page ?? 1,
             per_page: prev.per_page ?? 10,
@@ -163,13 +214,7 @@ function ReimburseDataPage() {
                 ? prev.status
                 : "all",
             search: prev.search ?? "",
-            role:
-              prev.role === "super_admin" ||
-              prev.role === "core" ||
-              prev.role === "bendahara" ||
-              prev.role === "staff"
-                ? prev.role
-                : "super_admin",
+            role: validRole,
             demo: validDemo,
           };
           return {
@@ -183,38 +228,54 @@ function ReimburseDataPage() {
     [navigate],
   );
 
+  // Menyusun dataset item tabel
+  const items = React.useMemo<ReimburseDataItem[]>(() => {
+    if (demo) {
+      return getReimburseDataInitialItems(demo);
+    }
+
+    if (
+      !reimbursementsQuery.data ||
+      !("data" in reimbursementsQuery.data) ||
+      !Array.isArray(reimbursementsQuery.data.data)
+    ) {
+      return [];
+    }
+
+    return reimbursementsQuery.data.data.map((record) => {
+      const staffInfo = staffMap.get(record.user_id);
+      const applicantName =
+        staffInfo?.name ??
+        (profile.user?.id === record.user_id
+          ? profile.name
+          : `Staf (${record.user_id.slice(0, 8)})`);
+      const applicantAvatar = staffInfo?.avatar;
+      return mapReimbursementToDataItem(record, applicantName, applicantAvatar);
+    });
+  }, [
+    demo,
+    reimbursementsQuery.data,
+    staffMap,
+    profile.user?.id,
+    profile.name,
+  ]);
+
+  const meta =
+    reimbursementsQuery.data && "meta" in reimbursementsQuery.data
+      ? reimbursementsQuery.data.meta
+      : undefined;
+
+  const totalItems = demo ? items.length : (meta?.total ?? items.length);
+  const totalPages = demo
+    ? Math.max(1, Math.ceil(totalItems / perPage))
+    : (meta?.total_pages ?? 1);
+  const safePage = Math.min(page, Math.max(1, totalPages));
+
   const stats = React.useMemo(() => buildReimburseDataStats(items), [items]);
   const filterOptions = React.useMemo(
     () => buildReimburseStatusFilterOptions(items),
     [items],
   );
-
-  const filteredItems = React.useMemo(() => {
-    if (demo === "empty") return [];
-
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-    return items.filter((item) => {
-      if (status === "proses" && item.status !== "Proses") return false;
-      if (status === "selesai" && item.status !== "Selesai") return false;
-      if (!normalizedQuery) return true;
-
-      return (
-        item.applicantName.toLowerCase().includes(normalizedQuery) ||
-        item.note.toLowerCase().includes(normalizedQuery) ||
-        item.method.toLowerCase().includes(normalizedQuery) ||
-        item.destinationNumber.toLowerCase().includes(normalizedQuery)
-      );
-    });
-  }, [demo, items, searchQuery, status]);
-
-  const totalItems = filteredItems.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
-  const safePage = Math.min(page, totalPages);
-
-  const paginatedItems = React.useMemo(() => {
-    const startIndex = (safePage - 1) * perPage;
-    return filteredItems.slice(startIndex, startIndex + perPage);
-  }, [filteredItems, perPage, safePage]);
 
   const hasActiveFilter =
     searchQuery.trim().length > 0 || status !== "all" || demo === "empty";
@@ -252,44 +313,56 @@ function ReimburseDataPage() {
     }));
   };
 
-  const handleConfirmPaid = (uploadedProof?: ReimburseTransferProof) => {
+  const handleConfirmPaid = async (_uploadedProof?: ReimburseTransferProof) => {
     if (!confirmPaidTarget) return;
 
-    const targetId = confirmPaidTarget.id;
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== targetId) return item;
-        return {
-          ...item,
-          status: "Selesai",
-          isNewlyCompleted: true,
-          transferProof:
-            uploadedProof ??
-            item.transferProof ??
-            createDefaultTransferProof(item),
-        };
-      }),
-    );
+    try {
+      await updateReimbursementFn({
+        data: {
+          id: confirmPaidTarget.id,
+          status: "completed",
+          paid_at: new Date().toISOString(),
+          paid_by: profile.user?.id,
+        },
+      });
 
-    setConfirmPaidTarget(null);
-    toast.success(REIMBURSE_PAID_SUCCESS_TOAST);
+      queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
+      queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
+      setConfirmPaidTarget(null);
+      toast.success(idReimburse.data.toasts.confirmPaidSuccess);
+    } catch (err: unknown) {
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idReimburse.data.toasts.confirmPaidFailed);
+      }
+    }
   };
 
-  const handleConfirmCancel = () => {
+  const handleConfirmCancel = async () => {
     if (!cancelTarget) return;
 
-    const targetId = cancelTarget.id;
-    const proofUrl = cancelTarget.transferProof?.filePreviewUrl;
-    if (proofUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(proofUrl);
-    }
+    try {
+      await deleteReimbursementFn({
+        data: {
+          id: cancelTarget.id,
+        },
+      });
 
-    setItems((prev) => prev.filter((item) => item.id !== targetId));
-    setCancelTarget(null);
-    toast.success(REIMBURSE_CANCEL_SUCCESS_TOAST);
+      queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
+      queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
+      setCancelTarget(null);
+      toast.success(idReimburse.data.toasts.cancelSuccess);
+    } catch (err: unknown) {
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idReimburse.data.toasts.cancelFailed);
+      }
+    }
   };
 
-  if (!isAuthorized || isLoading) {
+  if (!isAuthorized || (!demo && reimbursementsQuery.isLoading)) {
     return <ReimburseDataSkeleton />;
   }
 
@@ -307,7 +380,7 @@ function ReimburseDataPage() {
       />
 
       <ReimburseDataTable
-        items={paginatedItems}
+        items={items}
         canCancel={canCancel}
         hasActiveFilter={hasActiveFilter}
         currentPage={safePage}

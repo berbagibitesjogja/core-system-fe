@@ -1,0 +1,92 @@
+// Teks presentasi dan kamus galat modul Reimburse dalam Bahasa Indonesia
+// prettier-ignore
+export const idReimburse = {
+  data: {
+    title: "Data Reimburse",
+    subtitle: "Kelola dan verifikasi pengajuan penggantian dana operasional",
+    toasts: {
+      confirmPaidSuccess: "Status reimburse berhasil diperbarui menjadi selesai.",
+      confirmPaidFailed: "Gagal memperbarui status pembayaran reimburse. Silakan coba lagi.",
+      cancelSuccess: "Pengajuan reimburse berhasil dibatalkan.",
+      cancelFailed: "Gagal membatalkan pengajuan reimburse. Silakan coba lagi.",
+      accessDenied: "Halaman Data Reimburse hanya untuk Super Admin, Core Team, dan Divisi Bendahara.",
+    },
+    stats: {
+      pendingTitle: "Menunggu Diproses",
+      pendingSubtext: (count: number) => `${count} pengajuan perlu dicek`,
+      disbursedTitle: "Dicairkan Bulan Ini",
+      disbursedSubtext: (count: number) => `${count} pengajuan selesai`,
+      totalClaimsTitle: "Total Pengajuan",
+      totalClaimsUnit: "Klaim",
+      averageClaim: "Rata-rata klaim operasional",
+    },
+  },
+  request: {
+    title: "Reimburse",
+    subtitle: "Ajukan penggantian biaya operasional dan pantau statusnya",
+    toasts: {
+      createSuccess: (amount: string) => `Pengajuan terkirim. Nominal terdeteksi: ${amount}`,
+      createFailed: "Gagal mengirimkan pengajuan reimburse. Silakan coba beberapa saat lagi.",
+    },
+    alerts: {
+      ocrFailedTitle: "Invoice Tidak Terbaca",
+      ocrFailedDescription: "Foto buram atau tidak memuat nominal yang jelas. Silakan unggah ulang berkas yang lebih jelas.",
+      timeoutTitle: "Analisis Memakan Waktu Lebih Lama",
+      timeoutDescription: "Sistem sedang antre memproses dokumen. Anda tetap dapat melanjutkan pengajuan.",
+    },
+  },
+  validation: {
+    idRequired: "ID reimburse wajib disertakan.",
+    amountRequired: "Nominal reimburse wajib diisi dan harus lebih besar dari 0.",
+    methodRequired: "Metode pembayaran wajib diisi.",
+    destinationRequired: "Nomor tujuan atau rekening wajib diisi.",
+    noteRequired: "Catatan keperluan wajib diisi.",
+    fileRequired: "Unggah berkas invoice terlebih dahulu.",
+    fileRejected: "Format berkas tidak didukung atau ukuran melebihi 5MB.",
+  },
+
+  // Galat spesifik domain reimbursement dari API backend core-system
+  errors: {
+    apiMessages: {
+      "Amount must be greater than zero": "Nominal pengajuan harus lebih besar dari nol.",
+      "Payment method cannot be empty": "Metode pembayaran tidak boleh kosong.",
+      "Payment method is required": "Metode pembayaran wajib diisi.",
+      "Payment method cannot exceed 50 characters": "Metode pembayaran maksimal 50 karakter.",
+      "Target cannot be empty": "Nomor atau rekening tujuan tidak boleh kosong.",
+      "Target account or number is required": "Nomor atau rekening tujuan wajib diisi.",
+      "Target cannot exceed 100 characters": "Nomor tujuan maksimal 100 karakter.",
+      "Referenced receipt file does not exist": "Berkas kuitansi/bukti yang direferensikan tidak ditemukan.",
+      "Referenced payment proof file does not exist": "Berkas bukti transfer yang direferensikan tidak ditemukan.",
+      "Invalid receipt file ID format": "Format ID berkas kuitansi tidak valid.",
+      "Invalid reimbursement ID format": "Format ID reimburse tidak valid.",
+      "Invalid user_id filter format": "Format ID pengguna tidak valid.",
+      "Invalid payment proof UUID format": "Format ID berkas bukti transfer tidak valid.",
+      "Payment proof must be a valid UUID string or null": "Format ID berkas bukti transfer tidak valid.",
+      "Invalid paid_by UUID format": "Format ID pembayar tidak valid.",
+      "Paid by must be a valid UUID string or null": "Format ID pembayar tidak valid.",
+      "Rejection reason must be a valid string or null": "Format alasan penolakan tidak valid.",
+      "File IDs must be an array of UUID strings": "Daftar ID berkas harus berupa array UUID yang valid.",
+      "Invalid status filter. Allowed: pending, completed, rejected": "Filter status tidak valid. Pilihan: pending, completed, rejected.",
+      "Invalid status. Allowed: pending, completed, rejected": "Status reimburse tidak valid. Pilihan: pending, completed, rejected.",
+      "Reimbursement not found": "Data reimburse tidak ditemukan di dalam sistem.",
+      "Invalid request body": "Format data pengajuan reimburse tidak valid.",
+      "Failed to start transaction": "Gagal memulai transaksi database.",
+      "Failed to commit transaction": "Gagal menyelesaikan transaksi database.",
+      "Failed to create reimbursement": "Gagal membuat pengajuan reimburse.",
+      "Failed to link receipt file": "Gagal menghubungkan berkas kuitansi pengajuan.",
+      "Failed to retrieve reimbursement": "Gagal mengambil data reimburse dari sistem.",
+      "Failed to retrieve attached files": "Gagal mengambil berkas lampiran kuitansi.",
+      "Failed to update reimbursement": "Gagal memperbarui data reimburse.",
+      "Failed to reset attached receipt files": "Gagal memperbarui daftar berkas kuitansi.",
+      "Failed to delete reimbursement": "Gagal membatalkan pengajuan reimburse.",
+      "Failed to list reimbursements": "Gagal memuat daftar reimburse.",
+      "Failed to count reimbursements": "Gagal menghitung data reimburse.",
+    } as Record<string, string>,
+
+    errorCodes: {
+      VAL_001: "Format data pengajuan reimburse tidak valid atau melanggar aturan input.",
+      VAL_002: "Berkas lampiran atau bukti transfer yang direferensikan tidak ditemukan.",
+      NOT_FOUND: "Data reimburse tidak ditemukan di dalam sistem.",
+    } as Record<string, string>,
+  },
+};
