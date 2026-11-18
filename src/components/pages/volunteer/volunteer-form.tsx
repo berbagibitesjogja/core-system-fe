@@ -8,16 +8,19 @@ import {
   User,
   Users,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { OptionCard } from "#/components/shared/option-card";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Textarea } from "#/components/ui/textarea";
+import { getDivisions } from "#/services/divisionService";
 import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
 import {
-  VOLUNTEER_DIVISION_OPTIONS,
+  mapDivisionsToFormOptions,
   VOLUNTEER_ROLE_OPTIONS,
   defaultVolunteerFormValues,
 } from "./volunteer-data";
@@ -54,8 +57,6 @@ const ROLE_ICON_MAP: Record<
   core: LayoutGrid,
   super: Sparkles,
 };
-
-const FORM_DIVISIONS = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all");
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[0-9+()-\s]{8,20}$/;
@@ -100,10 +101,23 @@ export function VolunteerForm({
     return null;
   });
 
-  const [isDivisionFailed, setIsDivisionFailed] = React.useState(
-    demoState === "division-error",
+  const getDivisionsFn = useServerFn(getDivisions);
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
+
+  const [demoErrorDismissed, setDemoErrorDismissed] = React.useState(false);
+  const isDivisionFailed =
+    (demoState === "division-error" && !demoErrorDismissed) ||
+    divisionsQuery.isError;
+  const isRetryingDivision = divisionsQuery.isFetching;
+
+  const divisionOptions = React.useMemo(
+    () => mapDivisionsToFormOptions(divisionsQuery.data?.data),
+    [divisionsQuery.data?.data],
   );
-  const [isRetryingDivision, setIsRetryingDivision] = React.useState(false);
+
   const [divisionDropdownOpen, setDivisionDropdownOpen] = React.useState(false);
   const divisionContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -126,10 +140,8 @@ export function VolunteerForm({
   }, [divisionDropdownOpen]);
 
   const handleRetryDivision = async () => {
-    setIsRetryingDivision(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setIsDivisionFailed(false);
-    setIsRetryingDivision(false);
+    setDemoErrorDismissed(true);
+    await divisionsQuery.refetch();
   };
 
   const validate = (formValues: VolunteerFormValues): VolunteerFormErrors => {
@@ -324,7 +336,7 @@ export function VolunteerForm({
                   aria-label="Daftar Divisi"
                   className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto"
                 >
-                  {FORM_DIVISIONS.map((opt) => {
+                  {divisionOptions.map((opt) => {
                     const isSelected = opt.label === values.division;
                     return (
                       <button

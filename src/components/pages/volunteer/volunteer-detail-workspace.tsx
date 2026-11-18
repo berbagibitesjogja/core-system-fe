@@ -1,14 +1,15 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Pencil, Sparkles } from "lucide-react";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
+import { getDivisions } from "#/services/divisionService";
 import {
   defaultVolunteerActivities,
-  DIVISION_NAME_TO_ID,
+  getDivisionIdByName,
 } from "./volunteer-data";
 import type {
   VolunteerFormValues,
@@ -56,8 +57,14 @@ export function VolunteerDetailWorkspace({
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
+  const getDivisionsFn = useServerFn(getDivisions);
   const updateVolunteerStaffFn = useServerFn(updateVolunteerStaff);
   const deleteVolunteerStaffFn = useServerFn(deleteVolunteerStaff);
+
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
 
   const [volunteer, setVolunteer] =
     React.useState<VolunteerRecord>(initialVolunteer);
@@ -112,7 +119,8 @@ export function VolunteerDetailWorkspace({
             ? "core"
             : "staff";
 
-      const divisionId = DIVISION_NAME_TO_ID[values.division] ?? 3;
+      const divisionId =
+        getDivisionIdByName(values.division, divisionsQuery.data?.data) ?? 3;
 
       await updateVolunteerStaffFn({
         data: {
@@ -127,7 +135,7 @@ export function VolunteerDetailWorkspace({
         name: values.name,
         email: values.email,
         phone: values.phone,
-        division: values.division as VolunteerRecord["division"],
+        division: values.division,
         role: values.role,
       };
       setVolunteer(updated);
@@ -138,6 +146,7 @@ export function VolunteerDetailWorkspace({
         queryKey: ["volunteer-detail", volunteer.id],
       });
       await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+      await queryClient.invalidateQueries({ queryKey: ["divisions"] });
 
       toast.success(idVolunteer.detail.toasts.updateSuccess(updated.name));
     } catch (error) {

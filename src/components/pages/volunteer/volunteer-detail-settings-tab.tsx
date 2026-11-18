@@ -1,15 +1,18 @@
 import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { cn } from "#/lib/utils";
+import { getDivisions } from "#/services/divisionService";
 import {
-  VOLUNTEER_DIVISION_OPTIONS,
+  mapDivisionsToFormOptions,
   VOLUNTEER_ROLE_META,
   VOLUNTEER_ROLE_OPTIONS,
 } from "./volunteer-data";
-import type { VolunteerDivision, VolunteerFormValues } from "./volunteer-data";
+import type { VolunteerFormValues } from "./volunteer-data";
 
 export interface VolunteerDetailSettingsTabProps {
   initialValues: VolunteerFormValues;
@@ -18,8 +21,6 @@ export interface VolunteerDetailSettingsTabProps {
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
 }
-
-const FORM_DIVISIONS = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all");
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[0-9+()-\s]{8,20}$/;
@@ -34,6 +35,17 @@ export function VolunteerDetailSettingsTab({
   onSubmit,
   className,
 }: VolunteerDetailSettingsTabProps) {
+  const getDivisionsFn = useServerFn(getDivisions);
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
+
+  const divisionOptions = React.useMemo(
+    () => mapDivisionsToFormOptions(divisionsQuery.data?.data),
+    [divisionsQuery.data?.data],
+  );
+
   const [values, setValues] =
     React.useState<VolunteerFormValues>(initialValues);
   const [errors, setErrors] = React.useState<
@@ -167,7 +179,7 @@ export function VolunteerDetailSettingsTab({
               role="listbox"
               className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-56 overflow-y-auto"
             >
-              {FORM_DIVISIONS.map((opt) => {
+              {divisionOptions.map((opt) => {
                 const isSelected = opt.label === values.division;
                 return (
                   <button
@@ -176,10 +188,7 @@ export function VolunteerDetailSettingsTab({
                     role="option"
                     aria-selected={isSelected}
                     onClick={() => {
-                      handleFieldChange(
-                        "division",
-                        opt.label as VolunteerDivision,
-                      );
+                      handleFieldChange("division", opt.label);
                       setDivisionOpen(false);
                     }}
                     className={cn(

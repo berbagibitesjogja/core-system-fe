@@ -6,9 +6,9 @@ import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import {
-  DIVISION_NAME_TO_ID,
+  getDivisionIdByName,
   getVolunteerStats,
-  VOLUNTEER_DIVISION_OPTIONS,
+  mapDivisionsToOptions,
   VolunteerCannotDeleteDialog,
   VolunteerDeleteDialog,
   VolunteerPageSkeleton,
@@ -21,6 +21,7 @@ import type {
   VolunteerRecord,
   VolunteerUserRole,
 } from "#/components/pages/volunteer";
+import { getDivisions } from "#/services/divisionService";
 import {
   deleteVolunteerStaff,
   getVolunteers,
@@ -28,10 +29,6 @@ import {
 } from "#/services/volunteerService";
 import { idVolunteer } from "#/locales";
 import { isApiError } from "#/services/errorService";
-
-const validDivisionIds = new Set(
-  VOLUNTEER_DIVISION_OPTIONS.map((option) => option.id),
-);
 
 // Skema validasi parameter URL tipe-aman untuk halaman Volunteer
 const volunteerSearchSchema = z.object({
@@ -51,10 +48,6 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
   validateSearch: (search: Record<string, unknown>) => {
     const rawDivision =
       typeof search.division === "string" ? search.division.trim() : "all";
-    const matchedDivision =
-      VOLUNTEER_DIVISION_OPTIONS.find(
-        (opt) => opt.id.toLowerCase() === rawDivision.toLowerCase(),
-      )?.id ?? "all";
 
     const rawRole = typeof search.role === "string" ? search.role : "";
     const normalizedRole: VolunteerUserRole =
@@ -70,7 +63,7 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
 
     return volunteerSearchSchema.parse({
       ...search,
-      division: validDivisionIds.has(matchedDivision) ? matchedDivision : "all",
+      division: rawDivision || "all",
       search: typeof search.search === "string" ? search.search : "",
       page: search.page ?? 1,
       per_page: search.per_page ?? search.perpage ?? 10,
@@ -99,11 +92,26 @@ function VolunteerPage() {
     loading = false,
   } = Route.useSearch();
 
+  const getDivisionsFn = useServerFn(getDivisions);
   const getVolunteersFn = useServerFn(getVolunteers);
   const deleteVolunteerStaffFn = useServerFn(deleteVolunteerStaff);
 
+  // Mengambil daftar divisi secara dinamis via TanStack Query
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
+
+  const divisionList = divisionsQuery.data?.data ?? [];
+  const divisionOptions = React.useMemo(
+    () => mapDivisionsToOptions(divisionList),
+    [divisionList],
+  );
+
   const divisionId =
-    division !== "all" ? DIVISION_NAME_TO_ID[division] : undefined;
+    division !== "all"
+      ? getDivisionIdByName(division, divisionList)
+      : undefined;
 
   // Mengambil daftar staf secara langsung via TanStack Query
   const volunteersQuery = useQuery({
@@ -298,6 +306,7 @@ function VolunteerPage() {
         searchQuery={search}
         onSearchChange={handleSearchChange}
         onAddVolunteer={() => navigate({ to: "/admin/volunteer/add" })}
+        divisionOptions={divisionOptions}
       />
 
       {/* Tabel Daftar Volunteer & Paginasi */}

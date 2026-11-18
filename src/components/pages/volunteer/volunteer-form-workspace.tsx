@@ -1,14 +1,15 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { toast } from "#/components/ui/toast";
 import { VolunteerForm } from "./volunteer-form";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
-import { DIVISION_NAME_TO_ID } from "./volunteer-data";
+import { getDivisionIdByName } from "./volunteer-data";
 import type { VolunteerFormValues } from "./volunteer-data";
+import { getDivisions } from "#/services/divisionService";
 import { createVolunteerInvitation } from "#/services/volunteerService";
 import { idVolunteer } from "#/locales";
 import { isApiError } from "#/services/errorService";
@@ -34,7 +35,13 @@ export function VolunteerFormWorkspace({
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
+  const getDivisionsFn = useServerFn(getDivisions);
   const createVolunteerInvitationFn = useServerFn(createVolunteerInvitation);
+
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
@@ -81,7 +88,8 @@ export function VolunteerFormWorkspace({
               ? "core"
               : "staff";
 
-        const divisionId = DIVISION_NAME_TO_ID[values.division] ?? 3;
+        const divisionId =
+          getDivisionIdByName(values.division, divisionsQuery.data?.data) ?? 3;
 
         await createVolunteerInvitationFn({
           data: {
@@ -95,9 +103,11 @@ export function VolunteerFormWorkspace({
 
         // Wajib mengedaluwarsakan seluruh query terkait pasca perubahan data
         await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+        await queryClient.invalidateQueries({ queryKey: ["divisions"] });
         toast.success(idVolunteer.add.toasts.inviteSuccess(values.name));
       } else {
         await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+        await queryClient.invalidateQueries({ queryKey: ["divisions"] });
         toast.success(`Perubahan data "${values.name}" berhasil disimpan.`);
       }
 

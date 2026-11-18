@@ -11,7 +11,10 @@ export type VolunteerDivision =
   | "Fund"
   | "Volunteer"
   | "Friend"
-  | "Logistik";
+  | "Logistik"
+  | "Managerial"
+  | "Operational"
+  | string;
 
 export type VolunteerSystemRole = "super" | "core" | "staff" | "member";
 
@@ -203,20 +206,28 @@ export const VOLUNTEER_DIVISION_OPTIONS: VolunteerDivisionOption[] = [
 ];
 
 // Pemetaan warna badge tiap divisi sesuai desain Figma 149:19230
-export const VOLUNTEER_DIVISION_BADGE_TONE: Record<
-  VolunteerDivision,
-  VolunteerBadgeTone
-> = {
-  "Operational Manager": "neutral",
-  IT: "info",
-  Food: "brand",
-  Medinfo: "accent",
-  Bendahara: "warning",
-  Fund: "success",
-  Volunteer: "neutral",
-  Friend: "neutral",
-  Logistik: "info",
-};
+export const VOLUNTEER_DIVISION_BADGE_TONE: Record<string, VolunteerBadgeTone> =
+  {
+    "Operational Manager": "neutral",
+    IT: "info",
+    Food: "brand",
+    Medinfo: "accent",
+    Bendahara: "warning",
+    Fund: "success",
+    Volunteer: "neutral",
+    Friend: "neutral",
+    Logistik: "info",
+    Managerial: "warning",
+    Operational: "brand",
+  };
+
+// Mengambil tone badge divisi dengan fallback aman neutral
+export function getVolunteerDivisionBadgeTone(
+  division: string,
+): VolunteerBadgeTone {
+  const normalized = division.trim();
+  return VOLUNTEER_DIVISION_BADGE_TONE[normalized] ?? "neutral";
+}
 
 // Pemetaan nama divisi ke ID divisi di database (core-system divisions table)
 export const DIVISION_NAME_TO_ID: Record<string, number> = {
@@ -240,6 +251,55 @@ export const DIVISION_ID_TO_NAME: Record<number, string> = {
   3: "Operational",
   4: "Medinfo",
 };
+
+// Mengubah daftar divisi API menjadi opsi dropdown toolbar (termasuk opsi "Semua Divisi")
+export function mapDivisionsToOptions(
+  divisions?: { id: number; name: string }[],
+): VolunteerDivisionOption[] {
+  if (!divisions || divisions.length === 0) {
+    return VOLUNTEER_DIVISION_OPTIONS;
+  }
+  return [
+    { id: "all", label: "Semua Divisi" },
+    ...divisions.map((item) => ({ id: item.name, label: item.name })),
+  ];
+}
+
+// Mengubah daftar divisi API menjadi opsi dropdown form (tanpa "Semua Divisi")
+export function mapDivisionsToFormOptions(
+  divisions?: { id: number; name: string }[],
+): VolunteerDivisionOption[] {
+  if (!divisions || divisions.length === 0) {
+    return VOLUNTEER_DIVISION_OPTIONS.filter((item) => item.id !== "all");
+  }
+  return divisions.map((item) => ({ id: item.name, label: item.name }));
+}
+
+// Mencari ID divisi berdasarkan nama divisi secara dinamis dari API atau kamus statis
+export function getDivisionIdByName(
+  name: string,
+  divisions?: { id: number; name: string }[],
+): number | undefined {
+  if (divisions && divisions.length > 0) {
+    const found = divisions.find(
+      (item) => item.name.toLowerCase() === name.trim().toLowerCase(),
+    );
+    if (found) return found.id;
+  }
+  return DIVISION_NAME_TO_ID[name.trim()];
+}
+
+// Mencari nama divisi berdasarkan ID divisi secara dinamis dari API atau kamus statis
+export function getDivisionNameById(
+  id: number,
+  divisions?: { id: number; name: string }[],
+): string | undefined {
+  if (divisions && divisions.length > 0) {
+    const found = divisions.find((item) => item.id === id);
+    if (found) return found.name;
+  }
+  return DIVISION_ID_TO_NAME[id];
+}
 
 // Memformat angka menggunakan pemisah ribuan Indonesia
 export function formatVolunteerCount(value: number): string {

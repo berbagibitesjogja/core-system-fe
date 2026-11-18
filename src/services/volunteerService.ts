@@ -1,10 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
-import type {
-  VolunteerDivision,
-  VolunteerRecord,
-} from "#/components/pages/volunteer/volunteer-data";
+import type { VolunteerRecord } from "#/components/pages/volunteer/volunteer-data";
 
 /**
  * Tipe data representasi staf dari Backend API (core-system /api/v1/staff)
@@ -140,7 +137,7 @@ export function mapStaffToVolunteerRecord(
     name: staff.name,
     email: staff.email,
     phone: formatStaffPhoneNumber(staff.phone_number),
-    division: (staff.division_name || "Volunteer") as VolunteerDivision,
+    division: staff.division_name || "Volunteer",
     role: staff.role,
     hasActiveRelations: false,
     joinedDate: formatStaffJoinedDate(staff.created_at),

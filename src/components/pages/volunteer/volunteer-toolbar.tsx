@@ -3,6 +3,7 @@ import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
 import { VOLUNTEER_DIVISION_OPTIONS } from "./volunteer-data";
+import type { VolunteerDivisionOption } from "./volunteer-data";
 import { VolunteerSelectField } from "./volunteer-select-field";
 
 export interface VolunteerToolbarProps {
@@ -11,6 +12,7 @@ export interface VolunteerToolbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onAddVolunteer: () => void;
+  divisionOptions?: VolunteerDivisionOption[];
 }
 
 /**
@@ -22,6 +24,7 @@ export function VolunteerToolbar({
   searchQuery,
   onSearchChange,
   onAddVolunteer,
+  divisionOptions = VOLUNTEER_DIVISION_OPTIONS,
 }: VolunteerToolbarProps) {
   return (
     <div className="bg-surface border border-neutral-200 rounded-lg p-5 shadow-xs w-full">
@@ -30,10 +33,10 @@ export function VolunteerToolbar({
         <div className="w-full sm:w-[240px] shrink-0">
           <VolunteerSelectField
             value={selectedDivision}
-            options={VOLUNTEER_DIVISION_OPTIONS}
+            options={divisionOptions}
             placeholder="Semua Divisi"
             onChange={onDivisionChange}
-            searchable={VOLUNTEER_DIVISION_OPTIONS.length > 7}
+            searchable={divisionOptions.length > 7}
             searchPlaceholder="Cari divisi..."
             emptyText="Divisi tidak ditemukan"
             menuClassName="sm:w-[280px]"
