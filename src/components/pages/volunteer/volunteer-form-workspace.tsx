@@ -1,49 +1,45 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
-import { toast } from "#/components/ui/toast";
 import { VolunteerForm } from "./volunteer-form";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
-import { getDivisionIdByName } from "./volunteer-data";
-import type { VolunteerFormValues } from "./volunteer-data";
-import { getDivisions } from "#/services/divisionService";
-import { createVolunteerInvitation } from "#/services/volunteerService";
-import { idVolunteer } from "#/locales";
-import { isApiError } from "#/services/errorService";
+import type {
+  VolunteerDivisionOption,
+  VolunteerFormValues,
+} from "./volunteer-data";
 
 export interface VolunteerFormWorkspaceProps {
   mode: "add" | "edit";
   initialData?: Partial<VolunteerFormValues>;
   demoState?: "division-error" | "duplicate" | "none";
+  divisionOptions?: VolunteerDivisionOption[];
+  isDivisionError?: boolean;
+  isDivisionFetching?: boolean;
+  onRetryDivision?: () => void;
+  onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
+  isSubmitting?: boolean;
 }
 
 /**
- * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah Volunteer.
- * Form terhubung langsung ke Server Function pembuatan undangan dan mengedaluwarsakan
- * query cache saat data berhasil disimpan.
+ * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah/Edit Volunteer.
+ * Murni presentasional dan menerima handler submit serta opsi data dari rute.
  */
 export function VolunteerFormWorkspace({
   mode,
   initialData,
   demoState = "none",
+  divisionOptions,
+  isDivisionError,
+  isDivisionFetching,
+  onRetryDivision,
+  onSubmit,
+  isSubmitting = false,
 }: VolunteerFormWorkspaceProps) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const getDivisionsFn = useServerFn(getDivisions);
-  const createVolunteerInvitationFn = useServerFn(createVolunteerInvitation);
-
-  const divisionsQuery = useQuery({
-    queryKey: ["divisions"],
-    queryFn: () => getDivisionsFn(),
-  });
-
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
 
   const handleRequestLeave = React.useCallback(() => {
@@ -75,59 +71,6 @@ export function VolunteerFormWorkspace({
     return () => setHeaderOverride(null);
   }, [setHeaderOverride, headerTitle, headerSubtitle, handleRequestLeave]);
 
-  const handleSubmitSuccess = async (values: VolunteerFormValues) => {
-    setIsSubmitting(true);
-
-    try {
-      if (mode === "add") {
-        // Petakan role form ke role backend ('super' | 'core' | 'staff')
-        const backendRole: "super" | "core" | "staff" =
-          values.role === "super"
-            ? "super"
-            : values.role === "core"
-              ? "core"
-              : "staff";
-
-        const divisionId =
-          getDivisionIdByName(values.division, divisionsQuery.data?.data) ?? 3;
-
-        await createVolunteerInvitationFn({
-          data: {
-            email: values.email.trim(),
-            role: backendRole,
-            division_id: divisionId,
-            name: values.name.trim() || undefined,
-            phone_number: values.phone.trim() || undefined,
-          },
-        });
-
-        // Wajib mengedaluwarsakan seluruh query terkait pasca perubahan data
-        await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
-        await queryClient.invalidateQueries({ queryKey: ["divisions"] });
-        toast.success(idVolunteer.add.toasts.inviteSuccess(values.name));
-      } else {
-        await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
-        await queryClient.invalidateQueries({ queryKey: ["divisions"] });
-        toast.success(`Perubahan data "${values.name}" berhasil disimpan.`);
-      }
-
-      navigate({ to: "/admin/volunteer" });
-    } catch (error) {
-      if (isApiError(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error(
-          mode === "add"
-            ? idVolunteer.add.toasts.inviteFailed
-            : "Gagal menyimpan perubahan. Silakan coba beberapa saat lagi.",
-        );
-      }
-      throw error;
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">
       {/* Kolom Kiri: Formulir Penempatan & Kontak Volunteer */}
@@ -136,9 +79,13 @@ export function VolunteerFormWorkspace({
           mode={mode}
           initialData={initialData}
           demoState={demoState}
+          divisionOptions={divisionOptions}
+          isDivisionError={isDivisionError}
+          isDivisionFetching={isDivisionFetching}
+          onRetryDivision={onRetryDivision}
           isSubmitting={isSubmitting}
           onCancel={handleRequestLeave}
-          onSubmit={handleSubmitSuccess}
+          onSubmit={onSubmit}
         />
       </div>
 

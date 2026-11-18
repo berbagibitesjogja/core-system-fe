@@ -1,23 +1,24 @@
 import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { cn } from "#/lib/utils";
-import { getDivisions } from "#/services/divisionService";
 import {
-  mapDivisionsToFormOptions,
+  VOLUNTEER_DIVISION_OPTIONS,
   VOLUNTEER_ROLE_META,
   VOLUNTEER_ROLE_OPTIONS,
 } from "./volunteer-data";
-import type { VolunteerFormValues } from "./volunteer-data";
+import type {
+  VolunteerDivisionOption,
+  VolunteerFormValues,
+} from "./volunteer-data";
 
 export interface VolunteerDetailSettingsTabProps {
   initialValues: VolunteerFormValues;
   isSaving?: boolean;
   canEditRole?: boolean;
+  divisionOptions?: VolunteerDivisionOption[];
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
 }
@@ -32,20 +33,10 @@ export function VolunteerDetailSettingsTab({
   initialValues,
   isSaving = false,
   canEditRole = true,
+  divisionOptions = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all"),
   onSubmit,
   className,
 }: VolunteerDetailSettingsTabProps) {
-  const getDivisionsFn = useServerFn(getDivisions);
-  const divisionsQuery = useQuery({
-    queryKey: ["divisions"],
-    queryFn: () => getDivisionsFn(),
-  });
-
-  const divisionOptions = React.useMemo(
-    () => mapDivisionsToFormOptions(divisionsQuery.data?.data),
-    [divisionsQuery.data?.data],
-  );
-
   const [values, setValues] =
     React.useState<VolunteerFormValues>(initialValues);
   const [errors, setErrors] = React.useState<

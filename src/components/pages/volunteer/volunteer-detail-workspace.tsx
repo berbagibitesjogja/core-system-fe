@@ -1,17 +1,11 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Pencil, Sparkles } from "lucide-react";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
-import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
-import { getDivisions } from "#/services/divisionService";
-import {
-  defaultVolunteerActivities,
-  getDivisionIdByName,
-} from "./volunteer-data";
+import { defaultVolunteerActivities } from "./volunteer-data";
 import type {
+  VolunteerDivisionOption,
   VolunteerFormValues,
   VolunteerRecord,
   VolunteerUserRole,
@@ -23,12 +17,6 @@ import { VolunteerDetailDangerZone } from "./volunteer-detail-danger-zone";
 import { VolunteerDetailProfileCard } from "./volunteer-detail-profile-card";
 import { VolunteerDetailSettingsTab } from "./volunteer-detail-settings-tab";
 import { VolunteerDetailSkeleton } from "./volunteer-detail-skeleton";
-import {
-  deleteVolunteerStaff,
-  updateVolunteerStaff,
-} from "#/services/volunteerService";
-import { idVolunteer } from "#/locales";
-import { isApiError } from "#/services/errorService";
 
 export type VolunteerDetailTabKey = "activity" | "settings";
 
@@ -37,39 +25,40 @@ export interface VolunteerDetailWorkspaceProps {
   userRole?: VolunteerUserRole;
   initialTab?: VolunteerDetailTabKey;
   isLoading?: boolean;
+  divisionOptions?: VolunteerDivisionOption[];
   onVolunteerUpdate?: (updated: VolunteerRecord) => void;
-  onVolunteerDelete?: (deletedId: string) => void;
+  onSaveProfile?: (values: VolunteerFormValues) => Promise<void> | void;
+  onDeleteVolunteer?: (volunteer: VolunteerRecord) => Promise<void> | void;
+  isSaving?: boolean;
+  isDeleting?: boolean;
+  blockedDeleteTarget?: VolunteerRecord | null;
+  onClearBlockedDelete?: () => void;
 }
 
 /**
- * VolunteerDetailWorkspace: Orkestrator halaman Detail Volunteer (Figma 151:21395 - 151:22876).
+ * VolunteerDetailWorkspace: Komponen presentasional halaman Detail Volunteer (Figma 151:21395 - 151:22876).
+ * Seluruh pemanggilan Server Function dipusatkan di berkas rute detail.tsx.
  */
 export function VolunteerDetailWorkspace({
   volunteer: initialVolunteer,
   userRole = "super_admin",
   initialTab,
   isLoading = false,
+  divisionOptions,
   onVolunteerUpdate,
-  onVolunteerDelete,
+  onSaveProfile,
+  onDeleteVolunteer,
+  isSaving = false,
+  isDeleting = false,
+  blockedDeleteTarget = null,
+  onClearBlockedDelete,
 }: VolunteerDetailWorkspaceProps) {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const getDivisionsFn = useServerFn(getDivisions);
-  const updateVolunteerStaffFn = useServerFn(updateVolunteerStaff);
-  const deleteVolunteerStaffFn = useServerFn(deleteVolunteerStaff);
-
-  const divisionsQuery = useQuery({
-    queryKey: ["divisions"],
-    queryFn: () => getDivisionsFn(),
-  });
-
   const [volunteer, setVolunteer] =
     React.useState<VolunteerRecord>(initialVolunteer);
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
 
   // Sinkronisasi data saat initialVolunteer berubah dari query API
   React.useEffect(() => {
@@ -77,8 +66,6 @@ export function VolunteerDetailWorkspace({
   }, [initialVolunteer]);
 
   const [deleteTarget, setDeleteTarget] =
-    React.useState<VolunteerRecord | null>(null);
-  const [cannotDeleteTarget, setCannotDeleteTarget] =
     React.useState<VolunteerRecord | null>(null);
 
   // Super Admin dapat melihat tab Aktivitas (Figma 151:21395). Core & Staff hanya Pengaturan Profil (Figma 151:22180).
@@ -108,91 +95,30 @@ export function VolunteerDetailWorkspace({
     return () => setHeaderOverride(null);
   }, [setHeaderOverride, volunteer.name, navigate]);
 
-  // Handler simpan data profil (Figma 151:22876)
+  // Handler simpan data profil
   const handleSaveProfile = async (values: VolunteerFormValues) => {
-    setIsSaving(true);
-    try {
-      const backendRole: "super" | "core" | "staff" =
-        values.role === "super"
-          ? "super"
-          : values.role === "core"
-            ? "core"
-            : "staff";
-
-      const divisionId =
-        getDivisionIdByName(values.division, divisionsQuery.data?.data) ?? 3;
-
-      await updateVolunteerStaffFn({
-        data: {
-          id: volunteer.id,
-          role: backendRole,
-          division_id: divisionId,
-        },
-      });
-
-      const updated: VolunteerRecord = {
-        ...volunteer,
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        division: values.division,
-        role: values.role,
-      };
-      setVolunteer(updated);
-      onVolunteerUpdate?.(updated);
-
-      // Mengedaluwarsakan seluruh query terkait pasca-perubahan data
-      await queryClient.invalidateQueries({
-        queryKey: ["volunteer-detail", volunteer.id],
-      });
-      await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
-      await queryClient.invalidateQueries({ queryKey: ["divisions"] });
-
-      toast.success(idVolunteer.detail.toasts.updateSuccess(updated.name));
-    } catch (error) {
-      if (isApiError(error)) {
-        toast.error(error.message);
-      } else {
-        toast.error(idVolunteer.detail.toasts.updateFailed);
-      }
-    } finally {
-      setIsSaving(false);
+    if (onSaveProfile) {
+      await onSaveProfile(values);
     }
+    const updated: VolunteerRecord = {
+      ...volunteer,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      division: values.division,
+      role: values.role,
+    };
+    setVolunteer(updated);
+    onVolunteerUpdate?.(updated);
   };
 
   // Handler konfirmasi hapus volunteer
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-
-    setIsDeleting(true);
-    try {
-      await deleteVolunteerStaffFn({ data: { id: deleteTarget.id } });
-      await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
-
-      setDeleteTarget(null);
-      toast.success(idVolunteer.detail.toasts.deleteSuccess(deleteTarget.name));
-      onVolunteerDelete?.(deleteTarget.id);
-      navigate({ to: "/admin/volunteer" });
-    } catch (error) {
-      if (
-        isApiError(error) &&
-        (error.code === "ROLE_LAST_SUPER" ||
-          error.status === 400 ||
-          error.status === 409)
-      ) {
-        const blocked = deleteTarget;
-        setDeleteTarget(null);
-        setCannotDeleteTarget(blocked);
-      } else {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : idVolunteer.detail.toasts.deleteFailed,
-        );
-      }
-    } finally {
-      setIsDeleting(false);
+    if (onDeleteVolunteer) {
+      await onDeleteVolunteer(deleteTarget);
     }
+    setDeleteTarget(null);
   };
 
   if (isLoading) {
@@ -292,6 +218,7 @@ export function VolunteerDetailWorkspace({
               initialValues={formValues}
               isSaving={isSaving}
               canEditRole={canDeleteAccount}
+              divisionOptions={divisionOptions}
               onSubmit={handleSaveProfile}
             />
           )}
@@ -315,11 +242,11 @@ export function VolunteerDetailWorkspace({
         isLoading={isDeleting}
       />
 
-      {/* Modal Gagal Hapus 409 (Terikat Data Relasi) */}
+      {/* Modal Gagal Hapus 409 (Terikat Data Relasi / Last Super) */}
       <VolunteerCannotDeleteDialog
-        isOpen={Boolean(cannotDeleteTarget)}
-        onClose={() => setCannotDeleteTarget(null)}
-        volunteer={cannotDeleteTarget}
+        isOpen={Boolean(blockedDeleteTarget)}
+        onClose={() => onClearBlockedDelete?.()}
+        volunteer={blockedDeleteTarget}
       />
     </div>
   );

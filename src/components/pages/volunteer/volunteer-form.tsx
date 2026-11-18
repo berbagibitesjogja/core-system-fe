@@ -8,23 +8,21 @@ import {
   User,
   Users,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { OptionCard } from "#/components/shared/option-card";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Textarea } from "#/components/ui/textarea";
-import { getDivisions } from "#/services/divisionService";
 import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
 import {
-  mapDivisionsToFormOptions,
+  VOLUNTEER_DIVISION_OPTIONS,
   VOLUNTEER_ROLE_OPTIONS,
   defaultVolunteerFormValues,
 } from "./volunteer-data";
 import type {
+  VolunteerDivisionOption,
   VolunteerFormValues,
   VolunteerRoleOption,
   VolunteerSystemRole,
@@ -38,6 +36,10 @@ export interface VolunteerFormProps {
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
   demoState?: "division-error" | "duplicate" | "none";
+  divisionOptions?: VolunteerDivisionOption[];
+  isDivisionError?: boolean;
+  isDivisionFetching?: boolean;
+  onRetryDivision?: () => void;
 }
 
 interface VolunteerFormErrors {
@@ -72,6 +74,10 @@ export function VolunteerForm({
   onSubmit,
   className,
   demoState = "none",
+  divisionOptions = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all"),
+  isDivisionError = false,
+  isDivisionFetching = false,
+  onRetryDivision,
 }: VolunteerFormProps) {
   const [values, setValues] = React.useState<VolunteerFormValues>(() => {
     if (demoState === "duplicate") {
@@ -101,22 +107,11 @@ export function VolunteerForm({
     return null;
   });
 
-  const getDivisionsFn = useServerFn(getDivisions);
-  const divisionsQuery = useQuery({
-    queryKey: ["divisions"],
-    queryFn: () => getDivisionsFn(),
-  });
-
   const [demoErrorDismissed, setDemoErrorDismissed] = React.useState(false);
   const isDivisionFailed =
     (demoState === "division-error" && !demoErrorDismissed) ||
-    divisionsQuery.isError;
-  const isRetryingDivision = divisionsQuery.isFetching;
-
-  const divisionOptions = React.useMemo(
-    () => mapDivisionsToFormOptions(divisionsQuery.data?.data),
-    [divisionsQuery.data?.data],
-  );
+    Boolean(isDivisionError);
+  const isRetryingDivision = Boolean(isDivisionFetching);
 
   const [divisionDropdownOpen, setDivisionDropdownOpen] = React.useState(false);
   const divisionContainerRef = React.useRef<HTMLDivElement>(null);
@@ -141,7 +136,7 @@ export function VolunteerForm({
 
   const handleRetryDivision = async () => {
     setDemoErrorDismissed(true);
-    await divisionsQuery.refetch();
+    onRetryDivision?.();
   };
 
   const validate = (formValues: VolunteerFormValues): VolunteerFormErrors => {
