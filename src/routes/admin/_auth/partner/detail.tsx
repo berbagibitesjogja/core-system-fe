@@ -4,7 +4,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Pencil } from "lucide-react";
 import { z } from "zod";
-import { defaultDonations } from "#/components/pages/donation";
 import {
   PARTNER_DETAIL_DONATIONS_PER_PAGE,
   PartnerDetailDonationsTable,
@@ -12,11 +11,11 @@ import {
   PartnerDetailSkeleton,
   PartnerStats,
   buildPartnerDetailStats,
-  getPartnerDetailById,
 } from "#/components/pages/partner";
 import type { PartnerDonationRecord } from "#/components/pages/partner";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
+import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import {
   getPartnerDetail,
@@ -34,7 +33,6 @@ const partnerDetailSearchSchema = z.object({
     .optional()
     .catch(PARTNER_DETAIL_DONATIONS_PER_PAGE),
   sort: z.enum(["asc", "desc"]).optional().catch("desc"),
-  state: z.enum(["default", "empty"]).optional().catch(undefined),
 });
 
 export type PartnerDetailSearchParams = z.infer<
@@ -51,12 +49,6 @@ export const Route = createFileRoute("/admin/_auth/partner/detail")({
         search.sort === "asc" || search.sort === "desc"
           ? search.sort
           : undefined,
-      state:
-        search.state === "empty" ||
-        search.empty === "1" ||
-        search.empty === true
-          ? "empty"
-          : undefined,
     });
   },
   component: PartnerDetailPage,
@@ -72,7 +64,6 @@ function PartnerDetailPage() {
   const page = searchParams.page ?? 1;
   const per_page = searchParams.per_page ?? PARTNER_DETAIL_DONATIONS_PER_PAGE;
   const sort = searchParams.sort ?? "desc";
-  const state = searchParams.state;
 
   const navigate = useNavigate();
   const getPartnerDetailFn = useServerFn(getPartnerDetail);
@@ -80,11 +71,10 @@ function PartnerDetailPage() {
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
   const trimmedId = id.trim();
-  const effectiveId = trimmedId ? trimmedId : state === "empty" ? "" : "ptr-1";
 
   // Mengambil detail sponsor dari API backend
   const partnerQuery = useQuery({
-    queryKey: ["partner-detail", effectiveId],
+    queryKey: ["partner-detail", trimmedId],
     queryFn: async () => {
       if (!trimmedId) return null;
       return getPartnerDetailFn({ data: { id: trimmedId } });
@@ -92,19 +82,33 @@ function PartnerDetailPage() {
     enabled: Boolean(trimmedId),
   });
 
+  React.useEffect(() => {
+    if (!trimmedId) {
+      toast.error("ID mitra donatur tidak ditemukan.");
+      navigate({ to: "/admin/partner" });
+    }
+  }, [trimmedId, navigate]);
+
+  React.useEffect(() => {
+    if (partnerQuery.isError) {
+      toast.error("Data mitra donatur tidak ditemukan.");
+      navigate({ to: "/admin/partner" });
+    }
+  }, [partnerQuery.isError, navigate]);
+
   const detail = React.useMemo(() => {
     const apiRecord = partnerQuery.data?.data;
     if (apiRecord) {
       return mapSponsorToPartnerDetailData(apiRecord);
     }
-    return getPartnerDetailById(effectiveId, state);
-  }, [partnerQuery.data, effectiveId, state]);
+    return null;
+  }, [partnerQuery.data]);
 
-  const isLoading = partnerQuery.isLoading;
+  const isLoading = partnerQuery.isLoading || !detail;
 
   // Sinkronkan judul, subjudul, dan tombol kembali pada Header Admin Layout
   React.useEffect(() => {
-    if (!setHeaderOverride) return;
+    if (!setHeaderOverride || !detail) return;
 
     setHeaderOverride({
       title: detail.name,
@@ -114,7 +118,7 @@ function PartnerDetailPage() {
     });
 
     return () => setHeaderOverride(null);
-  }, [setHeaderOverride, detail.name, detail.subtitle, navigate]);
+  }, [setHeaderOverride, detail, navigate]);
 
   // Helper pembaruan URL search params secara tipe-aman
   const updateSearch = React.useCallback(
@@ -129,7 +133,6 @@ function PartnerDetailPage() {
             prev.per_page ??
             PARTNER_DETAIL_DONATIONS_PER_PAGE,
           sort: newParams.sort ?? prev.sort ?? "desc",
-          state: newParams.state !== undefined ? newParams.state : prev.state,
         }),
         replace: true,
       });
@@ -139,13 +142,21 @@ function PartnerDetailPage() {
 
   // Hitung 3 kartu statistik halaman detail partner
   const detailStats = React.useMemo(
-    () => buildPartnerDetailStats(detail),
+    () => (detail ? buildPartnerDetailStats(detail) : []),
     [detail],
   );
 
   // Urutkan dan paginasi riwayat donasi berdasarkan URL search params
   const { paginatedDonations, totalDonations, totalPages, currentPage } =
     React.useMemo(() => {
+      if (!detail) {
+        return {
+          paginatedDonations: [],
+          totalDonations: 0,
+          totalPages: 1,
+          currentPage: 1,
+        };
+      }
       const items = [...detail.donations];
       items.sort((a, b) =>
         sort === "asc"
@@ -164,7 +175,11 @@ function PartnerDetailPage() {
         totalPages: computedPages,
         currentPage: safePage,
       };
-    }, [detail.donations, sort, page, per_page]);
+    }, [detail, sort, page, per_page]);
+
+  if (isLoading) {
+    return <PartnerDetailSkeleton />;
+  }
 
   const handleSortToggle = React.useCallback(() => {
     updateSearch({ sort: sort === "desc" ? "asc" : "desc", page: 1 });
@@ -193,26 +208,14 @@ function PartnerDetailPage() {
         });
         return;
       }
-
-      const matchedDonation = defaultDonations.find(
-        (donation) =>
-          donation.donorName.toLowerCase() === detail.name.toLowerCase(),
-      );
-      navigate({
-        to: "/admin/donation/detail",
-        search: { id: matchedDonation?.id ?? "donasi-1" },
-      });
+      navigate({ to: "/admin/donation" });
     },
-    [navigate, detail.name],
+    [navigate],
   );
 
   const handleAddDonation = React.useCallback(() => {
     navigate({ to: "/admin/donation/add" });
   }, [navigate]);
-
-  if (isLoading) {
-    return <PartnerDetailSkeleton />;
-  }
 
   return (
     <div className="space-y-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">

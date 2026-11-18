@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import { BeneficiaryForm } from "./beneficiary-form";
 import { BeneficiaryFormSkeleton } from "./beneficiary-form-skeleton";
@@ -14,13 +13,14 @@ export interface BeneficiaryFormWorkspaceProps {
   headerSubtitle: string;
   initialData?: Partial<BeneficiaryFormData>;
   isLoading?: boolean;
-  getSuccessMessage: (data: BeneficiaryFormData) => string;
-  errorMessage: string;
+  onSubmit?: (data: BeneficiaryFormData) => Promise<void> | void;
+  getSuccessMessage?: (data: BeneficiaryFormData) => string;
+  errorMessage?: string;
 }
 
 /**
  * BeneficiaryFormWorkspace: Orkestrator tata letak bersama untuk halaman Tambah dan Edit Beneficiary.
- * Mengelola header bar kembali, dialog konfirmasi keluar, simulasi simpan, dan sidebar tips.
+ * Mengelola header bar kembali, dialog konfirmasi keluar, alur submit, dan sidebar tips.
  */
 export function BeneficiaryFormWorkspace({
   mode,
@@ -28,8 +28,7 @@ export function BeneficiaryFormWorkspace({
   headerSubtitle,
   initialData,
   isLoading = false,
-  getSuccessMessage,
-  errorMessage,
+  onSubmit,
 }: BeneficiaryFormWorkspaceProps) {
   const navigate = useNavigate();
   const adminLayout = useAdminLayout();
@@ -65,13 +64,9 @@ export function BeneficiaryFormWorkspace({
     setIsSubmitting(true);
 
     try {
-      // Simulasi request API penyimpanan data beneficiary
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      toast.success(getSuccessMessage(data));
-      navigate({ to: "/admin/beneficiary" });
-    } catch {
-      toast.error(errorMessage);
+      if (onSubmit) {
+        await onSubmit(data);
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import {
@@ -12,18 +14,22 @@ import {
   INITIAL_VISIBLE_BENEFICIARIES,
   buildBeneficiaryFilterOptions,
   buildBeneficiaryStats,
-  defaultBeneficiaries,
 } from "#/components/pages/beneficiary";
 import type {
   BeneficiaryCategoryId,
   BeneficiaryItem,
 } from "#/components/pages/beneficiary";
+import { useUserProfile } from "#/hooks";
+import { idBeneficiary } from "#/locales";
+import {
+  deleteBeneficiary,
+  getBeneficiaries,
+  mapCategoryToBeneficiaryItem,
+} from "#/services/beneficiaryService";
+import { isApiError } from "#/services/errorService";
 
 const beneficiarySearchSchema = z.object({
-  category: z
-    .enum(["all", "universitas", "yayasan", "masyarakat-umum"])
-    .optional()
-    .catch("all"),
+  category: z.string().optional().catch("all"),
   search: z.string().optional().catch(""),
   all: z
     .preprocess((val) => val === true || val === "true", z.boolean())
@@ -49,22 +55,27 @@ export const Route = createFileRoute("/admin/_auth/beneficiary/")({
  */
 function BeneficiaryPage() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
+  const profile = useUserProfile();
+  const getBeneficiariesFn = useServerFn(getBeneficiaries);
+  const deleteBeneficiaryFn = useServerFn(deleteBeneficiary);
 
-  // Simulasi loading skeleton selama 3 detik saat awal render
-  const [isLoading, setIsLoading] = React.useState(true);
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Mengambil daftar kategori penerima manfaat via TanStack Query
+  const beneficiariesQuery = useQuery({
+    queryKey: ["beneficiaries"],
+    queryFn: () => getBeneficiariesFn({ data: { page: 1, limit: 100 } }),
+  });
 
-  // State daftar penerima manfaat lokal & peran pengguna aktif
-  const [beneficiaries, setBeneficiaries] =
-    React.useState<BeneficiaryItem[]>(defaultBeneficiaries);
-  // TODO: ketika integrasi api: ambil role dari sesi auth
-  const userRole = "super_admin" as "super_admin" | "core" | "staff";
+  // Memetakan rekaman API backend ke bentuk presentasi BeneficiaryItem
+  const beneficiaries = React.useMemo<BeneficiaryItem[]>(() => {
+    const apiRecords = beneficiariesQuery.data?.data;
+    if (!Array.isArray(apiRecords)) return [];
+    return apiRecords.map((record, index) =>
+      mapCategoryToBeneficiaryItem(record, index),
+    );
+  }, [beneficiariesQuery.data]);
+
+  const userRole = profile.sidebarRole;
 
   // State modal hapus dan konfirmasi 409
   const [deleteTarget, setDeleteTarget] =
@@ -111,8 +122,11 @@ function BeneficiaryPage() {
 
     let filtered = [...beneficiaries];
 
-    if (activeCategory !== "all") {
-      filtered = filtered.filter((item) => item.categoryId === activeCategory);
+    if (activeCategory && activeCategory !== "all") {
+      filtered = filtered.filter(
+        (item) =>
+          item.categoryId.toLowerCase() === activeCategory.toLowerCase(),
+      );
     }
 
     const query = search.trim().toLowerCase();
@@ -185,22 +199,32 @@ function BeneficiaryPage() {
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
 
-    setTimeout(() => {
-      setBeneficiaries((prev) =>
-        prev.filter((item) => item.id !== deleteTarget.id),
-      );
-      setIsDeleting(false);
+    try {
+      await deleteBeneficiaryFn({ data: { id: deleteTarget.id } });
+      await queryClient.invalidateQueries({ queryKey: ["beneficiaries"] });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
+      toast.success(idBeneficiary.list.toasts.deleteSuccess(deleteTarget.name));
       setIsDeleteDialogOpen(false);
       setDeleteTarget(null);
-      toast.success("Penerima manfaat berhasil dihapus");
-    }, 400);
+    } catch (err: unknown) {
+      if (isApiError(err) && (err.status === 409 || err.code === "CONFLICT")) {
+        setIsDeleteDialogOpen(false);
+        setIsCannotDeleteDialogOpen(true);
+      } else if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idBeneficiary.list.toasts.deleteFailed);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  if (isLoading) {
+  if (beneficiariesQuery.isLoading) {
     return <BeneficiarySkeleton />;
   }
 

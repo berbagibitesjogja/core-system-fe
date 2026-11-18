@@ -41,6 +41,10 @@ export const idAuth = {
       logoutSuccess: "Berhasil keluar dari sistem.",
     },
   },
+  validation: {
+    credentialsRequired: "Email dan kata sandi wajib diisi.",
+    refreshTokenMissing: "Refresh token tidak ditemukan.",
+  },
 
   // Galat spesifik domain autentikasi, akun, sesi, dan hak akses
   errors: {

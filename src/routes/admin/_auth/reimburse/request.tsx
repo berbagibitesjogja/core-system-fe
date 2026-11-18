@@ -1,26 +1,23 @@
 import * as React from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import {
-  REIMBURSE_ALERTS,
+  computeReimburseAnalyzeProgress,
+  detectUploadedFileType,
+  emptyReimburseFormValues,
+  estimateReimburseAmount,
+  formatFileSize,
+  formatRupiah,
+  mapReimbursementToHistoryItem,
   REIMBURSE_ANALYZE_COMPLETE_HOLD_MS,
   REIMBURSE_ANALYZE_HOLD_PROGRESS,
-  REIMBURSE_ANALYZE_MIN_DURATION_MS,
-  REIMBURSE_FILE_REJECTED_MESSAGE,
   REIMBURSE_MAX_FILE_SIZE_BYTES,
   ReimburseFilePreviewDialog,
   ReimburseHistoryCard,
   ReimburseRequestForm,
   ReimburseRequestSkeleton,
   ReimburseTransferProofDialog,
-  computeReimburseAnalyzeProgress,
-  detectSimulatedErrorFromFile,
-  detectUploadedFileType,
-  emptyReimburseFormValues,
-  estimateReimburseAmount,
-  formatFileSize,
-  formatRupiah,
-  getReimbursePresetState,
 } from "#/components/pages/reimburse";
 import type {
   ReimburseAlertState,
@@ -28,34 +25,21 @@ import type {
   ReimburseRequestFieldErrors,
   ReimburseRequestFormValues,
 } from "#/components/pages/reimburse";
+import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import type { FileUploadState } from "#/components/shared/file-upload";
 import { toast } from "#/components/ui/toast";
-import { useAdminLayout } from "#/components/shared/admin-layout-context";
-
-// Skema validasi URL search params tipe-aman Zod untuk meninjau seluruh state Figma
-const reimburseRequestSearchSchema = z.object({
-  demo: z
-    .enum(["default", "analyzing", "error", "busy", "success", "empty"])
-    .optional()
-    .catch(undefined),
-});
+import { useUserProfile } from "#/hooks";
+import { idReimburse } from "#/locales";
+import { isApiError } from "#/services/errorService";
+import {
+  createReimbursement,
+  getReimbursements,
+} from "#/services/reimburseService";
 
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".pdf"];
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 export const Route = createFileRoute("/admin/_auth/reimburse/request")({
-  validateSearch: (search: Record<string, unknown>) => {
-    const candidate =
-      typeof search.demo === "string"
-        ? search.demo
-        : typeof search.state === "string"
-          ? search.state
-          : undefined;
-
-    return reimburseRequestSearchSchema.parse({
-      demo: candidate,
-    });
-  },
   component: ReimburseRequestPage,
 });
 
@@ -63,66 +47,76 @@ export const Route = createFileRoute("/admin/_auth/reimburse/request")({
  * ReimburseRequestPage: Halaman Ajukan Reimburse & Riwayat Pengajuan (Figma 152:22156 - 152:23846).
  */
 function ReimburseRequestPage() {
-  const { demo: demoState } = Route.useSearch();
-  const navigate = useNavigate();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const initialPreset = React.useMemo(
-    () => getReimbursePresetState(demoState),
-    [demoState],
-  );
+  const profile = useUserProfile();
+  const queryClient = useQueryClient();
+
+  const getReimbursementsFn = useServerFn(getReimbursements);
+  const createReimbursementFn = useServerFn(createReimbursement);
 
   const [formValues, setFormValues] =
-    React.useState<ReimburseRequestFormValues>(initialPreset.formValues);
+    React.useState<ReimburseRequestFormValues>(emptyReimburseFormValues);
   const [fieldErrors, setFieldErrors] =
     React.useState<ReimburseRequestFieldErrors>({});
-  const [uploadState, setUploadState] = React.useState<FileUploadState>(
-    initialPreset.uploadState,
-  );
+  const [uploadState, setUploadState] =
+    React.useState<FileUploadState>("default");
   const [uploadErrorMessage, setUploadErrorMessage] = React.useState<
     string | undefined
-  >(initialPreset.uploadErrorMessage);
-  const [alert, setAlert] = React.useState<ReimburseAlertState | null>(
-    initialPreset.alert,
-  );
-  const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(
-    initialPreset.isAnalyzing,
-  );
-  const [analyzingProgress, setAnalyzingProgress] = React.useState<number>(
-    initialPreset.analyzingProgress ?? 0,
-  );
-  const [historyItems, setHistoryItems] = React.useState<
-    ReimburseHistoryItem[]
-  >(initialPreset.historyItems);
+  >(undefined);
+  const [alert, setAlert] = React.useState<ReimburseAlertState | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(false);
+  const [analyzingProgress, setAnalyzingProgress] = React.useState<number>(0);
   const [previewItem, setPreviewItem] =
     React.useState<ReimburseHistoryItem | null>(null);
   const [transferProofItem, setTransferProofItem] =
     React.useState<ReimburseHistoryItem | null>(null);
 
-  const submitTimerRef = React.useRef<number | null>(null);
   const progressIntervalRef = React.useRef<number | null>(null);
   const completeTimerRef = React.useRef<number | null>(null);
   const objectUrlsRef = React.useRef<Set<string>>(new Set());
-  const skipPresetSyncRef = React.useRef(false);
 
-  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [newlyCreatedId, setNewlyCreatedId] = React.useState<string | null>(
+    null,
+  );
 
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Mengambil riwayat pengajuan reimburse staf yang sedang login
+  const myReimbursementsQuery = useQuery({
+    queryKey: ["my-reimbursements", profile.user?.id],
+    queryFn: () =>
+      getReimbursementsFn({
+        data: {
+          user_id: profile.user?.id,
+          limit: 20,
+        },
+      }),
+    enabled: Boolean(profile.user?.id),
+  });
+
+  const queryHistoryItems = React.useMemo<ReimburseHistoryItem[]>(() => {
+    if (
+      !myReimbursementsQuery.data ||
+      !("data" in myReimbursementsQuery.data) ||
+      !Array.isArray(myReimbursementsQuery.data.data)
+    ) {
+      return [];
+    }
+    return myReimbursementsQuery.data.data.map((record) => {
+      const item = mapReimbursementToHistoryItem(record);
+      if (item.id === newlyCreatedId) {
+        return { ...item, isHighlighted: true };
+      }
+      return item;
+    });
+  }, [myReimbursementsQuery.data, newlyCreatedId]);
+
+  const historyItems = queryHistoryItems;
+
+  const isLoading = profile.isLoading || myReimbursementsQuery.isLoading;
 
   // Membersihkan seluruh timer & interval animasi analisis invoice
   const clearAnalyzeTimers = React.useCallback(() => {
-    if (submitTimerRef.current !== null) {
-      window.clearTimeout(submitTimerRef.current);
-      submitTimerRef.current = null;
-    }
     if (progressIntervalRef.current !== null) {
       window.clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
@@ -159,36 +153,6 @@ function ReimburseRequestPage() {
     progressIntervalRef.current = window.setInterval(tick, 50);
   }, []);
 
-  // Sinkronkan preset bila query parameter `?state=...` berubah dari URL / navigasi
-  React.useEffect(() => {
-    if (skipPresetSyncRef.current) {
-      skipPresetSyncRef.current = false;
-      return;
-    }
-
-    clearAnalyzeTimers();
-
-    const preset = getReimbursePresetState(demoState);
-    setFormValues(preset.formValues);
-    setFieldErrors({});
-    setUploadState(preset.uploadState);
-    setUploadErrorMessage(preset.uploadErrorMessage);
-    setAlert(preset.alert);
-    setIsAnalyzing(preset.isAnalyzing);
-    setAnalyzingProgress(preset.analyzingProgress ?? 0);
-    setHistoryItems(preset.historyItems);
-    setPreviewItem(null);
-    setTransferProofItem(null);
-
-    if (demoState === "analyzing") {
-      startProgressRamp();
-    }
-
-    if (preset.initialToastMessage) {
-      toast.success(preset.initialToastMessage, { id: "reimburse-demo-toast" });
-    }
-  }, [demoState, clearAnalyzeTimers, startProgressRamp]);
-
   // Bersihkan timer serta Object URL ketika halaman dilepas
   React.useEffect(() => {
     const urls = objectUrlsRef.current;
@@ -206,8 +170,8 @@ function ReimburseRequestPage() {
     if (!setHeaderOverride) return;
 
     setHeaderOverride({
-      title: "Reimburse",
-      subtitle: "Ajukan penggantian biaya operasional dan pantau statusnya",
+      title: idReimburse.request.title,
+      subtitle: idReimburse.request.subtitle,
     });
 
     return () => setHeaderOverride(null);
@@ -290,22 +254,22 @@ function ReimburseRequestPage() {
     setFieldErrors((prev) => ({ ...prev, file: undefined }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isAnalyzing) return;
 
     const nextErrors: ReimburseRequestFieldErrors = {};
     if (!formValues.paymentMethod.trim()) {
-      nextErrors.paymentMethod = "Metode pembayaran wajib diisi.";
+      nextErrors.paymentMethod = idReimburse.validation.methodRequired;
     }
     if (!formValues.destinationNumber.trim()) {
-      nextErrors.destinationNumber = "Nomor tujuan wajib diisi.";
+      nextErrors.destinationNumber = idReimburse.validation.destinationRequired;
     }
     if (!formValues.note.trim()) {
-      nextErrors.note = "Catatan keperluan wajib diisi.";
+      nextErrors.note = idReimburse.validation.noteRequired;
     }
     if (!formValues.file) {
-      nextErrors.file = "Unggah berkas invoice terlebih dahulu.";
+      nextErrors.file = idReimburse.validation.fileRequired;
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -325,89 +289,65 @@ function ReimburseRequestPage() {
     setUploadErrorMessage(undefined);
     startProgressRamp();
 
-    // TODO: Integrasikan endpoint API AI pembacaan invoice di sini untuk menggantikan simulasi 5 detik:
-    // 1. Jalankan request API paralel dengan durasi minimal 5 detik (`REIMBURSE_ANALYZE_MIN_DURATION_MS`).
-    // 2. Jika proses melewati 5 detik dan belum selesai, biarkan progres bar stak di 95% (`REIMBURSE_ANALYZE_HOLD_PROGRESS`).
-    // 3. Setelah API selesai (`done`) dan min. 5 detik tercapai, set progres ke 100% lalu tunggu `REIMBURSE_ANALYZE_COMPLETE_HOLD_MS`.
-    submitTimerRef.current = window.setTimeout(() => {
-      submitTimerRef.current = null;
+    const detectedAmount = estimateReimburseAmount(formValues.note);
+
+    try {
+      const res = await createReimbursementFn({
+        data: {
+          amount: detectedAmount,
+          method: formValues.paymentMethod.trim(),
+          target: formValues.destinationNumber.trim(),
+          notes: formValues.note.trim(),
+        },
+      });
+
       if (progressIntervalRef.current !== null) {
         window.clearInterval(progressIntervalRef.current);
         progressIntervalRef.current = null;
       }
-
-      // Penuhi bar ke 100% saat analisis selesai sebelum berpindah state hasil
       setAnalyzingProgress(100);
 
       completeTimerRef.current = window.setTimeout(() => {
         completeTimerRef.current = null;
         setAnalyzingProgress(0);
-        const simulatedError = detectSimulatedErrorFromFile(attachedFile.name);
+        setNewlyCreatedId(res.data.id);
+        queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
+        queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
 
-        if (simulatedError === 422) {
-          if (
-            attachedFile.previewUrl &&
-            objectUrlsRef.current.has(attachedFile.previewUrl)
-          ) {
-            URL.revokeObjectURL(attachedFile.previewUrl);
-            objectUrlsRef.current.delete(attachedFile.previewUrl);
-          }
-
-          setIsAnalyzing(false);
-          setAlert(REIMBURSE_ALERTS[422]);
-          setFormValues((prev) => ({ ...prev, file: null }));
-          setUploadState("error");
-          setUploadErrorMessage(REIMBURSE_FILE_REJECTED_MESSAGE);
-          return;
+        if (
+          attachedFile.previewUrl &&
+          objectUrlsRef.current.has(attachedFile.previewUrl)
+        ) {
+          URL.revokeObjectURL(attachedFile.previewUrl);
+          objectUrlsRef.current.delete(attachedFile.previewUrl);
         }
 
-        if (simulatedError === 504) {
-          setIsAnalyzing(false);
-          setAlert(REIMBURSE_ALERTS[504]);
-          setUploadState("uploaded");
-          return;
-        }
-
-        const detectedAmount = estimateReimburseAmount(formValues.note);
-        const createdItem: ReimburseHistoryItem = {
-          id: `rmb-${Date.now()}`,
-          method: formValues.paymentMethod.trim(),
-          destinationNumber: formValues.destinationNumber.trim(),
-          dateLabel: "Hari ini",
-          amount: detectedAmount,
-          note: formValues.note.trim(),
-          status: "Proses",
-          fileName: attachedFile.name,
-          fileSize: attachedFile.sizeLabel,
-          fileType: attachedFile.fileType,
-          filePreviewUrl: attachedFile.previewUrl,
-          isHighlighted: true,
-        };
-
-        setHistoryItems((prev) => [
-          createdItem,
-          ...prev.map((item) => ({ ...item, isHighlighted: false })),
-        ]);
         setFormValues(emptyReimburseFormValues);
         setUploadState("default");
         setUploadErrorMessage(undefined);
         setAlert(null);
         setIsAnalyzing(false);
 
-        if (demoState && demoState !== "default") {
-          skipPresetSyncRef.current = true;
-          navigate({
-            to: "/admin/reimburse/request",
-            search: {},
-            replace: true,
-          });
-        }
-
         toast.success(
-          `Pengajuan terkirim. Nominal terdeteksi: ${formatRupiah(detectedAmount)}`,
+          idReimburse.request.toasts.createSuccess(
+            formatRupiah(detectedAmount),
+          ),
         );
       }, REIMBURSE_ANALYZE_COMPLETE_HOLD_MS);
-    }, REIMBURSE_ANALYZE_MIN_DURATION_MS);
+    } catch (err: unknown) {
+      if (progressIntervalRef.current !== null) {
+        window.clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      setIsAnalyzing(false);
+      setAnalyzingProgress(0);
+      setUploadState("uploaded");
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idReimburse.request.toasts.createFailed);
+      }
+    }
   };
 
   // Tampilkan skeleton saat loading aktif

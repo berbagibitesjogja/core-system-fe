@@ -1,3 +1,6 @@
+import type { SanitizedReimbursementRecord } from "#/services/reimburseService";
+import { formatReimburseDate } from "#/services/reimburseService";
+
 export type ReimburseHistoryStatus = "Proses" | "Selesai" | "Ditolak";
 
 // Pemetaan warna Badge untuk setiap status riwayat pengajuan
@@ -407,4 +410,44 @@ export function getReimbursePresetState(
         historyItems: defaultReimburseHistory,
       };
   }
+}
+
+/**
+ * Memetakan record reimbursement yang sudah disanitasi dari Server Function ke item riwayat UI
+ */
+export function mapReimbursementToHistoryItem(
+  record: SanitizedReimbursementRecord,
+): ReimburseHistoryItem {
+  const statusMap: Record<string, ReimburseHistoryStatus> = {
+    pending: "Proses",
+    completed: "Selesai",
+    rejected: "Ditolak",
+  };
+  const status: ReimburseHistoryStatus = statusMap[record.status] ?? "Proses";
+
+  const transferProof: ReimburseTransferProof | undefined =
+    record.status === "completed"
+      ? {
+          fileName: `bukti-transfer-${record.id.slice(0, 8)}.jpg`,
+          fileSize: "420 KB",
+          fileType: "image",
+          transferredAtLabel: formatReimburseDate(record.paid_at),
+          transferredBy: "Bendahara BBJ",
+          referenceNumber: `TRF-BBJ-${record.id.slice(0, 8).toUpperCase()}`,
+        }
+      : undefined;
+
+  return {
+    id: record.id,
+    method: record.method,
+    destinationNumber: record.target,
+    dateLabel: record.submittedDate,
+    amount: record.amount,
+    note: record.notes ?? "-",
+    status,
+    fileName: `invoice-${record.id.slice(0, 8)}.pdf`,
+    fileSize: "1,2 MB",
+    fileType: "pdf",
+    transferProof,
+  };
 }

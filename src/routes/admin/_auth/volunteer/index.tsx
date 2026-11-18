@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "#/components/ui/toast";
-import { useAdminLayout } from "#/components/shared/admin-layout-context";
+import { useUserProfile } from "#/hooks";
 import {
   getDivisionIdByName,
   getVolunteerStats,
@@ -16,10 +16,7 @@ import {
   VolunteerTable,
   VolunteerToolbar,
 } from "#/components/pages/volunteer";
-import type {
-  VolunteerRecord,
-  VolunteerUserRole,
-} from "#/components/pages/volunteer";
+import type { VolunteerRecord } from "#/components/pages/volunteer";
 import { getDivisions } from "#/services/divisionService";
 import {
   deleteVolunteerStaff,
@@ -35,7 +32,6 @@ const volunteerSearchSchema = z.object({
   search: z.string().optional().catch(""),
   page: z.coerce.number().int().positive().optional().catch(1),
   per_page: z.coerce.number().int().positive().optional().catch(10),
-  role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/_auth/volunteer/")({
@@ -43,19 +39,12 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
     const rawDivision =
       typeof search.division === "string" ? search.division.trim() : "all";
 
-    const rawRole = typeof search.role === "string" ? search.role : undefined;
-    const normalizedRole: VolunteerUserRole | undefined =
-      rawRole === "staff" || rawRole === "core" || rawRole === "super_admin"
-        ? rawRole
-        : undefined;
-
     return volunteerSearchSchema.parse({
       ...search,
       division: rawDivision || "all",
       search: typeof search.search === "string" ? search.search : "",
       page: search.page ?? 1,
       per_page: search.per_page ?? search.perpage ?? 10,
-      role: normalizedRole,
     });
   },
   component: VolunteerPage,
@@ -64,13 +53,12 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
 function VolunteerPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const layoutContext = useAdminLayout();
+  const profile = useUserProfile();
   const {
     division = "all",
     search = "",
     page = 1,
     per_page = 10,
-    role,
   } = Route.useSearch();
 
   const getDivisionsFn = useServerFn(getDivisions);
@@ -108,10 +96,23 @@ function VolunteerPage() {
       }),
   });
 
+  // Query ikhtisar staf untuk kartu statistik ringkasan riil
+  const allVolunteersQuery = useQuery({
+    queryKey: ["volunteers", "overview"],
+    queryFn: () => getVolunteersFn({ data: { limit: 100 } }),
+    staleTime: 1000 * 60 * 5,
+  });
+
   const rawStaffList = volunteersQuery.data?.data ?? [];
   const volunteers = React.useMemo(
     () => rawStaffList.map(mapStaffToVolunteerRecord),
     [rawStaffList],
+  );
+
+  const allRawStaff = allVolunteersQuery.data?.data ?? rawStaffList;
+  const allVolunteers = React.useMemo(
+    () => allRawStaff.map(mapStaffToVolunteerRecord),
+    [allRawStaff],
   );
 
   const totalCount = volunteersQuery.data?.meta.total ?? volunteers.length;
@@ -126,45 +127,14 @@ function VolunteerPage() {
     React.useState<VolunteerRecord | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
-  // Sinkronisasi profil Header & menu Sidebar saat mode preview role=staff (Figma 149:20257)
-  React.useEffect(() => {
-    if (!layoutContext) return;
-
-    if (role === "staff") {
-      layoutContext.setSidebarUserRole("staff");
-      layoutContext.setHeaderOverride({
-        user: {
-          name: "Bima Aditya",
-          role: "Staff",
-          division: "Divisi Logistik",
-          initials: "BA",
-        },
-      });
-    } else if (role === "core") {
-      layoutContext.setSidebarUserRole("core");
-      layoutContext.setHeaderOverride({
-        user: {
-          name: "Fauzan Trisuladana",
-          role: "Core",
-          division: "Divisi IT",
-          initials: "FT",
-        },
-      });
-    } else {
-      layoutContext.setSidebarUserRole("super_admin");
-      layoutContext.setHeaderOverride(null);
-    }
-
-    return () => {
-      layoutContext.setSidebarUserRole(null);
-      layoutContext.setHeaderOverride(null);
-    };
-  }, [role, layoutContext]);
-
-  // Hitung metrik kartu statistik dari seluruh daftar anggota
+  // Hitung metrik kartu statistik dari seluruh daftar anggota riil
   const stats = React.useMemo(
-    () => getVolunteerStats(volunteers, totalCount),
-    [volunteers, totalCount],
+    () =>
+      getVolunteerStats(
+        allVolunteers,
+        allVolunteersQuery.data?.meta.total ?? totalCount,
+      ),
+    [allVolunteers, allVolunteersQuery.data?.meta.total, totalCount],
   );
 
   const hasActiveFilters = division !== "all" || search.trim().length > 0;
@@ -177,7 +147,6 @@ function VolunteerPage() {
         search: string;
         page: number;
         per_page: number;
-        role?: VolunteerUserRole;
       }>,
     ) => {
       navigate({
@@ -187,14 +156,11 @@ function VolunteerPage() {
           search: updates.search ?? search,
           page: updates.page ?? page,
           per_page: updates.per_page ?? per_page,
-          ...(updates.role !== undefined || role !== undefined
-            ? { role: updates.role ?? role }
-            : {}),
         },
         replace: true,
       });
     },
-    [navigate, division, search, page, per_page, role],
+    [navigate, division, search, page, per_page],
   );
 
   const handleDivisionChange = (newDivision: string) => {
@@ -283,7 +249,7 @@ function VolunteerPage() {
         onPerPageChange={handlePerPageChange}
         hasActiveFilters={hasActiveFilters}
         onResetFilters={handleResetFilters}
-        userRole={role}
+        userRole={profile.sidebarRole}
         onViewDetail={(volunteer) =>
           navigate({
             to: "/admin/volunteer/detail",

@@ -4,9 +4,10 @@ import {
   getCookie,
   setCookie,
 } from "@tanstack/react-start/server";
-import { api } from "./api";
+import { api, getOrRotateToken } from "./api";
 import { handleApiError } from "./errorService";
 import { env } from "#/env";
+import { idAuth } from "#/locales";
 
 export interface AuthUser {
   id: string;
@@ -66,7 +67,7 @@ export interface AuthSession {
 export const loginWithPassword = createServerFn({ method: "POST" })
   .validator((data: LoginPayload) => {
     if (!data.email || !data.password) {
-      throw new Error("Email dan kata sandi wajib diisi");
+      throw new Error(idAuth.validation.credentialsRequired);
     }
     return data;
   })
@@ -118,7 +119,7 @@ export const refreshSession = createServerFn({ method: "POST" })
       const tokenToRefresh = data?.refresh_token || getCookie("refresh_token");
 
       if (!tokenToRefresh) {
-        throw new Error("Refresh token tidak ditemukan");
+        throw new Error(idAuth.validation.refreshTokenMissing);
       }
 
       const response = await api.post<RefreshResponse>("/v1/auth/refresh", {
@@ -154,6 +155,32 @@ export const refreshSession = createServerFn({ method: "POST" })
     }
   });
 
+/**
+ * Memeriksa apakah token JWT sudah kedaluwarsa berdasarkan klaim "exp".
+ */
+export function isJwtExpired(token: string): boolean {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return true;
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    let jsonStr = "";
+    if (typeof Buffer !== "undefined") {
+      jsonStr = Buffer.from(base64, "base64").toString("utf-8");
+    } else if (typeof atob !== "undefined") {
+      jsonStr = atob(base64);
+    } else {
+      return false;
+    }
+    const payload = JSON.parse(jsonStr) as { exp?: number };
+    if (!payload.exp) return false;
+    // Beri batas toleransi 30 detik sebelum kedaluwarsa sebenarnya
+    return Date.now() >= (payload.exp - 30) * 1000;
+  } catch {
+    return true;
+  }
+}
+
 // Mengambil sesi pengguna saat ini dari cookie dengan auto-refresh
 export const getAuthSession = createServerFn({ method: "GET" }).handler(
   async (): Promise<AuthSession> => {
@@ -170,32 +197,28 @@ export const getAuthSession = createServerFn({ method: "GET" }).handler(
         };
       }
 
-      // Jika token akses kedaluwarsa tetapi refresh token ada, coba lakukan rotasi token
-      if (!token && refreshToken) {
+      // Jika token akses tidak ada ATAU sudah kedaluwarsa, lakukan rotasi proaktif jika ada refresh_token
+      const shouldRefresh =
+        (!token || isJwtExpired(token)) && Boolean(refreshToken);
+
+      if (shouldRefresh && refreshToken) {
         try {
-          const refreshRes = await api.post<RefreshResponse>(
-            "/v1/auth/refresh",
-            { refresh_token: refreshToken },
-          );
-          const newTokens = refreshRes.data.data;
+          const newAccessToken = await getOrRotateToken(refreshToken);
 
-          setCookie("token", newTokens.access_token, {
-            httpOnly: true,
-            secure: env.VITE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7,
-          });
+          if (newAccessToken) {
+            token = newAccessToken;
+          } else {
+            // Refresh token tidak valid lagi di backend
+            deleteCookie("token", { path: "/" });
+            deleteCookie("refresh_token", { path: "/" });
+            deleteCookie("user", { path: "/" });
 
-          setCookie("refresh_token", newTokens.refresh_token, {
-            httpOnly: true,
-            secure: env.VITE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: 60 * 60 * 24 * 7,
-          });
-
-          token = newTokens.access_token;
+            return {
+              isAuthenticated: false,
+              user: null,
+              isStaff: false,
+            };
+          }
         } catch {
           deleteCookie("token", { path: "/" });
           deleteCookie("refresh_token", { path: "/" });

@@ -20,6 +20,7 @@ export {
   formatFileSize,
   formatRupiah,
   getReimbursePresetState,
+  mapReimbursementToHistoryItem,
   reimburseDestinationFields,
   reimburseNoteField,
 } from "./reimburse-data";

@@ -3,9 +3,22 @@ import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
 import statOrganicFood from "#/assets/illustrations/organic-food.svg";
 
 export type BeneficiaryCategoryId =
-  "all" | "universitas" | "yayasan" | "masyarakat-umum";
+  | "all"
+  | "university"
+  | "kipk"
+  | "orphanage"
+  | "nursing_home"
+  | "shelter"
+  | "religious_community"
+  | "foundation"
+  | "society"
+  | "other"
+  | "universitas"
+  | "yayasan"
+  | "masyarakat-umum"
+  | (string & {});
 
-export type BeneficiaryType = "Universitas" | "Yayasan" | "Masyarakat Umum";
+export type BeneficiaryType = string;
 
 export interface BeneficiaryItem {
   id: string;
@@ -13,7 +26,7 @@ export interface BeneficiaryItem {
   name: string;
   initial: string;
   type: BeneficiaryType;
-  categoryId: Exclude<BeneficiaryCategoryId, "all">;
+  categoryId: string;
   heroesCount: number;
   impactKg: number;
   canDelete: boolean;
@@ -46,8 +59,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 1,
     name: "Universitas Gadjah Mada",
     initial: "U",
-    type: "Universitas",
-    categoryId: "universitas",
+    type: "university",
+    categoryId: "university",
     heroesCount: 4785,
     impactKg: 1164,
     canDelete: false,
@@ -57,8 +70,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 2,
     name: "Masyarakat Umum",
     initial: "M",
-    type: "Masyarakat Umum",
-    categoryId: "masyarakat-umum",
+    type: "society",
+    categoryId: "society",
     heroesCount: 3120,
     impactKg: 560,
     canDelete: false,
@@ -68,8 +81,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 3,
     name: "Universitas Negeri Yogyakarta",
     initial: "U",
-    type: "Universitas",
-    categoryId: "universitas",
+    type: "university",
+    categoryId: "university",
     heroesCount: 2046,
     impactKg: 380,
     canDelete: false,
@@ -79,8 +92,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 4,
     name: "UIN Sunan Kalijaga",
     initial: "U",
-    type: "Universitas",
-    categoryId: "universitas",
+    type: "university",
+    categoryId: "university",
     heroesCount: 1512,
     impactKg: 260,
     canDelete: false,
@@ -90,8 +103,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 5,
     name: "Yayasan Hamba",
     initial: "Y",
-    type: "Yayasan",
-    categoryId: "yayasan",
+    type: "foundation",
+    categoryId: "foundation",
     heroesCount: 1080,
     impactKg: 190,
     canDelete: false,
@@ -101,8 +114,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 6,
     name: "Panti Sosial Tresna Werdha",
     initial: "P",
-    type: "Yayasan",
-    categoryId: "yayasan",
+    type: "nursing_home",
+    categoryId: "nursing_home",
     heroesCount: 764,
     impactKg: 150,
     canDelete: false,
@@ -112,8 +125,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 7,
     name: "BRSPA",
     initial: "B",
-    type: "Yayasan",
-    categoryId: "yayasan",
+    type: "foundation",
+    categoryId: "foundation",
     heroesCount: 528,
     impactKg: 98,
     canDelete: false,
@@ -123,8 +136,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 8,
     name: "Kampung Code",
     initial: "K",
-    type: "Masyarakat Umum",
-    categoryId: "masyarakat-umum",
+    type: "society",
+    categoryId: "society",
     heroesCount: 412,
     impactKg: 92,
     canDelete: true,
@@ -134,8 +147,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 9,
     name: "Universitas Islam Indonesia",
     initial: "U",
-    type: "Universitas",
-    categoryId: "universitas",
+    type: "university",
+    categoryId: "university",
     heroesCount: 356,
     impactKg: 78,
     canDelete: false,
@@ -145,8 +158,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 10,
     name: "Panti Asuhan Al-Hikmah",
     initial: "P",
-    type: "Yayasan",
-    categoryId: "yayasan",
+    type: "orphanage",
+    categoryId: "orphanage",
     heroesCount: 190,
     impactKg: 60,
     canDelete: true,
@@ -156,8 +169,8 @@ export const defaultBeneficiaries: BeneficiaryItem[] = [
     rank: 11,
     name: "Komunitas Kampung Jogoyudan",
     initial: "K",
-    type: "Masyarakat Umum",
-    categoryId: "masyarakat-umum",
+    type: "society",
+    categoryId: "society",
     heroesCount: 140,
     impactKg: 45,
     canDelete: true,
@@ -214,31 +227,32 @@ export function buildBeneficiaryStats(
 export function buildBeneficiaryFilterOptions(
   items: BeneficiaryItem[],
 ): BeneficiaryFilterOption[] {
-  const counts = items.reduce(
-    (acc, item) => {
-      acc[item.categoryId] += 1;
-      return acc;
-    },
-    {
-      universitas: 0,
-      yayasan: 0,
-      "masyarakat-umum": 0,
-    },
-  );
+  const counts: Record<string, number> = {};
+  for (const item of items) {
+    if (item.categoryId) {
+      counts[item.categoryId] = (counts[item.categoryId] || 0) + 1;
+    }
+  }
+
+  const categoryEntries = Object.entries(counts).map(([id, count]) => {
+    const label = id
+      .split(/[_\s-]+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    return {
+      id: id,
+      label,
+      count,
+    };
+  });
 
   return [
     { id: "all", label: "Semua", count: items.length },
-    { id: "universitas", label: "Universitas", count: counts.universitas },
-    { id: "yayasan", label: "Yayasan", count: counts.yayasan },
-    {
-      id: "masyarakat-umum",
-      label: "Masyarakat Umum",
-      count: counts["masyarakat-umum"],
-    },
+    ...categoryEntries,
   ];
 }
 
-export type BeneficiaryFormCategoryId = Exclude<BeneficiaryCategoryId, "all">;
+export type BeneficiaryFormCategoryId = string;
 
 export interface BeneficiaryFormData {
   id?: string;
@@ -265,26 +279,26 @@ export const defaultEmptyBeneficiaryForm: BeneficiaryFormData = {
 
 export const defaultEditBeneficiaryData: BeneficiaryFormData = {
   id: "ben-1",
-  categoryId: "universitas",
+  categoryId: "university",
   name: "Universitas Gadjah Mada",
 };
 
 export const defaultBeneficiaryCategoryOptions: BeneficiaryCategoryOption[] = [
   {
-    id: "universitas",
-    title: "Universitas",
+    id: "university",
+    title: "University",
     description: "Kampus, fakultas, dan mahasiswa",
     iconName: "building",
   },
   {
-    id: "yayasan",
-    title: "Yayasan",
+    id: "foundation",
+    title: "Foundation",
     description: "Yayasan, panti asuhan, dan panti werdha",
     iconName: "heart",
   },
   {
-    id: "masyarakat-umum",
-    title: "Masyarakat Umum",
+    id: "society",
+    title: "Society",
     description: "Warga, komunitas, dan kampung",
     iconName: "users",
   },

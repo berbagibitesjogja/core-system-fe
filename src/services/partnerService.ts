@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
+import { idPartner } from "#/locales";
 import type { PartnerRecord } from "#/components/pages/partner/partner-data";
 import type { PartnerDetailData } from "#/components/pages/partner/partner-detail-data";
 
@@ -241,7 +242,7 @@ export const getPartners = createServerFn({ method: "GET" })
  */
 export const getPartnerDetail = createServerFn({ method: "GET" })
   .validator((data: { id: string }) => {
-    if (!data.id) throw new Error("ID donatur wajib disertakan");
+    if (!data.id) throw new Error(idPartner.validation.idRequired);
     return data;
   })
   .handler(async ({ data }) => {
@@ -268,7 +269,7 @@ export const getPartnerDetail = createServerFn({ method: "GET" })
  */
 export const createPartner = createServerFn({ method: "POST" })
   .validator((data: CreateSponsorPayload) => {
-    if (!data.name.trim()) throw new Error("Nama donatur wajib diisi");
+    if (!data.name.trim()) throw new Error(idPartner.validation.nameRequired);
     return data;
   })
   .handler(async ({ data }) => {
@@ -295,7 +296,7 @@ export const createPartner = createServerFn({ method: "POST" })
  */
 export const updatePartner = createServerFn({ method: "POST" })
   .validator((data: UpdateSponsorPayload) => {
-    if (!data.id) throw new Error("ID donatur wajib disertakan");
+    if (!data.id) throw new Error(idPartner.validation.idRequired);
     return data;
   })
   .handler(async ({ data }) => {
@@ -323,7 +324,7 @@ export const updatePartner = createServerFn({ method: "POST" })
  */
 export const deletePartner = createServerFn({ method: "POST" })
   .validator((data: { id: string }) => {
-    if (!data.id) throw new Error("ID donatur wajib disertakan");
+    if (!data.id) throw new Error(idPartner.validation.idRequired);
     return data;
   })
   .handler(async ({ data }) => {

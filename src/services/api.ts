@@ -44,21 +44,93 @@ export const api = axios.create({
   },
 });
 
+// Peta antrean promise rotasi token untuk mencegah race condition (rotasi ganda di waktu bersamaan)
+const pendingRefreshMap = new Map<string, Promise<string | null>>();
+
+/**
+ * Melakukan rotasi refresh token secara aman dengan deduplikasi promise konkurensi.
+ */
+export async function getOrRotateToken(
+  refreshToken: string,
+): Promise<string | null> {
+  const existingPromise = pendingRefreshMap.get(refreshToken);
+  if (existingPromise) {
+    return existingPromise;
+  }
+
+  const promise = (async () => {
+    try {
+      const refreshResponse = await axios.post<{
+        status: string;
+        message: string;
+        data: {
+          access_token: string;
+          refresh_token: string;
+          expires_in: number;
+        };
+      }>(
+        `${getApiBaseUrl()}/v1/auth/refresh`,
+        { refresh_token: refreshToken },
+        {
+          headers: { "Content-Type": "application/json" },
+          timeout: 10000,
+        },
+      );
+
+      const newTokens = refreshResponse.data.data;
+
+      // Simpan token baru hasil rotasi ke cookie sesi
+      try {
+        setCookie("token", newTokens.access_token, {
+          httpOnly: true,
+          secure: env.VITE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+
+        setCookie("refresh_token", newTokens.refresh_token, {
+          httpOnly: true,
+          secure: env.VITE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+      } catch {
+        // Abaikan jika konteks respons tidak tersedia
+      }
+
+      return newTokens.access_token;
+    } catch {
+      return null;
+    } finally {
+      pendingRefreshMap.delete(refreshToken);
+    }
+  })();
+
+  pendingRefreshMap.set(refreshToken, promise);
+  return promise;
+}
+
 api.interceptors.request.use((config) => {
   // Selaraskan baseURL dengan runtime terkini
   config.baseURL = getApiBaseUrl();
 
-  try {
-    const request = getRequest();
-    const cookieHeader = request.headers.get("cookie") ?? "";
-    const cookies = parseCookie(cookieHeader);
-    const token = cookies.token;
+  // Jika Authorization sudah ditentukan secara eksplisit (misal dari retry rotasi token baru),
+  // jangan timpa dengan token lama dari cookie!
+  if (!config.headers.Authorization) {
+    try {
+      const request = getRequest();
+      const cookieHeader = request.headers.get("cookie") ?? "";
+      const cookies = parseCookie(cookieHeader);
+      const token = cookies.token;
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // Konteks permintaan tidak tersedia
     }
-  } catch {
-    // Konteks permintaan tidak tersedia
   }
 
   if (config.data instanceof FormData) {
@@ -80,7 +152,7 @@ api.interceptors.response.use(
       const isAuthUrl =
         url.includes("/v1/auth/login") || url.includes("/v1/auth/refresh");
 
-      // Otomatis rotasi token jika mendapatkan respons 401
+      // Otomatis rotasi token jika mendapatkan respons 401 pada percobaan pertama
       if (
         status === 401 &&
         originalRequest &&
@@ -96,63 +168,27 @@ api.interceptors.response.use(
           const refreshToken = cookies.refresh_token;
 
           if (refreshToken) {
-            const refreshResponse = await axios.post<{
-              status: string;
-              message: string;
-              data: {
-                access_token: string;
-                refresh_token: string;
-                expires_in: number;
-              };
-            }>(
-              `${getApiBaseUrl()}/v1/auth/refresh`,
-              { refresh_token: refreshToken },
-              {
-                headers: { "Content-Type": "application/json" },
-                timeout: 10000,
-              },
-            );
+            const newAccessToken = await getOrRotateToken(refreshToken);
 
-            const newTokens = refreshResponse.data.data;
-
-            // Simpan token baru hasil rotasi ke cookie sesi
-            try {
-              setCookie("token", newTokens.access_token, {
-                httpOnly: true,
-                secure: env.VITE_ENV === "production",
-                sameSite: "lax",
-                path: "/",
-                maxAge: 60 * 60 * 24 * 7,
-              });
-
-              setCookie("refresh_token", newTokens.refresh_token, {
-                httpOnly: true,
-                secure: env.VITE_ENV === "production",
-                sameSite: "lax",
-                path: "/",
-                maxAge: 60 * 60 * 24 * 7,
-              });
-            } catch {
-              // Abaikan jika konteks respons tidak tersedia
+            if (newAccessToken) {
+              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              return api(originalRequest);
             }
-
-            originalRequest.headers.Authorization = `Bearer ${newTokens.access_token}`;
-            return api(originalRequest);
           }
         } catch {
-          // Bersihkan cookie sesi jika rotasi token gagal
-          try {
-            deleteCookie("token", { path: "/" });
-            deleteCookie("refresh_token", { path: "/" });
-            deleteCookie("user", { path: "/" });
-          } catch {
-            // Abaikan jika konteks respons tidak tersedia
-          }
+          // Gagal memproses rotasi token
         }
-      }
 
-      // Bersihkan sesi jika status 401 pada permintaan selain login
-      if (status === 401 && !url.includes("/v1/auth/login")) {
+        // Jika rotasi token gagal (refresh token sudah kedaluwarsa atau tidak valid), bersihkan sesi
+        try {
+          deleteCookie("token", { path: "/" });
+          deleteCookie("refresh_token", { path: "/" });
+          deleteCookie("user", { path: "/" });
+        } catch {
+          // Abaikan jika konteks respons tidak tersedia
+        }
+      } else if (status === 401 && !url.includes("/v1/auth/login")) {
+        // Jika request retry pun tetap 401, bersihkan sesi
         try {
           deleteCookie("token", { path: "/" });
           deleteCookie("refresh_token", { path: "/" });

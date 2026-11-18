@@ -235,7 +235,7 @@ export function ReimburseDataTable({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-neutral-200 bg-surface px-6 py-12 shadow-xs">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-surface px-6 py-16 shadow-xs min-h-[380px] w-full text-center">
         <EmptyState
           visual="illustration"
           illustration={<IllustrationCariKosong className="size-36" />}

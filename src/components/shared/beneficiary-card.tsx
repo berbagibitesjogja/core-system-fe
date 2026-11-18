@@ -30,6 +30,14 @@ const categoryBadgeConfig: Record<
   string,
   { tone: BadgeProps["tone"]; className: string }
 > = {
+  university: {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
+  kipk: {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
   universitas: {
     tone: "brand",
     className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
@@ -38,6 +46,22 @@ const categoryBadgeConfig: Record<
     tone: "brand",
     className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
   },
+  foundation: {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  orphanage: {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  nursing_home: {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  shelter: {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
   yayasan: {
     tone: "accent",
     className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
@@ -45,6 +69,18 @@ const categoryBadgeConfig: Record<
   "panti asuhan": {
     tone: "accent",
     className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  society: {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  religious_community: {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  other: {
+    tone: "neutral",
+    className: "bg-neutral-100 text-neutral-700 border-transparent px-2",
   },
   "masyarakat umum": {
     tone: "info",
