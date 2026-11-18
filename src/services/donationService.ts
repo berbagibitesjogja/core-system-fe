@@ -590,6 +590,34 @@ export const getFoodItems = createServerFn({ method: "GET" })
     }
   });
 
+// Membuat food item baru di katalog master
+export const createFoodItem = createServerFn({ method: "POST" })
+  .validator((data: { name: string }) => data)
+  .handler(
+    async ({
+      data,
+    }): Promise<{
+      status: string;
+      message: string;
+      data: SanitizedFoodItemRecord;
+    }> => {
+      try {
+        const response = await api.post<{
+          status: string;
+          message: string;
+          data: RawFoodItemRecord;
+        }>("/v1/food-items", { name: data.name.trim() });
+
+        return {
+          ...response.data,
+          data: sanitizeFoodItem(response.data.data),
+        };
+      } catch (error) {
+        return handleApiError(error);
+      }
+    },
+  );
+
 // ---------------------------------------------------------------------------
 // Domain Mappers & Formatters
 // ---------------------------------------------------------------------------
@@ -751,6 +779,7 @@ export function mapDonationToDetailRecord(
 
       return {
         id: `${record.id}-food-${food.food_item_id || idx + 1}`,
+        foodItemId: food.food_item_id,
         name: food.name || `Porsi Makanan ${idx + 1}`,
         quantity:
           food.unit === "portion" ||

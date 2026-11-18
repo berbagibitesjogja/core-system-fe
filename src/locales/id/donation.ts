@@ -45,6 +45,7 @@ export const idDonation = {
       surplusAddSuccess: "Surplus food berhasil dicatat.",
       surplusUpdateSuccess: "Perubahan surplus food berhasil disimpan.",
       surplusDeleteSuccess: "Surplus food berhasil dihapus.",
+      surplusMinOneRequired: "Aksi donasi wajib memiliki minimal satu jenis makanan.",
     },
   },
   validation: {

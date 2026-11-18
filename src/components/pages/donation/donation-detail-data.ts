@@ -28,6 +28,7 @@ export interface DonationHeroSearchOption {
 
 export interface DonationSurplusFoodItem {
   id: string;
+  foodItemId?: number;
   name: string;
   quantity?: number;
   weight: number;

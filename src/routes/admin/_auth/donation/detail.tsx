@@ -14,6 +14,7 @@ import {
   DonationDetailSurplusDialog,
   DonationSurplusDeleteDialog,
   calculateHeroesQuotaSummary,
+  defaultSearchableHeroPool,
 } from "#/components/pages/donation";
 import type {
   DonationHeroClaimRecord,
@@ -25,15 +26,19 @@ import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { Dialog } from "#/components/ui/dialog";
 import { toast } from "#/components/ui/toast";
+import { getHeroAvatarSrc } from "#/lib/avatars";
 import { idDonation } from "#/locales";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import {
+  createFoodItem,
   getDonationAttendances,
   getDonationDetail,
+  getFoodItems,
   mapDonationToDetailRecord,
   markHeroAttendance,
   updateDonation,
 } from "#/services/donationService";
+import type { DonationFoodPayload } from "#/services/donationService";
 import { isApiError } from "#/services/errorService";
 
 // Skema validasi parameter query URL untuk halaman detail donasi
@@ -69,6 +74,8 @@ function DonationDetailPage() {
   const getDonationAttendancesFn = useServerFn(getDonationAttendances);
   const markHeroAttendanceFn = useServerFn(markHeroAttendance);
   const updateDonationFn = useServerFn(updateDonation);
+  const getFoodItemsFn = useServerFn(getFoodItems);
+  const createFoodItemFn = useServerFn(createFoodItem);
 
   const trimmedId = id.trim();
 
@@ -100,6 +107,14 @@ function DonationDetailPage() {
     enabled: Boolean(trimmedId),
   });
 
+  // Query katalog master food items untuk autocomplete input makanan
+  const foodItemsQuery = useQuery({
+    queryKey: ["food-items-autocomplete"],
+    queryFn: async () => {
+      return getFoodItemsFn({ data: { limit: 150 } });
+    },
+  });
+
   React.useEffect(() => {
     if (donationQuery.isError) {
       toast.error("Data donasi tidak ditemukan di server.");
@@ -107,14 +122,30 @@ function DonationDetailPage() {
     }
   }, [donationQuery.isError, navigate]);
 
-  // Pemetaan detail record dari respons API riil
+  // State heroes yang ditambahkan manual oleh admin di donasi ini
+  const [manualHeroes, setManualHeroes] = React.useState<
+    DonationHeroClaimRecord[]
+  >([]);
+
+  // Pemetaan detail record dari respons API riil digabungkan dengan hero manual
   const detail = React.useMemo(() => {
     const rawDonation = donationQuery.data?.data;
     if (!rawDonation) return null;
 
     const rawAttendances = attendancesQuery.data?.data ?? [];
-    return mapDonationToDetailRecord(rawDonation, rawAttendances);
-  }, [donationQuery.data, attendancesQuery.data]);
+    const baseDetail = mapDonationToDetailRecord(rawDonation, rawAttendances);
+
+    // Gabungkan hero yang mendaftar otomatis via API dengan hero yang ditambahkan manual
+    const existingHeroIds = new Set(baseDetail.heroes.map((h) => h.heroId));
+    const activeManualHeroes = manualHeroes.filter(
+      (m) => !existingHeroIds.has(m.heroId),
+    );
+
+    return {
+      ...baseDetail,
+      heroes: [...activeManualHeroes, ...baseDetail.heroes],
+    };
+  }, [donationQuery.data, attendancesQuery.data, manualHeroes]);
 
   const isLoading = donationQuery.isLoading || !detail;
 
@@ -146,10 +177,12 @@ function DonationDetailPage() {
     "add" | "edit"
   >("add");
   const [isSurplusDialogOpen, setIsSurplusDialogOpen] = React.useState(false);
+  const [isSubmittingFood, setIsSubmittingFood] = React.useState(false);
   const [editingFood, setEditingFood] =
     React.useState<DonationSurplusFoodItem | null>(null);
   const [deletingFood, setDeletingFood] =
     React.useState<DonationSurplusFoodItem | null>(null);
+  const [isDeletingFood, setIsDeletingFood] = React.useState(false);
   const [isImpactDialogOpen, setIsImpactDialogOpen] = React.useState(false);
 
   const heroesSummary = React.useMemo(() => {
@@ -175,9 +208,24 @@ function DonationDetailPage() {
   const statusTone = DONATION_STATUS_BADGE_TONE[computedStatus];
 
   const handleAddHero = React.useCallback(
-    (_candidate: DonationHeroSearchOption) => {
-      toast.info(
-        "Penambahan hero reservasi dilakukan secara mandiri oleh Hero melalui aplikasi mobile.",
+    (candidate: DonationHeroSearchOption) => {
+      const newClaimRecord: DonationHeroClaimRecord = {
+        id: `manual-${candidate.id}-${Date.now()}`,
+        heroId: candidate.id,
+        name: candidate.name,
+        avatarSrc: getHeroAvatarSrc({
+          id: candidate.id,
+          name: candidate.name,
+        }),
+        sectorName: candidate.sectorName,
+        beneficiaryName: candidate.beneficiaryName,
+        claimCode: `CLM-${Math.floor(100000 + Math.random() * 900000)}`,
+        status: "belum-diambil",
+      };
+
+      setManualHeroes((prev) => [newClaimRecord, ...prev]);
+      toast.success(
+        `${candidate.name} berhasil ditambahkan ke daftar hero donasi.`,
       );
     },
     [],
@@ -197,21 +245,42 @@ function DonationDetailPage() {
     setIsConfirmingPickup(true);
 
     try {
-      await markHeroAttendanceFn({
-        data: {
-          donationId: trimmedId,
-          attendanceId: pickupTargetHero.id,
-          status: "attended",
-        },
-      });
+      if (pickupTargetHero.id.startsWith("manual-")) {
+        // Hero ditambahkan manual: update status secara lokal
+        const currentHours = new Date().getHours().toString().padStart(2, "0");
+        const currentMinutes = new Date()
+          .getMinutes()
+          .toString()
+          .padStart(2, "0");
+        setManualHeroes((prev) =>
+          prev.map((h) =>
+            h.id === pickupTargetHero.id
+              ? {
+                  ...h,
+                  status: "sudah-diambil",
+                  claimedAt: `${currentHours}.${currentMinutes} WIB`,
+                }
+              : h,
+          ),
+        );
+      } else {
+        // Hero terdaftar otomatis dari API backend
+        await markHeroAttendanceFn({
+          data: {
+            donationId: trimmedId,
+            attendanceId: pickupTargetHero.id,
+            status: "attended",
+          },
+        });
 
-      await queryClient.invalidateQueries({
-        queryKey: ["donation-attendances", trimmedId],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["donation-detail", trimmedId],
-      });
-      await queryClient.invalidateQueries({ queryKey: ["donations"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["donation-attendances", trimmedId],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["donation-detail", trimmedId],
+        });
+        await queryClient.invalidateQueries({ queryKey: ["donations"] });
+      }
 
       toast.success(idDonation.detail.toasts.attendanceAttendedSuccess);
       setPickupTargetHero(null);
@@ -240,21 +309,33 @@ function DonationDetailPage() {
     setIsRemovingHero(true);
 
     try {
-      await markHeroAttendanceFn({
-        data: {
-          donationId: trimmedId,
-          attendanceId: removeTargetHero.id,
-          status: "absent",
-        },
-      });
+      if (removeTargetHero.id.startsWith("manual-")) {
+        // Hero manual: tandai tidak hadir atau hapus
+        setManualHeroes((prev) =>
+          prev.map((h) =>
+            h.id === removeTargetHero.id
+              ? { ...h, status: "tidak-jadi-ambil" }
+              : h,
+          ),
+        );
+      } else {
+        // Hero dari API backend
+        await markHeroAttendanceFn({
+          data: {
+            donationId: trimmedId,
+            attendanceId: removeTargetHero.id,
+            status: "absent",
+          },
+        });
 
-      await queryClient.invalidateQueries({
-        queryKey: ["donation-attendances", trimmedId],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["donation-detail", trimmedId],
-      });
-      await queryClient.invalidateQueries({ queryKey: ["donations"] });
+        await queryClient.invalidateQueries({
+          queryKey: ["donation-attendances", trimmedId],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["donation-detail", trimmedId],
+        });
+        await queryClient.invalidateQueries({ queryKey: ["donations"] });
+      }
 
       toast.success(idDonation.detail.toasts.attendanceAbsentSuccess);
       setRemoveTargetHero(null);
@@ -285,20 +366,203 @@ function DonationDetailPage() {
   );
 
   const handleSubmitFood = React.useCallback(
-    async (_values: DonationSurplusFormValues) => {
-      // Pembaruan surplus food tersinkronisasi via state dan API backend
-      setIsSurplusDialogOpen(false);
-      setEditingFood(null);
-      toast.success(idDonation.detail.toasts.surplusAddSuccess);
+    async (values: DonationSurplusFormValues) => {
+      if (!trimmedId) return;
+      const rawDonation = donationQuery.data?.data;
+      if (!rawDonation) return;
+
+      setIsSubmittingFood(true);
+      try {
+        const trimmedName = values.name.trim();
+        const catalogItems = foodItemsQuery.data?.data ?? [];
+
+        // 1. Cari atau buat item makanan di master catalog food items
+        let targetFoodItemId: number | undefined = editingFood?.foodItemId;
+
+        if (
+          surplusDialogMode === "add" ||
+          !targetFoodItemId ||
+          (editingFood &&
+            editingFood.name.toLowerCase() !== trimmedName.toLowerCase())
+        ) {
+          const matchedItem = catalogItems.find(
+            (item) => item.name.toLowerCase() === trimmedName.toLowerCase(),
+          );
+
+          if (matchedItem) {
+            targetFoodItemId = matchedItem.id;
+          } else {
+            const createdRes = await createFoodItemFn({
+              data: { name: trimmedName },
+            });
+            targetFoodItemId = createdRes.data.id;
+            await queryClient.invalidateQueries({
+              queryKey: ["food-items-autocomplete"],
+            });
+          }
+        }
+
+        if (!targetFoodItemId) {
+          toast.error("Gagal memproses jenis makanan.");
+          return;
+        }
+
+        // 2. Tentukan quantity & unit yang valid untuk backend API
+        // Backend units: "kg" | "g" | "l" | "ml" | "portion" | "pack" | "piece"
+        const targetUnit = values.quantity
+          ? "portion"
+          : values.unit === "ml"
+            ? "ml"
+            : "g";
+        const targetQuantity = values.quantity ?? values.weight;
+
+        const currentFoods = rawDonation.foods;
+        let nextFoods: DonationFoodPayload[];
+
+        if (surplusDialogMode === "add") {
+          const existingIndex = currentFoods.findIndex(
+            (f) => f.food_item_id === targetFoodItemId,
+          );
+
+          if (existingIndex >= 0) {
+            nextFoods = currentFoods.map((f, idx) =>
+              idx === existingIndex
+                ? {
+                    ...f,
+                    quantity: f.quantity + targetQuantity,
+                    unit: targetUnit,
+                  }
+                : f,
+            );
+          } else {
+            nextFoods = [
+              ...currentFoods,
+              {
+                food_item_id: targetFoodItemId,
+                quantity: targetQuantity,
+                unit: targetUnit,
+              },
+            ];
+          }
+        } else {
+          // Mode edit: ganti item makanan yang sedang diedit
+          nextFoods = currentFoods.map((f) => {
+            const isTarget =
+              f.food_item_id === editingFood?.foodItemId ||
+              f.name?.toLowerCase() === editingFood?.name.toLowerCase();
+
+            if (isTarget) {
+              return {
+                food_item_id: targetFoodItemId,
+                quantity: targetQuantity,
+                unit: targetUnit,
+              };
+            }
+            return f;
+          });
+        }
+
+        // 3. Simpan perubahan ke backend via PATCH /v1/donations/:id
+        await updateDonationFn({
+          data: {
+            id: trimmedId,
+            foods: nextFoods.map((f) => ({
+              food_item_id: f.food_item_id,
+              quantity: f.quantity,
+              unit: f.unit,
+            })),
+          },
+        });
+
+        await queryClient.invalidateQueries({
+          queryKey: ["donation-detail", trimmedId],
+        });
+        await queryClient.invalidateQueries({ queryKey: ["donations"] });
+
+        setIsSurplusDialogOpen(false);
+        setEditingFood(null);
+
+        if (surplusDialogMode === "edit") {
+          toast.success(idDonation.detail.toasts.surplusUpdateSuccess);
+        } else {
+          toast.success(idDonation.detail.toasts.surplusAddSuccess);
+        }
+      } catch (err: unknown) {
+        if (isApiError(err) && err.message) {
+          toast.error(err.message);
+        } else {
+          toast.error("Gagal menyimpan data makanan.");
+        }
+      } finally {
+        setIsSubmittingFood(false);
+      }
     },
-    [],
+    [
+      trimmedId,
+      donationQuery.data,
+      foodItemsQuery.data,
+      editingFood,
+      surplusDialogMode,
+      createFoodItemFn,
+      updateDonationFn,
+      queryClient,
+    ],
   );
 
-  const handleConfirmDeleteFood = React.useCallback(() => {
-    if (!deletingFood) return;
-    setDeletingFood(null);
-    toast.success(idDonation.detail.toasts.surplusDeleteSuccess);
-  }, [deletingFood]);
+  const handleConfirmDeleteFood = React.useCallback(async () => {
+    if (!deletingFood || !trimmedId) return;
+    const rawDonation = donationQuery.data?.data;
+    if (!rawDonation) return;
+
+    const currentFoods = rawDonation.foods;
+    if (currentFoods.length <= 1) {
+      toast.error(idDonation.detail.toasts.surplusMinOneRequired);
+      setDeletingFood(null);
+      return;
+    }
+
+    setIsDeletingFood(true);
+    try {
+      const remainingFoods = currentFoods.filter(
+        (f) =>
+          f.food_item_id !== deletingFood.foodItemId &&
+          f.name?.toLowerCase() !== deletingFood.name.toLowerCase(),
+      );
+
+      await updateDonationFn({
+        data: {
+          id: trimmedId,
+          foods: remainingFoods.map((f) => ({
+            food_item_id: f.food_item_id,
+            quantity: f.quantity,
+            unit: f.unit,
+          })),
+        },
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["donation-detail", trimmedId],
+      });
+      await queryClient.invalidateQueries({ queryKey: ["donations"] });
+
+      toast.success(idDonation.detail.toasts.surplusDeleteSuccess);
+      setDeletingFood(null);
+    } catch (err: unknown) {
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Gagal menghapus makanan dari donasi.");
+      }
+    } finally {
+      setIsDeletingFood(false);
+    }
+  }, [
+    deletingFood,
+    trimmedId,
+    donationQuery.data,
+    updateDonationFn,
+    queryClient,
+  ]);
 
   const handleSaveNotes = React.useCallback(
     async (nextNotes: string) => {
@@ -381,7 +645,7 @@ function DonationDetailPage() {
           <DonationDetailHeroesCard
             heroes={detail.heroes}
             quotaTotal={detail.quotaTotal}
-            searchableHeroes={[]}
+            searchableHeroes={defaultSearchableHeroPool}
             onConfirmPickup={handleRequestConfirmPickup}
             onRemoveHero={handleRequestRemoveHero}
             onAddHero={handleAddHero}
@@ -450,6 +714,8 @@ function DonationDetailPage() {
         isOpen={isSurplusDialogOpen}
         mode={surplusDialogMode}
         initialFood={editingFood}
+        foodSuggestions={foodItemsQuery.data?.data ?? []}
+        isSubmitting={isSubmittingFood}
         onClose={() => setIsSurplusDialogOpen(false)}
         onSubmit={handleSubmitFood}
       />
@@ -457,6 +723,7 @@ function DonationDetailPage() {
       {/* Modal Dialog: Konfirmasi Hapus Surplus Food */}
       <DonationSurplusDeleteDialog
         food={deletingFood}
+        isDeleting={isDeletingFood}
         onClose={() => setDeletingFood(null)}
         onConfirm={handleConfirmDeleteFood}
       />
