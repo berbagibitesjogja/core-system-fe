@@ -22,7 +22,7 @@ export function useUserProfile() {
       if (typeof window !== "undefined") {
         if (data) {
           localStorage.setItem("bbj_user", JSON.stringify(data));
-        } else {
+        } else if (!document.cookie.includes("user=")) {
           localStorage.removeItem("bbj_user");
           localStorage.removeItem("user");
         }
@@ -46,7 +46,7 @@ export function useUserProfile() {
         return undefined;
       }
     },
-    staleTime: 1000 * 60 * 5, // Cache valid selama 5 menit
+    staleTime: 1000 * 60 * 30, // Cache profil pengguna valid selama 30 menit
   });
 
   const user = query.data ?? null;
