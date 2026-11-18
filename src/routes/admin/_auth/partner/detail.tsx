@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Pencil } from "lucide-react";
 import { z } from "zod";
 import { defaultDonations } from "#/components/pages/donation";
@@ -16,6 +18,10 @@ import type { PartnerDonationRecord } from "#/components/pages/partner";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { useAdminLayout } from "#/routes/admin/_auth";
+import {
+  getPartnerDetail,
+  mapSponsorToPartnerDetailData,
+} from "#/services/partnerService";
 
 // Skema validasi parameter query URL untuk halaman detail partner
 const partnerDetailSearchSchema = z.object({
@@ -69,26 +75,32 @@ function PartnerDetailPage() {
   const state = searchParams.state;
 
   const navigate = useNavigate();
+  const getPartnerDetailFn = useServerFn(getPartnerDetail);
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
   const trimmedId = id.trim();
   const effectiveId = trimmedId ? trimmedId : state === "empty" ? "" : "ptr-1";
 
-  const detail = React.useMemo(
-    () => getPartnerDetailById(effectiveId, state),
-    [effectiveId, state],
-  );
+  // Mengambil detail sponsor dari API backend
+  const partnerQuery = useQuery({
+    queryKey: ["partner-detail", effectiveId],
+    queryFn: async () => {
+      if (!trimmedId) return null;
+      return getPartnerDetailFn({ data: { id: trimmedId } });
+    },
+    enabled: Boolean(trimmedId),
+  });
 
-  // Simulasi loading skeleton selama 3 detik setiap membuka/berganti mitra
-  const [isLoading, setIsLoading] = React.useState(true);
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = window.setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => window.clearTimeout(timer);
-  }, [effectiveId, state]);
+  const detail = React.useMemo(() => {
+    const apiRecord = partnerQuery.data?.data;
+    if (apiRecord) {
+      return mapSponsorToPartnerDetailData(apiRecord);
+    }
+    return getPartnerDetailById(effectiveId, state);
+  }, [partnerQuery.data, effectiveId, state]);
+
+  const isLoading = partnerQuery.isLoading;
 
   // Sinkronkan judul, subjudul, dan tombol kembali pada Header Admin Layout
   React.useEffect(() => {

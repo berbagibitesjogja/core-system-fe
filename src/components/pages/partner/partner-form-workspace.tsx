@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import { PartnerForm } from "./partner-form";
 import { PartnerLeaveDialog } from "./partner-leave-dialog";
@@ -10,6 +9,7 @@ import type { PartnerFormValues, PartnerRecord } from "./partner-data";
 export interface PartnerFormWorkspaceProps {
   mode: "add" | "edit";
   initialData?: PartnerRecord;
+  onSubmit?: (values: PartnerFormValues) => Promise<void> | void;
 }
 
 /**
@@ -19,6 +19,7 @@ export interface PartnerFormWorkspaceProps {
 export function PartnerFormWorkspace({
   mode,
   initialData,
+  onSubmit,
 }: PartnerFormWorkspaceProps) {
   const navigate = useNavigate();
   const adminLayout = useAdminLayout();
@@ -60,21 +61,9 @@ export function PartnerFormWorkspace({
     setIsSubmitting(true);
 
     try {
-      // Simulasi request API penyimpanan data donatur
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      toast.success(
-        mode === "add"
-          ? `Donatur "${values.name}" berhasil ditambahkan ke daftar Partner.`
-          : `Perubahan data "${values.name}" berhasil disimpan.`,
-      );
-      navigate({ to: "/admin/partner" });
-    } catch {
-      toast.error(
-        mode === "add"
-          ? "Gagal menambahkan donatur. Silakan coba beberapa saat lagi."
-          : "Gagal menyimpan perubahan. Silakan coba beberapa saat lagi.",
-      );
+      if (onSubmit) {
+        await onSubmit(values);
+      }
     } finally {
       setIsSubmitting(false);
     }
