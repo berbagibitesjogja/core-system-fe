@@ -30,10 +30,7 @@ import {
 import { isApiError } from "#/services/errorService";
 
 const beneficiarySearchSchema = z.object({
-  category: z
-    .enum(["all", "universitas", "yayasan", "masyarakat-umum"])
-    .optional()
-    .catch("all"),
+  category: z.string().optional().catch("all"),
   search: z.string().optional().catch(""),
   all: z
     .preprocess((val) => val === true || val === "true", z.boolean())
@@ -126,8 +123,11 @@ function BeneficiaryPage() {
 
     let filtered = [...beneficiaries];
 
-    if (activeCategory !== "all") {
-      filtered = filtered.filter((item) => item.categoryId === activeCategory);
+    if (activeCategory && activeCategory !== "all") {
+      filtered = filtered.filter(
+        (item) =>
+          item.categoryId.toLowerCase() === activeCategory.toLowerCase(),
+      );
     }
 
     const query = search.trim().toLowerCase();

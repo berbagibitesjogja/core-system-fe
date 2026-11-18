@@ -7,6 +7,7 @@ import {
 import { api } from "./api";
 import { handleApiError } from "./errorService";
 import { env } from "#/env";
+import { idAuth } from "#/locales";
 
 export interface AuthUser {
   id: string;
@@ -66,7 +67,7 @@ export interface AuthSession {
 export const loginWithPassword = createServerFn({ method: "POST" })
   .validator((data: LoginPayload) => {
     if (!data.email || !data.password) {
-      throw new Error("Email dan kata sandi wajib diisi");
+      throw new Error(idAuth.validation.credentialsRequired);
     }
     return data;
   })
@@ -118,7 +119,7 @@ export const refreshSession = createServerFn({ method: "POST" })
       const tokenToRefresh = data?.refresh_token || getCookie("refresh_token");
 
       if (!tokenToRefresh) {
-        throw new Error("Refresh token tidak ditemukan");
+        throw new Error(idAuth.validation.refreshTokenMissing);
       }
 
       const response = await api.post<RefreshResponse>("/v1/auth/refresh", {

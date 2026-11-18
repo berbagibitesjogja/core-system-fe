@@ -34,6 +34,10 @@ export const idBeneficiary = {
     title: "Detail Beneficiary",
     subtitle: "Profil dan statistik penyaluran penerima manfaat",
   },
+  validation: {
+    idRequired: "ID penerima manfaat wajib disertakan.",
+    nameRequired: "Nama penerima manfaat wajib diisi.",
+  },
 
   // Galat spesifik domain beneficiary categories dari API backend core-system
   errors: {

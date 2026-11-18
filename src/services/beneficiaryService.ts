@@ -1,11 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
+import { idBeneficiary } from "#/locales";
 import type {
-  BeneficiaryFormCategoryId,
   BeneficiaryFormData,
   BeneficiaryItem,
-  BeneficiaryType,
 } from "#/components/pages/beneficiary/beneficiary-data";
 import type { BeneficiaryDetailProfile } from "#/components/pages/beneficiary/beneficiary-detail-data";
 
@@ -119,34 +118,32 @@ export function sanitizeBeneficiaryCategoryRecord(
 }
 
 /**
- * Memetakan taxonomy variant backend ke kategori tampilan UI Frontend
+ * Memetakan taxonomy variant backend ke kategori tampilan UI Frontend.
+ * Mengikuti nilai variant backend secara langsung tanpa translasi buatan.
  */
 export function mapVariantToBeneficiaryCategory(
-  variant: BeneficiaryCategoryVariant,
-): { categoryId: BeneficiaryFormCategoryId; type: BeneficiaryType } {
-  if (variant === "university" || variant === "kipk") {
-    return { categoryId: "universitas", type: "Universitas" };
-  }
-  if (
-    variant === "foundation" ||
-    variant === "orphanage" ||
-    variant === "nursing_home" ||
-    variant === "shelter"
-  ) {
-    return { categoryId: "yayasan", type: "Yayasan" };
-  }
-  return { categoryId: "masyarakat-umum", type: "Masyarakat Umum" };
+  variant: BeneficiaryCategoryVariant | string,
+): { categoryId: string; type: string } {
+  const rawVariant = variant || "other";
+  return {
+    categoryId: rawVariant,
+    type: rawVariant,
+  };
 }
 
 /**
- * Memetakan kategori tampilan UI Frontend ke taxonomy variant backend default
+ * Memetakan kategori tampilan UI Frontend ke taxonomy variant backend.
+ * Mengikuti nilai backend langsung tanpa translasi buatan.
  */
 export function mapCategoryIdToVariant(
-  categoryId: BeneficiaryFormCategoryId,
+  categoryId: string,
 ): BeneficiaryCategoryVariant {
   if (categoryId === "universitas") return "university";
   if (categoryId === "yayasan") return "foundation";
-  return "society";
+  if (categoryId === "masyarakat-umum" || categoryId === "masyarakat umum") {
+    return "society";
+  }
+  return categoryId as BeneficiaryCategoryVariant;
 }
 
 /**
@@ -186,6 +183,10 @@ export function mapCategoryToBeneficiaryDetailProfile(
   record: SanitizedBeneficiaryCategoryRecord,
 ): BeneficiaryDetailProfile {
   const { type } = mapVariantToBeneficiaryCategory(record.variant);
+  const isUniversity =
+    type.toLowerCase().includes("universi") ||
+    type.toLowerCase().includes("university") ||
+    type.toLowerCase().includes("kipk");
   return {
     id: record.id,
     name: record.name,
@@ -196,7 +197,7 @@ export function mapCategoryToBeneficiaryDetailProfile(
     heroesSharePercent: 0,
     impactKg: 0,
     impactSharePercent: 0,
-    sectorUnitLabel: type === "Universitas" ? "Fakultas" : "Sektor",
+    sectorUnitLabel: isUniversity ? "Fakultas" : "Sektor",
     donations: [],
     sectors: [],
   };
@@ -257,7 +258,7 @@ export const getBeneficiaries = createServerFn({ method: "GET" })
  */
 export const getBeneficiaryDetail = createServerFn({ method: "GET" })
   .validator((data: { id: string }) => {
-    if (!data.id) throw new Error("ID penerima manfaat wajib disertakan");
+    if (!data.id) throw new Error(idBeneficiary.validation.idRequired);
     return data;
   })
   .handler(async ({ data }): Promise<BeneficiaryCategoryDetailResponse> => {
@@ -285,7 +286,7 @@ export const getBeneficiaryDetail = createServerFn({ method: "GET" })
 export const createBeneficiary = createServerFn({ method: "POST" })
   .validator((data: CreateBeneficiaryCategoryPayload) => {
     if (!data.name.trim()) {
-      throw new Error("Nama penerima manfaat wajib diisi");
+      throw new Error(idBeneficiary.validation.nameRequired);
     }
     return data;
   })
@@ -313,7 +314,7 @@ export const createBeneficiary = createServerFn({ method: "POST" })
  */
 export const updateBeneficiary = createServerFn({ method: "POST" })
   .validator((data: UpdateBeneficiaryCategoryPayload) => {
-    if (!data.id) throw new Error("ID penerima manfaat wajib disertakan");
+    if (!data.id) throw new Error(idBeneficiary.validation.idRequired);
     return data;
   })
   .handler(async ({ data }): Promise<UpdateBeneficiaryCategoryResponse> => {
@@ -341,7 +342,7 @@ export const updateBeneficiary = createServerFn({ method: "POST" })
  */
 export const deleteBeneficiary = createServerFn({ method: "POST" })
   .validator((data: { id: string }) => {
-    if (!data.id) throw new Error("ID penerima manfaat wajib disertakan");
+    if (!data.id) throw new Error(idBeneficiary.validation.idRequired);
     return data;
   })
   .handler(async ({ data }): Promise<DeleteBeneficiaryCategoryResponse> => {

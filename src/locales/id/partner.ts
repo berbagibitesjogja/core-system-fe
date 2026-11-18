@@ -34,6 +34,10 @@ export const idPartner = {
     title: "Detail Donatur",
     subtitle: "Profil dan riwayat donasi mitra",
   },
+  validation: {
+    idRequired: "ID donatur wajib disertakan.",
+    nameRequired: "Nama donatur wajib diisi.",
+  },
 
   // Galat spesifik domain sponsor/partner dari API backend core-system
   errors: {
