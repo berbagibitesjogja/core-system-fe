@@ -1,33 +1,43 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
-import { toast } from "#/components/ui/toast";
 import { VolunteerForm } from "./volunteer-form";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
-import type { VolunteerFormValues } from "./volunteer-data";
+import type {
+  VolunteerDivisionOption,
+  VolunteerFormValues,
+} from "./volunteer-data";
 
 export interface VolunteerFormWorkspaceProps {
   mode: "add" | "edit";
   initialData?: Partial<VolunteerFormValues>;
-  demoState?: "division-error" | "duplicate" | "none";
+  divisionOptions?: VolunteerDivisionOption[];
+  isDivisionError?: boolean;
+  isDivisionFetching?: boolean;
+  onRetryDivision?: () => void;
+  onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
+  isSubmitting?: boolean;
 }
 
 /**
- * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah Volunteer.
- * Form tampil langsung tanpa skeleton (sama seperti halaman Tambah Donasi);
- * skeleton hanya dipakai di halaman detail.
+ * VolunteerFormWorkspace: Orkestrator tata letak halaman Tambah/Edit Volunteer.
+ * Murni presentasional dan menerima handler submit serta opsi data dari rute.
  */
 export function VolunteerFormWorkspace({
   mode,
   initialData,
-  demoState = "none",
+  divisionOptions,
+  isDivisionError,
+  isDivisionFetching,
+  onRetryDivision,
+  onSubmit,
+  isSubmitting = false,
 }: VolunteerFormWorkspaceProps) {
   const navigate = useNavigate();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
 
   const handleRequestLeave = React.useCallback(() => {
@@ -59,30 +69,6 @@ export function VolunteerFormWorkspace({
     return () => setHeaderOverride(null);
   }, [setHeaderOverride, headerTitle, headerSubtitle, handleRequestLeave]);
 
-  const handleSubmitSuccess = async (values: VolunteerFormValues) => {
-    setIsSubmitting(true);
-
-    try {
-      // Simulasi request API penyimpanan volunteer
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      toast.success(
-        mode === "add"
-          ? `Volunteer "${values.name}" berhasil ditambahkan ke daftar Volunteer.`
-          : `Perubahan data "${values.name}" berhasil disimpan.`,
-      );
-      navigate({ to: "/admin/volunteer" });
-    } catch {
-      toast.error(
-        mode === "add"
-          ? "Gagal menambahkan volunteer. Silakan coba beberapa saat lagi."
-          : "Gagal menyimpan perubahan. Silakan coba beberapa saat lagi.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="flex flex-col lg:flex-row items-start gap-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">
       {/* Kolom Kiri: Formulir Penempatan & Kontak Volunteer */}
@@ -90,10 +76,13 @@ export function VolunteerFormWorkspace({
         <VolunteerForm
           mode={mode}
           initialData={initialData}
-          demoState={demoState}
+          divisionOptions={divisionOptions}
+          isDivisionError={isDivisionError}
+          isDivisionFetching={isDivisionFetching}
+          onRetryDivision={onRetryDivision}
           isSubmitting={isSubmitting}
           onCancel={handleRequestLeave}
-          onSubmit={handleSubmitSuccess}
+          onSubmit={onSubmit}
         />
       </div>
 

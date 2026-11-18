@@ -2,10 +2,10 @@ import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Pencil, Sparkles } from "lucide-react";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
-import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
 import { defaultVolunteerActivities } from "./volunteer-data";
 import type {
+  VolunteerDivisionOption,
   VolunteerFormValues,
   VolunteerRecord,
   VolunteerUserRole,
@@ -24,19 +24,34 @@ export interface VolunteerDetailWorkspaceProps {
   volunteer: VolunteerRecord;
   userRole?: VolunteerUserRole;
   initialTab?: VolunteerDetailTabKey;
+  isLoading?: boolean;
+  divisionOptions?: VolunteerDivisionOption[];
   onVolunteerUpdate?: (updated: VolunteerRecord) => void;
-  onVolunteerDelete?: (deletedId: string) => void;
+  onSaveProfile?: (values: VolunteerFormValues) => Promise<void> | void;
+  onDeleteVolunteer?: (volunteer: VolunteerRecord) => Promise<void> | void;
+  isSaving?: boolean;
+  isDeleting?: boolean;
+  blockedDeleteTarget?: VolunteerRecord | null;
+  onClearBlockedDelete?: () => void;
 }
 
 /**
- * VolunteerDetailWorkspace: Orkestrator halaman Detail Volunteer (Figma 151:21395 - 151:22876).
+ * VolunteerDetailWorkspace: Komponen presentasional halaman Detail Volunteer (Figma 151:21395 - 151:22876).
+ * Seluruh pemanggilan Server Function dipusatkan di berkas rute detail.tsx.
  */
 export function VolunteerDetailWorkspace({
   volunteer: initialVolunteer,
   userRole = "super_admin",
   initialTab,
+  isLoading = false,
+  divisionOptions,
   onVolunteerUpdate,
-  onVolunteerDelete,
+  onSaveProfile,
+  onDeleteVolunteer,
+  isSaving = false,
+  isDeleting = false,
+  blockedDeleteTarget = null,
+  onClearBlockedDelete,
 }: VolunteerDetailWorkspaceProps) {
   const navigate = useNavigate();
   const adminLayout = useAdminLayout();
@@ -44,13 +59,13 @@ export function VolunteerDetailWorkspace({
 
   const [volunteer, setVolunteer] =
     React.useState<VolunteerRecord>(initialVolunteer);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  // Sinkronisasi data saat initialVolunteer berubah dari query API
+  React.useEffect(() => {
+    setVolunteer(initialVolunteer);
+  }, [initialVolunteer]);
 
   const [deleteTarget, setDeleteTarget] =
-    React.useState<VolunteerRecord | null>(null);
-  const [cannotDeleteTarget, setCannotDeleteTarget] =
     React.useState<VolunteerRecord | null>(null);
 
   // Super Admin dapat melihat tab Aktivitas (Figma 151:21395). Core & Staff hanya Pengaturan Profil (Figma 151:22180).
@@ -66,15 +81,6 @@ export function VolunteerDetailWorkspace({
     },
   );
 
-  // DEV ONLY: Simulasi loading skeleton 3 detik
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Set Top Bar Header
   React.useEffect(() => {
     if (!setHeaderOverride) return;
@@ -89,50 +95,30 @@ export function VolunteerDetailWorkspace({
     return () => setHeaderOverride(null);
   }, [setHeaderOverride, volunteer.name, navigate]);
 
-  // Handler simpan data profil (Figma 151:22876)
+  // Handler simpan data profil
   const handleSaveProfile = async (values: VolunteerFormValues) => {
-    setIsSaving(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const updated: VolunteerRecord = {
-        ...volunteer,
-        name: values.name,
-        email: values.email,
-        phone: values.phone,
-        division: values.division as VolunteerRecord["division"],
-        role: values.role,
-      };
-      setVolunteer(updated);
-      onVolunteerUpdate?.(updated);
-      toast.success(
-        `Perubahan data profil "${updated.name}" berhasil disimpan.`,
-      );
-    } catch {
-      toast.error("Gagal menyimpan perubahan. Silakan coba lagi.");
-    } finally {
-      setIsSaving(false);
+    if (onSaveProfile) {
+      await onSaveProfile(values);
     }
+    const updated: VolunteerRecord = {
+      ...volunteer,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      division: values.division,
+      role: values.role,
+    };
+    setVolunteer(updated);
+    onVolunteerUpdate?.(updated);
   };
 
   // Handler konfirmasi hapus volunteer
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-
-    setIsDeleting(true);
-    setTimeout(() => {
-      setIsDeleting(false);
-      if (deleteTarget.hasActiveRelations) {
-        const blocked = deleteTarget;
-        setDeleteTarget(null);
-        setCannotDeleteTarget(blocked);
-        return;
-      }
-
-      setDeleteTarget(null);
-      toast.success(`Volunteer "${deleteTarget.name}" berhasil dihapus.`);
-      onVolunteerDelete?.(deleteTarget.id);
-      navigate({ to: "/admin/volunteer" });
-    }, 300);
+    if (onDeleteVolunteer) {
+      await onDeleteVolunteer(deleteTarget);
+    }
+    setDeleteTarget(null);
   };
 
   if (isLoading) {
@@ -150,7 +136,6 @@ export function VolunteerDetailWorkspace({
     phone: volunteer.phone,
     division: volunteer.division,
     role: volunteer.role,
-    address: "Jl. Kaliurang Km 5, Sleman",
   };
 
   return (
@@ -232,6 +217,7 @@ export function VolunteerDetailWorkspace({
               initialValues={formValues}
               isSaving={isSaving}
               canEditRole={canDeleteAccount}
+              divisionOptions={divisionOptions}
               onSubmit={handleSaveProfile}
             />
           )}
@@ -255,11 +241,11 @@ export function VolunteerDetailWorkspace({
         isLoading={isDeleting}
       />
 
-      {/* Modal Gagal Hapus 409 (Terikat Data Relasi) */}
+      {/* Modal Gagal Hapus 409 (Terikat Data Relasi / Last Super) */}
       <VolunteerCannotDeleteDialog
-        isOpen={Boolean(cannotDeleteTarget)}
-        onClose={() => setCannotDeleteTarget(null)}
-        volunteer={cannotDeleteTarget}
+        isOpen={Boolean(blockedDeleteTarget)}
+        onClose={() => onClearBlockedDelete?.()}
+        volunteer={blockedDeleteTarget}
       />
     </div>
   );

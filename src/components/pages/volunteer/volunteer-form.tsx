@@ -13,7 +13,7 @@ import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
-import { Textarea } from "#/components/ui/textarea";
+import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
 import {
   VOLUNTEER_DIVISION_OPTIONS,
@@ -21,6 +21,7 @@ import {
   defaultVolunteerFormValues,
 } from "./volunteer-data";
 import type {
+  VolunteerDivisionOption,
   VolunteerFormValues,
   VolunteerRoleOption,
   VolunteerSystemRole,
@@ -33,7 +34,10 @@ export interface VolunteerFormProps {
   onCancel: () => void;
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
-  demoState?: "division-error" | "duplicate" | "none";
+  divisionOptions?: VolunteerDivisionOption[];
+  isDivisionError?: boolean;
+  isDivisionFetching?: boolean;
+  onRetryDivision?: () => void;
 }
 
 interface VolunteerFormErrors {
@@ -54,17 +58,8 @@ const ROLE_ICON_MAP: Record<
   super: Sparkles,
 };
 
-const FORM_DIVISIONS = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all");
-
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[0-9+()-\s]{8,20}$/;
-
-// Daftar email & nomor yang disimulasikan sudah terdaftar (Figma 150:21212)
-const DUPLICATE_EMAILS: Record<string, string> = {
-  "rani.kusuma@gmail.com": "Rani Kusuma",
-  "dian.pratiwi@gmail.com": "Dian Pratiwi",
-  "fauzan.aditya@gmail.com": "Fauzan Aditya",
-};
 
 /**
  * VolunteerForm: Formulir Tambah dan Edit Volunteer (Figma 150:20833, 150:21212, 150:21549).
@@ -76,40 +71,25 @@ export function VolunteerForm({
   onCancel,
   onSubmit,
   className,
-  demoState = "none",
+  divisionOptions = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all"),
+  isDivisionError = false,
+  isDivisionFetching = false,
+  onRetryDivision,
 }: VolunteerFormProps) {
-  const [values, setValues] = React.useState<VolunteerFormValues>(() => {
-    if (demoState === "duplicate") {
-      return {
-        division: "Operational Manager",
-        role: "core",
-        name: "Rani Kusuma",
-        email: "rani.kusuma@gmail.com",
-        phone: "0813-2270-6614",
-        address: "Jl. Gejayan No. 12, Sleman",
-      };
-    }
-    return {
-      ...defaultVolunteerFormValues,
-      ...initialData,
-    };
-  });
+  const [values, setValues] = React.useState<VolunteerFormValues>(() => ({
+    ...defaultVolunteerFormValues,
+    ...initialData,
+  }));
 
   const [errors, setErrors] = React.useState<VolunteerFormErrors>({});
   const [duplicateConflict, setDuplicateConflict] = React.useState<{
     field: "email" | "phone";
     ownerName: string;
-  } | null>(() => {
-    if (demoState === "duplicate") {
-      return { field: "email", ownerName: "Rani Kusuma" };
-    }
-    return null;
-  });
+  } | null>(null);
 
-  const [isDivisionFailed, setIsDivisionFailed] = React.useState(
-    demoState === "division-error",
-  );
-  const [isRetryingDivision, setIsRetryingDivision] = React.useState(false);
+  const isDivisionFailed = Boolean(isDivisionError);
+  const isRetryingDivision = Boolean(isDivisionFetching);
+
   const [divisionDropdownOpen, setDivisionDropdownOpen] = React.useState(false);
   const divisionContainerRef = React.useRef<HTMLDivElement>(null);
 
@@ -132,10 +112,7 @@ export function VolunteerForm({
   }, [divisionDropdownOpen]);
 
   const handleRetryDivision = async () => {
-    setIsRetryingDivision(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setIsDivisionFailed(false);
-    setIsRetryingDivision(false);
+    onRetryDivision?.();
   };
 
   const validate = (formValues: VolunteerFormValues): VolunteerFormErrors => {
@@ -173,7 +150,7 @@ export function VolunteerForm({
     val: VolunteerFormValues[TField],
   ) => {
     setValues((prev) => ({ ...prev, [field]: val }));
-    if (errors[field as keyof VolunteerFormErrors]) {
+    if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
     if (duplicateConflict && (field === "email" || field === "phone")) {
@@ -181,7 +158,7 @@ export function VolunteerForm({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isDivisionFailed) {
@@ -199,25 +176,32 @@ export function VolunteerForm({
       return;
     }
 
-    // Simulasi deteksi duplikasi akun (Figma 150:21212)
-    const normalizedEmail = values.email.trim().toLowerCase();
-    if (mode === "add" && DUPLICATE_EMAILS[normalizedEmail]) {
-      const owner = DUPLICATE_EMAILS[normalizedEmail];
-      setDuplicateConflict({ field: "email", ownerName: owner });
-      setErrors((prev) => ({
-        ...prev,
-        email: `Email ini sudah terdaftar atas nama ${owner}.`,
-      }));
-      return;
+    try {
+      await onSubmit({
+        ...values,
+        name: values.name.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
+      });
+    } catch (err) {
+      if (isApiError(err)) {
+        if (
+          err.code === "VAL_002" ||
+          err.code === "VAL_003" ||
+          err.status === 400 ||
+          err.status === 409
+        ) {
+          setDuplicateConflict({
+            field: "email",
+            ownerName: values.name || "Pengurus Terdaftar",
+          });
+          setErrors((prev) => ({
+            ...prev,
+            email: err.message,
+          }));
+        }
+      }
     }
-
-    onSubmit({
-      ...values,
-      name: values.name.trim(),
-      email: values.email.trim(),
-      phone: values.phone.trim(),
-      address: values.address.trim(),
-    });
   };
 
   return (
@@ -322,7 +306,7 @@ export function VolunteerForm({
                   aria-label="Daftar Divisi"
                   className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto"
                 >
-                  {FORM_DIVISIONS.map((opt) => {
+                  {divisionOptions.map((opt) => {
                     const isSelected = opt.label === values.division;
                     return (
                       <button
@@ -448,19 +432,6 @@ export function VolunteerForm({
               className="w-full max-w-none"
             />
           </div>
-        </div>
-
-        {/* Field: Alamat Domisili */}
-        <div className="flex flex-col gap-1.5 w-full">
-          <Textarea
-            label="Alamat Domisili"
-            placeholder="Contoh: Jl. Kaliurang Km 5, Sleman"
-            value={values.address}
-            onChange={(e) => handleFieldChange("address", e.target.value)}
-            helperText="Opsional"
-            disabled={isSubmitting}
-            className="w-full max-w-none min-h-[108px] resize-y"
-          />
         </div>
       </div>
 

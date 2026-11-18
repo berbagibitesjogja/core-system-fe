@@ -1,12 +1,14 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { toast } from "#/components/ui/toast";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import {
+  getDivisionIdByName,
   getVolunteerStats,
-  INITIAL_VOLUNTEER_RECORDS,
-  VOLUNTEER_DIVISION_OPTIONS,
+  mapDivisionsToOptions,
   VolunteerCannotDeleteDialog,
   VolunteerDeleteDialog,
   VolunteerPageSkeleton,
@@ -15,14 +17,17 @@ import {
   VolunteerToolbar,
 } from "#/components/pages/volunteer";
 import type {
-  VolunteerDemoModal,
   VolunteerRecord,
   VolunteerUserRole,
 } from "#/components/pages/volunteer";
-
-const validDivisionIds = new Set(
-  VOLUNTEER_DIVISION_OPTIONS.map((option) => option.id),
-);
+import { getDivisions } from "#/services/divisionService";
+import {
+  deleteVolunteerStaff,
+  getVolunteers,
+  mapStaffToVolunteerRecord,
+} from "#/services/volunteerService";
+import { idVolunteer } from "#/locales";
+import { isApiError } from "#/services/errorService";
 
 // Skema validasi parameter URL tipe-aman untuk halaman Volunteer
 const volunteerSearchSchema = z.object({
@@ -30,47 +35,27 @@ const volunteerSearchSchema = z.object({
   search: z.string().optional().catch(""),
   page: z.coerce.number().int().positive().optional().catch(1),
   per_page: z.coerce.number().int().positive().optional().catch(10),
-  role: z
-    .enum(["super_admin", "core", "staff"])
-    .optional()
-    .catch("super_admin"),
-  modal: z.enum(["none", "delete", "cannot-delete"]).optional().catch("none"),
-  loading: z.coerce.boolean().optional().catch(false),
+  role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/_auth/volunteer/")({
   validateSearch: (search: Record<string, unknown>) => {
     const rawDivision =
       typeof search.division === "string" ? search.division.trim() : "all";
-    const matchedDivision =
-      VOLUNTEER_DIVISION_OPTIONS.find(
-        (opt) => opt.id.toLowerCase() === rawDivision.toLowerCase(),
-      )?.id ?? "all";
 
-    const rawRole = typeof search.role === "string" ? search.role : "";
-    const normalizedRole: VolunteerUserRole =
-      rawRole === "staff"
-        ? "staff"
-        : rawRole === "core"
-          ? "core"
-          : "super_admin";
-
-    const rawModal = typeof search.modal === "string" ? search.modal : "none";
-    const normalizedModal: VolunteerDemoModal =
-      rawModal === "delete" || rawModal === "cannot-delete" ? rawModal : "none";
+    const rawRole = typeof search.role === "string" ? search.role : undefined;
+    const normalizedRole: VolunteerUserRole | undefined =
+      rawRole === "staff" || rawRole === "core" || rawRole === "super_admin"
+        ? rawRole
+        : undefined;
 
     return volunteerSearchSchema.parse({
       ...search,
-      division: validDivisionIds.has(matchedDivision) ? matchedDivision : "all",
+      division: rawDivision || "all",
       search: typeof search.search === "string" ? search.search : "",
       page: search.page ?? 1,
       per_page: search.per_page ?? search.perpage ?? 10,
       role: normalizedRole,
-      modal: normalizedModal,
-      loading:
-        search.loading === true ||
-        search.loading === "true" ||
-        search.loading === "1",
     });
   },
   component: VolunteerPage,
@@ -78,31 +63,63 @@ export const Route = createFileRoute("/admin/_auth/volunteer/")({
 
 function VolunteerPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const layoutContext = useAdminLayout();
   const {
     division = "all",
     search = "",
     page = 1,
     per_page = 10,
-    role = "super_admin",
-    modal = "none",
-    loading = false,
+    role,
   } = Route.useSearch();
 
-  // DEV ONLY: Simulasi loading skeleton selama 3 detik saat awal render
-  const [isLoading, setIsLoading] = React.useState(true);
+  const getDivisionsFn = useServerFn(getDivisions);
+  const getVolunteersFn = useServerFn(getVolunteers);
+  const deleteVolunteerStaffFn = useServerFn(deleteVolunteerStaff);
 
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Mengambil daftar divisi secara dinamis via TanStack Query
+  const divisionsQuery = useQuery({
+    queryKey: ["divisions"],
+    queryFn: () => getDivisionsFn(),
+  });
 
-  const [volunteers, setVolunteers] = React.useState<VolunteerRecord[]>(
-    INITIAL_VOLUNTEER_RECORDS,
+  const divisionList = divisionsQuery.data?.data ?? [];
+  const divisionOptions = React.useMemo(
+    () => mapDivisionsToOptions(divisionList),
+    [divisionList],
   );
+
+  const divisionId =
+    division !== "all"
+      ? getDivisionIdByName(division, divisionList)
+      : undefined;
+
+  // Mengambil daftar staf secara langsung via TanStack Query
+  const volunteersQuery = useQuery({
+    queryKey: ["volunteers", { page, per_page, search, division, divisionId }],
+    queryFn: () =>
+      getVolunteersFn({
+        data: {
+          page,
+          limit: per_page,
+          division_id: divisionId,
+          search: search.trim() || undefined,
+        },
+      }),
+  });
+
+  const rawStaffList = volunteersQuery.data?.data ?? [];
+  const volunteers = React.useMemo(
+    () => rawStaffList.map(mapStaffToVolunteerRecord),
+    [rawStaffList],
+  );
+
+  const totalCount = volunteersQuery.data?.meta.total ?? volunteers.length;
+  const totalPages =
+    volunteersQuery.data?.meta.total_pages ??
+    Math.max(1, Math.ceil(totalCount / per_page));
+  const currentPage = Math.min(page, totalPages);
+
   const [deleteTarget, setDeleteTarget] =
     React.useState<VolunteerRecord | null>(null);
   const [cannotDeleteTarget, setCannotDeleteTarget] =
@@ -144,61 +161,11 @@ function VolunteerPage() {
     };
   }, [role, layoutContext]);
 
-  // Sinkronisasi state modal dari query param URL (?modal=delete atau ?modal=cannot-delete)
-  React.useEffect(() => {
-    const defaultTarget =
-      volunteers.find((item) => item.id === "vol-10") ??
-      volunteers.at(0) ??
-      null;
-
-    if (modal === "delete") {
-      setDeleteTarget(defaultTarget);
-      setCannotDeleteTarget(null);
-    } else if (modal === "cannot-delete") {
-      setCannotDeleteTarget(defaultTarget);
-      setDeleteTarget(null);
-    }
-  }, [modal, volunteers]);
-
   // Hitung metrik kartu statistik dari seluruh daftar anggota
   const stats = React.useMemo(
-    () => getVolunteerStats(volunteers),
-    [volunteers],
+    () => getVolunteerStats(volunteers, totalCount),
+    [volunteers, totalCount],
   );
-
-  // Penyaringan berdasarkan Divisi & Kata Kunci Pencarian (nama, email, no. wa)
-  const filteredVolunteers = React.useMemo(() => {
-    const normalizedQuery = search.trim().toLowerCase();
-    const queryDigits = normalizedQuery.replace(/\D/g, "");
-
-    return volunteers.filter((item) => {
-      if (division !== "all" && item.division !== division) {
-        return false;
-      }
-
-      if (!normalizedQuery) {
-        return true;
-      }
-
-      const matchName = item.name.toLowerCase().includes(normalizedQuery);
-      const matchEmail = item.email.toLowerCase().includes(normalizedQuery);
-      const matchPhoneRaw = item.phone.toLowerCase().includes(normalizedQuery);
-      const matchPhoneDigits =
-        queryDigits.length > 0 &&
-        item.phone.replace(/\D/g, "").includes(queryDigits);
-
-      return matchName || matchEmail || matchPhoneRaw || matchPhoneDigits;
-    });
-  }, [volunteers, division, search]);
-
-  const totalCount = filteredVolunteers.length;
-  const totalPages = Math.max(1, Math.ceil(totalCount / per_page));
-  const currentPage = Math.min(page, totalPages);
-
-  const paginatedVolunteers = React.useMemo(() => {
-    const startIndex = (currentPage - 1) * per_page;
-    return filteredVolunteers.slice(startIndex, startIndex + per_page);
-  }, [filteredVolunteers, currentPage, per_page]);
 
   const hasActiveFilters = division !== "all" || search.trim().length > 0;
 
@@ -210,8 +177,7 @@ function VolunteerPage() {
         search: string;
         page: number;
         per_page: number;
-        role: VolunteerUserRole;
-        modal: VolunteerDemoModal;
+        role?: VolunteerUserRole;
       }>,
     ) => {
       navigate({
@@ -221,14 +187,14 @@ function VolunteerPage() {
           search: updates.search ?? search,
           page: updates.page ?? page,
           per_page: updates.per_page ?? per_page,
-          role: updates.role ?? role,
-          modal: updates.modal ?? modal,
-          loading,
+          ...(updates.role !== undefined || role !== undefined
+            ? { role: updates.role ?? role }
+            : {}),
         },
         replace: true,
       });
     },
-    [navigate, division, search, page, per_page, role, modal, loading],
+    [navigate, division, search, page, per_page, role],
   );
 
   const handleDivisionChange = (newDivision: string) => {
@@ -254,35 +220,40 @@ function VolunteerPage() {
   const handleCloseModals = () => {
     setDeleteTarget(null);
     setCannotDeleteTarget(null);
-    if (modal !== "none") {
-      updateSearchParams({ modal: "none" });
-    }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
-    window.setTimeout(() => {
-      setIsDeleting(false);
-
-      // Jika volunteer masih terikat penugasan war aktif atau reimburse (409), tampilkan modal gagal hapus (Figma 149:21949)
-      if (deleteTarget.hasActiveRelations) {
+    try {
+      await deleteVolunteerStaffFn({ data: { id: deleteTarget.id } });
+      await queryClient.invalidateQueries({ queryKey: ["volunteers"] });
+      toast.success(idVolunteer.list.toasts.deleteSuccess(deleteTarget.name));
+      handleCloseModals();
+    } catch (error) {
+      if (
+        isApiError(error) &&
+        (error.code === "ROLE_LAST_SUPER" ||
+          error.status === 400 ||
+          error.status === 409)
+      ) {
         const blockedVolunteer = deleteTarget;
         setDeleteTarget(null);
         setCannotDeleteTarget(blockedVolunteer);
-        return;
+      } else {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : idVolunteer.list.toasts.deleteFailed,
+        );
       }
-
-      setVolunteers((prev) =>
-        prev.filter((item) => item.id !== deleteTarget.id),
-      );
-      toast.success(`Volunteer ${deleteTarget.name} berhasil dihapus.`);
-      handleCloseModals();
-    }, 250);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
-  if (loading || isLoading) {
+  if (volunteersQuery.isLoading) {
     return <VolunteerPageSkeleton />;
   }
 
@@ -298,11 +269,12 @@ function VolunteerPage() {
         searchQuery={search}
         onSearchChange={handleSearchChange}
         onAddVolunteer={() => navigate({ to: "/admin/volunteer/add" })}
+        divisionOptions={divisionOptions}
       />
 
       {/* Tabel Daftar Volunteer & Paginasi */}
       <VolunteerTable
-        data={paginatedVolunteers}
+        data={volunteers}
         totalCount={totalCount}
         currentPage={currentPage}
         totalPages={totalPages}

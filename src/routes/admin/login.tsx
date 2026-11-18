@@ -1,5 +1,5 @@
 import * as React from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
@@ -10,7 +10,6 @@ import {
 } from "#/components/pages/login";
 import type { LoginAlertConfig } from "#/components/pages/login";
 import { toast } from "#/components/ui/toast";
-import { useUserProfile } from "#/hooks";
 import { DEFAULT_ERROR_MESSAGE, idAuth } from "#/locales";
 import {
   getAuthSession,
@@ -25,9 +24,24 @@ const loginSearchSchema = z.object({
 
 export const Route = createFileRoute("/admin/login")({
   validateSearch: (search) => loginSearchSchema.parse(search),
-  beforeLoad: async () => {
+  beforeLoad: async ({ search }) => {
     // Ambil data sesi pengguna untuk verifikasi status login
     const session = await getAuthSession();
+
+    // Jika pengguna sudah memiliki sesi staf aktif, langsung alihkan ke rute tujuan
+    if (session.isAuthenticated && session.isStaff) {
+      const targetUrl =
+        search.redirect &&
+        search.redirect !== "/admin/login" &&
+        !search.redirect.includes("/admin/login")
+          ? search.redirect
+          : "/admin/dashboard";
+
+      throw redirect({
+        to: targetUrl,
+      });
+    }
+
     return {
       session,
     };
@@ -43,31 +57,13 @@ function AdminLoginPage() {
   const loginFn = useServerFn(loginWithPassword);
   const logoutFn = useServerFn(logout);
 
-  const hasCheckedAuthRef = React.useRef(false);
-
-  // Jika pengguna sudah memiliki sesi staf aktif, lempar toast dan alihkan ke dashboard langsung dari halaman login
+  // Bersihkan sisa cache lokal sesi jika berada di halaman login
   React.useEffect(() => {
-    const isStaffActive =
-      (profile.isAuthenticated && profile.isStaff) ||
-      (session.isAuthenticated && session.isStaff);
-    const activeName = profile.name || session.user?.name;
-
-    if (isStaffActive && activeName && !hasCheckedAuthRef.current) {
-      hasCheckedAuthRef.current = true;
-      toast.info(idAuth.login.toasts.alreadyLoggedIn(activeName));
-      navigate({
-        to: search.redirect || "/admin/dashboard",
-        replace: true,
-      });
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("bbj_user");
+      localStorage.removeItem("user");
     }
-  }, [
-    profile.isAuthenticated,
-    profile.isStaff,
-    profile.name,
-    session,
-    search.redirect,
-    navigate,
-  ]);
+  }, []);
 
   // State form dan proses otentikasi
   const [email, setEmail] = React.useState("");
@@ -154,8 +150,15 @@ function AdminLoginPage() {
       toast.success(idAuth.login.toasts.loginSuccess(response.data.user.name));
 
       // Navigasi ke rute tujuan setelah login berhasil
+      const targetUrl =
+        search.redirect &&
+        search.redirect !== "/admin/login" &&
+        !search.redirect.includes("/admin/login")
+          ? search.redirect
+          : "/admin/dashboard";
+
       navigate({
-        to: search.redirect || "/admin/dashboard",
+        to: targetUrl,
       });
     } catch (err: unknown) {
       if (isApiError(err)) {
@@ -240,8 +243,15 @@ function AdminLoginPage() {
     // Simulasi otentikasi Google sebelum endpoint OAuth backend aktif
     setTimeout(() => {
       setIsGoogleLoading(false);
+      const targetUrl =
+        search.redirect &&
+        search.redirect !== "/admin/login" &&
+        !search.redirect.includes("/admin/login")
+          ? search.redirect
+          : "/admin/dashboard";
+
       navigate({
-        to: search.redirect || "/admin/dashboard",
+        to: targetUrl,
       });
     }, 600);
   };

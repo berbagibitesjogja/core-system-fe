@@ -11,13 +11,14 @@ export type VolunteerDivision =
   | "Fund"
   | "Volunteer"
   | "Friend"
-  | "Logistik";
+  | "Logistik"
+  | "Managerial"
+  | "Operational"
+  | string;
 
 export type VolunteerSystemRole = "super" | "core" | "staff" | "member";
 
 export type VolunteerUserRole = "super_admin" | "core" | "staff";
-
-export type VolunteerDemoModal = "none" | "delete" | "cannot-delete";
 
 export type VolunteerBadgeTone =
   "neutral" | "brand" | "accent" | "success" | "warning" | "danger" | "info";
@@ -143,7 +144,6 @@ export interface VolunteerFormValues {
   name: string;
   email: string;
   phone: string;
-  address: string;
 }
 
 export const defaultVolunteerFormValues: VolunteerFormValues = {
@@ -152,7 +152,6 @@ export const defaultVolunteerFormValues: VolunteerFormValues = {
   name: "",
   email: "",
   phone: "",
-  address: "",
 };
 
 export const defaultEditVolunteerData: VolunteerFormValues = {
@@ -161,7 +160,6 @@ export const defaultEditVolunteerData: VolunteerFormValues = {
   name: "Bima Aditya",
   email: "bima.aditya@gmail.com",
   phone: "0896-5521-0087",
-  address: "Jl. Kaliurang Km 5, Sleman",
 };
 
 // 4 Opsi role yang dapat dipilih dalam formulir volunteer (Figma 150:20894 - 150:21114)
@@ -203,208 +201,112 @@ export const VOLUNTEER_DIVISION_OPTIONS: VolunteerDivisionOption[] = [
 ];
 
 // Pemetaan warna badge tiap divisi sesuai desain Figma 149:19230
-export const VOLUNTEER_DIVISION_BADGE_TONE: Record<
-  VolunteerDivision,
-  VolunteerBadgeTone
-> = {
-  "Operational Manager": "neutral",
-  IT: "info",
-  Food: "brand",
-  Medinfo: "accent",
-  Bendahara: "warning",
-  Fund: "success",
-  Volunteer: "neutral",
-  Friend: "neutral",
-  Logistik: "info",
-};
+export const VOLUNTEER_DIVISION_BADGE_TONE: Record<string, VolunteerBadgeTone> =
+  {
+    "Operational Manager": "neutral",
+    IT: "info",
+    Food: "brand",
+    Medinfo: "accent",
+    Bendahara: "warning",
+    Fund: "success",
+    Volunteer: "neutral",
+    Friend: "neutral",
+    Logistik: "info",
+    Managerial: "warning",
+    Operational: "brand",
+  };
 
-// 10 baris utama sesuai tabel Figma 149:19230
-const PRIMARY_VOLUNTEER_RECORDS: VolunteerRecord[] = [
-  {
-    id: "vol-1",
-    name: "Dian Pratiwi",
-    phone: "0812-6620-1145",
-    email: "dian.pratiwi@gmail.com",
-    division: "Operational Manager",
-    role: "super",
-  },
-  {
-    id: "vol-2",
-    name: "Fauzan Trisuladana",
-    phone: "0857-4412-9031",
-    email: "fauzan.tris@ugm.ac.id",
-    division: "IT",
-    role: "core",
-    joinedDate: "3 Maret 2024",
-  },
-  {
-    id: "vol-3",
-    name: "Rani Kusuma",
-    phone: "0813-2270-6614",
-    email: "rani.kusuma@gmail.com",
-    division: "Food",
-    role: "core",
-  },
-  {
-    id: "vol-4",
-    name: "Bima Aditya",
-    phone: "0896-5521-0087",
-    email: "bima.aditya@gmail.com",
-    division: "Food",
-    role: "staff",
-  },
-  {
-    id: "vol-5",
-    name: "Sari Wulandari",
-    phone: "0821-3345-9902",
-    email: "sari.wulan@gmail.com",
-    division: "Medinfo",
-    role: "staff",
-  },
-  {
-    id: "vol-6",
-    name: "Fajar Nugroho",
-    phone: "0878-1123-4456",
-    email: "fajar.nugroho@gmail.com",
-    division: "Bendahara",
-    role: "staff",
-  },
-  {
-    id: "vol-7",
-    name: "Laras Ayuningtyas",
-    phone: "0812-9087-3321",
-    email: "laras.ayu@mail.ugm.ac.id",
-    division: "Fund",
-    role: "staff",
-  },
-  {
-    id: "vol-8",
-    name: "Hafidz Ramadhan",
-    phone: "0815-6678-2210",
-    email: "hafidz.r@gmail.com",
-    division: "Volunteer",
-    role: "member",
-  },
-  {
-    id: "vol-9",
-    name: "Tiara Maheswari",
-    phone: "0838-2210-7765",
-    email: "tiara.mhs@gmail.com",
-    division: "Volunteer",
-    role: "member",
-  },
-  {
-    id: "vol-10",
-    name: "Kevin Halim",
-    phone: "0819-4456-3378",
-    email: "kevin.halim@gmail.com",
-    division: "Friend",
-    role: "member",
-    hasActiveRelations: true,
-  },
-];
-
-const EXTRA_FIRST_NAMES = [
-  "Nadia",
-  "Rizky",
-  "Alya",
-  "Bagas",
-  "Citra",
-  "Dimas",
-  "Eka",
-  "Farhan",
-  "Gita",
-  "Hendra",
-  "Indah",
-  "Joko",
-  "Kartika",
-  "Luthfi",
-  "Maya",
-  "Naufal",
-  "Putri",
-  "Reza",
-  "Shinta",
-  "Taufik",
-];
-
-const EXTRA_LAST_NAMES = [
-  "Pratama",
-  "Saputra",
-  "Lestari",
-  "Wibowo",
-  "Rahmawati",
-  "Kurniawan",
-  "Hidayat",
-  "Santoso",
-  "Permata",
-  "Suryani",
-  "Setiawan",
-  "Handayani",
-];
-
-const NON_FOOD_DIVISIONS: VolunteerDivision[] = [
-  "Operational Manager",
-  "IT",
-  "Medinfo",
-  "Bendahara",
-  "Fund",
-  "Volunteer",
-  "Friend",
-  "Logistik",
-];
-
-// Menghasilkan 76 data tambahan agar total 86 anggota (24 pengurus + 62 relawan di 9 divisi, dan divisi Food tetap 2 orang sesuai Figma 149:20821)
-function buildInitialVolunteerRecords(): VolunteerRecord[] {
-  const extraRecords: VolunteerRecord[] = Array.from(
-    { length: 76 },
-    (_, idx) => {
-      const seq = idx + 11;
-      const firstName = EXTRA_FIRST_NAMES[idx % EXTRA_FIRST_NAMES.length];
-      const lastName =
-        EXTRA_LAST_NAMES[
-          Math.floor(idx / EXTRA_FIRST_NAMES.length) % EXTRA_LAST_NAMES.length
-        ];
-      const name = `${firstName} ${lastName}`;
-      // 7 pengurus sudah ada di PRIMARY_VOLUNTEER_RECORDS, tambahkan 17 pengurus lagi agar total = 24 pengurus
-      const isPengurus = idx < 17;
-      const role: VolunteerSystemRole = isPengurus
-        ? idx < 4
-          ? "core"
-          : "staff"
-        : "member";
-      const division = NON_FOOD_DIVISIONS[idx % NON_FOOD_DIVISIONS.length];
-      const mid = String(1100 + ((idx * 73) % 8800)).padStart(4, "0");
-      const tail = String(1000 + ((idx * 137) % 8900)).padStart(4, "0");
-      const slug = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${idx + 1}`;
-
-      return {
-        id: `vol-${seq}`,
-        name,
-        phone: `0813-${mid}-${tail}`,
-        email: `${slug}@gmail.com`,
-        division,
-        role,
-        hasActiveRelations: idx % 5 === 0,
-      };
-    },
-  );
-
-  return [...PRIMARY_VOLUNTEER_RECORDS, ...extraRecords];
+// Mengambil tone badge divisi dengan fallback aman neutral
+export function getVolunteerDivisionBadgeTone(
+  division: string,
+): VolunteerBadgeTone {
+  const normalized = division.trim();
+  return VOLUNTEER_DIVISION_BADGE_TONE[normalized] ?? "neutral";
 }
 
-export const INITIAL_VOLUNTEER_RECORDS: VolunteerRecord[] =
-  buildInitialVolunteerRecords();
+// Pemetaan nama divisi ke ID divisi di database (core-system divisions table)
+export const DIVISION_NAME_TO_ID: Record<string, number> = {
+  IT: 1,
+  Managerial: 2,
+  Operational: 3,
+  "Operational Manager": 3,
+  Food: 3,
+  Logistik: 3,
+  Medinfo: 4,
+  Bendahara: 2,
+  Fund: 2,
+  Volunteer: 3,
+  Friend: 3,
+};
+
+// Pemetaan ID divisi database ke label nama divisi
+export const DIVISION_ID_TO_NAME: Record<number, string> = {
+  1: "IT",
+  2: "Managerial",
+  3: "Operational",
+  4: "Medinfo",
+};
+
+// Mengubah daftar divisi API menjadi opsi dropdown toolbar (termasuk opsi "Semua Divisi")
+export function mapDivisionsToOptions(
+  divisions?: { id: number; name: string }[],
+): VolunteerDivisionOption[] {
+  if (!divisions || divisions.length === 0) {
+    return VOLUNTEER_DIVISION_OPTIONS;
+  }
+  return [
+    { id: "all", label: "Semua Divisi" },
+    ...divisions.map((item) => ({ id: item.name, label: item.name })),
+  ];
+}
+
+// Mengubah daftar divisi API menjadi opsi dropdown form (tanpa "Semua Divisi")
+export function mapDivisionsToFormOptions(
+  divisions?: { id: number; name: string }[],
+): VolunteerDivisionOption[] {
+  if (!divisions || divisions.length === 0) {
+    return VOLUNTEER_DIVISION_OPTIONS.filter((item) => item.id !== "all");
+  }
+  return divisions.map((item) => ({ id: item.name, label: item.name }));
+}
+
+// Mencari ID divisi berdasarkan nama divisi secara dinamis dari API atau kamus statis
+export function getDivisionIdByName(
+  name: string,
+  divisions?: { id: number; name: string }[],
+): number | undefined {
+  if (divisions && divisions.length > 0) {
+    const found = divisions.find(
+      (item) => item.name.toLowerCase() === name.trim().toLowerCase(),
+    );
+    if (found) return found.id;
+  }
+  return DIVISION_NAME_TO_ID[name.trim()];
+}
+
+// Mencari nama divisi berdasarkan ID divisi secara dinamis dari API atau kamus statis
+export function getDivisionNameById(
+  id: number,
+  divisions?: { id: number; name: string }[],
+): string | undefined {
+  if (divisions && divisions.length > 0) {
+    const found = divisions.find((item) => item.id === id);
+    if (found) return found.name;
+  }
+  return DIVISION_ID_TO_NAME[id];
+}
 
 // Memformat angka menggunakan pemisah ribuan Indonesia
 export function formatVolunteerCount(value: number): string {
   return new Intl.NumberFormat("id-ID").format(value);
 }
 
-// Menghitung data kartu ringkasan statistik volunteer (Figma 149:19230)
+// Menghitung data kartu ringkasan statistik volunteer dari data aktif API (Figma 149:19230)
 export function getVolunteerStats(
   records: VolunteerRecord[],
+  totalFromMeta?: number,
 ): VolunteerStatItem[] {
-  const totalCount = records.length;
+  const totalCount = totalFromMeta ?? records.length;
   const pengurusCount = records.filter(
     (item) =>
       item.role === "super" || item.role === "core" || item.role === "staff",
@@ -418,7 +320,10 @@ export function getVolunteerStats(
       title: "Total Anggota",
       value: formatVolunteerCount(totalCount),
       unit: "Orang",
-      subtext: `Di ${divisionCount} divisi`,
+      subtext:
+        divisionCount > 0
+          ? `Di ${divisionCount} divisi`
+          : "Terdaftar di sistem",
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: charitySharingSvg,

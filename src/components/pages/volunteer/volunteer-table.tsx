@@ -29,7 +29,7 @@ import { WhatsappLink } from "#/components/shared/whatsapp-link";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import {
   formatVolunteerCount,
-  VOLUNTEER_DIVISION_BADGE_TONE,
+  getVolunteerDivisionBadgeTone,
 } from "./volunteer-data";
 import type { VolunteerRecord, VolunteerUserRole } from "./volunteer-data";
 
@@ -115,7 +115,7 @@ export function VolunteerTable({
         },
         cell: ({ row }) => {
           const volunteer = row.original;
-          const badgeTone = VOLUNTEER_DIVISION_BADGE_TONE[volunteer.division];
+          const badgeTone = getVolunteerDivisionBadgeTone(volunteer.division);
           return (
             <div className="flex items-center gap-1.5 whitespace-nowrap">
               <Badge tone={badgeTone} styleVariant="soft" dot={false}>

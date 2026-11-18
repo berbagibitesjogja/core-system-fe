@@ -9,17 +9,19 @@ import {
   VOLUNTEER_ROLE_META,
   VOLUNTEER_ROLE_OPTIONS,
 } from "./volunteer-data";
-import type { VolunteerDivision, VolunteerFormValues } from "./volunteer-data";
+import type {
+  VolunteerDivisionOption,
+  VolunteerFormValues,
+} from "./volunteer-data";
 
 export interface VolunteerDetailSettingsTabProps {
   initialValues: VolunteerFormValues;
   isSaving?: boolean;
   canEditRole?: boolean;
+  divisionOptions?: VolunteerDivisionOption[];
   onSubmit: (values: VolunteerFormValues) => Promise<void> | void;
   className?: string;
 }
-
-const FORM_DIVISIONS = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all");
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^[0-9+()-\s]{8,20}$/;
@@ -31,6 +33,7 @@ export function VolunteerDetailSettingsTab({
   initialValues,
   isSaving = false,
   canEditRole = true,
+  divisionOptions = VOLUNTEER_DIVISION_OPTIONS.filter((d) => d.id !== "all"),
   onSubmit,
   className,
 }: VolunteerDetailSettingsTabProps) {
@@ -167,7 +170,7 @@ export function VolunteerDetailSettingsTab({
               role="listbox"
               className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-56 overflow-y-auto"
             >
-              {FORM_DIVISIONS.map((opt) => {
+              {divisionOptions.map((opt) => {
                 const isSelected = opt.label === values.division;
                 return (
                   <button
@@ -176,10 +179,7 @@ export function VolunteerDetailSettingsTab({
                     role="option"
                     aria-selected={isSelected}
                     onClick={() => {
-                      handleFieldChange(
-                        "division",
-                        opt.label as VolunteerDivision,
-                      );
+                      handleFieldChange("division", opt.label);
                       setDivisionOpen(false);
                     }}
                     className={cn(

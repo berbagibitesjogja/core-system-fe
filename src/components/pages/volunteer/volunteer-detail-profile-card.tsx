@@ -3,7 +3,7 @@ import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
 import {
-  VOLUNTEER_DIVISION_BADGE_TONE,
+  getVolunteerDivisionBadgeTone,
   VOLUNTEER_ROLE_META,
 } from "./volunteer-data";
 import type { VolunteerRecord } from "./volunteer-data";
@@ -29,7 +29,7 @@ export function VolunteerDetailProfileCard({
   className,
 }: VolunteerDetailProfileCardProps) {
   const initials = getInitials(volunteer.name);
-  const divisionTone = VOLUNTEER_DIVISION_BADGE_TONE[volunteer.division];
+  const divisionTone = getVolunteerDivisionBadgeTone(volunteer.division);
   const roleMeta = VOLUNTEER_ROLE_META[volunteer.role];
 
   // Format nomor WhatsApp untuk tautan https://wa.me/...
