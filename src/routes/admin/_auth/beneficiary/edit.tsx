@@ -4,9 +4,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
+  BeneficiaryFormSkeleton,
   BeneficiaryFormWorkspace,
-  defaultBeneficiaries,
-  defaultEditBeneficiaryData,
 } from "#/components/pages/beneficiary";
 import type { BeneficiaryFormData } from "#/components/pages/beneficiary";
 import { toast } from "#/components/ui/toast";
@@ -43,39 +42,45 @@ function BeneficiaryEditPage() {
   const getBeneficiaryDetailFn = useServerFn(getBeneficiaryDetail);
   const updateBeneficiaryFn = useServerFn(updateBeneficiary);
 
+  const trimmedId = (id ?? "").trim();
+
   // Mengambil detail kategori penerima manfaat dari API backend
   const beneficiaryQuery = useQuery({
-    queryKey: ["beneficiary-detail", id],
+    queryKey: ["beneficiary-detail", trimmedId],
     queryFn: async () => {
-      if (!id) return null;
-      return getBeneficiaryDetailFn({ data: { id } });
+      if (!trimmedId) return null;
+      return getBeneficiaryDetailFn({ data: { id: trimmedId } });
     },
-    enabled: Boolean(id),
+    enabled: Boolean(trimmedId),
   });
 
-  const isLoading = beneficiaryQuery.isLoading;
+  React.useEffect(() => {
+    if (!trimmedId) {
+      toast.error("ID kategori penerima manfaat tidak ditemukan.");
+      navigate({ to: "/admin/beneficiary" });
+    }
+  }, [trimmedId, navigate]);
 
-  const initialFormData = React.useMemo<BeneficiaryFormData>(() => {
-    const apiRecord = beneficiaryQuery.data?.data;
+  React.useEffect(() => {
+    if (beneficiaryQuery.isError) {
+      toast.error("Data kategori penerima manfaat tidak ditemukan.");
+      navigate({ to: "/admin/beneficiary" });
+    }
+  }, [beneficiaryQuery.isError, navigate]);
+
+  const apiRecord = beneficiaryQuery.data?.data;
+  const initialFormData = React.useMemo<BeneficiaryFormData | null>(() => {
     if (apiRecord) {
       return mapCategoryToBeneficiaryFormData(apiRecord);
     }
-    if (id) {
-      const existing = defaultBeneficiaries.find((item) => item.id === id);
-      if (existing) {
-        return {
-          id: existing.id,
-          categoryId: existing.categoryId,
-          name: existing.name,
-        };
-      }
-    }
-    return defaultEditBeneficiaryData;
-  }, [beneficiaryQuery.data, id]);
+    return null;
+  }, [apiRecord]);
+
+  const isLoading = beneficiaryQuery.isLoading || !initialFormData;
 
   const handleSubmit = async (values: BeneficiaryFormData) => {
     try {
-      const targetId = id || initialFormData.id || "";
+      const targetId = trimmedId || initialFormData?.id || "";
       await updateBeneficiaryFn({
         data: {
           id: targetId,
@@ -102,6 +107,10 @@ function BeneficiaryEditPage() {
       }
     }
   };
+
+  if (isLoading) {
+    return <BeneficiaryFormSkeleton />;
+  }
 
   return (
     <BeneficiaryFormWorkspace

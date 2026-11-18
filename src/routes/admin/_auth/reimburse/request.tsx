@@ -1,23 +1,17 @@
 import * as React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
   computeReimburseAnalyzeProgress,
-  detectSimulatedErrorFromFile,
   detectUploadedFileType,
   emptyReimburseFormValues,
   estimateReimburseAmount,
   formatFileSize,
   formatRupiah,
-  getReimbursePresetState,
   mapReimbursementToHistoryItem,
-  REIMBURSE_ALERTS,
   REIMBURSE_ANALYZE_COMPLETE_HOLD_MS,
   REIMBURSE_ANALYZE_HOLD_PROGRESS,
-  REIMBURSE_ANALYZE_MIN_DURATION_MS,
-  REIMBURSE_FILE_REJECTED_MESSAGE,
   REIMBURSE_MAX_FILE_SIZE_BYTES,
   ReimburseFilePreviewDialog,
   ReimburseHistoryCard,
@@ -42,30 +36,10 @@ import {
   getReimbursements,
 } from "#/services/reimburseService";
 
-// Skema validasi URL search params tipe-aman Zod untuk meninjau seluruh state Figma
-const reimburseRequestSearchSchema = z.object({
-  demo: z
-    .enum(["default", "analyzing", "error", "busy", "success", "empty"])
-    .optional()
-    .catch(undefined),
-});
-
 const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".pdf"];
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 
 export const Route = createFileRoute("/admin/_auth/reimburse/request")({
-  validateSearch: (search: Record<string, unknown>) => {
-    const candidate =
-      typeof search.demo === "string"
-        ? search.demo
-        : typeof search.state === "string"
-          ? search.state
-          : undefined;
-
-    return reimburseRequestSearchSchema.parse({
-      demo: candidate,
-    });
-  },
   component: ReimburseRequestPage,
 });
 
@@ -73,8 +47,6 @@ export const Route = createFileRoute("/admin/_auth/reimburse/request")({
  * ReimburseRequestPage: Halaman Ajukan Reimburse & Riwayat Pengajuan (Figma 152:22156 - 152:23846).
  */
 function ReimburseRequestPage() {
-  const { demo: demoState } = Route.useSearch();
-  const navigate = useNavigate();
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
@@ -84,40 +56,30 @@ function ReimburseRequestPage() {
   const getReimbursementsFn = useServerFn(getReimbursements);
   const createReimbursementFn = useServerFn(createReimbursement);
 
-  const initialPreset = React.useMemo(
-    () => getReimbursePresetState(demoState),
-    [demoState],
-  );
-
   const [formValues, setFormValues] =
-    React.useState<ReimburseRequestFormValues>(initialPreset.formValues);
+    React.useState<ReimburseRequestFormValues>(emptyReimburseFormValues);
   const [fieldErrors, setFieldErrors] =
     React.useState<ReimburseRequestFieldErrors>({});
-  const [uploadState, setUploadState] = React.useState<FileUploadState>(
-    initialPreset.uploadState,
-  );
+  const [uploadState, setUploadState] =
+    React.useState<FileUploadState>("default");
   const [uploadErrorMessage, setUploadErrorMessage] = React.useState<
     string | undefined
-  >(initialPreset.uploadErrorMessage);
-  const [alert, setAlert] = React.useState<ReimburseAlertState | null>(
-    initialPreset.alert,
-  );
-  const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(
-    initialPreset.isAnalyzing,
-  );
-  const [analyzingProgress, setAnalyzingProgress] = React.useState<number>(
-    initialPreset.analyzingProgress ?? 0,
-  );
+  >(undefined);
+  const [alert, setAlert] = React.useState<ReimburseAlertState | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = React.useState<boolean>(false);
+  const [analyzingProgress, setAnalyzingProgress] = React.useState<number>(0);
   const [previewItem, setPreviewItem] =
     React.useState<ReimburseHistoryItem | null>(null);
   const [transferProofItem, setTransferProofItem] =
     React.useState<ReimburseHistoryItem | null>(null);
 
-  const submitTimerRef = React.useRef<number | null>(null);
   const progressIntervalRef = React.useRef<number | null>(null);
   const completeTimerRef = React.useRef<number | null>(null);
   const objectUrlsRef = React.useRef<Set<string>>(new Set());
-  const skipPresetSyncRef = React.useRef(false);
+
+  const [newlyCreatedId, setNewlyCreatedId] = React.useState<string | null>(
+    null,
+  );
 
   // Mengambil riwayat pengajuan reimburse staf yang sedang login
   const myReimbursementsQuery = useQuery({
@@ -129,7 +91,7 @@ function ReimburseRequestPage() {
           limit: 20,
         },
       }),
-    enabled: Boolean(profile.user?.id) && !demoState,
+    enabled: Boolean(profile.user?.id),
   });
 
   const queryHistoryItems = React.useMemo<ReimburseHistoryItem[]>(() => {
@@ -140,34 +102,21 @@ function ReimburseRequestPage() {
     ) {
       return [];
     }
-    return myReimbursementsQuery.data.data.map(mapReimbursementToHistoryItem);
-  }, [myReimbursementsQuery.data]);
+    return myReimbursementsQuery.data.data.map((record) => {
+      const item = mapReimbursementToHistoryItem(record);
+      if (item.id === newlyCreatedId) {
+        return { ...item, isHighlighted: true };
+      }
+      return item;
+    });
+  }, [myReimbursementsQuery.data, newlyCreatedId]);
 
-  const [localHistoryItems, setLocalHistoryItems] = React.useState<
-    ReimburseHistoryItem[]
-  >(initialPreset.historyItems);
+  const historyItems = queryHistoryItems;
 
-  React.useEffect(() => {
-    if (!demoState && queryHistoryItems.length > 0) {
-      setLocalHistoryItems(queryHistoryItems);
-    }
-  }, [demoState, queryHistoryItems]);
-
-  const historyItems = demoState
-    ? initialPreset.historyItems
-    : localHistoryItems.length > 0
-      ? localHistoryItems
-      : queryHistoryItems;
-
-  const isLoading =
-    !demoState && (profile.isLoading || myReimbursementsQuery.isLoading);
+  const isLoading = profile.isLoading || myReimbursementsQuery.isLoading;
 
   // Membersihkan seluruh timer & interval animasi analisis invoice
   const clearAnalyzeTimers = React.useCallback(() => {
-    if (submitTimerRef.current !== null) {
-      window.clearTimeout(submitTimerRef.current);
-      submitTimerRef.current = null;
-    }
     if (progressIntervalRef.current !== null) {
       window.clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
@@ -203,36 +152,6 @@ function ReimburseRequestPage() {
     tick();
     progressIntervalRef.current = window.setInterval(tick, 50);
   }, []);
-
-  // Sinkronkan preset bila query parameter `?state=...` berubah dari URL / navigasi
-  React.useEffect(() => {
-    if (skipPresetSyncRef.current) {
-      skipPresetSyncRef.current = false;
-      return;
-    }
-
-    clearAnalyzeTimers();
-
-    const preset = getReimbursePresetState(demoState);
-    setFormValues(preset.formValues);
-    setFieldErrors({});
-    setUploadState(preset.uploadState);
-    setUploadErrorMessage(preset.uploadErrorMessage);
-    setAlert(preset.alert);
-    setIsAnalyzing(preset.isAnalyzing);
-    setAnalyzingProgress(preset.analyzingProgress ?? 0);
-    setLocalHistoryItems(preset.historyItems);
-    setPreviewItem(null);
-    setTransferProofItem(null);
-
-    if (demoState === "analyzing") {
-      startProgressRamp();
-    }
-
-    if (preset.initialToastMessage) {
-      toast.success(preset.initialToastMessage, { id: "reimburse-demo-toast" });
-    }
-  }, [demoState, clearAnalyzeTimers, startProgressRamp]);
 
   // Bersihkan timer serta Object URL ketika halaman dilepas
   React.useEffect(() => {
@@ -335,7 +254,7 @@ function ReimburseRequestPage() {
     setFieldErrors((prev) => ({ ...prev, file: undefined }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isAnalyzing) return;
 
@@ -370,111 +289,65 @@ function ReimburseRequestPage() {
     setUploadErrorMessage(undefined);
     startProgressRamp();
 
-    // Jalankan request API pembacaan invoice dan pembuatan klaim
-    submitTimerRef.current = window.setTimeout(() => {
-      submitTimerRef.current = null;
+    const detectedAmount = estimateReimburseAmount(formValues.note);
+
+    try {
+      const res = await createReimbursementFn({
+        data: {
+          amount: detectedAmount,
+          method: formValues.paymentMethod.trim(),
+          target: formValues.destinationNumber.trim(),
+          notes: formValues.note.trim(),
+        },
+      });
+
       if (progressIntervalRef.current !== null) {
         window.clearInterval(progressIntervalRef.current);
         progressIntervalRef.current = null;
       }
-
-      // Penuhi bar ke 100% saat analisis selesai sebelum berpindah state hasil
       setAnalyzingProgress(100);
 
-      completeTimerRef.current = window.setTimeout(async () => {
+      completeTimerRef.current = window.setTimeout(() => {
         completeTimerRef.current = null;
         setAnalyzingProgress(0);
-        const simulatedError = detectSimulatedErrorFromFile(attachedFile.name);
+        setNewlyCreatedId(res.data.id);
+        queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
+        queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
 
-        if (simulatedError === 422) {
-          if (
-            attachedFile.previewUrl &&
-            objectUrlsRef.current.has(attachedFile.previewUrl)
-          ) {
-            URL.revokeObjectURL(attachedFile.previewUrl);
-            objectUrlsRef.current.delete(attachedFile.previewUrl);
-          }
-
-          setIsAnalyzing(false);
-          setAlert(REIMBURSE_ALERTS[422]);
-          setFormValues((prev) => ({ ...prev, file: null }));
-          setUploadState("error");
-          setUploadErrorMessage(REIMBURSE_FILE_REJECTED_MESSAGE);
-          return;
+        if (
+          attachedFile.previewUrl &&
+          objectUrlsRef.current.has(attachedFile.previewUrl)
+        ) {
+          URL.revokeObjectURL(attachedFile.previewUrl);
+          objectUrlsRef.current.delete(attachedFile.previewUrl);
         }
 
-        if (simulatedError === 504) {
-          setIsAnalyzing(false);
-          setAlert(REIMBURSE_ALERTS[504]);
-          setUploadState("uploaded");
-          return;
-        }
+        setFormValues(emptyReimburseFormValues);
+        setUploadState("default");
+        setUploadErrorMessage(undefined);
+        setAlert(null);
+        setIsAnalyzing(false);
 
-        const detectedAmount = estimateReimburseAmount(formValues.note);
-
-        try {
-          const res = await createReimbursementFn({
-            data: {
-              amount: detectedAmount,
-              method: formValues.paymentMethod.trim(),
-              target: formValues.destinationNumber.trim(),
-              notes: formValues.note.trim(),
-            },
-          });
-
-          queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
-          queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
-
-          const createdItem: ReimburseHistoryItem = {
-            id: res.data.id,
-            method: formValues.paymentMethod.trim(),
-            destinationNumber: formValues.destinationNumber.trim(),
-            dateLabel: "Hari ini",
-            amount: detectedAmount,
-            note: formValues.note.trim(),
-            status: "Proses",
-            fileName: attachedFile.name,
-            fileSize: attachedFile.sizeLabel,
-            fileType: attachedFile.fileType,
-            filePreviewUrl: attachedFile.previewUrl,
-            isHighlighted: true,
-          };
-
-          setLocalHistoryItems((prev) => [
-            createdItem,
-            ...prev.map((item) => ({ ...item, isHighlighted: false })),
-          ]);
-          setFormValues(emptyReimburseFormValues);
-          setUploadState("default");
-          setUploadErrorMessage(undefined);
-          setAlert(null);
-          setIsAnalyzing(false);
-
-          if (demoState && demoState !== "default") {
-            skipPresetSyncRef.current = true;
-            navigate({
-              to: "/admin/reimburse/request",
-              search: {},
-              replace: true,
-            });
-          }
-
-          toast.success(
-            idReimburse.request.toasts.createSuccess(
-              formatRupiah(detectedAmount),
-            ),
-          );
-        } catch (err: unknown) {
-          setIsAnalyzing(false);
-          setUploadState("uploaded");
-          if (isApiError(err) && err.message) {
-            toast.error(err.message);
-          } else {
-            toast.error(idReimburse.request.toasts.createFailed);
-          }
-        }
+        toast.success(
+          idReimburse.request.toasts.createSuccess(
+            formatRupiah(detectedAmount),
+          ),
+        );
       }, REIMBURSE_ANALYZE_COMPLETE_HOLD_MS);
-    }, REIMBURSE_ANALYZE_MIN_DURATION_MS);
+    } catch (err: unknown) {
+      if (progressIntervalRef.current !== null) {
+        window.clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      setIsAnalyzing(false);
+      setAnalyzingProgress(0);
+      setUploadState("uploaded");
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idReimburse.request.toasts.createFailed);
+      }
+    }
   };
 
   // Tampilkan skeleton saat loading aktif

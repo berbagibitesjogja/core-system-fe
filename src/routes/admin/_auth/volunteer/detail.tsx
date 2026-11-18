@@ -31,7 +31,6 @@ import { isApiError } from "#/services/errorService";
 const volunteerDetailSearchSchema = z.object({
   id: z.string().optional().catch(""),
   tab: z.enum(["activity", "settings"]).optional().catch(undefined),
-  role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/_auth/volunteer/detail")({
@@ -39,7 +38,6 @@ export const Route = createFileRoute("/admin/_auth/volunteer/detail")({
     volunteerDetailSearchSchema.parse({
       id: typeof search.id === "string" ? search.id : "",
       tab: typeof search.tab === "string" ? search.tab : undefined,
-      role: typeof search.role === "string" ? search.role : undefined,
     }),
   component: VolunteerDetailPage,
 });
@@ -49,7 +47,7 @@ export const Route = createFileRoute("/admin/_auth/volunteer/detail")({
  * Seluruh Server Function dipusatkan di berkas rute.
  */
 function VolunteerDetailPage() {
-  const { id, tab, role } = Route.useSearch();
+  const { id, tab } = Route.useSearch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const profile = useUserProfile();
@@ -83,7 +81,7 @@ function VolunteerDetailPage() {
   const [blockedDeleteTarget, setBlockedDeleteTarget] =
     React.useState<VolunteerRecord | null>(null);
 
-  const userRole: VolunteerUserRole = role ?? profile.sidebarRole;
+  const userRole: VolunteerUserRole = profile.sidebarRole;
   const initialTab: VolunteerDetailTabKey =
     tab === "settings" ? "settings" : "activity";
 

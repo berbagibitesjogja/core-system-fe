@@ -4,7 +4,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
-  defaultPartners,
   PartnerFormSkeleton,
   PartnerFormWorkspace,
 } from "#/components/pages/partner";
@@ -45,17 +44,41 @@ function PartnerEditPage() {
   const adminLayout = useAdminLayout();
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
+  const trimmedId = (id ?? "").trim();
+
   // Mengambil detail sponsor dari API backend
   const partnerQuery = useQuery({
-    queryKey: ["partner-detail", id],
+    queryKey: ["partner-detail", trimmedId],
     queryFn: async () => {
-      if (!id) return null;
-      return getPartnerDetailFn({ data: { id } });
+      if (!trimmedId) return null;
+      return getPartnerDetailFn({ data: { id: trimmedId } });
     },
-    enabled: Boolean(id),
+    enabled: Boolean(trimmedId),
   });
 
-  const isLoading = partnerQuery.isLoading;
+  React.useEffect(() => {
+    if (!trimmedId) {
+      toast.error("ID mitra donatur tidak ditemukan.");
+      navigate({ to: "/admin/partner" });
+    }
+  }, [trimmedId, navigate]);
+
+  React.useEffect(() => {
+    if (partnerQuery.isError) {
+      toast.error("Data mitra donatur tidak ditemukan.");
+      navigate({ to: "/admin/partner" });
+    }
+  }, [partnerQuery.isError, navigate]);
+
+  const apiRecord = partnerQuery.data?.data;
+  const initialData = React.useMemo(() => {
+    if (apiRecord) {
+      return mapSponsorToPartnerRecord(apiRecord);
+    }
+    return null;
+  }, [apiRecord]);
+
+  const isLoading = partnerQuery.isLoading || !initialData;
 
   // Pasang header "Edit Donatur" selama skeleton loading tampil
   React.useEffect(() => {
@@ -71,21 +94,9 @@ function PartnerEditPage() {
     return () => setHeaderOverride(null);
   }, [isLoading, setHeaderOverride, navigate]);
 
-  const initialData = React.useMemo(() => {
-    const apiRecord = partnerQuery.data?.data;
-    if (apiRecord) {
-      return mapSponsorToPartnerRecord(apiRecord);
-    }
-    if (id) {
-      const existing = defaultPartners.find((item) => item.id === id);
-      if (existing) return existing;
-    }
-    return defaultPartners[0];
-  }, [partnerQuery.data, id]);
-
   const handleSubmit = async (values: PartnerFormValues) => {
     try {
-      const targetId = id || initialData.id;
+      const targetId = trimmedId || initialData?.id || "";
       await updatePartnerFn({
         data: {
           id: targetId,

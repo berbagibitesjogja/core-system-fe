@@ -14,7 +14,6 @@ import {
   INITIAL_VISIBLE_BENEFICIARIES,
   buildBeneficiaryFilterOptions,
   buildBeneficiaryStats,
-  defaultBeneficiaries,
 } from "#/components/pages/beneficiary";
 import type {
   BeneficiaryCategoryId,
@@ -70,7 +69,7 @@ function BeneficiaryPage() {
   // Memetakan rekaman API backend ke bentuk presentasi BeneficiaryItem
   const beneficiaries = React.useMemo<BeneficiaryItem[]>(() => {
     const apiRecords = beneficiariesQuery.data?.data;
-    if (!Array.isArray(apiRecords)) return defaultBeneficiaries;
+    if (!Array.isArray(apiRecords)) return [];
     return apiRecords.map((record, index) =>
       mapCategoryToBeneficiaryItem(record, index),
     );

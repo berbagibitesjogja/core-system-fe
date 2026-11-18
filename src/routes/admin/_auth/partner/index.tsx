@@ -6,7 +6,6 @@ import { z } from "zod";
 import {
   computePartnerFilterOptions,
   computePartnerStats,
-  defaultPartners,
   PartnerCannotDeleteDialog,
   PartnerDeleteDialog,
   PartnerSkeleton,
@@ -19,6 +18,7 @@ import type {
   PartnerRecord,
   PartnerUserRole,
 } from "#/components/pages/partner";
+import { useUserProfile } from "#/hooks";
 import { toast } from "#/components/ui/toast";
 import { idPartner } from "#/locales";
 import { isApiError } from "#/services/errorService";
@@ -35,7 +35,6 @@ const partnerSearchSchema = z.object({
   sort: z.enum(["desc", "asc"]).optional().catch("desc"),
   page: z.coerce.number().int().positive().optional().catch(1),
   per_page: z.coerce.number().int().positive().optional().catch(10),
-  role: z.enum(["super_admin", "core", "staff"]).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/_auth/partner/")({
@@ -46,13 +45,13 @@ export const Route = createFileRoute("/admin/_auth/partner/")({
       sort: search.sort === "asc" ? "asc" : "desc",
       page: search.page,
       per_page: search.per_page ?? search.perpage,
-      role: search.role,
     }),
   component: PartnerPage,
 });
 
 function PartnerPage() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const profile = useUserProfile();
   const searchParams = Route.useSearch();
   const {
     category = "all",
@@ -60,7 +59,6 @@ function PartnerPage() {
     sort = "desc",
     page = 1,
     per_page: perPage = 10,
-    role,
   } = searchParams;
 
   const queryClient = useQueryClient();
@@ -74,7 +72,7 @@ function PartnerPage() {
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [isCannotDeleteOpen, setIsCannotDeleteOpen] = React.useState(false);
 
-  const userRole: PartnerUserRole = role ?? "super_admin";
+  const userRole: PartnerUserRole = profile.sidebarRole;
 
   const variantFilter =
     category === "all"
@@ -98,17 +96,33 @@ function PartnerPage() {
     },
   });
 
+  // Query ikhtisar seluruh donatur untuk kartu ringkasan dan tab filter riil
+  const allPartnersQuery = useQuery({
+    queryKey: ["partners", "overview"],
+    queryFn: async () => getPartnersFn({ data: { limit: 100 } }),
+    staleTime: 1000 * 60 * 5,
+  });
+
   // Pemetaan rekaman API backend ke bentuk presentasi PartnerRecord
   const partners = React.useMemo<PartnerRecord[]>(() => {
     const apiRecords = partnersQuery.data?.data;
-    if (!Array.isArray(apiRecords)) return defaultPartners;
+    if (!Array.isArray(apiRecords)) return [];
     return apiRecords.map(mapSponsorToPartnerRecord);
   }, [partnersQuery.data]);
 
-  const stats = React.useMemo(() => computePartnerStats(partners), [partners]);
+  const allPartners = React.useMemo<PartnerRecord[]>(() => {
+    const apiRecords = allPartnersQuery.data?.data;
+    if (!Array.isArray(apiRecords)) return partners;
+    return apiRecords.map(mapSponsorToPartnerRecord);
+  }, [allPartnersQuery.data, partners]);
+
+  const stats = React.useMemo(
+    () => computePartnerStats(allPartners),
+    [allPartners],
+  );
   const filterOptions = React.useMemo(
-    () => computePartnerFilterOptions(partners),
-    [partners],
+    () => computePartnerFilterOptions(allPartners),
+    [allPartners],
   );
   const maxDonationCount = React.useMemo(
     () =>

@@ -12,13 +12,11 @@ import {
   BeneficiaryStats,
   DETAIL_DONATIONS_PER_PAGE,
   buildBeneficiaryDetailStats,
-  getBeneficiaryDetailById,
 } from "#/components/pages/beneficiary";
 import type {
   BeneficiaryDonationRecord,
   BeneficiarySectorRecord,
 } from "#/components/pages/beneficiary";
-import { defaultDonations } from "#/components/pages/donation";
 import { getCategoryBadgeConfig } from "#/components/shared/beneficiary-card";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -41,7 +39,6 @@ const beneficiaryDetailSearchSchema = z.object({
     .optional()
     .catch(DETAIL_DONATIONS_PER_PAGE),
   sort: z.enum(["asc", "desc"]).optional().catch("desc"),
-  state: z.enum(["default", "empty"]).optional().catch(undefined),
 });
 
 export type BeneficiaryDetailSearchParams = z.infer<
@@ -58,12 +55,6 @@ export const Route = createFileRoute("/admin/_auth/beneficiary/detail")({
         search.sort === "asc" || search.sort === "desc"
           ? search.sort
           : undefined,
-      state:
-        search.state === "empty" ||
-        search.empty === "1" ||
-        search.empty === true
-          ? "empty"
-          : undefined,
     });
   },
   component: BeneficiaryDetailPage,
@@ -78,7 +69,6 @@ function BeneficiaryDetailPage() {
   const page = searchParams.page ?? 1;
   const per_page = searchParams.per_page ?? DETAIL_DONATIONS_PER_PAGE;
   const sort = searchParams.sort ?? "desc";
-  const state = searchParams.state;
 
   const navigate = useNavigate();
   const getBeneficiaryDetailFn = useServerFn(getBeneficiaryDetail);
@@ -86,7 +76,6 @@ function BeneficiaryDetailPage() {
   const setHeaderOverride = adminLayout?.setHeaderOverride;
 
   const trimmedId = id.trim();
-  const effectiveId = trimmedId ? trimmedId : "ben-1";
 
   // Mengambil detail kategori penerima manfaat dari API backend
   const beneficiaryQuery = useQuery({
@@ -98,23 +87,37 @@ function BeneficiaryDetailPage() {
     enabled: Boolean(trimmedId),
   });
 
+  React.useEffect(() => {
+    if (!trimmedId) {
+      toast.error("ID kategori penerima manfaat tidak ditemukan.");
+      navigate({ to: "/admin/beneficiary" });
+    }
+  }, [trimmedId, navigate]);
+
+  React.useEffect(() => {
+    if (beneficiaryQuery.isError) {
+      toast.error("Data kategori penerima manfaat tidak ditemukan.");
+      navigate({ to: "/admin/beneficiary" });
+    }
+  }, [beneficiaryQuery.isError, navigate]);
+
   const detail = React.useMemo(() => {
     const apiRecord = beneficiaryQuery.data?.data;
-    if (apiRecord && state !== "empty") {
+    if (apiRecord) {
       return mapCategoryToBeneficiaryDetailProfile(apiRecord);
     }
-    return getBeneficiaryDetailById(effectiveId, state);
-  }, [beneficiaryQuery.data, effectiveId, state]);
+    return null;
+  }, [beneficiaryQuery.data]);
 
-  const badgeConfig = getCategoryBadgeConfig(detail.type);
-  const isLoading = beneficiaryQuery.isLoading;
+  const badgeConfig = detail ? getCategoryBadgeConfig(detail.type) : null;
+  const isLoading = beneficiaryQuery.isLoading || !detail;
 
   // Daftar sektor dikelola agar penambahan sektor baru langsung memperbarui kartu statistik & tabel
-  const [sectors, setSectors] = React.useState<BeneficiarySectorRecord[]>(
-    () => detail.sectors,
-  );
+  const [sectors, setSectors] = React.useState<BeneficiarySectorRecord[]>([]);
   React.useEffect(() => {
-    setSectors(detail.sectors);
+    if (detail) {
+      setSectors(detail.sectors);
+    }
   }, [detail]);
 
   const [isAddSectorOpen, setIsAddSectorOpen] = React.useState(false);
@@ -122,7 +125,7 @@ function BeneficiaryDetailPage() {
 
   // Sinkronkan judul & tombol kembali pada Header Admin Layout
   React.useEffect(() => {
-    if (!setHeaderOverride) return;
+    if (!setHeaderOverride || !detail) return;
 
     setHeaderOverride({
       title: detail.name,
@@ -132,7 +135,7 @@ function BeneficiaryDetailPage() {
     });
 
     return () => setHeaderOverride(null);
-  }, [setHeaderOverride, detail.name, detail.subtitle, navigate]);
+  }, [setHeaderOverride, detail, navigate]);
 
   // Helper pembaruan URL query params secara tipe-aman
   const updateSearch = React.useCallback(
@@ -145,7 +148,6 @@ function BeneficiaryDetailPage() {
           per_page:
             newParams.per_page ?? prev.per_page ?? DETAIL_DONATIONS_PER_PAGE,
           sort: newParams.sort ?? prev.sort ?? "desc",
-          state: newParams.state !== undefined ? newParams.state : prev.state,
         }),
         replace: true,
       });
@@ -155,13 +157,21 @@ function BeneficiaryDetailPage() {
 
   // Kartu statistik dihitung ulang ketika daftar sektor berubah
   const detailStats = React.useMemo(
-    () => buildBeneficiaryDetailStats(detail, sectors),
+    () => (detail ? buildBeneficiaryDetailStats(detail, sectors) : []),
     [detail, sectors],
   );
 
   // Pengurutan dan paginasi riwayat donasi berbasis URL search params (sort, page, per_page)
   const { paginatedDonations, totalDonations, totalPages, currentPage } =
     React.useMemo(() => {
+      if (!detail) {
+        return {
+          paginatedDonations: [],
+          totalDonations: 0,
+          totalPages: 1,
+          currentPage: 1,
+        };
+      }
       const items = [...detail.donations];
       items.sort((a, b) =>
         sort === "asc"
@@ -181,7 +191,7 @@ function BeneficiaryDetailPage() {
         totalPages: pages,
         currentPage: safePage,
       };
-    }, [detail.donations, sort, page, per_page]);
+    }, [detail, sort, page, per_page]);
 
   const handleSortToggle = React.useCallback(() => {
     updateSearch({ sort: sort === "desc" ? "asc" : "desc", page: 1 });
@@ -203,13 +213,9 @@ function BeneficiaryDetailPage() {
 
   const handleViewDonation = React.useCallback(
     (item: BeneficiaryDonationRecord) => {
-      const matchedDonation = defaultDonations.find(
-        (donation) =>
-          donation.donorName.toLowerCase() === item.donorName.toLowerCase(),
-      );
       navigate({
-        to: "/admin/donation/detail",
-        search: { id: matchedDonation?.id ?? "donasi-1" },
+        to: "/admin/donation",
+        search: { search: item.donorName },
       });
     },
     [navigate],
@@ -226,9 +232,6 @@ function BeneficiaryDetailPage() {
     setIsAddingSector(true);
 
     try {
-      // Simulasi request API penambahan sektor baru
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
       const newSector: BeneficiarySectorRecord = {
         id: `sec-${Date.now()}`,
         name: sectorName,
@@ -246,7 +249,7 @@ function BeneficiaryDetailPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !badgeConfig) {
     return <BeneficiaryDetailSkeleton />;
   }
 

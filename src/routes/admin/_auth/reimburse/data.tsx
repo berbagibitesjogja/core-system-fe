@@ -6,7 +6,6 @@ import { z } from "zod";
 import {
   buildReimburseDataStats,
   buildReimburseStatusFilterOptions,
-  getReimburseDataInitialItems,
   mapReimbursementToDataItem,
   ReimburseCancelDialog,
   ReimburseConfirmPaidDialog,
@@ -18,7 +17,6 @@ import {
   ReimburseTransferProofDialog,
 } from "#/components/pages/reimburse";
 import type {
-  ReimburseDataDemoState,
   ReimburseDataItem,
   ReimburseDataStatusFilter,
   ReimburseTransferProof,
@@ -43,7 +41,6 @@ const reimburseDataSearchSchema = z.object({
     .enum(["super_admin", "core", "bendahara", "staff"])
     .optional()
     .catch(undefined),
-  demo: z.enum(["default", "paid", "empty"]).optional().catch(undefined),
 });
 
 type ReimburseDataSearch = z.infer<typeof reimburseDataSearchSchema>;
@@ -51,7 +48,6 @@ type ReimburseDataSearch = z.infer<typeof reimburseDataSearchSchema>;
 export const Route = createFileRoute("/admin/_auth/reimburse/data")({
   validateSearch: (search: Record<string, unknown>): ReimburseDataSearch => {
     const rawRole = search.role;
-    const rawDemo = search.demo;
     return reimburseDataSearchSchema.parse({
       page: search.page,
       per_page: search.per_page ?? search.perpage,
@@ -67,10 +63,6 @@ export const Route = createFileRoute("/admin/_auth/reimburse/data")({
         rawRole === "staff"
           ? rawRole
           : undefined,
-      demo:
-        rawDemo === "default" || rawDemo === "paid" || rawDemo === "empty"
-          ? rawDemo
-          : undefined,
     });
   },
   component: ReimburseDataPage,
@@ -78,14 +70,7 @@ export const Route = createFileRoute("/admin/_auth/reimburse/data")({
 
 function ReimburseDataPage() {
   const navigate = useNavigate();
-  const {
-    page,
-    per_page: perPage,
-    status,
-    search,
-    role,
-    demo,
-  } = Route.useSearch();
+  const { page, per_page: perPage, status, search, role } = Route.useSearch();
   const searchQuery = search ?? "";
 
   const profile = useUserProfile();
@@ -145,7 +130,14 @@ function ReimburseDataPage() {
           search: searchQuery || undefined,
         },
       }),
-    enabled: isAuthorized && !demo,
+    enabled: isAuthorized,
+  });
+
+  // Query overview reimbursement tanpa filter status/search untuk tab counts dan statistik ringkasan riil
+  const allReimbursementsQuery = useQuery({
+    queryKey: ["reimbursements", "overview"],
+    queryFn: () => getReimbursementsFn({ data: { limit: 100 } }),
+    enabled: isAuthorized,
   });
 
   // Query staf/volunteer untuk pemetaan nama pemohon dan foto profil riil
@@ -153,7 +145,7 @@ function ReimburseDataPage() {
     queryKey: ["volunteers", "staff-map"],
     queryFn: () => getVolunteersFn({ data: { limit: 100 } }),
     staleTime: 1000 * 60 * 10,
-    enabled: isAuthorized && !demo,
+    enabled: isAuthorized,
   });
 
   const staffMap = React.useMemo(() => {
@@ -184,20 +176,10 @@ function ReimburseDataPage() {
     React.useState<ReimburseDataItem | null>(null);
 
   const updateSearch = React.useCallback(
-    (
-      updater: (
-        prev: ReimburseDataSearch,
-      ) => Partial<ReimburseDataSearch> & { demo?: ReimburseDataDemoState },
-    ) => {
+    (updater: (prev: ReimburseDataSearch) => Partial<ReimburseDataSearch>) => {
       navigate({
         to: "/admin/reimburse/data",
         search: (prev) => {
-          const validDemo =
-            prev.demo === "default" ||
-            prev.demo === "paid" ||
-            prev.demo === "empty"
-              ? prev.demo
-              : undefined;
           const validRole:
             "super_admin" | "core" | "bendahara" | "staff" | undefined =
             prev.role === "super_admin" ||
@@ -215,7 +197,6 @@ function ReimburseDataPage() {
                 : "all",
             search: prev.search ?? "",
             role: validRole,
-            demo: validDemo,
           };
           return {
             ...current,
@@ -230,10 +211,6 @@ function ReimburseDataPage() {
 
   // Menyusun dataset item tabel
   const items = React.useMemo<ReimburseDataItem[]>(() => {
-    if (demo) {
-      return getReimburseDataInitialItems(demo);
-    }
-
     if (
       !reimbursementsQuery.data ||
       !("data" in reimbursementsQuery.data) ||
@@ -252,12 +229,34 @@ function ReimburseDataPage() {
       const applicantAvatar = staffInfo?.avatar;
       return mapReimbursementToDataItem(record, applicantName, applicantAvatar);
     });
+  }, [reimbursementsQuery.data, staffMap, profile.user?.id, profile.name]);
+
+  // Dataset lengkap reimbursement untuk statistik agregat dan tab filter count riil
+  const allItems = React.useMemo<ReimburseDataItem[]>(() => {
+    if (
+      !allReimbursementsQuery.data ||
+      !("data" in allReimbursementsQuery.data) ||
+      !Array.isArray(allReimbursementsQuery.data.data)
+    ) {
+      return items;
+    }
+
+    return allReimbursementsQuery.data.data.map((record) => {
+      const staffInfo = staffMap.get(record.user_id);
+      const applicantName =
+        staffInfo?.name ??
+        (profile.user?.id === record.user_id
+          ? profile.name
+          : `Staf (${record.user_id.slice(0, 8)})`);
+      const applicantAvatar = staffInfo?.avatar;
+      return mapReimbursementToDataItem(record, applicantName, applicantAvatar);
+    });
   }, [
-    demo,
-    reimbursementsQuery.data,
+    allReimbursementsQuery.data,
     staffMap,
     profile.user?.id,
     profile.name,
+    items,
   ]);
 
   const meta =
@@ -265,26 +264,25 @@ function ReimburseDataPage() {
       ? reimbursementsQuery.data.meta
       : undefined;
 
-  const totalItems = demo ? items.length : (meta?.total ?? items.length);
-  const totalPages = demo
-    ? Math.max(1, Math.ceil(totalItems / perPage))
-    : (meta?.total_pages ?? 1);
+  const totalItems = meta?.total ?? items.length;
+  const totalPages = meta?.total_pages ?? 1;
   const safePage = Math.min(page, Math.max(1, totalPages));
 
-  const stats = React.useMemo(() => buildReimburseDataStats(items), [items]);
+  const stats = React.useMemo(
+    () => buildReimburseDataStats(allItems),
+    [allItems],
+  );
   const filterOptions = React.useMemo(
-    () => buildReimburseStatusFilterOptions(items),
-    [items],
+    () => buildReimburseStatusFilterOptions(allItems),
+    [allItems],
   );
 
-  const hasActiveFilter =
-    searchQuery.trim().length > 0 || status !== "all" || demo === "empty";
+  const hasActiveFilter = searchQuery.trim().length > 0 || status !== "all";
 
   const handleStatusChange = (nextStatus: ReimburseDataStatusFilter) => {
     updateSearch(() => ({
       status: nextStatus,
       page: 1,
-      demo: demo === "empty" ? undefined : demo,
     }));
   };
 
@@ -292,7 +290,6 @@ function ReimburseDataPage() {
     updateSearch(() => ({
       search: nextSearch,
       page: 1,
-      demo: demo === "empty" ? undefined : demo,
     }));
   };
 
@@ -300,7 +297,6 @@ function ReimburseDataPage() {
     updateSearch(() => ({
       search: "",
       page: 1,
-      demo: demo === "empty" ? undefined : demo,
     }));
   };
 
@@ -309,7 +305,6 @@ function ReimburseDataPage() {
       search: "",
       status: "all",
       page: 1,
-      demo: undefined,
     }));
   };
 
@@ -362,7 +357,7 @@ function ReimburseDataPage() {
     }
   };
 
-  if (!isAuthorized || (!demo && reimbursementsQuery.isLoading)) {
+  if (!isAuthorized || reimbursementsQuery.isLoading) {
     return <ReimburseDataSkeleton />;
   }
 
