@@ -4,7 +4,8 @@ import {
   getCookie,
   setCookie,
 } from "@tanstack/react-start/server";
-import { api, getOrRotateToken, parseJwt } from "./api";
+import { api, getOrRotateToken } from "./api";
+import { parseJwt } from "#/lib/jwt";
 import { handleApiError } from "./errorService";
 import { env } from "#/env";
 import { idAuth } from "#/locales";
