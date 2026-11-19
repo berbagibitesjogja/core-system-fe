@@ -44,6 +44,49 @@ export const api = axios.create({
   },
 });
 
+export interface JwtPayload {
+  exp?: number;
+  iat?: number;
+  sub?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Mendekode payload JWT tanpa verifikasi kriptografis (pemeriksaan proaktif masa berlaku token)
+ */
+export function parseJwt(tokenStr?: string | null): JwtPayload | null {
+  try {
+    if (!tokenStr) return null;
+    const parts = tokenStr.split(".");
+    if (parts.length < 2) return null;
+    const base64Url = parts[1];
+    if (!base64Url) return null;
+
+    let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+
+    let jsonPayload = "";
+    if (typeof Buffer !== "undefined") {
+      jsonPayload = Buffer.from(base64, "base64").toString("utf-8");
+    } else if (typeof atob !== "undefined") {
+      jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(""),
+      );
+    } else {
+      return null;
+    }
+
+    return JSON.parse(jsonPayload) as JwtPayload;
+  } catch {
+    return null;
+  }
+}
+
 // Peta antrean promise rotasi token untuk mencegah race condition (rotasi ganda di waktu bersamaan)
 const pendingRefreshMap = new Map<string, Promise<string | null>>();
 
@@ -112,7 +155,7 @@ export async function getOrRotateToken(
   return promise;
 }
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   // Selaraskan baseURL dengan runtime terkini
   config.baseURL = getApiBaseUrl();
 
@@ -123,7 +166,37 @@ api.interceptors.request.use((config) => {
       const request = getRequest();
       const cookieHeader = request.headers.get("cookie") ?? "";
       const cookies = parseCookie(cookieHeader);
-      const token = cookies.token;
+      let token = cookies.token;
+      const refreshToken = cookies.refresh_token;
+
+      const reqUrl = config.url ?? "";
+      const isAuthEndpoint =
+        reqUrl.includes("/login") ||
+        reqUrl.includes("/register") ||
+        reqUrl.includes("/refresh");
+
+      // Pendekatan Proaktif (Bruno): Cek apakah token kedaluwarsa atau hampir kedaluwarsa (< 60 detik)
+      if (!isAuthEndpoint && refreshToken) {
+        let shouldRefresh = false;
+
+        if (!token) {
+          shouldRefresh = true;
+        } else {
+          const payload = parseJwt(token);
+          const now = Math.floor(Date.now() / 1000);
+
+          if (!payload || !payload.exp || payload.exp - now < 60) {
+            shouldRefresh = true;
+          }
+        }
+
+        if (shouldRefresh) {
+          const newAccessToken = await getOrRotateToken(refreshToken);
+          if (newAccessToken) {
+            token = newAccessToken;
+          }
+        }
+      }
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
