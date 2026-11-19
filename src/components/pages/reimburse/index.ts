@@ -50,7 +50,10 @@ export type { ReimburseFilePreviewDialogProps } from "./reimburse-file-preview-d
 export { ReimburseTransferProofDialog } from "./reimburse-transfer-proof-dialog";
 export type { ReimburseTransferProofDialogProps } from "./reimburse-transfer-proof-dialog";
 
-export { ReimburseRequestSkeleton } from "./reimburse-request-skeleton";
+export {
+  ReimburseHistorySkeleton,
+  ReimburseRequestSkeleton,
+} from "./reimburse-request-skeleton";
 
 export * from "./reimburse-management-data";
 
