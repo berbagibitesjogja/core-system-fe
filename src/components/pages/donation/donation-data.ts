@@ -48,6 +48,98 @@ export interface ProgramFilterOption {
   programValue?: DonationProgram | "ALL";
 }
 
+// Menghitung kartu ringkasan statistik donasi berbasis data riil backend
+export function computeDonationStats(
+  donations: readonly DonationItem[],
+  _totalMetaCount?: number,
+): DonationStatItem[] {
+  const activeDonations = donations.filter((item) => item.status === "Aktif");
+  const maxQuotaItem = donations.reduce<DonationItem | null>((max, item) => {
+    if (!max || item.quotaTotal > max.quotaTotal) {
+      return item;
+    }
+    return max;
+  }, null);
+
+  const nearestItem: DonationItem | undefined =
+    donations.length > 0 ? (activeDonations[0] ?? donations[0]) : undefined;
+
+  const totalQuotaRemaining = activeDonations.reduce(
+    (acc, item) => acc + Math.max(0, item.quotaTotal - item.quotaClaimed),
+    0,
+  );
+
+  const nearestDate = nearestItem ? nearestItem.date : "-";
+  const nearestDay = nearestItem ? nearestItem.day : "-";
+  const nearestSubtext = nearestItem
+    ? `${nearestItem.donorName} · ${nearestItem.status}`
+    : "Belum ada jadwal penjemputan";
+
+  return [
+    {
+      id: "pengambilan-terdekat",
+      title: "Pengambilan Terdekat",
+      value: nearestDate,
+      unit: nearestDay,
+      subtext: nearestSubtext,
+      styleVariant: "brand",
+      iconName: "clock",
+      illustrationSrc: statDonationNearest,
+      illustrationAlt: "Ilustrasi jam dan kalender pengambilan terdekat",
+    },
+    {
+      id: "kuota-terbanyak",
+      title: "Kuota Terbanyak",
+      value: maxQuotaItem ? String(maxQuotaItem.quotaTotal) : "0",
+      unit: "Heroes",
+      subtext: maxQuotaItem
+        ? `${maxQuotaItem.donorName} · ${maxQuotaItem.date}`
+        : "Belum ada kuota",
+      styleVariant: "default",
+      iconName: "users",
+      illustrationSrc: statDonationQuota,
+      illustrationAlt: "Ilustrasi piala kuota terbanyak",
+    },
+    {
+      id: "donasi-aktif",
+      title: "Donasi Aktif",
+      value: String(activeDonations.length),
+      unit: "Donasi",
+      subtext:
+        activeDonations.length > 0
+          ? `Sisa ${totalQuotaRemaining} kuota heroes`
+          : "Tidak ada aksi aktif",
+      styleVariant: "default",
+      iconName: "package",
+      illustrationSrc: statDonationActive,
+      illustrationAlt: "Ilustrasi donasi aktif",
+    },
+  ];
+}
+
+// Menghitung opsi FilterChip program beserta jumlah per status berdasarkan data riil backend
+export function computeProgramFilterOptions(
+  donations: readonly DonationItem[],
+  totalMetaCount?: number,
+): ProgramFilterOption[] {
+  const foodRescueCount = donations.filter(
+    (item) => item.program === "Food Rescue",
+  ).length;
+  const csrCount = donations.filter((item) => item.program === "CSR").length;
+  const totalCount = totalMetaCount ?? donations.length;
+
+  return [
+    { id: "all", label: "Semua", count: totalCount, programValue: "ALL" },
+    {
+      id: "food-rescue",
+      label: "Food Rescue",
+      count: foodRescueCount,
+      programValue: "Food Rescue",
+    },
+    { id: "csr", label: "CSR", count: csrCount, programValue: "CSR" },
+  ];
+}
+
 export const defaultProgramFilterOptions: ProgramFilterOption[] = [
   { id: "all", label: "Semua", count: 392, programValue: "ALL" },
   {

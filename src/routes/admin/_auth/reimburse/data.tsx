@@ -14,6 +14,7 @@ import {
   ReimburseDataTable,
   ReimburseDataToolbar,
   ReimburseFilePreviewDialog,
+  ReimburseRejectDialog,
   ReimburseTransferProofDialog,
 } from "#/components/pages/reimburse";
 import type {
@@ -35,7 +36,7 @@ import { getVolunteers } from "#/services/volunteerService";
 const reimburseDataSearchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1),
   per_page: z.coerce.number().int().positive().catch(10),
-  status: z.enum(["all", "proses", "selesai"]).catch("all"),
+  status: z.enum(["all", "proses", "selesai", "ditolak"]).catch("all"),
   search: z.string().optional().catch(""),
   role: z
     .enum(["super_admin", "core", "bendahara", "staff"])
@@ -52,7 +53,9 @@ export const Route = createFileRoute("/admin/_auth/reimburse/data")({
       page: search.page,
       per_page: search.per_page ?? search.perpage,
       status:
-        search.status === "proses" || search.status === "selesai"
+        search.status === "proses" ||
+        search.status === "selesai" ||
+        search.status === "ditolak"
           ? search.status
           : "all",
       search: typeof search.search === "string" ? search.search : "",
@@ -114,7 +117,9 @@ function ReimburseDataPage() {
       ? "pending"
       : status === "selesai"
         ? "completed"
-        : undefined;
+        : status === "ditolak"
+          ? "rejected"
+          : undefined;
 
   const reimbursementsQuery = useQuery({
     queryKey: [
@@ -170,6 +175,9 @@ function ReimburseDataPage() {
     React.useState<ReimburseDataItem | null>(null);
   const [cancelTarget, setCancelTarget] =
     React.useState<ReimburseDataItem | null>(null);
+  const [rejectTarget, setRejectTarget] =
+    React.useState<ReimburseDataItem | null>(null);
+  const [isRejecting, setIsRejecting] = React.useState(false);
   const [previewInvoiceItem, setPreviewInvoiceItem] =
     React.useState<ReimburseDataItem | null>(null);
   const [previewTransferItem, setPreviewTransferItem] =
@@ -192,7 +200,9 @@ function ReimburseDataPage() {
             page: prev.page ?? 1,
             per_page: prev.per_page ?? 10,
             status:
-              prev.status === "proses" || prev.status === "selesai"
+              prev.status === "proses" ||
+              prev.status === "selesai" ||
+              prev.status === "ditolak"
                 ? prev.status
                 : "all",
             search: prev.search ?? "",
@@ -334,6 +344,34 @@ function ReimburseDataPage() {
     }
   };
 
+  const handleConfirmReject = async (rejectionReason: string) => {
+    if (!rejectTarget) return;
+    setIsRejecting(true);
+
+    try {
+      await updateReimbursementFn({
+        data: {
+          id: rejectTarget.id,
+          status: "rejected",
+          rejection_reason: rejectionReason,
+        },
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["reimbursements"] });
+      queryClient.invalidateQueries({ queryKey: ["my-reimbursements"] });
+      setRejectTarget(null);
+      toast.success(idReimburse.data.toasts.rejectSuccess);
+    } catch (err: unknown) {
+      if (isApiError(err) && err.message) {
+        toast.error(err.message);
+      } else {
+        toast.error(idReimburse.data.toasts.rejectFailed);
+      }
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
   const handleConfirmCancel = async () => {
     if (!cancelTarget) return;
 
@@ -390,13 +428,21 @@ function ReimburseDataPage() {
         onPreviewInvoice={(item) => setPreviewInvoiceItem(item)}
         onPreviewTransferProof={(item) => setPreviewTransferItem(item)}
         onRequestConfirmPaid={(item) => setConfirmPaidTarget(item)}
-        onRequestCancel={(item) => setCancelTarget(item)}
+        onRequestCancel={(item) => setRejectTarget(item)}
+        onRequestReject={(item) => setRejectTarget(item)}
       />
 
       <ReimburseConfirmPaidDialog
         item={confirmPaidTarget}
         onClose={() => setConfirmPaidTarget(null)}
         onConfirm={handleConfirmPaid}
+      />
+
+      <ReimburseRejectDialog
+        item={rejectTarget}
+        onClose={() => setRejectTarget(null)}
+        onConfirm={handleConfirmReject}
+        isSubmitting={isRejecting}
       />
 
       <ReimburseCancelDialog

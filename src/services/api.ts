@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-start/server";
 import { parseCookie } from "cookie";
 import { env } from "#/env";
+import { parseJwt } from "#/lib/jwt";
 
 export function getApiBaseUrl(): string {
   // Jika di lingkungan server, utamakan SERVER_URL dari runtime env
@@ -112,7 +113,7 @@ export async function getOrRotateToken(
   return promise;
 }
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   // Selaraskan baseURL dengan runtime terkini
   config.baseURL = getApiBaseUrl();
 
@@ -123,7 +124,37 @@ api.interceptors.request.use((config) => {
       const request = getRequest();
       const cookieHeader = request.headers.get("cookie") ?? "";
       const cookies = parseCookie(cookieHeader);
-      const token = cookies.token;
+      let token = cookies.token;
+      const refreshToken = cookies.refresh_token;
+
+      const reqUrl = config.url ?? "";
+      const isAuthEndpoint =
+        reqUrl.includes("/login") ||
+        reqUrl.includes("/register") ||
+        reqUrl.includes("/refresh");
+
+      // Pendekatan Proaktif (Bruno): Cek apakah token kedaluwarsa atau hampir kedaluwarsa (< 60 detik)
+      if (!isAuthEndpoint && refreshToken) {
+        let shouldRefresh = false;
+
+        if (!token) {
+          shouldRefresh = true;
+        } else {
+          const payload = parseJwt(token);
+          const now = Math.floor(Date.now() / 1000);
+
+          if (!payload || !payload.exp || payload.exp - now < 60) {
+            shouldRefresh = true;
+          }
+        }
+
+        if (shouldRefresh) {
+          const newAccessToken = await getOrRotateToken(refreshToken);
+          if (newAccessToken) {
+            token = newAccessToken;
+          }
+        }
+      }
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;

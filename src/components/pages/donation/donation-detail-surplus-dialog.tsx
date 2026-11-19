@@ -15,6 +15,8 @@ export interface DonationDetailSurplusDialogProps {
   isOpen: boolean;
   mode: "add" | "edit";
   initialFood?: DonationSurplusFoodItem | null;
+  foodSuggestions?: Array<{ id: number; name: string }>;
+  isSubmitting?: boolean;
   onClose: () => void;
   onSubmit: (values: DonationSurplusFormValues) => void;
 }
@@ -36,6 +38,8 @@ export function DonationDetailSurplusDialog({
   isOpen,
   mode,
   initialFood = null,
+  foodSuggestions = [],
+  isSubmitting = false,
   onClose,
   onSubmit,
 }: DonationDetailSurplusDialogProps) {
@@ -151,6 +155,8 @@ export function DonationDetailSurplusDialog({
             value={name}
             error={errors.name}
             showHelper={Boolean(errors.name)}
+            list="surplus-food-options"
+            autoComplete="off"
             onChange={(e) => {
               setName(e.target.value);
               if (errors.name)
@@ -158,6 +164,14 @@ export function DonationDetailSurplusDialog({
             }}
             className="max-w-none"
           />
+
+          {foodSuggestions.length > 0 && (
+            <datalist id="surplus-food-options">
+              {foodSuggestions.map((item) => (
+                <option key={item.id} value={item.name} />
+              ))}
+            </datalist>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-3 items-start">
             <Input
@@ -225,10 +239,20 @@ export function DonationDetailSurplusDialog({
           />
 
           <div className="flex items-center justify-end gap-3">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
               Batal
             </Button>
-            <Button type="submit" variant="primary">
+            <Button
+              type="submit"
+              variant="primary"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
+            >
               Simpan Makanan
             </Button>
           </div>
@@ -240,6 +264,7 @@ export function DonationDetailSurplusDialog({
 
 export interface DonationSurplusDeleteDialogProps {
   food: DonationSurplusFoodItem | null;
+  isDeleting?: boolean;
   onClose: () => void;
   onConfirm: () => void;
 }
@@ -249,6 +274,7 @@ export interface DonationSurplusDeleteDialogProps {
  */
 export function DonationSurplusDeleteDialog({
   food,
+  isDeleting = false,
   onClose,
   onConfirm,
 }: DonationSurplusDeleteDialogProps) {
@@ -305,10 +331,21 @@ export function DonationSurplusDeleteDialog({
         </div>
 
         <div className="flex items-center justify-end gap-3 w-full">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onClose}
+            disabled={isDeleting}
+          >
             Batal
           </Button>
-          <Button type="button" variant="danger" onClick={onConfirm}>
+          <Button
+            type="button"
+            variant="danger"
+            onClick={onConfirm}
+            isLoading={isDeleting}
+            disabled={isDeleting}
+          >
             Hapus Makanan
           </Button>
         </div>

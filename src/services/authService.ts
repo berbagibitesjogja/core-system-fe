@@ -5,6 +5,7 @@ import {
   setCookie,
 } from "@tanstack/react-start/server";
 import { api, getOrRotateToken } from "./api";
+import { parseJwt } from "#/lib/jwt";
 import { handleApiError } from "./errorService";
 import { env } from "#/env";
 import { idAuth } from "#/locales";
@@ -156,26 +157,15 @@ export const refreshSession = createServerFn({ method: "POST" })
   });
 
 /**
- * Memeriksa apakah token JWT sudah kedaluwarsa berdasarkan klaim "exp".
+ * Memeriksa apakah token JWT sudah kedaluwarsa atau hampir kedaluwarsa (< 60 detik) berdasarkan klaim "exp".
  */
 export function isJwtExpired(token: string): boolean {
   try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return true;
-    const base64Url = parts[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    let jsonStr = "";
-    if (typeof Buffer !== "undefined") {
-      jsonStr = Buffer.from(base64, "base64").toString("utf-8");
-    } else if (typeof atob !== "undefined") {
-      jsonStr = atob(base64);
-    } else {
-      return false;
-    }
-    const payload = JSON.parse(jsonStr) as { exp?: number };
-    if (!payload.exp) return false;
-    // Beri batas toleransi 30 detik sebelum kedaluwarsa sebenarnya
-    return Date.now() >= (payload.exp - 30) * 1000;
+    const payload = parseJwt(token);
+    if (!payload?.exp) return true;
+    const now = Math.floor(Date.now() / 1000);
+    // Beri batas toleransi 60 detik sebelum kedaluwarsa sebenarnya (standar proaktif Bruno)
+    return payload.exp - now < 60;
   } catch {
     return true;
   }

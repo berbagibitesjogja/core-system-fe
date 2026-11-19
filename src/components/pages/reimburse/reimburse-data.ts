@@ -49,6 +49,7 @@ export interface ReimburseHistoryItem {
   filePreviewUrl?: string;
   transferProof?: ReimburseTransferProof;
   isHighlighted?: boolean;
+  rejectionReason?: string;
 }
 
 export interface ReimburseRequestFormValues {
@@ -449,5 +450,6 @@ export function mapReimbursementToHistoryItem(
     fileSize: "1,2 MB",
     fileType: "pdf",
     transferProof,
+    rejectionReason: record.rejection_reason ?? undefined,
   };
 }

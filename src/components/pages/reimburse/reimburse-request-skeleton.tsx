@@ -24,6 +24,52 @@ function FieldSkeleton({
 }
 
 /**
+ * ReimburseHistorySkeleton: State memuat khusus panel riwayat pengajuan reimburse (kolom kanan).
+ */
+export function ReimburseHistorySkeleton() {
+  return (
+    <div className="w-full xl:w-[440px] shrink-0 rounded-lg border border-neutral-200 bg-white p-6 flex flex-col gap-4 shadow-xs animate-pulse motion-reduce:animate-none">
+      <div className="flex flex-col gap-1.5">
+        <Skeleton className="h-5 w-40 rounded-md" />
+        <Skeleton className="h-3 w-56 rounded-md" />
+      </div>
+
+      <div className="flex flex-col gap-3 w-full">
+        {HISTORY_SKELETON_ITEMS.map((item) => (
+          <div
+            key={item.id}
+            className="rounded-md border border-neutral-200 p-4 flex flex-col gap-2"
+          >
+            {/* Metode, Nomor Tujuan, Tanggal, dan Status */}
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex flex-1 flex-col gap-1.5">
+                <Skeleton className="h-4 w-24 rounded-md" />
+                <Skeleton className="h-3 w-40 rounded-md" />
+              </div>
+              <Skeleton className="h-[22px] w-16 rounded-full" />
+            </div>
+
+            {/* Nominal */}
+            <Skeleton className="h-6 w-32 rounded-md" />
+
+            {/* Catatan */}
+            <Skeleton className="h-3 w-full rounded-md" />
+
+            {/* Tautan Invoice & Bukti Transfer */}
+            <div className="flex flex-col items-start gap-1.5">
+              <Skeleton className="h-3.5 w-16 rounded-md" />
+              {item.hasTransferProof && (
+                <Skeleton className="h-3.5 w-24 rounded-md" />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
  * ReimburseRequestSkeleton: State memuat halaman Ajukan Reimburse
  * (kartu form dengan header teal, banner AI, field, upload invoice, tombol kirim + panel riwayat).
  */
@@ -76,44 +122,7 @@ export function ReimburseRequestSkeleton() {
       </div>
 
       {/* Kolom Kanan: Riwayat Pengajuan */}
-      <div className="w-full xl:w-[440px] shrink-0 rounded-lg border border-neutral-200 bg-white p-6 flex flex-col gap-4 shadow-xs">
-        <div className="flex flex-col gap-1.5">
-          <Skeleton className="h-5 w-40 rounded-md" />
-          <Skeleton className="h-3 w-56 rounded-md" />
-        </div>
-
-        <div className="flex flex-col gap-3 w-full">
-          {HISTORY_SKELETON_ITEMS.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-md border border-neutral-200 p-4 flex flex-col gap-2"
-            >
-              {/* Metode, Nomor Tujuan, Tanggal, dan Status */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <Skeleton className="h-4 w-24 rounded-md" />
-                  <Skeleton className="h-3 w-40 rounded-md" />
-                </div>
-                <Skeleton className="h-[22px] w-16 rounded-full" />
-              </div>
-
-              {/* Nominal */}
-              <Skeleton className="h-6 w-32 rounded-md" />
-
-              {/* Catatan */}
-              <Skeleton className="h-3 w-full rounded-md" />
-
-              {/* Tautan Invoice & Bukti Transfer */}
-              <div className="flex flex-col items-start gap-1.5">
-                <Skeleton className="h-3.5 w-16 rounded-md" />
-                {item.hasTransferProof && (
-                  <Skeleton className="h-3.5 w-24 rounded-md" />
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ReimburseHistorySkeleton />
     </div>
   );
 }

@@ -12,7 +12,8 @@ import { formatReimburseDate } from "#/services/reimburseService";
 
 export type ReimburseDataRole = "super_admin" | "core" | "bendahara" | "staff";
 
-export type ReimburseDataStatusFilter = "all" | "proses" | "selesai";
+export type ReimburseDataStatusFilter =
+  "all" | "proses" | "selesai" | "ditolak";
 
 export interface ReimburseDataItem extends ReimburseHistoryItem {
   applicantName: string;
@@ -131,7 +132,10 @@ export function buildReimburseStatusFilterOptions(
   const completedCount = items.filter(
     (item) => item.status === "Selesai",
   ).length;
-  const totalCount = pendingCount + completedCount;
+  const rejectedCount = items.filter(
+    (item) => item.status === "Ditolak",
+  ).length;
+  const totalCount = items.length;
 
   return [
     {
@@ -148,6 +152,11 @@ export function buildReimburseStatusFilterOptions(
       value: "selesai",
       label: "Selesai",
       count: completedCount,
+    },
+    {
+      value: "ditolak",
+      label: "Ditolak",
+      count: rejectedCount,
     },
   ];
 }
@@ -209,5 +218,6 @@ export function mapReimbursementToDataItem(
     fileSize: "1,2 MB",
     fileType: "pdf",
     transferProof,
+    rejectionReason: record.rejection_reason ?? undefined,
   };
 }

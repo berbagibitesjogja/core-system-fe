@@ -36,6 +36,8 @@ export interface DonationFormProps {
   onCancel: () => void;
   isSubmitting?: boolean;
   className?: string;
+  sponsors?: SponsorOption[];
+  beneficiaries?: BeneficiaryOption[];
 }
 
 interface FormErrors {
@@ -61,6 +63,8 @@ export function DonationForm({
   onCancel,
   isSubmitting = false,
   className,
+  sponsors,
+  beneficiaries,
 }: DonationFormProps) {
   // State data formulir
   const [formData, setFormData] = React.useState<DonationFormData>(() => ({
@@ -114,27 +118,29 @@ export function DonationForm({
     }
   }, [beneficiaryDropdownOpen]);
 
+  const availableSponsors = sponsors ?? defaultSponsorOptions;
   // Filter daftar sponsor berdasarkan pencarian
   const filteredSponsors = React.useMemo(() => {
-    if (!sponsorSearch.trim()) return defaultSponsorOptions;
+    if (!sponsorSearch.trim()) return availableSponsors;
     const q = sponsorSearch.toLowerCase();
-    return defaultSponsorOptions.filter(
+    return availableSponsors.filter(
       (s) =>
         s.name.toLowerCase().includes(q) ||
         (s.category && s.category.toLowerCase().includes(q)),
     );
-  }, [sponsorSearch]);
+  }, [availableSponsors, sponsorSearch]);
 
+  const availableBeneficiaries = beneficiaries ?? defaultBeneficiaryOptions;
   // Filter daftar beneficiaries berdasarkan pencarian di dropdown sesuai Figma Node 122:4132
   const filteredBeneficiaries = React.useMemo(() => {
-    if (!beneficiarySearchQuery.trim()) return defaultBeneficiaryOptions;
+    if (!beneficiarySearchQuery.trim()) return availableBeneficiaries;
     const q = beneficiarySearchQuery.toLowerCase();
-    return defaultBeneficiaryOptions.filter(
+    return availableBeneficiaries.filter(
       (b) =>
         b.name.toLowerCase().includes(q) ||
         (b.category && b.category.toLowerCase().includes(q)),
     );
-  }, [beneficiarySearchQuery]);
+  }, [availableBeneficiaries, beneficiarySearchQuery]);
 
   // Validasi formulir
   const validate = (): FormErrors => {

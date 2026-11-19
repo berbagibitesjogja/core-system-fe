@@ -9,6 +9,8 @@ export const idReimburse = {
       confirmPaidFailed: "Gagal memperbarui status pembayaran reimburse. Silakan coba lagi.",
       cancelSuccess: "Pengajuan reimburse berhasil dibatalkan.",
       cancelFailed: "Gagal membatalkan pengajuan reimburse. Silakan coba lagi.",
+      rejectSuccess: "Pengajuan reimburse berhasil ditolak.",
+      rejectFailed: "Gagal menolak pengajuan reimburse. Silakan coba lagi.",
       accessDenied: "Halaman Data Reimburse hanya untuk Super Admin, Core Team, dan Divisi Bendahara.",
     },
     stats: {

@@ -15,8 +15,8 @@ import {
   REIMBURSE_MAX_FILE_SIZE_BYTES,
   ReimburseFilePreviewDialog,
   ReimburseHistoryCard,
+  ReimburseHistorySkeleton,
   ReimburseRequestForm,
-  ReimburseRequestSkeleton,
   ReimburseTransferProofDialog,
 } from "#/components/pages/reimburse";
 import type {
@@ -113,7 +113,7 @@ function ReimburseRequestPage() {
 
   const historyItems = queryHistoryItems;
 
-  const isLoading = profile.isLoading || myReimbursementsQuery.isLoading;
+  const isHistoryLoading = profile.isLoading || myReimbursementsQuery.isLoading;
 
   // Membersihkan seluruh timer & interval animasi analisis invoice
   const clearAnalyzeTimers = React.useCallback(() => {
@@ -350,11 +350,6 @@ function ReimburseRequestPage() {
     }
   };
 
-  // Tampilkan skeleton saat loading aktif
-  if (isLoading) {
-    return <ReimburseRequestSkeleton />;
-  }
-
   return (
     <div className="flex flex-col xl:flex-row items-start gap-6 w-full">
       {/* Kolom Kiri: Form Pengajuan Reimburse */}
@@ -374,11 +369,15 @@ function ReimburseRequestPage() {
       />
 
       {/* Kolom Kanan: Daftar Riwayat Pengajuan */}
-      <ReimburseHistoryCard
-        items={historyItems}
-        onPreviewFile={(item) => setPreviewItem(item)}
-        onPreviewTransferProof={(item) => setTransferProofItem(item)}
-      />
+      {isHistoryLoading ? (
+        <ReimburseHistorySkeleton />
+      ) : (
+        <ReimburseHistoryCard
+          items={historyItems}
+          onPreviewFile={(item) => setPreviewItem(item)}
+          onPreviewTransferProof={(item) => setTransferProofItem(item)}
+        />
+      )}
 
       {/* Modal Pratinjau Berkas Invoice */}
       <ReimburseFilePreviewDialog
