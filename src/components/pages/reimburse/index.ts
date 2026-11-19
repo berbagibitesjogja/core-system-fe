@@ -66,6 +66,9 @@ export type { ReimburseDataTableProps } from "./reimburse-data-table";
 export { ReimburseConfirmPaidDialog } from "./reimburse-confirm-paid-dialog";
 export type { ReimburseConfirmPaidDialogProps } from "./reimburse-confirm-paid-dialog";
 
+export { ReimburseRejectDialog } from "./reimburse-reject-dialog";
+export type { ReimburseRejectDialogProps } from "./reimburse-reject-dialog";
+
 export { ReimburseCancelDialog } from "./reimburse-cancel-dialog";
 export type { ReimburseCancelDialogProps } from "./reimburse-cancel-dialog";
 

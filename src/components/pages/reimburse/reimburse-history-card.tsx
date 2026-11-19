@@ -115,6 +115,18 @@ export function ReimburseHistoryCard({
                   {item.note}
                 </p>
 
+                {/* Alasan Penolakan jika berstatus Ditolak */}
+                {item.status === "Ditolak" && item.rejectionReason && (
+                  <div className="rounded-md border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
+                    <p className="font-semibold text-red-800">
+                      Alasan Penolakan:
+                    </p>
+                    <p className="mt-0.5 leading-relaxed">
+                      {item.rejectionReason}
+                    </p>
+                  </div>
+                )}
+
                 {/* Tautan Berkas Invoice & Bukti Transfer */}
                 <div className="flex flex-col items-start gap-1">
                   {cardActions.map((action) => (

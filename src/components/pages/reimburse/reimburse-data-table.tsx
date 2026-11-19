@@ -44,6 +44,7 @@ export interface ReimburseDataTableProps {
   onPreviewTransferProof: (item: ReimburseDataItem) => void;
   onRequestConfirmPaid: (item: ReimburseDataItem) => void;
   onRequestCancel: (item: ReimburseDataItem) => void;
+  onRequestReject?: (item: ReimburseDataItem) => void;
 }
 
 // Tabel manajemen pengajuan reimburse sesuai desain tabel & kolom Figma 156:23988
@@ -62,6 +63,7 @@ export function ReimburseDataTable({
   onPreviewTransferProof,
   onRequestConfirmPaid,
   onRequestCancel,
+  onRequestReject,
 }: ReimburseDataTableProps) {
   const columns = React.useMemo<ColumnDef<ReimburseDataItem>[]>(
     () => [
@@ -161,17 +163,30 @@ export function ReimburseDataTable({
         id: "status",
         header: "Status",
         meta: {
-          className: "w-[110px] min-w-[110px]",
+          className: "w-[120px] min-w-[120px]",
         },
-        cell: ({ row }) => (
-          <Badge
-            tone={REIMBURSE_STATUS_BADGE_TONE[row.original.status]}
-            styleVariant="soft"
-            dot
-          >
-            {row.original.status}
-          </Badge>
-        ),
+        cell: ({ row }) => {
+          const item = row.original;
+          return (
+            <div className="flex flex-col items-start gap-1">
+              <Badge
+                tone={REIMBURSE_STATUS_BADGE_TONE[item.status]}
+                styleVariant="soft"
+                dot
+              >
+                {item.status}
+              </Badge>
+              {item.status === "Ditolak" && item.rejectionReason && (
+                <span
+                  className="max-w-[140px] truncate text-[11px] font-medium leading-tight text-red-600"
+                  title={item.rejectionReason}
+                >
+                  {item.rejectionReason}
+                </span>
+              )}
+            </div>
+          );
+        },
       },
       {
         id: "aksi",
@@ -204,9 +219,13 @@ export function ReimburseDataTable({
                   type="button"
                   variant="secondary"
                   size="sm"
-                  tooltip="Batalkan pengajuan"
-                  aria-label={`Batalkan pengajuan ${item.applicantName}`}
-                  onClick={() => onRequestCancel(item)}
+                  tooltip="Tolak pengajuan"
+                  aria-label={`Tolak pengajuan ${item.applicantName}`}
+                  onClick={() =>
+                    onRequestReject
+                      ? onRequestReject(item)
+                      : onRequestCancel(item)
+                  }
                   className="border-neutral-300 text-red-600 hover:border-red-300 hover:bg-red-50"
                 >
                   <X className="size-[18px]" />
@@ -222,6 +241,7 @@ export function ReimburseDataTable({
       onPreviewInvoice,
       onPreviewTransferProof,
       onRequestCancel,
+      onRequestReject,
       onRequestConfirmPaid,
     ],
   );
