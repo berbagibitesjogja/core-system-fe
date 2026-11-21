@@ -178,7 +178,7 @@ export function BeneficiaryCard({
   return (
     <div
       className={cn(
-        "w-full max-w-[352px] rounded-[16px] border border-neutral-200 bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
+        "w-full max-w-[352px] rounded-[16px] border border-neutral-200 bg-white p-5 flex flex-col justify-between gap-5 shadow-2xs hover:shadow-xs transition-shadow h-full",
         className,
       )}
     >
@@ -236,43 +236,50 @@ export function BeneficiaryCard({
       </div>
 
       {/* Informasi Pelengkap: Domain Email & Alamat / Maps */}
-      {(cleanDomain || address || maps) && (
-        <div className="flex flex-col gap-1.5 -mt-2 text-[12px] text-neutral-600">
-          {cleanDomain && (
-            <div className="flex items-center gap-1.5 text-bondi-700 font-medium truncate">
-              <Mail className="size-3.5 shrink-0 text-bondi-600" />
-              <span className="truncate">@{cleanDomain}</span>
-            </div>
-          )}
-
-          {(address || maps) && (
-            <div className="flex items-center gap-1.5 truncate">
-              <MapPin className="size-3.5 text-neutral-400 shrink-0" />
-              {maps ? (
-                <a
-                  href={maps}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-bondi-700 truncate inline-flex items-center gap-1"
-                  title={address || maps}
-                >
-                  <span className="truncate">
-                    {address || "Buka Peta Lokasi"}
-                  </span>
-                  <ExternalLink className="size-3 shrink-0 opacity-70" />
-                </a>
-              ) : (
-                <span
-                  className="truncate text-neutral-500"
-                  title={address || ""}
-                >
-                  {address}
-                </span>
-              )}
-            </div>
+      <div className="flex flex-col gap-1.5 -mt-2 text-[12px] text-neutral-600">
+        <div className="flex items-center gap-1.5 truncate">
+          <Mail
+            className={cn(
+              "size-3.5 shrink-0",
+              cleanDomain ? "text-bondi-600" : "text-neutral-300",
+            )}
+          />
+          {cleanDomain ? (
+            <span className="truncate text-bondi-700 font-medium">
+              @{cleanDomain}
+            </span>
+          ) : (
+            <span className="text-neutral-400 font-normal">-</span>
           )}
         </div>
-      )}
+
+        <div className="flex items-center gap-1.5 truncate">
+          <MapPin
+            className={cn(
+              "size-3.5 shrink-0",
+              address || maps ? "text-neutral-400" : "text-neutral-300",
+            )}
+          />
+          {maps ? (
+            <a
+              href={maps}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:text-bondi-700 truncate inline-flex items-center gap-1"
+              title={address || maps}
+            >
+              <span className="truncate">{address || "Buka Peta Lokasi"}</span>
+              <ExternalLink className="size-3 shrink-0 opacity-70" />
+            </a>
+          ) : address ? (
+            <span className="truncate text-neutral-500" title={address}>
+              {address}
+            </span>
+          ) : (
+            <span className="text-neutral-400 font-normal">-</span>
+          )}
+        </div>
+      </div>
 
       {/* Statistik Heroes & Impact */}
       <div className="flex gap-4 items-start w-full">
