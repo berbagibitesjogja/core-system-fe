@@ -39,6 +39,34 @@ export const idBeneficiary = {
     nameRequired: "Nama penerima manfaat wajib diisi.",
   },
 
+  // Terjemahan jenis varian kategori penerima manfaat (API Contract Topic 003)
+  // prettier-ignore
+  variants: {
+    university: "Perguruan Tinggi",
+    kipk: "KIP-Kuliah",
+    orphanage: "Panti Asuhan",
+    nursing_home: "Panti Jompo",
+    shelter: "Tempat Penampungan",
+    religious_community: "Komunitas Keagamaan",
+    foundation: "Yayasan",
+    society: "Masyarakat",
+    other: "Lainnya",
+  },
+
+  // Deskripsi penjelasan varian kategori penerima manfaat
+  // prettier-ignore
+  variantDescriptions: {
+    university: "Kampus, universitas, institut, atau politeknik",
+    kipk: "Mahasiswa penerima Kartu Indonesia Pintar Kuliah",
+    orphanage: "Panti asuhan anak dan yatim piatu",
+    nursing_home: "Panti jompo dan fasilitas perawatan lansia",
+    shelter: "Tempat penampungan darurat atau sementara",
+    religious_community: "Komunitas rumah ibadah atau pusat keagamaan",
+    foundation: "Yayasan sosial, lembaga amal, dan nirlaba",
+    society: "Warga, paguyuban, RT/RW, dan komunitas kampung",
+    other: "Kelompok penerima manfaat umum lainnya",
+  },
+
   // Galat spesifik domain beneficiary categories dari API backend core-system
   errors: {
     apiMessages: {

@@ -105,6 +105,8 @@ function PartnerEditPage() {
           address: values.address.trim() || null,
           email: values.email.trim() || null,
           phone: values.phone.trim() || null,
+          hidden: Boolean(values.hidden),
+          hide_donations: Boolean(values.hide_donations),
         },
       });
 

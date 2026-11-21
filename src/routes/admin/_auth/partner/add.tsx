@@ -30,8 +30,8 @@ function PartnerAddPage() {
           email: values.email.trim() || null,
           phone: values.phone.trim() || null,
           logo: null,
-          hidden: false,
-          hide_donations: false,
+          hidden: Boolean(values.hidden),
+          hide_donations: Boolean(values.hide_donations),
         },
       });
 

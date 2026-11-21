@@ -1,4 +1,11 @@
-import { Pencil, Search, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  Mail,
+  MapPin,
+  Pencil,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import type { BadgeProps } from "#/components/ui/badge";
@@ -20,6 +27,11 @@ export interface BeneficiaryCardProps {
   sharePercent: number;
   shareText?: string;
   showDelete?: boolean;
+  address?: string | null;
+  maps?: string | null;
+  emailDomain?: string | null;
+  isPriority?: boolean;
+  hidden?: boolean;
   onDetail?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -82,6 +94,34 @@ const categoryBadgeConfig: Record<
     tone: "neutral",
     className: "bg-neutral-100 text-neutral-700 border-transparent px-2",
   },
+  "perguruan tinggi": {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
+  "kip-kuliah": {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
+  "panti jompo": {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  "tempat penampungan / shelter": {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  "komunitas keagamaan": {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  "masyarakat / komunitas warga": {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  lainnya: {
+    tone: "neutral",
+    className: "bg-neutral-100 text-neutral-700 border-transparent px-2",
+  },
   "masyarakat umum": {
     tone: "info",
     className: "bg-blue-50 text-blue-700 border-transparent px-2",
@@ -117,6 +157,11 @@ export function BeneficiaryCard({
   sharePercent,
   shareText,
   showDelete = true,
+  address,
+  maps,
+  emailDomain,
+  isPriority,
+  hidden,
   onDetail,
   onEdit,
   onDelete,
@@ -128,15 +173,17 @@ export function BeneficiaryCard({
       ? 0
       : Math.max(5, Math.min(100, Math.round(sharePercent / 5) * 5));
 
+  const cleanDomain = emailDomain?.trim().replace(/^@+/, "");
+
   return (
     <div
       className={cn(
-        "w-full max-w-[352px] rounded-[16px] border border-neutral-200 bg-white p-5 flex flex-col gap-5 shadow-2xs hover:shadow-xs transition-shadow",
+        "w-full max-w-[352px] rounded-[16px] border border-neutral-200 bg-white p-5 flex flex-col justify-between gap-5 shadow-2xs hover:shadow-xs transition-shadow h-full",
         className,
       )}
     >
-      {/* Header kartu: Avatar, Nama, Kategori, dan Peringkat */}
-      <div className="flex items-center gap-3 min-h-[76px] w-full">
+      {/* Header kartu: Avatar, Nama, Kategori, Status Flags, dan Peringkat */}
+      <div className="flex items-start gap-3 min-h-[76px] w-full">
         <Avatar
           src={avatarSrc}
           name={avatarName || name}
@@ -149,13 +196,36 @@ export function BeneficiaryCard({
           <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-neutral-900 line-clamp-2">
             {name}
           </p>
-          <Badge
-            tone={badgeConfig.tone}
-            styleVariant="soft"
-            className={cn("w-fit", badgeConfig.className)}
-          >
-            {type}
-          </Badge>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge
+              tone={badgeConfig.tone}
+              styleVariant="soft"
+              className={cn("w-fit", badgeConfig.className)}
+            >
+              {type}
+            </Badge>
+
+            {isPriority && (
+              <Badge
+                tone="accent"
+                styleVariant="soft"
+                className="bg-amber-50 text-amber-800 border-amber-200 px-1.5 py-0 text-[10px]"
+              >
+                Prioritas
+              </Badge>
+            )}
+
+            {hidden && (
+              <Badge
+                tone="neutral"
+                styleVariant="soft"
+                className="bg-neutral-100 text-neutral-600 border-neutral-200 px-1.5 py-0 text-[10px]"
+              >
+                Tersembunyi
+              </Badge>
+            )}
+          </div>
         </div>
 
         {rank && (
@@ -163,6 +233,52 @@ export function BeneficiaryCard({
             {rank}
           </span>
         )}
+      </div>
+
+      {/* Informasi Pelengkap: Domain Email & Alamat / Maps */}
+      <div className="flex flex-col gap-1.5 -mt-2 text-[12px] text-neutral-600">
+        <div className="flex items-center gap-1.5 truncate">
+          <Mail
+            className={cn(
+              "size-3.5 shrink-0",
+              cleanDomain ? "text-bondi-600" : "text-neutral-300",
+            )}
+          />
+          {cleanDomain ? (
+            <span className="truncate text-bondi-700 font-medium">
+              @{cleanDomain}
+            </span>
+          ) : (
+            <span className="text-neutral-400 font-normal">-</span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 truncate">
+          <MapPin
+            className={cn(
+              "size-3.5 shrink-0",
+              address || maps ? "text-neutral-400" : "text-neutral-300",
+            )}
+          />
+          {maps ? (
+            <a
+              href={maps}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:text-bondi-700 truncate inline-flex items-center gap-1"
+              title={address || maps}
+            >
+              <span className="truncate">{address || "Buka Peta Lokasi"}</span>
+              <ExternalLink className="size-3 shrink-0 opacity-70" />
+            </a>
+          ) : address ? (
+            <span className="truncate text-neutral-500" title={address}>
+              {address}
+            </span>
+          ) : (
+            <span className="text-neutral-400 font-normal">-</span>
+          )}
+        </div>
       </div>
 
       {/* Statistik Heroes & Impact */}

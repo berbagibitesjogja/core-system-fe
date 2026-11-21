@@ -66,7 +66,7 @@ export function BeneficiaryGrid({
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Grid kartu penerima manfaat */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full auto-rows-fr">
         {visibleItems.map((item) => {
           const sharePercent =
             totalHeroesPool > 0
@@ -87,6 +87,11 @@ export function BeneficiaryGrid({
               sharePercent={sharePercent}
               shareText={`${sharePercent}% dari total heroes BBJ`}
               showDelete={canDeleteRole}
+              address={item.address}
+              maps={item.maps}
+              emailDomain={item.emailDomain}
+              isPriority={item.isPriority}
+              hidden={item.hidden}
               onDetail={() => onDetailItem(item)}
               onEdit={() => onEditItem(item)}
               onDelete={() => onDeleteItem(item)}

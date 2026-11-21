@@ -43,6 +43,8 @@ export interface PartnerDetailData {
   email?: string;
   phone?: string;
   address?: string;
+  hidden?: boolean;
+  hide_donations?: boolean;
   donations: PartnerDonationRecord[];
 }
 

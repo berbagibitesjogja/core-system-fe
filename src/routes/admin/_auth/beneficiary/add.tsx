@@ -25,12 +25,21 @@ function BeneficiaryAddPage() {
 
   const handleSubmit = async (values: BeneficiaryFormData) => {
     try {
+      const variant = mapCategoryIdToVariant(values.categoryId || "other");
+      const cleanDomain = values.emailDomain
+        ? values.emailDomain.trim().replace(/^@+/, "").toLowerCase()
+        : null;
+
       await createBeneficiaryFn({
         data: {
           name: values.name.trim(),
-          variant: mapCategoryIdToVariant(
-            values.categoryId || "masyarakat-umum",
-          ),
+          variant,
+          address: values.address?.trim() ? values.address.trim() : null,
+          maps: values.maps?.trim() ? values.maps.trim() : null,
+          email_domain:
+            variant === "university" && cleanDomain ? cleanDomain : null,
+          is_priority: Boolean(values.isPriority),
+          hidden: Boolean(values.hidden),
         },
       });
 
