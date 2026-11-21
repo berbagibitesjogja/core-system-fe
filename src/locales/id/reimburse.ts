@@ -4,6 +4,12 @@ export const idReimburse = {
   data: {
     title: "Data Reimburse",
     subtitle: "Kelola dan verifikasi pengajuan penggantian dana operasional",
+    toolbar: {
+      filterGroupAria: "Filter status pengajuan reimburse",
+      searchPlaceholder: "Cari berdasarkan nama pemohon atau catatan...",
+      searchAria: "Cari pengajuan reimburse",
+      clearSearchTooltip: "Hapus pencarian",
+    },
     toasts: {
       confirmPaidSuccess: "Status reimburse berhasil diperbarui menjadi selesai.",
       confirmPaidFailed: "Gagal memperbarui status pembayaran reimburse. Silakan coba lagi.",
