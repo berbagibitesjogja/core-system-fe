@@ -15,3 +15,4 @@ export * from "./beneficiary-skeleton";
 export * from "./beneficiary-stats";
 export * from "./beneficiary-tips-card";
 export * from "./beneficiary-toolbar";
+export * from "./beneficiary-select-field";

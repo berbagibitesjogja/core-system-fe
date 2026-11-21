@@ -1,22 +1,11 @@
 import statCharityHeroes from "#/assets/illustrations/charity-family.svg";
 import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
 import statOrganicFood from "#/assets/illustrations/organic-food.svg";
+import { idBeneficiary } from "#/locales";
+import type { BeneficiaryCategoryVariant } from "#/services/beneficiaryService";
 
 export type BeneficiaryCategoryId =
-  | "all"
-  | "university"
-  | "kipk"
-  | "orphanage"
-  | "nursing_home"
-  | "shelter"
-  | "religious_community"
-  | "foundation"
-  | "society"
-  | "other"
-  | "universitas"
-  | "yayasan"
-  | "masyarakat-umum"
-  | (string & {});
+  "all" | BeneficiaryCategoryVariant | (string & {});
 
 export type BeneficiaryType = string;
 
@@ -223,7 +212,19 @@ export function buildBeneficiaryStats(
   ];
 }
 
-// Menghitung opsi filter chip kategori beserta jumlah item masing-masing
+export const BENEFICIARY_VARIANT_ORDER: BeneficiaryCategoryVariant[] = [
+  "university",
+  "kipk",
+  "orphanage",
+  "nursing_home",
+  "shelter",
+  "religious_community",
+  "foundation",
+  "society",
+  "other",
+];
+
+// Menghitung opsi filter dropdown kategori beserta jumlah item masing-masing
 export function buildBeneficiaryFilterOptions(
   items: BeneficiaryItem[],
 ): BeneficiaryFilterOption[] {
@@ -234,25 +235,50 @@ export function buildBeneficiaryFilterOptions(
     }
   }
 
-  const categoryEntries = Object.entries(counts).map(([id, count]) => {
-    const label = id
-      .split(/[_\s-]+/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    return {
-      id: id,
-      label,
+  const variantMap: Record<string, string> = idBeneficiary.variants;
+  const knownVariants = new Set<string>(BENEFICIARY_VARIANT_ORDER);
+
+  // Varian terdaftar sesuai urutan taksonomi
+  const orderedEntries: BeneficiaryFilterOption[] =
+    BENEFICIARY_VARIANT_ORDER.map((variant) => ({
+      id: variant,
+      label: variantMap[variant] || variant,
+      count: counts[variant] || 0,
+    }));
+
+  // Menambahkan kategori khusus jika ada di luar varian standar
+  const extraEntries: BeneficiaryFilterOption[] = Object.entries(counts)
+    .filter(([id]) => !knownVariants.has(id))
+    .map(([id, count]) => ({
+      id,
+      label:
+        variantMap[id] ??
+        id
+          .split(/[_\s-]+/)
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" "),
       count,
-    };
-  });
+    }));
 
   return [
-    { id: "all", label: "Semua", count: items.length },
-    ...categoryEntries,
+    { id: "all", label: "Semua Kategori", count: items.length },
+    ...orderedEntries,
+    ...extraEntries,
   ];
 }
 
-export type BeneficiaryFormCategoryId = string;
+export type BeneficiaryFormCategoryId = BeneficiaryCategoryVariant | string;
+
+export type BeneficiaryFormCategoryIcon =
+  | "building"
+  | "graduation-cap"
+  | "heart"
+  | "heart-handshake"
+  | "home"
+  | "landmark"
+  | "building-2"
+  | "users"
+  | "help-circle";
 
 export interface BeneficiaryFormData {
   id?: string;
@@ -261,10 +287,10 @@ export interface BeneficiaryFormData {
 }
 
 export interface BeneficiaryCategoryOption {
-  id: BeneficiaryFormCategoryId;
-  title: BeneficiaryType;
+  id: BeneficiaryCategoryVariant;
+  title: string;
   description: string;
-  iconName: "building" | "heart" | "users";
+  iconName: BeneficiaryFormCategoryIcon;
 }
 
 export interface BeneficiaryTipItem {
@@ -286,21 +312,57 @@ export const defaultEditBeneficiaryData: BeneficiaryFormData = {
 export const defaultBeneficiaryCategoryOptions: BeneficiaryCategoryOption[] = [
   {
     id: "university",
-    title: "University",
-    description: "Kampus, fakultas, dan mahasiswa",
+    title: idBeneficiary.variants.university,
+    description: idBeneficiary.variantDescriptions.university,
     iconName: "building",
   },
   {
-    id: "foundation",
-    title: "Foundation",
-    description: "Yayasan, panti asuhan, dan panti werdha",
+    id: "kipk",
+    title: idBeneficiary.variants.kipk,
+    description: idBeneficiary.variantDescriptions.kipk,
+    iconName: "graduation-cap",
+  },
+  {
+    id: "orphanage",
+    title: idBeneficiary.variants.orphanage,
+    description: idBeneficiary.variantDescriptions.orphanage,
     iconName: "heart",
   },
   {
+    id: "nursing_home",
+    title: idBeneficiary.variants.nursing_home,
+    description: idBeneficiary.variantDescriptions.nursing_home,
+    iconName: "heart-handshake",
+  },
+  {
+    id: "shelter",
+    title: idBeneficiary.variants.shelter,
+    description: idBeneficiary.variantDescriptions.shelter,
+    iconName: "home",
+  },
+  {
+    id: "religious_community",
+    title: idBeneficiary.variants.religious_community,
+    description: idBeneficiary.variantDescriptions.religious_community,
+    iconName: "landmark",
+  },
+  {
+    id: "foundation",
+    title: idBeneficiary.variants.foundation,
+    description: idBeneficiary.variantDescriptions.foundation,
+    iconName: "building-2",
+  },
+  {
     id: "society",
-    title: "Society",
-    description: "Warga, komunitas, dan kampung",
+    title: idBeneficiary.variants.society,
+    description: idBeneficiary.variantDescriptions.society,
     iconName: "users",
+  },
+  {
+    id: "other",
+    title: idBeneficiary.variants.other,
+    description: idBeneficiary.variantDescriptions.other,
+    iconName: "help-circle",
   },
 ];
 

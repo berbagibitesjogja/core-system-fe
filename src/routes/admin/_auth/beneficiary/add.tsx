@@ -28,9 +28,7 @@ function BeneficiaryAddPage() {
       await createBeneficiaryFn({
         data: {
           name: values.name.trim(),
-          variant: mapCategoryIdToVariant(
-            values.categoryId || "masyarakat-umum",
-          ),
+          variant: mapCategoryIdToVariant(values.categoryId || "other"),
         },
       });
 

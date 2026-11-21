@@ -22,13 +22,8 @@ export function BeneficiarySkeleton() {
 
       {/* Toolbar Skeleton */}
       <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-xs w-full">
-        <div className="flex flex-col lg:flex-row lg:items-center gap-3 w-full">
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <Skeleton className="h-[38px] w-24 rounded-full" />
-            <Skeleton className="h-[38px] w-28 rounded-full" />
-            <Skeleton className="h-[38px] w-24 rounded-full" />
-            <Skeleton className="h-[38px] w-36 rounded-full" />
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+          <Skeleton className="h-11 w-full sm:w-[260px] rounded-xl shrink-0" />
           <Skeleton className="h-11 flex-1 min-w-[200px] rounded-md" />
           <Skeleton className="h-11 w-full sm:w-44 rounded-full shrink-0" />
         </div>

@@ -2,7 +2,7 @@ import { Plus, Search, X } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
-import { FilterChip } from "#/components/shared/filter-chip";
+import { BeneficiarySelectField } from "./beneficiary-select-field";
 import type {
   BeneficiaryCategoryId,
   BeneficiaryFilterOption,
@@ -18,7 +18,7 @@ export interface BeneficiaryToolbarProps {
 }
 
 /**
- * BeneficiaryToolbar: Toolbar penyaringan kategori, pencarian realtime, dan tombol tambah penerima.
+ * BeneficiaryToolbar: Toolbar penyaringan kategori dropdown, pencarian realtime, dan tombol tambah penerima.
  */
 export function BeneficiaryToolbar({
   filterOptions,
@@ -30,19 +30,22 @@ export function BeneficiaryToolbar({
 }: BeneficiaryToolbarProps) {
   return (
     <div className="bg-white border border-neutral-200 rounded-2xl p-5 shadow-xs w-full">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-3 w-full">
-        {/* Filter kategori penerima */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
-          {filterOptions.map((option) => (
-            <FilterChip
-              key={option.id}
-              label={option.label}
-              count={option.count}
-              showCount
-              selected={activeCategory === option.id}
-              onClick={() => onCategoryChange(option.id)}
-            />
-          ))}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+        {/* Dropdown Filter Kategori Penerima */}
+        <div className="w-full sm:w-[260px] shrink-0">
+          <BeneficiarySelectField
+            value={activeCategory}
+            options={filterOptions.map((opt) => ({
+              id: opt.id,
+              label: opt.label,
+              count: opt.count,
+            }))}
+            placeholder="Semua Kategori"
+            onChange={(val) => onCategoryChange(val)}
+            searchable={filterOptions.length > 5}
+            searchPlaceholder="Cari kategori..."
+            emptyText="Kategori tidak ditemukan"
+          />
         </div>
 
         {/* Kolom pencarian */}

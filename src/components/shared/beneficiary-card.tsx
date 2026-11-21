@@ -82,6 +82,34 @@ const categoryBadgeConfig: Record<
     tone: "neutral",
     className: "bg-neutral-100 text-neutral-700 border-transparent px-2",
   },
+  "perguruan tinggi": {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
+  "kip-kuliah": {
+    tone: "brand",
+    className: "bg-bondi-50 text-bondi-900 border-transparent px-2",
+  },
+  "panti jompo": {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  "tempat penampungan / shelter": {
+    tone: "accent",
+    className: "bg-sunny-100 text-neutral-900 border-transparent px-2",
+  },
+  "komunitas keagamaan": {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  "masyarakat / komunitas warga": {
+    tone: "info",
+    className: "bg-blue-50 text-blue-700 border-transparent px-2",
+  },
+  lainnya: {
+    tone: "neutral",
+    className: "bg-neutral-100 text-neutral-700 border-transparent px-2",
+  },
   "masyarakat umum": {
     tone: "info",
     className: "bg-blue-50 text-blue-700 border-transparent px-2",

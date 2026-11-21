@@ -118,32 +118,76 @@ export function sanitizeBeneficiaryCategoryRecord(
 }
 
 /**
- * Memetakan taxonomy variant backend ke kategori tampilan UI Frontend.
- * Mengikuti nilai variant backend secara langsung tanpa translasi buatan.
+ * Memetakan taxonomy variant backend ke kategori tampilan UI Frontend beserta label terjemahan bahasa.
  */
 export function mapVariantToBeneficiaryCategory(
   variant: BeneficiaryCategoryVariant | string,
 ): { categoryId: string; type: string } {
-  const rawVariant = variant || "other";
+  const targetVariant = mapCategoryIdToVariant(variant || "other");
   return {
-    categoryId: rawVariant,
-    type: rawVariant,
+    categoryId: targetVariant,
+    type: idBeneficiary.variants[targetVariant],
   };
 }
 
 /**
- * Memetakan kategori tampilan UI Frontend ke taxonomy variant backend.
- * Mengikuti nilai backend langsung tanpa translasi buatan.
+ * Memetakan kategori tampilan UI Frontend ke taxonomy variant backend yang valid (9 varian API contract).
  */
 export function mapCategoryIdToVariant(
   categoryId: string,
 ): BeneficiaryCategoryVariant {
-  if (categoryId === "universitas") return "university";
-  if (categoryId === "yayasan") return "foundation";
-  if (categoryId === "masyarakat-umum" || categoryId === "masyarakat umum") {
+  const normalized = categoryId.trim().toLowerCase();
+  if (normalized === "universitas" || normalized === "perguruan tinggi") {
+    return "university";
+  }
+  if (normalized === "yayasan") {
+    return "foundation";
+  }
+  if (
+    normalized === "masyarakat-umum" ||
+    normalized === "masyarakat umum" ||
+    normalized === "komunitas warga" ||
+    normalized === "masyarakat / komunitas warga"
+  ) {
     return "society";
   }
-  return categoryId as BeneficiaryCategoryVariant;
+  if (normalized === "kip-kuliah" || normalized === "kipk") {
+    return "kipk";
+  }
+  if (normalized === "panti asuhan" || normalized === "orphanage") {
+    return "orphanage";
+  }
+  if (normalized === "panti jompo" || normalized === "nursing_home") {
+    return "nursing_home";
+  }
+  if (normalized === "shelter" || normalized.includes("tempat penampungan")) {
+    return "shelter";
+  }
+  if (
+    normalized === "komunitas keagamaan" ||
+    normalized === "religious_community"
+  ) {
+    return "religious_community";
+  }
+  if (normalized === "lainnya" || normalized === "other") {
+    return "other";
+  }
+
+  const validVariants: BeneficiaryCategoryVariant[] = [
+    "university",
+    "kipk",
+    "orphanage",
+    "nursing_home",
+    "shelter",
+    "religious_community",
+    "foundation",
+    "society",
+    "other",
+  ];
+  if (validVariants.includes(normalized as BeneficiaryCategoryVariant)) {
+    return normalized as BeneficiaryCategoryVariant;
+  }
+  return "other";
 }
 
 /**
@@ -184,8 +228,10 @@ export function mapCategoryToBeneficiaryDetailProfile(
 ): BeneficiaryDetailProfile {
   const { type } = mapVariantToBeneficiaryCategory(record.variant);
   const isUniversity =
+    record.variant === "university" ||
+    record.variant === "kipk" ||
     type.toLowerCase().includes("universi") ||
-    type.toLowerCase().includes("university") ||
+    type.toLowerCase().includes("perguruan tinggi") ||
     type.toLowerCase().includes("kipk");
   return {
     id: record.id,

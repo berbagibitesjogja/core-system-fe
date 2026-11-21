@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Building, Heart, Users } from "lucide-react";
+import {
+  Building,
+  Building2,
+  GraduationCap,
+  Heart,
+  HeartHandshake,
+  HelpCircle,
+  Home,
+  Landmark,
+  Users,
+} from "lucide-react";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
@@ -31,8 +41,14 @@ interface BeneficiaryFormErrors {
 
 const CATEGORY_ICON_MAP = {
   building: Building,
+  "graduation-cap": GraduationCap,
   heart: Heart,
+  "heart-handshake": HeartHandshake,
+  home: Home,
+  landmark: Landmark,
+  "building-2": Building2,
   users: Users,
+  "help-circle": HelpCircle,
 } as const;
 
 // Membangun pesan ringkasan alert berdasarkan field yang belum lengkap
@@ -179,7 +195,7 @@ export function BeneficiaryForm({
           <div
             role="radiogroup"
             aria-labelledby="beneficiary-category-label"
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full"
           >
             {defaultBeneficiaryCategoryOptions.map((option) => {
               const IconComponent = CATEGORY_ICON_MAP[option.iconName];
