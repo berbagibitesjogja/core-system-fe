@@ -14,6 +14,7 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { ProgressBar } from "#/components/shared/progress-bar";
+import { Badge } from "#/components/ui/badge";
 import { Button, getButtonClasses } from "#/components/ui/button";
 import { IconButton, getIconButtonClasses } from "#/components/ui/icon-button";
 import { Tooltip } from "#/components/ui/tooltip";
@@ -95,16 +96,42 @@ export function PartnerTable({
         accessorKey: "name",
         header: "Donatur",
         meta: {
-          className: "min-w-[220px]",
+          className: "min-w-[240px]",
         },
         cell: ({ row }) => {
           const partner = row.original;
+          const hasBadges = partner.hidden || partner.hide_donations;
+
           return (
             <EntityIdentity
               entityType="partner"
               name={partner.name}
               subtitle={partner.type}
               avatarSrc={getPartnerAvatarSrc(partner)}
+              badges={
+                hasBadges ? (
+                  <>
+                    {partner.hidden && (
+                      <Badge
+                        tone="neutral"
+                        styleVariant="soft"
+                        className="text-[10px] leading-none px-1.5 py-0 h-[18px] font-medium"
+                      >
+                        Tersembunyi
+                      </Badge>
+                    )}
+                    {partner.hide_donations && (
+                      <Badge
+                        tone="accent"
+                        styleVariant="soft"
+                        className="text-[10px] leading-none px-1.5 py-0 h-[18px] font-medium"
+                      >
+                        Donasi Privat
+                      </Badge>
+                    )}
+                  </>
+                ) : undefined
+              }
             />
           );
         },

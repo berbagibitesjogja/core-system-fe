@@ -1,6 +1,7 @@
 import * as React from "react";
 import { MapPin, MessageCircle } from "lucide-react";
 import { EntityIdentity } from "#/components/shared/entity-identity";
+import { Badge } from "#/components/ui/badge";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { formatPartnerNumber } from "./partner-data";
 import { buildPartnerProfileContactItems } from "./partner-detail-data";
@@ -56,6 +57,30 @@ export function PartnerDetailProfileCard({
         name={detail.name}
         subtitle={identitySubtitle}
         avatarSrc={getPartnerAvatarSrc(detail)}
+        badges={
+          (detail.hidden || detail.hide_donations) && (
+            <>
+              {detail.hidden && (
+                <Badge
+                  tone="neutral"
+                  styleVariant="soft"
+                  className="text-[11px] leading-none px-1.5 py-0 h-5 font-normal"
+                >
+                  Tersembunyi dari Publik
+                </Badge>
+              )}
+              {detail.hide_donations && (
+                <Badge
+                  tone="accent"
+                  styleVariant="soft"
+                  className="text-[11px] leading-none px-1.5 py-0 h-5 font-normal"
+                >
+                  Donasi Privat
+                </Badge>
+              )}
+            </>
+          )
+        }
       />
 
       {/* Daftar Informasi Kontak & Alamat (Data-Driven) */}

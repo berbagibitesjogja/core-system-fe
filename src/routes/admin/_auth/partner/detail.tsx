@@ -221,13 +221,25 @@ function PartnerDetailPage() {
     <div className="space-y-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">
       {/* Bar Aksi: Badge Kategori & Tombol Primer Edit Donatur */}
       <div className="flex flex-wrap items-center justify-between gap-4 w-full">
-        <Badge
-          tone="neutral"
-          styleVariant="soft"
-          className="bg-neutral-100 text-neutral-600 border-transparent h-6 px-2.5 text-xs font-medium"
-        >
-          {detail.type}
-        </Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            tone="neutral"
+            styleVariant="soft"
+            className="bg-neutral-100 text-neutral-600 border-transparent h-6 px-2.5 text-xs font-medium"
+          >
+            {detail.type}
+          </Badge>
+          {detail.hidden && (
+            <Badge tone="neutral" styleVariant="soft">
+              Tersembunyi dari Publik
+            </Badge>
+          )}
+          {detail.hide_donations && (
+            <Badge tone="accent" styleVariant="soft">
+              Donasi Privat (Publik Disembunyikan)
+            </Badge>
+          )}
+        </div>
 
         <Button
           variant="primary"

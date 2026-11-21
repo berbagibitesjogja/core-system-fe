@@ -25,6 +25,8 @@ export interface PartnerRecord {
   address?: string;
   email?: string;
   phone?: string;
+  hidden?: boolean;
+  hide_donations?: boolean;
 }
 
 export interface PartnerStatItem {
@@ -598,6 +600,8 @@ export interface PartnerFormValues {
   address: string;
   email: string;
   phone: string;
+  hidden?: boolean;
+  hide_donations?: boolean;
 }
 
 export interface PartnerCategoryOption {

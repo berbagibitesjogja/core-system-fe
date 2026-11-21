@@ -6,6 +6,7 @@ import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
+import { Switch } from "#/components/ui/switch";
 import { Textarea } from "#/components/ui/textarea";
 import { cn } from "#/lib/utils";
 import { defaultPartnerCategoryOptions, defaultPartners } from "./partner-data";
@@ -70,7 +71,25 @@ export function PartnerForm({
     address: initialData?.address ?? "",
     email: initialData?.email ?? "",
     phone: initialData?.phone ?? "",
+    hidden: initialData?.hidden ?? false,
+    hide_donations: initialData?.hide_donations ?? false,
   }));
+
+  React.useEffect(() => {
+    if (initialData) {
+      setValues({
+        category: initialData.categoryId,
+        name: initialData.name,
+        logoFileName: initialData.logoFileName,
+        logoFileSize: initialData.logoFileSize,
+        address: initialData.address ?? "",
+        email: initialData.email ?? "",
+        phone: initialData.phone ?? "",
+        hidden: Boolean(initialData.hidden),
+        hide_donations: Boolean(initialData.hide_donations),
+      });
+    }
+  }, [initialData]);
 
   const [errors, setErrors] = React.useState<PartnerFormErrors>({});
   const [logoUploadError, setLogoUploadError] = React.useState<string>();
@@ -156,6 +175,14 @@ export function PartnerForm({
     }));
   };
 
+  const handleHiddenChange = (checked: boolean) => {
+    setValues((prev) => ({ ...prev, hidden: checked }));
+  };
+
+  const handleHideDonationsChange = (checked: boolean) => {
+    setValues((prev) => ({ ...prev, hide_donations: checked }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setHasSubmitted(true);
@@ -173,6 +200,8 @@ export function PartnerForm({
       address: values.address.trim(),
       email: values.email.trim(),
       phone: values.phone.trim(),
+      hidden: Boolean(values.hidden),
+      hide_donations: Boolean(values.hide_donations),
     });
   };
 
@@ -340,6 +369,63 @@ export function PartnerForm({
             disabled={isSubmitting}
             className="max-w-none"
           />
+        </div>
+      </div>
+
+      {/* Seksi 3: Pengaturan Privasi Publik */}
+      <div className="p-6 border-t border-neutral-200 flex flex-col gap-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
+            Pengaturan Privasi Publik
+          </h2>
+          <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
+            Atur keterlihatan profil mitra dan data donasi pada portal publik
+            dan hero.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-neutral-50/50">
+            <div className="flex flex-col gap-0.5">
+              <label
+                htmlFor="partner-hidden"
+                className="font-heading font-medium text-sm text-neutral-900 cursor-pointer"
+              >
+                Sembunyikan dari Direktori Publik
+              </label>
+              <p className="font-body text-xs text-neutral-500">
+                Mitra tetap dapat dikelola oleh staf di portal admin, namun
+                disembunyikan dari daftar mitra publik.
+              </p>
+            </div>
+            <Switch
+              id="partner-hidden"
+              checked={Boolean(values.hidden)}
+              onChange={handleHiddenChange}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="flex items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-neutral-50/50">
+            <div className="flex flex-col gap-0.5">
+              <label
+                htmlFor="partner-hide-donations"
+                className="font-heading font-medium text-sm text-neutral-900 cursor-pointer"
+              >
+                Sembunyikan Jumlah Donasi di Publik
+              </label>
+              <p className="font-body text-xs text-neutral-500">
+                Nama dan profil mitra tetap tampil di direktori publik, tetapi
+                nominal dan jumlah donasi dirahasiakan.
+              </p>
+            </div>
+            <Switch
+              id="partner-hide-donations"
+              checked={Boolean(values.hide_donations)}
+              onChange={handleHideDonationsChange}
+              disabled={isSubmitting}
+            />
+          </div>
         </div>
       </div>
 

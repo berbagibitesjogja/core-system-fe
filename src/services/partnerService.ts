@@ -169,6 +169,8 @@ export function mapSponsorToPartnerRecord(
     address: sponsor.address ?? "-",
     email: sponsor.email ?? "-",
     phone: formatPartnerPhone(sponsor.phone),
+    hidden: Boolean(sponsor.hidden),
+    hide_donations: Boolean(sponsor.hide_donations),
     donationCount: 0,
     impactKg: 0,
     lastDonationDate: "-",
@@ -197,6 +199,8 @@ export function mapSponsorToPartnerDetailData(
     address: sponsor.address ?? "-",
     email: sponsor.email ?? "-",
     phone: formatPartnerPhone(sponsor.phone),
+    hidden: Boolean(sponsor.hidden),
+    hide_donations: Boolean(sponsor.hide_donations),
     donations: [],
   };
 }

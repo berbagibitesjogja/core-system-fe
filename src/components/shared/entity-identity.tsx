@@ -17,6 +17,7 @@ export interface EntityIdentityProps {
   avatarClassName?: string;
   nameClassName?: string;
   subtitleClassName?: string;
+  badges?: React.ReactNode;
 }
 
 /**
@@ -35,6 +36,7 @@ export function EntityIdentity({
   avatarClassName,
   nameClassName,
   subtitleClassName,
+  badges,
 }: EntityIdentityProps) {
   const resolvedShape: AvatarShape =
     shape ?? (entityType === "partner" ? "rounded" : "circle");
@@ -61,18 +63,23 @@ export function EntityIdentity({
         )}
       />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span
-          className={cn(
-            "truncate font-sans font-semibold",
-            size === "lg" ? "text-base leading-6" : "text-sm leading-5",
-            strikethrough
-              ? "text-neutral-500 line-through"
-              : "text-neutral-900",
-            nameClassName,
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span
+            className={cn(
+              "truncate font-sans font-semibold",
+              size === "lg" ? "text-base leading-6" : "text-sm leading-5",
+              strikethrough
+                ? "text-neutral-500 line-through"
+                : "text-neutral-900",
+              nameClassName,
+            )}
+          >
+            {name}
+          </span>
+          {badges && (
+            <div className="flex items-center gap-1 shrink-0">{badges}</div>
           )}
-        >
-          {name}
-        </span>
+        </div>
         {subtitle && (
           <span
             className={cn(
