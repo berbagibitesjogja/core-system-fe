@@ -87,6 +87,11 @@ export function BeneficiaryGrid({
               sharePercent={sharePercent}
               shareText={`${sharePercent}% dari total heroes BBJ`}
               showDelete={canDeleteRole}
+              address={item.address}
+              maps={item.maps}
+              emailDomain={item.emailDomain}
+              isPriority={item.isPriority}
+              hidden={item.hidden}
               onDetail={() => onDetailItem(item)}
               onEdit={() => onEditItem(item)}
               onDelete={() => onDeleteItem(item)}

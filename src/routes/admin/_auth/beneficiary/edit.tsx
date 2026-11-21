@@ -81,13 +81,24 @@ function BeneficiaryEditPage() {
   const handleSubmit = async (values: BeneficiaryFormData) => {
     try {
       const targetId = trimmedId || initialFormData?.id || "";
+      const variant = values.categoryId
+        ? mapCategoryIdToVariant(values.categoryId)
+        : undefined;
+      const cleanDomain = values.emailDomain
+        ? values.emailDomain.trim().replace(/^@+/, "").toLowerCase()
+        : null;
+
       await updateBeneficiaryFn({
         data: {
           id: targetId,
           name: values.name.trim(),
-          variant: values.categoryId
-            ? mapCategoryIdToVariant(values.categoryId)
-            : undefined,
+          variant,
+          address: values.address?.trim() ? values.address.trim() : null,
+          maps: values.maps?.trim() ? values.maps.trim() : null,
+          email_domain:
+            variant === "university" && cleanDomain ? cleanDomain : null,
+          is_priority: Boolean(values.isPriority),
+          hidden: Boolean(values.hidden),
         },
       });
 

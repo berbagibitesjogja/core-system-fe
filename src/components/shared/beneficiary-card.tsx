@@ -1,4 +1,11 @@
-import { Pencil, Search, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  Mail,
+  MapPin,
+  Pencil,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import type { BadgeProps } from "#/components/ui/badge";
@@ -20,6 +27,11 @@ export interface BeneficiaryCardProps {
   sharePercent: number;
   shareText?: string;
   showDelete?: boolean;
+  address?: string | null;
+  maps?: string | null;
+  emailDomain?: string | null;
+  isPriority?: boolean;
+  hidden?: boolean;
   onDetail?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -145,6 +157,11 @@ export function BeneficiaryCard({
   sharePercent,
   shareText,
   showDelete = true,
+  address,
+  maps,
+  emailDomain,
+  isPriority,
+  hidden,
   onDetail,
   onEdit,
   onDelete,
@@ -156,6 +173,8 @@ export function BeneficiaryCard({
       ? 0
       : Math.max(5, Math.min(100, Math.round(sharePercent / 5) * 5));
 
+  const cleanDomain = emailDomain?.trim().replace(/^@+/, "");
+
   return (
     <div
       className={cn(
@@ -163,8 +182,8 @@ export function BeneficiaryCard({
         className,
       )}
     >
-      {/* Header kartu: Avatar, Nama, Kategori, dan Peringkat */}
-      <div className="flex items-center gap-3 min-h-[76px] w-full">
+      {/* Header kartu: Avatar, Nama, Kategori, Status Flags, dan Peringkat */}
+      <div className="flex items-start gap-3 min-h-[76px] w-full">
         <Avatar
           src={avatarSrc}
           name={avatarName || name}
@@ -177,13 +196,36 @@ export function BeneficiaryCard({
           <p className="font-['Inter'] font-semibold text-[16px] leading-[24px] text-neutral-900 line-clamp-2">
             {name}
           </p>
-          <Badge
-            tone={badgeConfig.tone}
-            styleVariant="soft"
-            className={cn("w-fit", badgeConfig.className)}
-          >
-            {type}
-          </Badge>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Badge
+              tone={badgeConfig.tone}
+              styleVariant="soft"
+              className={cn("w-fit", badgeConfig.className)}
+            >
+              {type}
+            </Badge>
+
+            {isPriority && (
+              <Badge
+                tone="accent"
+                styleVariant="soft"
+                className="bg-amber-50 text-amber-800 border-amber-200 px-1.5 py-0 text-[10px]"
+              >
+                Prioritas
+              </Badge>
+            )}
+
+            {hidden && (
+              <Badge
+                tone="neutral"
+                styleVariant="soft"
+                className="bg-neutral-100 text-neutral-600 border-neutral-200 px-1.5 py-0 text-[10px]"
+              >
+                Tersembunyi
+              </Badge>
+            )}
+          </div>
         </div>
 
         {rank && (
@@ -192,6 +234,45 @@ export function BeneficiaryCard({
           </span>
         )}
       </div>
+
+      {/* Informasi Pelengkap: Domain Email & Alamat / Maps */}
+      {(cleanDomain || address || maps) && (
+        <div className="flex flex-col gap-1.5 -mt-2 text-[12px] text-neutral-600">
+          {cleanDomain && (
+            <div className="flex items-center gap-1.5 text-bondi-700 font-medium truncate">
+              <Mail className="size-3.5 shrink-0 text-bondi-600" />
+              <span className="truncate">@{cleanDomain}</span>
+            </div>
+          )}
+
+          {(address || maps) && (
+            <div className="flex items-center gap-1.5 truncate">
+              <MapPin className="size-3.5 text-neutral-400 shrink-0" />
+              {maps ? (
+                <a
+                  href={maps}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline hover:text-bondi-700 truncate inline-flex items-center gap-1"
+                  title={address || maps}
+                >
+                  <span className="truncate">
+                    {address || "Buka Peta Lokasi"}
+                  </span>
+                  <ExternalLink className="size-3 shrink-0 opacity-70" />
+                </a>
+              ) : (
+                <span
+                  className="truncate text-neutral-500"
+                  title={address || ""}
+                >
+                  {address}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Statistik Heroes & Impact */}
       <div className="flex gap-4 items-start w-full">

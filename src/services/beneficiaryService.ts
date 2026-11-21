@@ -217,6 +217,11 @@ export function mapCategoryToBeneficiaryItem(
     heroesCount: 0,
     impactKg: 0,
     canDelete: true,
+    address: record.address,
+    maps: record.maps,
+    emailDomain: record.email_domain,
+    isPriority: record.is_priority,
+    hidden: record.hidden,
   };
 }
 
@@ -246,6 +251,11 @@ export function mapCategoryToBeneficiaryDetailProfile(
     sectorUnitLabel: isUniversity ? "Fakultas" : "Sektor",
     donations: [],
     sectors: [],
+    address: record.address,
+    maps: record.maps,
+    emailDomain: record.email_domain,
+    isPriority: record.is_priority,
+    hidden: record.hidden,
   };
 }
 
@@ -260,6 +270,11 @@ export function mapCategoryToBeneficiaryFormData(
     id: record.id,
     categoryId,
     name: record.name,
+    address: record.address ?? "",
+    maps: record.maps ?? "",
+    emailDomain: record.email_domain ?? "",
+    isPriority: Boolean(record.is_priority),
+    hidden: Boolean(record.hidden),
   };
 }
 

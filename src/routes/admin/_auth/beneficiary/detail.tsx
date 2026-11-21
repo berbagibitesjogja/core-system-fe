@@ -2,7 +2,7 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Pencil } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Pencil } from "lucide-react";
 import { z } from "zod";
 import {
   BeneficiaryAddSectorDialog,
@@ -255,18 +255,40 @@ function BeneficiaryDetailPage() {
 
   return (
     <div className="space-y-6 w-full animate-in fade-in duration-200 motion-reduce:animate-none">
-      {/* Bar Aksi: Badge Jenis & Tombol Edit Data */}
+      {/* Bar Aksi: Badge Jenis, Status Operasional, & Tombol Edit Data */}
       <div className="flex flex-wrap items-center justify-between gap-4 w-full">
-        <Badge
-          tone={badgeConfig.tone}
-          styleVariant="soft"
-          className={cn(
-            "h-6 px-2.5 text-xs font-medium",
-            badgeConfig.className,
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            tone={badgeConfig.tone}
+            styleVariant="soft"
+            className={cn(
+              "h-6 px-2.5 text-xs font-medium",
+              badgeConfig.className,
+            )}
+          >
+            {detail.type}
+          </Badge>
+
+          {detail.isPriority && (
+            <Badge
+              tone="accent"
+              styleVariant="soft"
+              className="h-6 px-2.5 text-xs font-medium bg-amber-50 text-amber-800 border-amber-200"
+            >
+              Prioritas Penyaluran
+            </Badge>
           )}
-        >
-          {detail.type}
-        </Badge>
+
+          {detail.hidden && (
+            <Badge
+              tone="neutral"
+              styleVariant="soft"
+              className="h-6 px-2.5 text-xs font-medium bg-neutral-100 text-neutral-600 border-neutral-200"
+            >
+              Tersembunyi dari Publik
+            </Badge>
+          )}
+        </div>
 
         <Button
           variant="primary"
@@ -282,6 +304,40 @@ function BeneficiaryDetailPage() {
           Edit Beneficiary
         </Button>
       </div>
+
+      {/* Kartu Profil Informasi Entitas (Alamat, Maps, Domain Hero) */}
+      {(detail.address || detail.maps || detail.emailDomain) && (
+        <div className="flex flex-wrap items-center gap-6 p-4 rounded-xl border border-neutral-200 bg-white text-sm text-neutral-700 shadow-2xs">
+          {detail.emailDomain && (
+            <div className="flex items-center gap-2">
+              <span className="text-neutral-400 font-medium">Domain Hero:</span>
+              <span className="font-semibold text-bondi-700 inline-flex items-center gap-1.5">
+                <Mail className="size-3.5 text-bondi-600" />@
+                {detail.emailDomain.replace(/^@+/, "")}
+              </span>
+            </div>
+          )}
+
+          {detail.address && (
+            <div className="flex items-center gap-2">
+              <MapPin className="size-4 text-neutral-400 shrink-0" />
+              <span>{detail.address}</span>
+            </div>
+          )}
+
+          {detail.maps && (
+            <a
+              href={detail.maps}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium text-bondi-700 hover:underline"
+            >
+              <span>Buka Google Maps</span>
+              <ExternalLink className="size-3.5" />
+            </a>
+          )}
+        </div>
+      )}
 
       {/* Baris Ringkasan Statistik Penerima Manfaat */}
       <BeneficiaryStats stats={detailStats} />

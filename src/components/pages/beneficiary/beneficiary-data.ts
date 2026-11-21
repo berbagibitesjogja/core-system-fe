@@ -19,6 +19,11 @@ export interface BeneficiaryItem {
   heroesCount: number;
   impactKg: number;
   canDelete: boolean;
+  address?: string | null;
+  maps?: string | null;
+  emailDomain?: string | null;
+  isPriority?: boolean;
+  hidden?: boolean;
 }
 
 export interface BeneficiaryStatItem {
@@ -284,6 +289,11 @@ export interface BeneficiaryFormData {
   id?: string;
   categoryId: BeneficiaryFormCategoryId | "";
   name: string;
+  address?: string;
+  maps?: string;
+  emailDomain?: string;
+  isPriority?: boolean;
+  hidden?: boolean;
 }
 
 export interface BeneficiaryCategoryOption {
@@ -301,12 +311,22 @@ export interface BeneficiaryTipItem {
 export const defaultEmptyBeneficiaryForm: BeneficiaryFormData = {
   categoryId: "",
   name: "",
+  address: "",
+  maps: "",
+  emailDomain: "",
+  isPriority: false,
+  hidden: false,
 };
 
 export const defaultEditBeneficiaryData: BeneficiaryFormData = {
   id: "ben-1",
   categoryId: "university",
   name: "Universitas Gadjah Mada",
+  address: "Bulaksumur, Caturtunggal, Sleman, DI Yogyakarta",
+  maps: "https://maps.app.goo.gl/ugm",
+  emailDomain: "ugm.ac.id",
+  isPriority: true,
+  hidden: false,
 };
 
 export const defaultBeneficiaryCategoryOptions: BeneficiaryCategoryOption[] = [

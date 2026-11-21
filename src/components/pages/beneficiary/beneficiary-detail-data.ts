@@ -34,6 +34,11 @@ export interface BeneficiaryDetailProfile {
   sectorUnitLabel: string;
   donations: BeneficiaryDonationRecord[];
   sectors: BeneficiarySectorRecord[];
+  address?: string | null;
+  maps?: string | null;
+  emailDomain?: string | null;
+  isPriority?: boolean;
+  hidden?: boolean;
 }
 
 export const DETAIL_DONATIONS_PER_PAGE = 5;
