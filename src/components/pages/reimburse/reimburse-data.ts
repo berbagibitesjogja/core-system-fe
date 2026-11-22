@@ -117,20 +117,18 @@ export const REIMBURSE_ALERTS: Record<
 > = {
   422: {
     code: 422,
-    title: "Berkas ditolak",
-    description:
-      "Sistem tidak menemukan invoice sah atau nominal pembayaran di berkas ini. Unggah struk transaksi yang jelas, lalu ajukan lagi.",
+    title: idReimburse.request.alerts.fileRejectedTitle,
+    description: idReimburse.request.alerts.fileRejectedDescription,
   },
   504: {
     code: 504,
-    title: "Layanan analisis invoice sedang sibuk",
-    description:
-      "Data kamu belum terkirim dan tetap tersimpan di form. Coba ajukan lagi dalam beberapa saat.",
+    title: idReimburse.request.alerts.serverBusyTitle,
+    description: idReimburse.request.alerts.serverBusyDescription,
   },
 };
 
 export const REIMBURSE_FILE_REJECTED_MESSAGE =
-  "Bukan invoice sah atau tidak memuat nominal. Unggah struk yang jelas.";
+  idReimburse.request.alerts.fileRejectedFallback;
 
 export const REIMBURSE_SAMPLE_FORM_VALUES: Omit<
   ReimburseRequestFormValues,

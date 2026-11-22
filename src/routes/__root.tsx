@@ -28,7 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "BBJ · Berbagi Bites Jogja",
+        title: idShared.pageTitle,
       },
     ],
     links: [

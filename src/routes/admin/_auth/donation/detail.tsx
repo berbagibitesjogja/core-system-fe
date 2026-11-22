@@ -27,7 +27,7 @@ import { Button } from "#/components/ui/button";
 import { Dialog } from "#/components/ui/dialog";
 import { toast } from "#/components/ui/toast";
 import { getHeroAvatarSrc } from "#/lib/avatars";
-import { idDonation } from "#/locales";
+import { idDonation, idShared } from "#/locales";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import {
   createFoodItem,
@@ -157,7 +157,7 @@ function DonationDetailPage() {
       title: `Daftar Heroes ${detail.donorName}`,
       subtitle: `${detail.day}, ${detail.date}`,
       onBack: () => navigate({ to: "/admin/donation" }),
-      backLabel: "Kembali",
+      backLabel: idShared.header.backLabel,
     });
 
     return () => setHeaderOverride(null);

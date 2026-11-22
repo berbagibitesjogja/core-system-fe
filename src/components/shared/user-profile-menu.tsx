@@ -20,27 +20,27 @@ export interface UserProfileMenuItemConfig {
 export const defaultProfileMenuItems: UserProfileMenuItemConfig[] = [
   {
     id: "profile",
-    label: "Lihat Profil",
+    label: idShared.userProfileMenu.profileLabel,
     icon: User,
     to: "/admin/profile",
     action: "navigation",
   },
   {
     id: "settings",
-    label: "Pengaturan Akun",
+    label: idShared.userProfileMenu.settingsLabel,
     icon: Settings,
     to: "/admin/profile",
     action: "navigation",
   },
   {
     id: "help",
-    label: "Pusat Bantuan",
+    label: idShared.userProfileMenu.helpCenterLabel,
     icon: HelpCircle,
     action: "custom",
   },
   {
     id: "logout",
-    label: "Keluar",
+    label: idShared.userProfileMenu.logoutLabel,
     icon: LogOut,
     isDanger: true,
     action: "logout",
@@ -65,11 +65,11 @@ export interface UserProfileMenuProps {
  * UserProfileMenu: Komponen chip profil pengguna di Top Bar dengan dropdown aksi akun.
  */
 export function UserProfileMenu({
-  name = "Dian Pratiwi",
-  role = "Super Admin",
-  division = "Divisi Operasional",
+  name = "",
+  role = "",
+  division = "",
   avatarSrc,
-  email = "dian.pratiwi@bbj.org",
+  email = "",
   isActive = false,
   menuItems = defaultProfileMenuItems,
   onLogout,

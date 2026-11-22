@@ -248,7 +248,9 @@ export function mapCategoryToBeneficiaryDetailProfile(
     heroesSharePercent: 0,
     impactKg: 0,
     impactSharePercent: 0,
-    sectorUnitLabel: isUniversity ? "Fakultas" : "Sektor",
+    sectorUnitLabel: isUniversity
+      ? idBeneficiary.detail.statsSectorsUnitFaculty
+      : idBeneficiary.detail.statsSectorsUnitDefault,
     donations: [],
     sectors: [],
     address: record.address,

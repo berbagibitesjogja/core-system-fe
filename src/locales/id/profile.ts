@@ -22,6 +22,14 @@ export const idProfile = {
     title: "Aktivitas saya",
     superAdminBadge: "Khusus Super Admin",
     viewAllLogs: "Lihat semua log",
+    mockActivities: [
+      { id: "act-1", title: "Masuk ke panel admin", category: "Sistem" as const, timestampLabel: "5 jam yang lalu" },
+      { id: "act-2", title: "Menandai reimburse Fauzan selesai", category: "Reimburse" as const, timestampLabel: "Kemarin, 20.14" },
+      { id: "act-3", title: "Mengubah role Bima Aditya menjadi Staff", category: "Volunteer" as const, timestampLabel: "7 Nov 2026, 09.30" },
+      { id: "act-4", title: "Membuat donasi Holland Bakery", category: "Donasi" as const, timestampLabel: "6 Nov 2026, 15.02" },
+      { id: "act-5", title: "Keluar dari panel admin", category: "Sistem" as const, timestampLabel: "5 Nov 2026, 22.47" },
+      { id: "act-6", title: "Masuk ke panel admin", category: "Sistem" as const, timestampLabel: "5 Nov 2026, 18.10" },
+    ],
   },
   settingsTab: {
     divisionLabel: "Divisi",

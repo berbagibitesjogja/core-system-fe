@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { api } from "./api";
 import { handleApiError } from "./errorService";
+import { idDonation, idShared } from "#/locales";
 import type {
   DonationItem,
   DonationProgram,
@@ -630,30 +631,8 @@ export function getInitials(name: string): string {
   return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 }
 
-const INDO_MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "Mei",
-  "Jun",
-  "Jul",
-  "Agu",
-  "Sep",
-  "Okt",
-  "Nov",
-  "Des",
-];
-
-const INDO_DAYS = [
-  "Minggu",
-  "Senin",
-  "Selasa",
-  "Rabu",
-  "Kamis",
-  "Jumat",
-  "Sabtu",
-];
+const INDO_MONTHS = idShared.monthsShort;
+const INDO_DAYS = idShared.days;
 
 export function parseDonationDate(isoString: string): {
   day: string;
@@ -692,7 +671,7 @@ export function mapDonationToDonationItem(
   record: SanitizedDonationRecord,
 ): DonationItem {
   const parsed = parseDonationDate(record.event_at);
-  const donorName = record.sponsor.name || "Generous Sponsor";
+  const donorName = record.sponsor.name || idDonation.list.defaultDonorName;
 
   // Evaluasi program: Jika sponsor tergolong corporate / CSR
   const isCsr =
@@ -740,7 +719,7 @@ export function mapDonationToDetailRecord(
   attendances: SanitizedHeroAttendanceRecord[] = [],
 ): DonationDetailRecord {
   const parsed = parseDonationDate(record.event_at);
-  const donorName = record.sponsor.name || "Generous Sponsor";
+  const donorName = record.sponsor.name || idDonation.list.defaultDonorName;
 
   const isCsr =
     record.sponsor.hidden ||

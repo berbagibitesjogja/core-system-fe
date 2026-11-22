@@ -192,7 +192,7 @@ export function VolunteerForm({
         ) {
           setDuplicateConflict({
             field: "email",
-            ownerName: values.name || "Pengurus Terdaftar",
+            ownerName: values.name || idVolunteer.form.defaultOwnerName,
           });
           setErrors((prev) => ({
             ...prev,

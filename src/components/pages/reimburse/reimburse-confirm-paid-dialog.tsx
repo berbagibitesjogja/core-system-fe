@@ -70,15 +70,19 @@ export function ReimburseConfirmPaidDialog({
   if (!item) return null;
 
   const summaryRows = [
-    { id: "applicant", label: "Pemohon", value: item.applicantName },
+    {
+      id: "applicant",
+      label: idReimburse.dialogs.confirmApplicantLabel,
+      value: item.applicantName,
+    },
     {
       id: "destination",
-      label: "Tujuan Transfer",
+      label: idReimburse.dialogs.confirmDestinationLabel,
       value: `${item.method} · ${item.destinationNumber}`,
     },
     {
       id: "amount",
-      label: "Nominal",
+      label: idReimburse.dialogs.confirmAmountLabel,
       value: formatRupiah(item.amount),
       emphasize: true,
     },

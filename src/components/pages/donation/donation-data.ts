@@ -152,49 +152,59 @@ export function computeProgramFilterOptions(
 }
 
 export const defaultProgramFilterOptions: ProgramFilterOption[] = [
-  { id: "all", label: "Semua", count: 392, programValue: "ALL" },
+  {
+    id: "all",
+    label: idDonation.list.filters.all,
+    count: 392,
+    programValue: "ALL",
+  },
   {
     id: "food-rescue",
-    label: "Food Rescue",
+    label: idDonation.list.filters.foodRescue,
     count: 340,
     programValue: "Food Rescue",
   },
-  { id: "csr", label: "CSR", count: 52, programValue: "CSR" },
+  {
+    id: "csr",
+    label: idDonation.list.filters.csr,
+    count: 52,
+    programValue: "CSR",
+  },
 ];
 
 export const defaultDonationStats: DonationStatItem[] = [
   {
     id: "pengambilan-terdekat",
-    title: "Pengambilan Terdekat",
+    title: idDonation.list.stats.nearestPickupTitle,
     value: "9 Nov",
     unit: "Senin",
     subtext: "Sheraton Mustika · besok, 17.00",
     styleVariant: "brand",
     iconName: "clock",
     illustrationSrc: statDonationNearest,
-    illustrationAlt: "Ilustrasi jam dan kalender pengambilan terdekat",
+    illustrationAlt: idDonation.list.stats.altNearestPickup,
   },
   {
     id: "kuota-terbanyak",
-    title: "Kuota Terbanyak",
+    title: idDonation.list.stats.mostQuotaTitle,
     value: "50",
     unit: "Heroes",
     subtext: "Melia Purosani · 29 Okt 2026",
     styleVariant: "default",
     iconName: "users",
     illustrationSrc: statDonationQuota,
-    illustrationAlt: "Ilustrasi piala kuota terbanyak",
+    illustrationAlt: idDonation.list.stats.altMostQuota,
   },
   {
     id: "donasi-aktif",
-    title: "Donasi Aktif",
+    title: idDonation.list.stats.activeDonationsTitle,
     value: "3",
-    unit: "Donasi",
+    unit: idDonation.list.stats.unitAction,
     subtext: "Sisa 38 kuota heroes",
     styleVariant: "default",
     iconName: "package",
     illustrationSrc: statDonationActive,
-    illustrationAlt: "Ilustrasi donasi aktif",
+    illustrationAlt: idDonation.list.stats.altActiveDonations,
   },
 ];
 

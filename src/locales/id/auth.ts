@@ -8,6 +8,7 @@ export const idAuth = {
     communityInfoAria: "Informasi Komunitas BBJ",
     volunteerPhotoAlt: "Relawan Berbagi Bites Jogja sedang berbagi makanan",
     footerCopyright: "© 2026 Berbagi Bites Jogja",
+    footerDomain: "berbagibitesjogja.com",
     welcomeTitlePart1: "Selamat datang",
     welcomeTitlePart2: "kembali!",
     leadDescription: "Masuk pakai email atau akun Google yang sudah terdaftar sebagai pengurus untuk melanjutkan aksi berbagimu bersama komunitas BBJ.",
@@ -70,6 +71,10 @@ export const idAuth = {
       slide3TitlePart1: "Kolaborasi Komunitas &",
       slide3TitlePart2: "Mitra Makanan",
       slide3Description: "Bersama kurangi food waste dan tebarkan senyum kebaikan setiap hari.",
+      volunteerPhotoAltIndex: (index: number) => `Ilustrasi Relawan ${index}`,
+      partnerPhotoAltIndex: (index: number) => `Ilustrasi Mitra ${index}`,
+      partnersCountValue: "20+ Mitra",
+      volunteersCountValue: "100+ Relawan",
     },
     toasts: {
       alreadyLoggedIn: (name: string) => `Anda sudah login. Selamat datang, ${name}`,

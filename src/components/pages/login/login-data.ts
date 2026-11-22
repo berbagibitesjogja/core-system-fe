@@ -59,9 +59,21 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
     },
     badgeBottom: {
       avatars: [
-        { src: avatar1Svg, name: "Fajar Ramadhan", alt: "Ilustrasi Relawan 1" },
-        { src: avatar2Svg, name: "Anisa Nurul", alt: "Ilustrasi Relawan 2" },
-        { src: avatar3Svg, name: "Dimas Saputra", alt: "Ilustrasi Relawan 3" },
+        {
+          src: avatar1Svg,
+          name: "Fajar Ramadhan",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(1),
+        },
+        {
+          src: avatar2Svg,
+          name: "Anisa Nurul",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(2),
+        },
+        {
+          src: avatar3Svg,
+          name: "Dimas Saputra",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(3),
+        },
       ],
       label: idAuth.login.showcase.slide1BadgeBottomLabel,
       value: "15.400",
@@ -82,12 +94,24 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
     },
     badgeBottom: {
       avatars: [
-        { src: avatar4Svg, name: "Rina Astuti", alt: "Ilustrasi Mitra 1" },
-        { src: avatar5Svg, name: "Made Tirta", alt: "Ilustrasi Mitra 2" },
-        { src: avatar6Svg, name: "Kevin Pratama", alt: "Ilustrasi Mitra 3" },
+        {
+          src: avatar4Svg,
+          name: "Rina Astuti",
+          alt: idAuth.login.showcase.partnerPhotoAltIndex(1),
+        },
+        {
+          src: avatar5Svg,
+          name: "Made Tirta",
+          alt: idAuth.login.showcase.partnerPhotoAltIndex(2),
+        },
+        {
+          src: avatar6Svg,
+          name: "Kevin Pratama",
+          alt: idAuth.login.showcase.partnerPhotoAltIndex(3),
+        },
       ],
       label: idAuth.login.showcase.slide2BadgeBottomLabel,
-      value: "20+ Mitra",
+      value: idAuth.login.showcase.partnersCountValue,
       ariaLabel: idAuth.login.showcase.slide2BadgeBottomAria,
     },
     titlePart1: idAuth.login.showcase.slide2TitlePart1,
@@ -105,12 +129,24 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
     },
     badgeBottom: {
       avatars: [
-        { src: avatar2Svg, name: "Bunga Berlian", alt: "Ilustrasi Relawan 1" },
-        { src: avatar1Svg, name: "Yoga Kurnia", alt: "Ilustrasi Relawan 2" },
-        { src: avatar3Svg, name: "Intan Dewi", alt: "Ilustrasi Relawan 3" },
+        {
+          src: avatar2Svg,
+          name: "Bunga Berlian",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(1),
+        },
+        {
+          src: avatar1Svg,
+          name: "Yoga Kurnia",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(2),
+        },
+        {
+          src: avatar3Svg,
+          name: "Intan Dewi",
+          alt: idAuth.login.showcase.volunteerPhotoAltIndex(3),
+        },
       ],
       label: idAuth.login.showcase.slide3BadgeBottomLabel,
-      value: "100+ Relawan",
+      value: idAuth.login.showcase.volunteersCountValue,
       ariaLabel: idAuth.login.showcase.slide3BadgeBottomAria,
     },
     titlePart1: idAuth.login.showcase.slide3TitlePart1,

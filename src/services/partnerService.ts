@@ -188,9 +188,13 @@ export function mapSponsorToPartnerDetailData(
   return {
     id: sponsor.id,
     name: sponsor.name,
-    type: isCompany ? "Perusahaan" : "Individu",
+    type: isCompany
+      ? idPartner.list.filterOptions.company
+      : idPartner.list.filterOptions.individual,
     rank: null,
-    subtitle: isCompany ? "Mitra Perusahaan BBJ" : "Mitra Individu BBJ",
+    subtitle: isCompany
+      ? idPartner.detail.subtitleCompany
+      : idPartner.detail.subtitleIndividual,
     totalRecipients: 0,
     totalFoodKg: 0,
     avgFoodKgPerAction: 0,

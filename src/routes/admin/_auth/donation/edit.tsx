@@ -15,7 +15,7 @@ import type {
   DonationFormData,
   SponsorOption,
 } from "#/components/pages/donation";
-import { idDonation } from "#/locales";
+import { idDonation, idPartner } from "#/locales";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import { getBeneficiaries } from "#/services/beneficiaryService";
 import {
@@ -102,7 +102,10 @@ function DonationEditPage() {
       id: s.id,
       name: s.name,
       initials: getInitials(s.name),
-      category: s.variant === "company" ? "Perusahaan" : "Individu",
+      category:
+        s.variant === "company"
+          ? idPartner.list.filterOptions.company
+          : idPartner.list.filterOptions.individual,
     }));
   }, [sponsorsQuery.data]);
 
@@ -136,7 +139,7 @@ function DonationEditPage() {
 
     return {
       id: record.id,
-      donorName: record.sponsor.name || "Generous Sponsor",
+      donorName: record.sponsor.name || idDonation.list.defaultDonorName,
       quota: String(record.quota),
       pickupDate: parsed.isoDateOnly,
       pickupHour: hours,

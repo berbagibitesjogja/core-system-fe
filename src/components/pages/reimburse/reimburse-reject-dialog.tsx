@@ -47,21 +47,25 @@ export function ReimburseRejectDialog({
   if (!item) return null;
 
   const summaryRows = [
-    { id: "applicant", label: "Pemohon", value: item.applicantName },
+    {
+      id: "applicant",
+      label: idReimburse.dialogs.rejectApplicantLabel,
+      value: item.applicantName,
+    },
     {
       id: "destination",
-      label: "Tujuan Transfer",
+      label: idReimburse.dialogs.rejectDestinationLabel,
       value: `${item.method} · ${item.destinationNumber}`,
     },
     {
       id: "amount",
-      label: "Nominal",
+      label: idReimburse.dialogs.rejectAmountLabel,
       value: formatRupiah(item.amount),
       emphasize: true,
     },
     {
       id: "note",
-      label: "Keperluan",
+      label: idReimburse.dialogs.rejectNoteLabel,
       value: item.note,
     },
   ];

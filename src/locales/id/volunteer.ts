@@ -4,6 +4,8 @@ export const idVolunteer = {
   list: {
     title: "Volunteer",
     subtitle: "Anggota tim dan relawan Berbagi Bites Jogja",
+    defaultVolunteerName: "Volunteer",
+    defaultDivisionName: "Volunteer",
     toasts: {
       deleteSuccess: (name: string) => `Volunteer "${name}" berhasil dihapus dari sistem.`,
       deleteFailed: "Gagal menghapus volunteer. Silakan coba beberapa saat lagi.",
@@ -74,6 +76,7 @@ export const idVolunteer = {
     backLabel: "Kembali",
   },
   form: {
+    defaultOwnerName: "Pengurus Terdaftar",
     placementSectionTitle: "Penempatan",
     placementSectionSubtitle: "Divisi dan role menentukan apa saja yang bisa dibuka anggota ini.",
     divisionLabel: "Pilih Divisi",

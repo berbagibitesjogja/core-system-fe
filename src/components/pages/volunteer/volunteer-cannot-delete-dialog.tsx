@@ -17,7 +17,9 @@ export function VolunteerCannotDeleteDialog({
   onClose,
   volunteer,
 }: VolunteerCannotDeleteDialogProps) {
-  const firstName = (volunteer?.name || "Kevin Halim").split(" ")[0] || "Kevin";
+  const fallbackName = idVolunteer.list.defaultVolunteerName;
+  const firstName =
+    (volunteer?.name || fallbackName).split(" ")[0] || fallbackName;
 
   return (
     <VolunteerIllustrationDialog

@@ -42,7 +42,7 @@ export function VolunteerSelectField({
   onChange,
   disabled = false,
   searchable = false,
-  searchPlaceholder = "Cari...",
+  searchPlaceholder = idVolunteer.list.toolbar.searchDivisionPlaceholder,
   emptyText = idVolunteer.list.toolbar.emptyDivision,
   error,
   className,

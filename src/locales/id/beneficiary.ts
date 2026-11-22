@@ -51,6 +51,7 @@ export const idBeneficiary = {
     heroesLabel: "Heroes",
     heroesUnit: "Orang",
     impactLabel: "Impact",
+    impactUnit: "Kg",
   },
   add: {
     title: "Tambah Beneficiary",

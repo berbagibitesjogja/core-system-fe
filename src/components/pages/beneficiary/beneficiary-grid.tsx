@@ -86,7 +86,7 @@ export function BeneficiaryGrid({
               avatarName={item.initial}
               heroesCount={item.heroesCount.toLocaleString("id-ID")}
               impactCount={item.impactKg.toLocaleString("id-ID")}
-              impactUnit="Kg"
+              impactUnit={idBeneficiary.grid.impactUnit}
               sharePercent={sharePercent}
               shareText={idBeneficiary.grid.shareText(sharePercent)}
               showDelete={canDeleteRole}

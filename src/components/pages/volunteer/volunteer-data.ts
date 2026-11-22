@@ -1,7 +1,7 @@
 import charitySharingSvg from "#/assets/illustrations/charity-sharing.svg";
 import lunchBoxSvg from "#/assets/illustrations/lunch-box.svg";
 import volunteerRelaxingSvg from "#/assets/illustrations/volunteer-relaxing.svg";
-import { idVolunteer } from "#/locales";
+import { idVolunteer, idShared } from "#/locales";
 
 export type VolunteerDivision =
   | "Operational Manager"
@@ -153,16 +153,16 @@ export const VOLUNTEER_ROLE_OPTIONS: VolunteerRoleOption[] = [
 
 // Daftar opsi filter divisi pada toolbar halaman Volunteer
 export const VOLUNTEER_DIVISION_OPTIONS: VolunteerDivisionOption[] = [
-  { id: "all", label: "Semua Divisi" },
-  { id: "Operational Manager", label: "Operational Manager" },
-  { id: "IT", label: "IT" },
-  { id: "Food", label: "Food" },
-  { id: "Medinfo", label: "Medinfo" },
-  { id: "Bendahara", label: "Bendahara" },
-  { id: "Fund", label: "Fund" },
-  { id: "Volunteer", label: "Volunteer" },
-  { id: "Friend", label: "Friend" },
-  { id: "Logistik", label: "Logistik" },
+  { id: "all", label: idVolunteer.list.toolbar.divisionPlaceholder },
+  { id: "Operational Manager", label: idShared.divisions.operationalManager },
+  { id: "IT", label: idShared.divisions.it },
+  { id: "Food", label: idShared.divisions.food },
+  { id: "Medinfo", label: idShared.divisions.medinfo },
+  { id: "Bendahara", label: idShared.divisions.bendahara },
+  { id: "Fund", label: idShared.divisions.fund },
+  { id: "Volunteer", label: idShared.divisions.volunteer },
+  { id: "Friend", label: idShared.divisions.friend },
+  { id: "Logistik", label: idShared.divisions.logistik },
 ];
 
 // Pemetaan warna badge tiap divisi sesuai desain Figma 149:19230
@@ -220,7 +220,7 @@ export function mapDivisionsToOptions(
     return VOLUNTEER_DIVISION_OPTIONS;
   }
   return [
-    { id: "all", label: "Semua Divisi" },
+    { id: "all", label: idVolunteer.list.toolbar.divisionPlaceholder },
     ...divisions.map((item) => ({ id: item.name, label: item.name })),
   ];
 }

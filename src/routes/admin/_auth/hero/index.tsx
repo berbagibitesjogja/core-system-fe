@@ -279,9 +279,10 @@ function HeroPage() {
         name: values.name,
         phone: values.phone || undefined,
         beneficiaryId: values.beneficiaryId,
-        beneficiaryName: targetBeneficiary?.name ?? "Beneficiary",
+        beneficiaryName:
+          targetBeneficiary?.name ?? idHero.form.defaultBeneficiaryName,
         sectorId: values.sectorId,
-        sectorName: targetSector?.name ?? "Umum",
+        sectorName: targetSector?.name ?? idHero.form.defaultSectorName,
         status: "aktif",
         actionCount: 0,
         canDelete: true,

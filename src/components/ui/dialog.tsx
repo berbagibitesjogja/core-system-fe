@@ -1,6 +1,7 @@
 import * as React from "react";
 import { AlertTriangle, HelpCircle } from "lucide-react";
 import { Button } from "./button";
+import { idShared } from "#/locales/id/shared";
 import { cn } from "#/lib/utils";
 
 export interface DialogProps {
@@ -29,7 +30,7 @@ export function Dialog({
   icon,
   iconTone,
   confirmText,
-  cancelText = "Batal",
+  cancelText = idShared.dialog.cancelButton,
   onConfirm,
   isConfirmLoading = false,
   className,
@@ -57,7 +58,9 @@ export function Dialog({
     success: "bg-green-50 text-green-700",
     danger: "bg-red-50 text-red-600",
   };
-  const defaultConfirmText = isDanger ? "Hapus" : "Simpan";
+  const defaultConfirmText = isDanger
+    ? idShared.dialog.deleteButton
+    : idShared.dialog.saveButton;
   const effectiveConfirmText = confirmText || defaultConfirmText;
 
   return (

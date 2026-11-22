@@ -1,5 +1,5 @@
 import type { SidebarProps } from "#/components/shared/sidebar";
-import { idProfile } from "#/locales/id/profile";
+import { idProfile, idShared, idVolunteer } from "#/locales";
 
 export type ProfileSystemRole = "super" | "core" | "staff";
 
@@ -88,8 +88,8 @@ export const REGISTERED_CONFLICT_PHONES: readonly string[] = [
 export const PROFILE_ROLE_META: Record<ProfileSystemRole, ProfileRoleMeta> = {
   super: {
     value: "super",
-    badgeLabel: "Super Admin",
-    selectLabel: "Super Admin (super)",
+    badgeLabel: idShared.userRoles.super,
+    selectLabel: `${idShared.userRoles.super} (super)`,
     sidebarRole: "super_admin",
     canViewActivity: true,
     canEditRole: true,
@@ -97,8 +97,8 @@ export const PROFILE_ROLE_META: Record<ProfileSystemRole, ProfileRoleMeta> = {
   },
   core: {
     value: "core",
-    badgeLabel: "Pengurus Inti",
-    selectLabel: "Pengurus Inti (core)",
+    badgeLabel: idVolunteer.roles.core.label,
+    selectLabel: `${idVolunteer.roles.core.label} (core)`,
     sidebarRole: "core",
     canViewActivity: false,
     canEditRole: false,
@@ -106,8 +106,8 @@ export const PROFILE_ROLE_META: Record<ProfileSystemRole, ProfileRoleMeta> = {
   },
   staff: {
     value: "staff",
-    badgeLabel: "Staff",
-    selectLabel: "Staff (staff)",
+    badgeLabel: idShared.userRoles.staff,
+    selectLabel: `${idShared.userRoles.staff} (staff)`,
     sidebarRole: "staff",
     canViewActivity: false,
     canEditRole: false,
@@ -116,11 +116,14 @@ export const PROFILE_ROLE_META: Record<ProfileSystemRole, ProfileRoleMeta> = {
 };
 
 export const PROFILE_DIVISION_OPTIONS: readonly ProfileOption[] = [
-  { value: "Operational Manager", label: "Operational Manager" },
-  { value: "Food", label: "Food" },
-  { value: "Distribusi", label: "Distribusi" },
-  { value: "Media & Kemitraan", label: "Media & Kemitraan" },
-  { value: "Bendahara", label: "Bendahara" },
+  {
+    value: "Operational Manager",
+    label: idShared.divisions.operationalManager,
+  },
+  { value: "Food", label: idShared.divisions.food },
+  { value: "Distribusi", label: idShared.divisions.distribusi },
+  { value: "Media & Kemitraan", label: idShared.divisions.mediaKemitraan },
+  { value: "Bendahara", label: idShared.divisions.bendahara },
 ];
 
 export const PROFILE_ROLE_OPTIONS: readonly ProfileOption[] = [
@@ -171,44 +174,8 @@ export const PROFILE_PRESETS: Record<ProfileSystemRole, UserProfileRecord> = {
   },
 };
 
-export const defaultProfileActivities: readonly ProfileActivityItem[] = [
-  {
-    id: "act-1",
-    title: "Masuk ke panel admin",
-    category: "Sistem",
-    timestampLabel: "5 jam yang lalu",
-  },
-  {
-    id: "act-2",
-    title: "Menandai reimburse Fauzan selesai",
-    category: "Reimburse",
-    timestampLabel: "Kemarin, 20.14",
-  },
-  {
-    id: "act-3",
-    title: "Mengubah role Bima Aditya menjadi Staff",
-    category: "Volunteer",
-    timestampLabel: "7 Nov 2026, 09.30",
-  },
-  {
-    id: "act-4",
-    title: "Membuat donasi Holland Bakery",
-    category: "Donasi",
-    timestampLabel: "6 Nov 2026, 15.02",
-  },
-  {
-    id: "act-5",
-    title: "Keluar dari panel admin",
-    category: "Sistem",
-    timestampLabel: "5 Nov 2026, 22.47",
-  },
-  {
-    id: "act-6",
-    title: "Masuk ke panel admin",
-    category: "Sistem",
-    timestampLabel: "5 Nov 2026, 18.10",
-  },
-];
+export const defaultProfileActivities: readonly ProfileActivityItem[] =
+  idProfile.activityTab.mockActivities;
 
 // Mengambil inisial maksimal 2 huruf dari nama lengkap
 export function computeInitials(name: string): string {

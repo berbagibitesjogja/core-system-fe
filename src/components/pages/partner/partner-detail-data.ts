@@ -370,23 +370,23 @@ export function buildPartnerProfileContactItems(
   return [
     {
       id: "email",
-      label: "Email",
+      label: idPartner.detail.contactLabels.email,
       value: trimmedEmail,
-      fallbackText: "Belum diisi",
+      fallbackText: idPartner.detail.fallbackContact,
       href: trimmedEmail ? `mailto:${trimmedEmail}` : undefined,
     },
     {
       id: "phone",
-      label: "Nomor Telepon",
+      label: idPartner.detail.contactLabels.phone,
       value: trimmedPhone,
-      fallbackText: "Belum diisi",
+      fallbackText: idPartner.detail.fallbackContact,
       href: telDigits ? `tel:${telDigits}` : undefined,
     },
     {
       id: "address",
-      label: "Alamat",
+      label: idPartner.detail.contactLabels.address,
       value: trimmedAddress,
-      fallbackText: "Belum diisi",
+      fallbackText: idPartner.detail.fallbackContact,
     },
   ];
 }

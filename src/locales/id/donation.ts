@@ -4,6 +4,7 @@ export const idDonation = {
   list: {
     title: "Donasi",
     subtitle: "Aksi food rescue dan program CSR yang sedang berjalan",
+    defaultDonorName: "Generous Sponsor",
     toasts: {
       deleteSuccess: (donorName: string) => `Donasi untuk ${donorName} berhasil dihapus.`,
       deleteFailed: "Gagal menghapus donasi. Pastikan status donasi masih dalam bentuk draf.",
@@ -150,6 +151,8 @@ export const idDonation = {
       selectHeroAria: "Pilih hero untuk ditambahkan",
       removeTooltipHangus: "Keluarkan hero (kuota hangus)",
       removeTooltipNormal: "Keluarkan hero dari donasi",
+      columnHeroName: "Nama",
+      columnOrigin: "Asal",
       columnName: "Nama Hero",
       columnClaimCode: "Kode Voucher",
       columnStatus: "Status Kehadiran",
@@ -255,6 +258,8 @@ export const idDonation = {
       footerTagline: "Join the mission",
       footerDomain: "berbagibitesjogja.com",
       qrAria: "QR Code berbagibitesjogja.com",
+      qrText: "BBJ QR",
+      defaultFileName: "BBJ-Impact-Report.png",
       shareTitle: "Bagikan Impact",
       shareDesc: "Unduh poster laporan dampak siap unggah untuk Instagram Story maupun laporan kepada mitra donatur.",
       summaryHeading: "Ringkasan Data Poster",

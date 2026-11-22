@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { idShared } from "#/locales";
 import { getUserProfile } from "#/services/authService";
 import type { AuthUser } from "#/services/authService";
 
@@ -68,10 +69,10 @@ export function useUserProfile() {
     role: user?.role,
     roleLabel:
       user?.role === "super"
-        ? "Super Admin"
+        ? idShared.userRoles.super
         : user?.role === "core"
-          ? "Core Staff"
-          : "Staff",
+          ? idShared.userRoles.core
+          : idShared.userRoles.staff,
     sidebarRole,
     isStaff: Boolean(user?.is_staff),
     isSuperAdmin: user?.role === "super",

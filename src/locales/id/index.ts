@@ -12,6 +12,7 @@ import { idShared } from "./shared";
 import { idVolunteer } from "./volunteer";
 
 // Menggabungkan seluruh pesan galat dari modul fitur dan galat umum
+// prettier-ignore
 export const idErrors = {
   apiMessages: {
     ...idCommonErrors.apiMessages,

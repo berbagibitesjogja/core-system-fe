@@ -172,25 +172,25 @@ export interface ChartPoint {
 
 export const DASHBOARD_METRICS: DashboardMetric[] = [
   {
-    title: "Food Rescue",
+    title: idDashboard.impactStats.foodRescueTitle,
     value: "372",
-    unit: "Aksi",
+    unit: idDashboard.impactStats.foodRescueUnit,
     trend: "+18 aksi bulan ini",
     illustration: "fast-food",
     isPrimary: true,
   },
   {
-    title: "Makanan Diselamatkan",
+    title: idDashboard.impactStats.foodSavedTitle,
     value: "3.077",
-    unit: "Kg",
+    unit: idDashboard.impactStats.foodSavedUnit,
     trend: "+624 Kg bulan ini",
     illustration: "organic-food",
     isPrimary: false,
   },
   {
-    title: "Total Heroes",
+    title: idDashboard.impactStats.totalHeroesTitle,
     value: "14.933",
-    unit: "Orang",
+    unit: idDashboard.impactStats.totalHeroesUnit,
     trend: "+3.020 orang bulan ini",
     illustration: "charity-heroes",
     isPrimary: false,
@@ -207,12 +207,12 @@ export const HEROES_CHART_DATA: ChartPoint[] = [
 ];
 
 export const FOOD_CHART_DATA: ChartPoint[] = [
-  { month: "Jun", value: 350, label: "350 Kg" },
-  { month: "Jul", value: 410, label: "410 Kg" },
-  { month: "Agu", value: 390, label: "390 Kg" },
-  { month: "Sep", value: 480, label: "480 Kg" },
-  { month: "Okt", value: 540, label: "540 Kg" },
-  { month: "Nov", value: 624, label: "624 Kg" },
+  { month: "Jun", value: 350, label: `350 ${idDashboard.charts.unitKg}` },
+  { month: "Jul", value: 410, label: `410 ${idDashboard.charts.unitKg}` },
+  { month: "Agu", value: 390, label: `390 ${idDashboard.charts.unitKg}` },
+  { month: "Sep", value: 480, label: `480 ${idDashboard.charts.unitKg}` },
+  { month: "Okt", value: 540, label: `540 ${idDashboard.charts.unitKg}` },
+  { month: "Nov", value: 624, label: `624 ${idDashboard.charts.unitKg}` },
 ];
 
 export const RECENT_ACTIVITIES: ActivityItem[] = [

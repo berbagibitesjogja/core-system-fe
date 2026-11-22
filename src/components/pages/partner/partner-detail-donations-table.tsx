@@ -74,7 +74,7 @@ export function PartnerDetailDonationsTable({
       {
         id: "date",
         accessorKey: "dateLabel",
-        header: "Tanggal",
+        header: idPartner.detail.donationsColumnDate,
         meta: {
           className: "w-[190px]",
           sort: sortDirection,

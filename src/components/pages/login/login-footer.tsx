@@ -11,7 +11,7 @@ export function LoginFooter() {
         rel="noopener noreferrer"
         className="text-bondi-700 hover:text-bondi-800 hover:underline transition-colors cursor-pointer"
       >
-        berbagibitesjogja.com
+        {idAuth.login.footerDomain}
       </a>
     </footer>
   );

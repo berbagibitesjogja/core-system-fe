@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Loader2 } from "lucide-react";
+import { idShared } from "#/locales/id/shared";
 import { cn } from "#/lib/utils";
 
 export type ButtonVariant =
@@ -122,11 +123,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = "primary",
       size = "md",
       isLoading = false,
-      loadingText = "Menyimpan...",
+      loadingText = idShared.button.defaultLoading,
       forcedState,
       leftIcon,
       rightIcon,
-      children = "Simpan Donasi",
+      children = idShared.button.defaultChildren,
       disabled,
       ...props
     },

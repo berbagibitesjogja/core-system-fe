@@ -21,7 +21,7 @@ export function VolunteerDeleteDialog({
   volunteer,
   isLoading = false,
 }: VolunteerDeleteDialogProps) {
-  const displayName = volunteer?.name || "Kevin Halim";
+  const displayName = volunteer?.name || idVolunteer.list.defaultVolunteerName;
 
   return (
     <VolunteerIllustrationDialog

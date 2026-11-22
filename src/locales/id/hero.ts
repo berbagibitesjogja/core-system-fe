@@ -131,6 +131,8 @@ export const idHero = {
     saveButton: "Simpan Hero",
     saveChangesButton: "Simpan Perubahan",
     savingButton: "Menyimpan...",
+    defaultSectorName: "Umum",
+    defaultBeneficiaryName: "Beneficiary",
     validationBeneficiaryRequired: "Pilih beneficiary terlebih dahulu.",
     validationSectorRequired: "Pilih sektor terlebih dahulu.",
     validationNameRequired: "Nama hero wajib diisi.",

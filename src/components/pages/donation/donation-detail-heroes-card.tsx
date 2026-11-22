@@ -191,7 +191,7 @@ export function DonationDetailHeroesCard({
       {
         id: "name",
         accessorKey: "name",
-        header: "Nama",
+        header: idDonation.detail.heroesCard.columnHeroName,
         cell: ({ row }) => {
           const hero = row.original;
           const isForfeited = hero.status === "tidak-jadi-ambil";
@@ -211,7 +211,7 @@ export function DonationDetailHeroesCard({
       {
         id: "origin",
         accessorKey: "sectorName",
-        header: "Asal",
+        header: idDonation.detail.heroesCard.columnOrigin,
         cell: ({ row }) => {
           const hero = row.original;
           return (

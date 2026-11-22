@@ -152,7 +152,9 @@ export function DonationDetailImpactDialog({
 
       // Pill badge program
       const badgeLabel =
-        detail.program === "CSR" ? "AKSI CSR" : "AKSI FOOD RESCUE";
+        detail.program === "CSR"
+          ? idDonation.detail.impactDialog.badgeCsr
+          : idDonation.detail.impactDialog.badgeFoodRescue;
       ctx.save();
       ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
       drawRoundedRect(ctx, 84, 110, 320, 56, 28);
@@ -165,7 +167,7 @@ export function DonationDetailImpactDialog({
       // Judul utama
       ctx.fillStyle = "#ffffff";
       ctx.font = "700 92px Gabarito, sans-serif";
-      ctx.fillText("Impact Report", 84, 272);
+      ctx.fillText(idDonation.detail.impactDialog.posterTitle, 84, 272);
 
       // Pill nama sponsor
       const sponsorText = `bersama ${detail.donorName}`;
@@ -240,12 +242,12 @@ export function DonationDetailImpactDialog({
       ctx.fill();
       ctx.fillStyle = "#142023";
       ctx.font = "700 28px Inter, sans-serif";
-      ctx.fillText("BBJ QR", 872, 1758);
+      ctx.fillText(idDonation.detail.impactDialog.qrText, 872, 1758);
 
       const dataUrl = canvas.toDataURL("image/png");
       const anchor = document.createElement("a");
       anchor.href = dataUrl;
-      anchor.download = "BBJ-Impact-Report.png";
+      anchor.download = idDonation.detail.impactDialog.defaultFileName;
       anchor.click();
       toast.success(idDonation.detail.toasts.posterSuccess);
     } catch {

@@ -53,7 +53,7 @@ export function Header({
   actions,
   onBack,
   backHref,
-  backLabel = "Kembali",
+  backLabel = idShared.header.backLabel,
   className,
 }: HeaderProps) {
   // Tanggal interaktif saat ini dengan fallback statis untuk keamanan SSR

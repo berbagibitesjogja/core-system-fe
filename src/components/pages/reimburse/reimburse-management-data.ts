@@ -145,22 +145,22 @@ export function buildReimburseStatusFilterOptions(
   return [
     {
       value: "all",
-      label: "Semua",
+      label: idReimburse.data.filters.all,
       count: totalCount,
     },
     {
       value: "proses",
-      label: "Menunggu Diproses",
+      label: idReimburse.data.filters.pending,
       count: pendingCount,
     },
     {
       value: "selesai",
-      label: "Selesai",
+      label: idReimburse.data.filters.completed,
       count: completedCount,
     },
     {
       value: "ditolak",
-      label: "Ditolak",
+      label: idReimburse.data.filters.rejected,
       count: rejectedCount,
     },
   ];
