@@ -1,5 +1,6 @@
 import * as React from "react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { idBeneficiary } from "#/locales";
 
 export interface BeneficiaryIllustrationDialogProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ export function BeneficiaryIllustrationDialog({
   title,
   description,
   footer,
-  illustrationAlt = "Ilustrasi konfirmasi tindakan",
+  illustrationAlt = idBeneficiary.dialogs.deleteAlt,
   disableDismiss = false,
 }: BeneficiaryIllustrationDialogProps) {
   React.useEffect(() => {

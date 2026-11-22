@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Pencil, Sparkles } from "lucide-react";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 import { defaultVolunteerActivities } from "./volunteer-data";
 import type {
   VolunteerDivisionOption,
@@ -87,8 +88,8 @@ export function VolunteerDetailWorkspace({
 
     setHeaderOverride({
       title: volunteer.name,
-      subtitle: "Profil dan pengaturan anggota",
-      backLabel: "Kembali ke Daftar",
+      subtitle: idVolunteer.detail.subtitle,
+      backLabel: idVolunteer.detail.backLabel,
       onBack: () => navigate({ to: "/admin/volunteer" }),
     });
 
@@ -147,14 +148,14 @@ export function VolunteerDetailWorkspace({
       <div className="flex-1 min-w-0 w-full flex flex-col gap-6">
         {/* Panel Tab */}
         <section
-          aria-label="Detail Akun Volunteer"
+          aria-label={idVolunteer.detail.workspaceSectionAria}
           className="w-full rounded-2xl border border-neutral-200 bg-surface shadow-xs overflow-hidden"
         >
           {/* Header Tab (hanya tampil jika viewer memiliki akses lebih dari 1 tab) */}
           {canViewActivity && (
             <div
               role="tablist"
-              aria-label="Navigasi Detail Volunteer"
+              aria-label={idVolunteer.detail.workspaceNavAria}
               className="flex items-center gap-2 px-5 border-b border-neutral-200"
             >
               <button
@@ -178,7 +179,7 @@ export function VolunteerDetailWorkspace({
                   )}
                   aria-hidden="true"
                 />
-                <span>Aktivitas</span>
+                <span>{idVolunteer.detail.tabs.activity}</span>
               </button>
 
               <button
@@ -202,7 +203,7 @@ export function VolunteerDetailWorkspace({
                   )}
                   aria-hidden="true"
                 />
-                <span>Pengaturan Profil</span>
+                <span>{idVolunteer.detail.tabs.settings}</span>
               </button>
             </div>
           )}

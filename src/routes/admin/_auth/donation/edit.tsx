@@ -61,7 +61,7 @@ function DonationEditPage() {
   // Evaluasi ID donasi
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID donasi tidak ditemukan.");
+      toast.error(idDonation.edit.toasts.missingId);
       navigate({ to: "/admin/donation" });
     }
   }, [trimmedId, navigate]);
@@ -90,7 +90,7 @@ function DonationEditPage() {
 
   React.useEffect(() => {
     if (donationQuery.isError) {
-      toast.error("Data donasi tidak ditemukan.");
+      toast.error(idDonation.edit.toasts.notFound);
       navigate({ to: "/admin/donation" });
     }
   }, [donationQuery.isError, navigate]);
@@ -169,10 +169,10 @@ function DonationEditPage() {
     if (!setHeaderOverride) return;
 
     setHeaderOverride({
-      title: "Edit Donasi",
-      subtitle: "Perbarui informasi aksi donasi",
+      title: idDonation.edit.title,
+      subtitle: idDonation.edit.subtitle,
       onBack: handleBackTrigger,
-      backLabel: "Kembali",
+      backLabel: idDonation.edit.backLabel,
     });
 
     return () => setHeaderOverride(null);

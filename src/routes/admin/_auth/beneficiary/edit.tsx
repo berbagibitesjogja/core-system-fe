@@ -56,14 +56,14 @@ function BeneficiaryEditPage() {
 
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID kategori penerima manfaat tidak ditemukan.");
+      toast.error(idBeneficiary.detail.notFoundId);
       navigate({ to: "/admin/beneficiary" });
     }
   }, [trimmedId, navigate]);
 
   React.useEffect(() => {
     if (beneficiaryQuery.isError) {
-      toast.error("Data kategori penerima manfaat tidak ditemukan.");
+      toast.error(idBeneficiary.detail.notFoundData);
       navigate({ to: "/admin/beneficiary" });
     }
   }, [beneficiaryQuery.isError, navigate]);

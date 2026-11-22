@@ -47,5 +47,31 @@ export const idNavigation = {
     "/admin/profile": "Kelola data akun yang sedang kamu pakai",
   } as Partial<Record<string, string>>,
 
+  sidebar: {
+    groups: {
+      utama: "UTAMA",
+      data: "DATA",
+      tim: "TIM",
+      sistem: "SISTEM",
+    },
+    items: {
+      home: "Home",
+      gallery: "Gallery",
+      donation: "Donasi",
+      beneficiary: "Beneficiaries",
+      hero: "Heroes",
+      partner: "Partner",
+      reimburseRequest: "Ajukan Reimburse",
+      reimburseData: "Data Reimburse",
+      presensi: "Presensi",
+      volunteer: "Volunteer",
+      logs: "Logs",
+    },
+    badges: {
+      comingSoon: "Segera",
+    },
+    logout: "Keluar",
+  },
+
   defaultTitle: "Dashboard",
 };

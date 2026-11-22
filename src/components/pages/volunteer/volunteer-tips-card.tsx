@@ -1,11 +1,8 @@
 import { Check } from "lucide-react";
 import volunteerChecklistIllustration from "#/assets/illustrations/volunteer-checklist-idea.png";
+import { idVolunteer } from "#/locales";
 
-const VOLUNTEER_TIPS = [
-  "Pilih role sekecil yang dibutuhkan. Role bisa dinaikkan kapan saja.",
-  "Pastikan email sama dengan akun Google anggota, kalau tidak dia tidak bisa masuk.",
-  "Anggota dengan role Volunteer tidak bisa membuka panel admin.",
-] as const;
+const VOLUNTEER_TIPS = idVolunteer.add.tips.items;
 
 /**
  * VolunteerTipsCard: Panel samping kanan berisi panduan menambah anggota volunteer (Figma 150:20910).
@@ -13,19 +10,19 @@ const VOLUNTEER_TIPS = [
 export function VolunteerTipsCard() {
   return (
     <aside
-      aria-label="Tips menambah anggota"
+      aria-label={idVolunteer.add.tips.title}
       className="bg-bondi-50/70 border border-bondi-200/60 rounded-2xl p-6 flex flex-col gap-4 w-full lg:w-[320px] shrink-0"
     >
       <div className="h-[204px] relative rounded-xl shrink-0 w-full overflow-hidden bg-bondi-100/40">
         <img
           src={volunteerChecklistIllustration}
-          alt="Ilustrasi tips menambah anggota"
+          alt={idVolunteer.add.tips.alt}
           className="size-full object-cover pointer-events-none"
         />
       </div>
 
       <h3 className="font-heading font-semibold text-lg leading-6 text-neutral-900">
-        Tips menambah anggota
+        {idVolunteer.add.tips.title}
       </h3>
 
       <div className="flex flex-col gap-3">

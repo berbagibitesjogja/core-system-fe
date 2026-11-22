@@ -95,10 +95,10 @@ function DonationAddPage() {
     if (!setHeaderOverride) return;
 
     setHeaderOverride({
-      title: "Tambah Donasi",
-      subtitle: "Buat aksi food rescue baru",
+      title: idDonation.add.title,
+      subtitle: idDonation.add.subtitle,
       onBack: handleBackTrigger,
-      backLabel: "Kembali",
+      backLabel: idDonation.add.backLabel,
     });
 
     return () => setHeaderOverride(null);
@@ -116,7 +116,7 @@ function DonationAddPage() {
       const sponsorId = matchedSponsor?.id || (sponsorOptions[0]?.id ?? "");
 
       if (!sponsorId) {
-        toast.error("Silakan pilih mitra donatur yang valid.");
+        toast.error(idDonation.add.toasts.invalidDonor);
         setIsSubmitting(false);
         return;
       }

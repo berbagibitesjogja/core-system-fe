@@ -1,6 +1,7 @@
 import { Button } from "#/components/ui/button";
 import { BeneficiaryCard } from "#/components/shared/beneficiary-card";
 import { EmptyState } from "#/components/shared/empty-state";
+import { idBeneficiary } from "#/locales";
 import type { BeneficiaryItem } from "./beneficiary-data";
 
 export interface BeneficiaryGridProps {
@@ -43,11 +44,11 @@ export function BeneficiaryGrid({
       <div className="flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-surface px-6 py-16 shadow-xs min-h-[380px] w-full text-center">
         <EmptyState
           visual="illustration"
-          title="Penerima tidak ditemukan"
+          title={idBeneficiary.grid.emptyTitle}
           description={
             hasSearch
-              ? "Tidak ada penerima manfaat yang cocok dengan kata kunci pencarian."
-              : "Belum ada penerima manfaat yang tersedia pada kategori ini."
+              ? idBeneficiary.grid.emptySearchDescription
+              : idBeneficiary.grid.emptyCategoryDescription
           }
           action={
             <Button
@@ -55,7 +56,9 @@ export function BeneficiaryGrid({
               size="md"
               onClick={hasSearch ? onClearSearch : onResetFilter}
             >
-              {hasSearch ? "Hapus pencarian" : "Tampilkan semua kategori"}
+              {hasSearch
+                ? idBeneficiary.grid.clearSearchAction
+                : idBeneficiary.grid.showAllCategoriesAction}
             </Button>
           }
         />
@@ -85,7 +88,7 @@ export function BeneficiaryGrid({
               impactCount={item.impactKg.toLocaleString("id-ID")}
               impactUnit="Kg"
               sharePercent={sharePercent}
-              shareText={`${sharePercent}% dari total heroes BBJ`}
+              shareText={idBeneficiary.grid.shareText(sharePercent)}
               showDelete={canDeleteRole}
               address={item.address}
               maps={item.maps}
@@ -104,12 +107,15 @@ export function BeneficiaryGrid({
       {/* Footer jumlah tampilan & tombol tampilkan lainnya */}
       <div className="flex flex-wrap items-center justify-between gap-4 w-full">
         <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-neutral-500">
-          Menampilkan {visibleItems.length} dari {totalFilteredCount} penerima
+          {idBeneficiary.grid.showingText(
+            visibleItems.length,
+            totalFilteredCount,
+          )}
         </p>
 
         {remainingCount > 0 && (
           <Button variant="secondary" size="md" onClick={onShowAll}>
-            Tampilkan {remainingCount} lainnya
+            {idBeneficiary.grid.showMore(remainingCount)}
           </Button>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idHero } from "#/locales/id/hero";
 import type { HeroRecord } from "./hero-data";
 import { HeroIllustrationDialog } from "./hero-illustration-dialog";
 
@@ -26,15 +27,15 @@ export function HeroDeleteDialog({
       onClose={onClose}
       disableDismiss={isLoading}
       titleId="hero-delete-modal-title"
-      title="Hapus Hero"
-      illustrationAlt="Ilustrasi konfirmasi hapus hero"
+      title={idHero.dialogs.deleteTitle}
+      illustrationAlt={idHero.dialogs.deleteAlt}
       description={
         <>
-          Apakah Anda yakin ingin menghapus data{" "}
+          {idHero.dialogs.deleteDescriptionPrefix}
           <span className="font-semibold text-neutral-900">
-            {hero?.name || "hero ini"}
+            {hero?.name || idHero.dialogs.deleteDefaultTarget}
           </span>
-          ? Tindakan ini tidak dapat dibatalkan.
+          {idHero.dialogs.deleteDescriptionSuffix}
         </>
       }
       footer={
@@ -45,16 +46,16 @@ export function HeroDeleteDialog({
             onClick={onClose}
             disabled={isLoading}
           >
-            Batal
+            {idHero.dialogs.deleteCancelButton}
           </Button>
           <Button
             variant="danger"
             size="md"
             onClick={onConfirm}
             isLoading={isLoading}
-            loadingText="Menghapus..."
+            loadingText={idHero.dialogs.deletingButton}
           >
-            Hapus Hero
+            {idHero.dialogs.deleteSubmitButton}
           </Button>
         </>
       }

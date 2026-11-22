@@ -16,6 +16,7 @@ import type { PartnerDonationRecord } from "#/components/pages/partner";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { toast } from "#/components/ui/toast";
+import { idPartner } from "#/locales";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import {
   getPartnerDetail,
@@ -84,14 +85,14 @@ function PartnerDetailPage() {
 
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID mitra donatur tidak ditemukan.");
+      toast.error(idPartner.detail.notFoundIdToast);
       navigate({ to: "/admin/partner" });
     }
   }, [trimmedId, navigate]);
 
   React.useEffect(() => {
     if (partnerQuery.isError) {
-      toast.error("Data mitra donatur tidak ditemukan.");
+      toast.error(idPartner.detail.notFoundDataToast);
       navigate({ to: "/admin/partner" });
     }
   }, [partnerQuery.isError, navigate]);
@@ -114,7 +115,7 @@ function PartnerDetailPage() {
       title: detail.name,
       subtitle: detail.subtitle,
       onBack: () => navigate({ to: "/admin/partner" }),
-      backLabel: "Kembali",
+      backLabel: idPartner.detail.backLabel,
     });
 
     return () => setHeaderOverride(null);
@@ -231,12 +232,12 @@ function PartnerDetailPage() {
           </Badge>
           {detail.hidden && (
             <Badge tone="neutral" styleVariant="soft">
-              Tersembunyi dari Publik
+              {idPartner.detail.hiddenBadge}
             </Badge>
           )}
           {detail.hide_donations && (
             <Badge tone="accent" styleVariant="soft">
-              Donasi Privat (Publik Disembunyikan)
+              {idPartner.detail.privateDonationBadge}
             </Badge>
           )}
         </div>
@@ -252,7 +253,7 @@ function PartnerDetailPage() {
             })
           }
         >
-          Edit Donatur
+          {idPartner.detail.editButton}
         </Button>
       </div>
 

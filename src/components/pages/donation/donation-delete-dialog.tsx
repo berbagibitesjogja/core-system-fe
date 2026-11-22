@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button } from "#/components/ui/button";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { idDonation } from "#/locales";
 import type { DonationItem } from "./donation-data";
 
 export interface DonationDeleteDialogProps {
@@ -58,7 +59,7 @@ export function DonationDeleteDialog({
           <div className="size-[140px] sm:size-[160px] shrink-0 flex items-center justify-center select-none pointer-events-none">
             <img
               src={raguHapusSvg}
-              alt="Ilustrasi konfirmasi hapus donasi"
+              alt={idDonation.dialogs.deleteAlt}
               className="size-full object-contain"
             />
           </div>
@@ -68,18 +69,14 @@ export function DonationDeleteDialog({
               id="modal-delete-title"
               className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7"
             >
-              Konfirmasi Tindakan
+              {idDonation.dialogs.deleteTitle}
             </h3>
             <p className="font-sans text-sm text-neutral-600 leading-relaxed">
-              Apakah Anda yakin ingin menghapus donasi dari{" "}
-              <strong className="text-neutral-900 font-semibold">
-                {donation.donorName}
-              </strong>{" "}
-              pada tanggal{" "}
-              <span className="text-neutral-900">
-                {donation.day}, {donation.date}
-              </span>
-              ? Tindakan ini tidak dapat dibatalkan.
+              {idDonation.dialogs.deleteDescription(
+                donation.donorName,
+                donation.day,
+                donation.date,
+              )}
             </p>
           </div>
         </div>
@@ -94,7 +91,7 @@ export function DonationDeleteDialog({
             disabled={isLoading}
             className="rounded-full shadow-2xs"
           >
-            Batal
+            {idDonation.dialogs.deleteCancelButton}
           </Button>
 
           <Button
@@ -105,7 +102,9 @@ export function DonationDeleteDialog({
             isLoading={isLoading}
             className="rounded-full shadow-pop-xs"
           >
-            Hapus Donasi
+            {isLoading
+              ? idDonation.dialogs.deletingButton
+              : idDonation.dialogs.deleteSubmitButton}
           </Button>
         </div>
       </div>

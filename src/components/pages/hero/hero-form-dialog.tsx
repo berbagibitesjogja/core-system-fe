@@ -2,6 +2,7 @@ import * as React from "react";
 import { Button } from "#/components/ui/button";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Input } from "#/components/ui/input";
+import { idHero } from "#/locales/id/hero";
 import { normalizePhoneNumber } from "./hero-data";
 import type {
   HeroBeneficiaryOption,
@@ -199,7 +200,7 @@ export function HeroFormDialog({
     setErrors((prev) => ({
       ...prev,
       phone: duplicateOwner
-        ? `Nomor ini sudah dipakai ${duplicateOwner.name}. Cek apakah orangnya sama sebelum mendaftar ulang.`
+        ? idHero.form.validationPhoneDuplicate(duplicateOwner.name)
         : undefined,
     }));
   };
@@ -209,18 +210,20 @@ export function HeroFormDialog({
 
     const nextErrors: HeroFormErrors = {};
     if (!formData.beneficiaryId) {
-      nextErrors.beneficiaryId = "Pilih beneficiary terlebih dahulu.";
+      nextErrors.beneficiaryId = idHero.form.validationBeneficiaryRequired;
     }
     if (!formData.sectorId) {
-      nextErrors.sectorId = "Pilih sektor terlebih dahulu.";
+      nextErrors.sectorId = idHero.form.validationSectorRequired;
     }
     if (!formData.name.trim()) {
-      nextErrors.name = "Nama hero wajib diisi.";
+      nextErrors.name = idHero.form.validationNameRequired;
     }
 
     const duplicateOwner = findDuplicatePhoneOwner(formData.phone);
     if (duplicateOwner) {
-      nextErrors.phone = `Nomor ini sudah dipakai ${duplicateOwner.name}. Cek apakah orangnya sama sebelum mendaftar ulang.`;
+      nextErrors.phone = idHero.form.validationPhoneDuplicate(
+        duplicateOwner.name,
+      );
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -267,12 +270,12 @@ export function HeroFormDialog({
               id="hero-form-modal-title"
               className="font-['Gabarito'] font-semibold text-[20px] leading-[28px] text-neutral-900"
             >
-              {isEdit ? "Edit Data Hero" : "Tambah Hero Baru"}
+              {isEdit ? idHero.form.editTitle : idHero.form.addTitle}
             </h2>
             <p className="font-['Josefin_Sans'] font-normal text-[12px] leading-[16px] text-neutral-500">
               {isEdit
-                ? `Perbarui profil ${hero?.name ?? "hero"}.`
-                : "Daftarkan penerima makanan agar bisa menerima alokasi donasi."}
+                ? idHero.form.editSubtitle(hero?.name ?? "")
+                : idHero.form.addSubtitle}
             </p>
           </div>
 
@@ -280,31 +283,33 @@ export function HeroFormDialog({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
             <HeroSelectField
               id="hero-form-beneficiary"
-              label="Beneficiary"
+              label={idHero.form.beneficiaryLabel}
               showLabel
               value={formData.beneficiaryId}
               options={beneficiaryOptions}
-              placeholder="Pilih beneficiary"
+              placeholder={idHero.form.beneficiaryPlaceholder}
               onChange={handleBeneficiaryChange}
               searchable={beneficiaries.length > 7}
-              searchPlaceholder="Cari beneficiary..."
+              searchPlaceholder={idHero.form.beneficiarySearchPlaceholder}
               error={errors.beneficiaryId}
               disabled={isSubmitting}
             />
             <HeroSelectField
               id="hero-form-sector"
-              label="Sektor"
+              label={idHero.form.sectorLabel}
               showLabel
               value={formData.sectorId}
               options={sectorOptions}
               placeholder={
-                selectedBeneficiary ? "Pilih sektor" : "Pilih beneficiary dulu"
+                selectedBeneficiary
+                  ? idHero.form.sectorPlaceholder
+                  : idHero.form.sectorDisabledPlaceholder
               }
               onChange={handleSectorChange}
               disabled={isSubmitting || !selectedBeneficiary}
               searchable
-              searchPlaceholder="Cari sektor..."
-              emptyText="Sektor tidak ditemukan"
+              searchPlaceholder={idHero.form.sectorSearchPlaceholder}
+              emptyText={idHero.form.sectorEmpty}
               error={errors.sectorId}
             />
           </div>
@@ -313,8 +318,8 @@ export function HeroFormDialog({
           <Input
             ref={nameInputRef}
             id="hero-form-name"
-            label="Nama Hero"
-            placeholder="Contoh: Fariha Ramadhani"
+            label={idHero.form.nameLabel}
+            placeholder={idHero.form.namePlaceholder}
             value={formData.name}
             onChange={(e) => {
               const nextName = e.target.value;
@@ -331,11 +336,11 @@ export function HeroFormDialog({
           {/* Field Nomor Telepon */}
           <Input
             id="hero-form-phone"
-            label="Nomor Telepon"
-            placeholder="Contoh: 0812-3456-7890"
+            label={idHero.form.phoneLabel}
+            placeholder={idHero.form.phonePlaceholder}
             value={formData.phone}
             onChange={(e) => handlePhoneChange(e.target.value)}
-            helperText="Opsional. Dipakai untuk mengirim kode klaim."
+            helperText={idHero.form.phoneHelper}
             error={errors.phone}
             disabled={isSubmitting}
             className="max-w-none"
@@ -351,11 +356,10 @@ export function HeroFormDialog({
                   setFormData((prev) => ({ ...prev, isBlocked: checked }))
                 }
                 disabled={isSubmitting}
-                label="Blokir hero ini"
+                label={idHero.form.blockToggleLabel}
               />
               <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-600">
-                Hero yang diblokir tidak bisa menerima alokasi donasi baru.
-                Riwayatnya tetap tersimpan.
+                {idHero.form.blockToggleHelper}
               </p>
             </div>
           )}
@@ -369,16 +373,16 @@ export function HeroFormDialog({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Batal
+              {idHero.form.cancelButton}
             </Button>
             <Button
               type="submit"
               variant="primary"
               size="md"
               isLoading={isSubmitting}
-              loadingText="Menyimpan..."
+              loadingText={idHero.form.savingButton}
             >
-              {isEdit ? "Simpan Perubahan" : "Simpan Hero"}
+              {isEdit ? idHero.form.saveChangesButton : idHero.form.saveButton}
             </Button>
           </div>
         </form>

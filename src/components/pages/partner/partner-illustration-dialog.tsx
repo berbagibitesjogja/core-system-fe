@@ -1,5 +1,6 @@
 import * as React from "react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { idPartner } from "#/locales";
 
 export interface PartnerIllustrationDialogProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ export function PartnerIllustrationDialog({
   title,
   description,
   footer,
-  illustrationAlt = "Ilustrasi konfirmasi tindakan",
+  illustrationAlt = idPartner.dialogs.defaultAlt,
   disableDismiss = false,
 }: PartnerIllustrationDialogProps) {
   React.useEffect(() => {

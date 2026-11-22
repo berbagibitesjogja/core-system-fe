@@ -14,6 +14,7 @@ import {
 import { Pagination } from "#/components/shared/pagination";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
+import { idPartner } from "#/locales";
 import { getIconButtonClasses } from "#/components/ui/icon-button";
 import { Tooltip } from "#/components/ui/tooltip";
 import {
@@ -93,40 +94,48 @@ export function PartnerDetailDonationsTable({
       {
         id: "quota",
         accessorKey: "quotaCount",
-        header: "Kuota",
+        header: idPartner.detail.donationsColumnQuota,
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
-            {row.original.quotaCount.toLocaleString("id-ID")} Orang
+            {row.original.quotaCount.toLocaleString("id-ID")}{" "}
+            {idPartner.detail.donationsQuotaUnit}
           </span>
         ),
       },
       {
         id: "food",
         accessorKey: "foodKg",
-        header: "Makanan",
+        header: idPartner.detail.donationsColumnFood,
         meta: {
           className: "w-[100px]",
         },
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
-            {row.original.foodKg.toLocaleString("id-ID")} Kg
+            {row.original.foodKg.toLocaleString("id-ID")}{" "}
+            {idPartner.detail.donationsFoodUnit}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idPartner.detail.donationsColumnAction,
         meta: {
           className: "w-[80px]",
           align: "right",
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <Tooltip content="Lihat detail donasi" placement="top">
+            <Tooltip
+              content={idPartner.detail.donationsViewTooltip}
+              placement="top"
+            >
               <Link
                 to="/admin/donation/detail"
                 search={{ id: row.original.id }}
-                aria-label={`Lihat detail donasi ${partnerName} tanggal ${row.original.dateLabel}`}
+                aria-label={idPartner.detail.donationsViewAria(
+                  partnerName,
+                  row.original.dateLabel,
+                )}
                 className={getIconButtonClasses({
                   variant: "ghost",
                   size: "sm",
@@ -152,20 +161,21 @@ export function PartnerDetailDonationsTable({
 
   return (
     <section
-      aria-label={`Donasi Oleh ${partnerName}`}
+      aria-label={idPartner.detail.donationsByAria(partnerName)}
       className="flex-1 min-w-0 w-full rounded-2xl border border-neutral-200 bg-white shadow-xs"
     >
       {/* Header Kartu Riwayat Donasi */}
       <div className="px-5 py-4 border-b border-neutral-100 rounded-t-2xl flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900 min-w-0 truncate">
-          Donasi Oleh {partnerName}
+          {idPartner.detail.donationsByTitle(partnerName)}
         </h2>
         <Badge
           tone="neutral"
           styleVariant="soft"
           className="shrink-0 bg-neutral-100 text-neutral-600 border-transparent font-medium"
         >
-          {totalCount.toLocaleString("id-ID")} aksi
+          {totalCount.toLocaleString("id-ID")}{" "}
+          {idPartner.detail.donationsActionUnit}
         </Badge>
       </div>
 
@@ -176,8 +186,8 @@ export function PartnerDetailDonationsTable({
             size="default"
             visual="illustration"
             illustration={<IllustrationSantaiKosong />}
-            title="Belum ada riwayat donasi"
-            description="Belum ada riwayat donasi yang disumbangkan oleh donatur ini."
+            title={idPartner.detail.emptyDonationsTitle}
+            description={idPartner.detail.emptyDonationsDescription}
             action={
               <Button
                 variant="primary"
@@ -185,7 +195,7 @@ export function PartnerDetailDonationsTable({
                 leftIcon={<Plus className="size-5 text-white" />}
                 onClick={onAddDonation}
               >
-                Tambah Donasi
+                {idPartner.detail.addFirstDonationButton}
               </Button>
             }
           />

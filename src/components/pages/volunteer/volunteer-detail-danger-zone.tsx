@@ -1,6 +1,7 @@
 import { Trash2 } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 
 export interface VolunteerDetailDangerZoneProps {
   volunteerName: string;
@@ -26,11 +27,10 @@ export function VolunteerDetailDangerZone({
     >
       <div className="flex flex-col gap-1 min-w-0">
         <h4 className="font-heading text-base font-semibold text-red-700 leading-6">
-          Zona Bahaya
+          {idVolunteer.detail.dangerZone.title}
         </h4>
         <p className="font-sans text-xs text-neutral-600 leading-4">
-          Menghapus akun membuat {volunteerName} tidak bisa lagi masuk ke panel
-          admin.
+          {idVolunteer.detail.dangerZone.description(volunteerName)}
         </p>
       </div>
 
@@ -42,7 +42,7 @@ export function VolunteerDetailDangerZone({
         className="gap-2 shrink-0"
       >
         <Trash2 className="size-4 shrink-0" aria-hidden="true" />
-        <span>Hapus Akun Volunteer</span>
+        <span>{idVolunteer.detail.dangerZone.deleteButton}</span>
       </Button>
     </div>
   );

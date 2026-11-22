@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
+import { idDashboard } from "#/locales/id/dashboard";
 import {
   CHART_Y_GRID_LABELS,
   DEFAULT_FOOD_CHART_DATA,
@@ -33,14 +34,14 @@ export function DashboardChartsRow({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h4 className="font-heading-h4 text-base sm:text-lg font-semibold text-neutral-900 leading-tight">
-                Statistik Heroes
+                {idDashboard.charts.heroesTitle}
               </h4>
               <p className="font-sans text-xs text-neutral-500 mt-0.5">
-                Jumlah heroes penerima makanan per bulan
+                {idDashboard.charts.heroesSubtitle}
               </p>
             </div>
             <div className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs select-none">
-              <span>6 bulan terakhir</span>
+              <span>{idDashboard.charts.timeRangeLast6Months}</span>
               <ChevronDown className="size-3.5 text-neutral-500" />
             </div>
           </div>
@@ -52,7 +53,7 @@ export function DashboardChartsRow({
                 3.020
               </span>
               <span className="font-label text-sm font-semibold text-neutral-500">
-                orang
+                {idDashboard.charts.unitPeople}
               </span>
             </div>
             <Badge
@@ -60,10 +61,10 @@ export function DashboardChartsRow({
               styleVariant="soft"
               className="h-5 px-2 text-[11px]"
             >
-              +9,5%
+              {idDashboard.charts.trendHeroes}
             </Badge>
             <span className="font-sans text-xs text-neutral-500">
-              dibanding Oktober
+              {idDashboard.charts.comparedToPreviousMonth}
             </span>
           </div>
 
@@ -174,14 +175,14 @@ export function DashboardChartsRow({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h4 className="font-heading-h4 text-base sm:text-lg font-semibold text-neutral-900 leading-tight">
-                Statistik Makanan
+                {idDashboard.charts.foodTitle}
               </h4>
               <p className="font-sans text-xs text-neutral-500 mt-0.5">
-                Berat makanan yang diselamatkan per bulan
+                {idDashboard.charts.foodSubtitle}
               </p>
             </div>
             <div className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs select-none">
-              <span>6 bulan terakhir</span>
+              <span>{idDashboard.charts.timeRangeLast6Months}</span>
               <ChevronDown className="size-3.5 text-neutral-500" />
             </div>
           </div>
@@ -193,7 +194,7 @@ export function DashboardChartsRow({
                 624
               </span>
               <span className="font-label text-sm font-semibold text-neutral-500">
-                Kg
+                {idDashboard.charts.unitKg}
               </span>
             </div>
             <Badge
@@ -201,10 +202,10 @@ export function DashboardChartsRow({
               styleVariant="soft"
               className="h-5 px-2 text-[11px]"
             >
-              +6,1%
+              {idDashboard.charts.trendFood}
             </Badge>
             <span className="font-sans text-xs text-neutral-500">
-              dibanding Oktober
+              {idDashboard.charts.comparedToPreviousMonth}
             </span>
           </div>
 

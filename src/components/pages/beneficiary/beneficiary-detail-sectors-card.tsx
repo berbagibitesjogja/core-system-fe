@@ -21,6 +21,7 @@ import {
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
 import { cn } from "#/lib/utils";
+import { idBeneficiary } from "#/locales";
 import type { BeneficiarySectorRecord } from "./beneficiary-detail-data";
 
 export interface BeneficiaryDetailSectorsCardProps {
@@ -46,7 +47,7 @@ export function BeneficiaryDetailSectorsCard({
       {
         id: "name",
         accessorKey: "name",
-        header: "Nama",
+        header: idBeneficiary.detail.sectorsColumnName,
         cell: ({ row }) => (
           <span
             className="block max-w-[175px] truncate font-sans font-medium text-sm text-neutral-900"
@@ -59,16 +60,17 @@ export function BeneficiaryDetailSectorsCard({
       {
         id: "count",
         accessorKey: "heroesCount",
-        header: "Jumlah",
+        header: idBeneficiary.detail.sectorsColumnCount,
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
-            {row.original.heroesCount.toLocaleString("id-ID")} Orang
+            {row.original.heroesCount.toLocaleString("id-ID")}{" "}
+            {idBeneficiary.stats.unitHeroes}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idBeneficiary.detail.sectorsColumnAction,
         meta: {
           className: "w-[68px]",
           align: "right",
@@ -78,8 +80,12 @@ export function BeneficiaryDetailSectorsCard({
             <IconButton
               variant="ghost"
               size="sm"
-              tooltip={`Lihat detail sektor ${row.original.name}`}
-              aria-label={`Lihat detail sektor ${row.original.name}`}
+              tooltip={idBeneficiary.detail.sectorsViewTooltip(
+                row.original.name,
+              )}
+              aria-label={idBeneficiary.detail.sectorsViewTooltip(
+                row.original.name,
+              )}
               onClick={() => onViewSector(row.original)}
               className="text-neutral-700 hover:bg-neutral-100"
             >
@@ -107,7 +113,7 @@ export function BeneficiaryDetailSectorsCard({
       {/* Header Kartu Persebaran Sektor */}
       <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between gap-3">
         <h2 className="font-['Gabarito'] text-base font-semibold leading-6 text-neutral-900 min-w-0 truncate">
-          Persebaran Di {beneficiaryName}
+          {idBeneficiary.detail.sectorsTitle(beneficiaryName)}
         </h2>
         <Button
           variant="accent"
@@ -116,7 +122,7 @@ export function BeneficiaryDetailSectorsCard({
           onClick={onOpenAddSector}
           className="shrink-0"
         >
-          Tambah Sektor
+          {idBeneficiary.detail.sectorsAddButton}
         </Button>
       </div>
 
@@ -127,8 +133,8 @@ export function BeneficiaryDetailSectorsCard({
             size="compact"
             visual="illustration"
             illustration={<IllustrationCariKosong />}
-            title="Belum ada sektor"
-            description="Belum ada sektor/persebaran yang terdaftar untuk penerima manfaat ini."
+            title={idBeneficiary.detail.sectorsEmptyTitle}
+            description={idBeneficiary.detail.sectorsEmptyDescription}
             className="max-w-[340px] p-4"
           />
         </div>

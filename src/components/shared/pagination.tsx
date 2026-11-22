@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PerPageSelector } from "./per-page-selector";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales";
 
 export interface PaginationProps {
   currentPage: number;
@@ -40,11 +41,14 @@ export function Pagination({
     pages.push(totalPages);
   }
 
-  const defaultRangeText = `Halaman ${currentPage} dari ${totalPages}`;
+  const defaultRangeText = idShared.pagination.defaultRangeText(
+    currentPage,
+    totalPages,
+  );
 
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={idShared.pagination.navAria}
       className={cn(
         "flex flex-wrap items-center justify-between gap-4 py-3",
         className,
@@ -65,13 +69,13 @@ export function Pagination({
         )}
 
         <div className="flex items-center gap-1">
-          <Tooltip content="Halaman Sebelumnya">
+          <Tooltip content={idShared.pagination.previousTooltip}>
             <button
               type="button"
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage <= 1}
               className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-              aria-label="Halaman Sebelumnya"
+              aria-label={idShared.pagination.previousAria}
             >
               <ChevronLeft className="size-4" />
             </button>
@@ -111,10 +115,10 @@ export function Pagination({
 
           {/* Mobile page indicator */}
           <span className="sm:hidden font-label text-xs font-semibold px-2 text-neutral-700">
-            Hal {currentPage} / {totalPages}
+            {idShared.pagination.mobilePageIndicator(currentPage, totalPages)}
           </span>
 
-          <Tooltip content="Halaman Selanjutnya">
+          <Tooltip content={idShared.pagination.nextTooltip}>
             <button
               type="button"
               onClick={() =>
@@ -122,7 +126,7 @@ export function Pagination({
               }
               disabled={currentPage >= totalPages}
               className="size-9 rounded-md border border-neutral-300 bg-white flex items-center justify-center text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
-              aria-label="Halaman Selanjutnya"
+              aria-label={idShared.pagination.nextAria}
             >
               <ChevronRight className="size-4" />
             </button>

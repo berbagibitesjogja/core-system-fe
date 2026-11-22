@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idVolunteer } from "#/locales";
 import type { VolunteerRecord } from "./volunteer-data";
 import { VolunteerIllustrationDialog } from "./volunteer-illustration-dialog";
 
@@ -23,12 +24,12 @@ export function VolunteerCannotDeleteDialog({
       isOpen={isOpen}
       onClose={onClose}
       titleId="volunteer-cannot-delete-modal-title"
-      title="Volunteer tidak dapat dihapus"
-      illustrationAlt="Ilustrasi volunteer tidak dapat dihapus"
-      description={`${firstName} masih terikat pada penugasan war aktif atau pengajuan reimburse. Selesaikan dulu, lalu coba hapus lagi.`}
+      title={idVolunteer.dialogs.cannotDeleteTitle}
+      illustrationAlt={idVolunteer.dialogs.cannotDeleteAlt}
+      description={idVolunteer.dialogs.cannotDeleteDescription(firstName)}
       footer={
         <Button variant="secondary" size="md" onClick={onClose}>
-          Mengerti
+          {idVolunteer.dialogs.cannotDeleteButton}
         </Button>
       }
     />

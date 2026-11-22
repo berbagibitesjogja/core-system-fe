@@ -2,6 +2,7 @@ import * as React from "react";
 import { AlertTriangle, FileText, Sparkles, Upload, X } from "lucide-react";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 import { ProgressBar } from "./progress-bar";
 
 export type FileUploadState =
@@ -92,7 +93,7 @@ export function FileUpload({
               </span>
             </div>
           </div>
-          <Tooltip content="Hapus berkas">
+          <Tooltip content={idShared.fileUpload.deleteTooltip}>
             <button
               type="button"
               onClick={(e) => {
@@ -100,7 +101,7 @@ export function FileUpload({
                 onRemove?.();
               }}
               className="size-[24px] inline-flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer rounded"
-              aria-label="Hapus berkas"
+              aria-label={idShared.fileUpload.deleteAria}
             >
               <X className="size-[18px]" />
             </button>
@@ -157,12 +158,12 @@ export function FileUpload({
             )}
           >
             {currentState === "error"
-              ? "Berkas ditolak"
+              ? idShared.fileUpload.dropzoneRejected
               : currentState === "analyzing"
-                ? "Menganalisis invoice via AI..."
+                ? idShared.fileUpload.dropzoneAnalyzing
                 : currentState === "dragover"
-                  ? "Lepaskan untuk mengunggah"
-                  : "Klik atau seret berkas ke sini"}
+                  ? idShared.fileUpload.dropzoneDragActive
+                  : idShared.fileUpload.dropzoneDefault}
           </p>
 
           {/* Description */}
@@ -173,10 +174,9 @@ export function FileUpload({
             )}
           >
             {currentState === "error"
-              ? errorMessage ||
-                "Bukan invoice sah atau tidak memuat nominal. Unggah struk yang jelas."
+              ? errorMessage || idShared.fileUpload.dropzoneRejectedDesc
               : currentState === "analyzing"
-                ? "Membaca nominal dari struk, biasanya kurang dari 8 detik"
+                ? idShared.fileUpload.dropzoneAnalyzingDesc
                 : description}
           </p>
 
@@ -187,7 +187,7 @@ export function FileUpload({
               indeterminate={typeof analyzingProgress !== "number"}
               color="brand"
               trackColor="sunny"
-              ariaLabel="Progres analisis invoice"
+              ariaLabel={idShared.fileUpload.progressAria}
               className="w-[200px] mt-1"
             />
           )}

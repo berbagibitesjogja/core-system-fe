@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
+import { idProfile } from "#/locales/id/profile";
 import type { ProfileActivityItem } from "./profile-data";
 
 export interface ProfileActivityTabProps {
@@ -27,10 +28,10 @@ export function ProfileActivityTab({
       {/* Header Bagian Aktivitas */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-4 w-full">
         <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-          Aktivitas saya
+          {idProfile.activityTab.title}
         </h2>
         <Badge tone="brand" styleVariant="soft">
-          Khusus Super Admin
+          {idProfile.activityTab.superAdminBadge}
         </Badge>
       </div>
 
@@ -88,7 +89,7 @@ export function ProfileActivityTab({
           to="/admin/logs"
           className="inline-flex items-center justify-center gap-1.5 px-4 py-2 -ml-4 rounded-full font-sans text-sm font-semibold leading-5 text-brand hover:bg-brand-subtle transition-colors"
         >
-          <span>Lihat semua log</span>
+          <span>{idProfile.activityTab.viewAllLogs}</span>
           <ChevronRight className="size-4 shrink-0" aria-hidden="true" />
         </Link>
       </div>

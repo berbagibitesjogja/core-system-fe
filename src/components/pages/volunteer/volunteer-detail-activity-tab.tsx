@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 import type { VolunteerActivityItem } from "./volunteer-data";
 
 export interface VolunteerDetailActivityTabProps {
@@ -26,10 +27,10 @@ export function VolunteerDetailActivityTab({
       {/* Header Bagian Aktivitas */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-4 w-full border-b border-neutral-100">
         <h3 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-          Log aktivitas terbaru
+          {idVolunteer.detail.activityTab.title}
         </h3>
         <Badge tone="brand" styleVariant="soft">
-          Khusus Super Admin
+          {idVolunteer.detail.activityTab.superAdminOnlyBadge}
         </Badge>
       </div>
 
@@ -87,7 +88,7 @@ export function VolunteerDetailActivityTab({
           to="/admin/logs"
           className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 -ml-3 rounded-full font-sans text-sm font-semibold leading-5 text-brand hover:bg-brand-subtle transition-colors"
         >
-          <span>Lihat semua log</span>
+          <span>{idVolunteer.detail.activityTab.viewAllLogs}</span>
           <ChevronRight className="size-4 shrink-0" aria-hidden="true" />
         </Link>
       </div>

@@ -1,6 +1,7 @@
 import { StatCardGrid } from "#/components/shared/stat-card";
 import { StatCardSkeleton } from "#/components/shared/stat-card-skeleton";
 import { Skeleton } from "#/components/ui/skeleton";
+import { idPartner } from "#/locales/id/partner";
 
 const PARTNER_SKELETON_ROWS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const PARTNER_SKELETON_CHIPS = [1, 2, 3];
@@ -83,7 +84,7 @@ export function PartnerSkeleton() {
         {/* Footer Tabel */}
         <div className="px-5 py-4 flex items-center justify-between gap-4">
           <span className="font-['Josefin_Sans'] text-[14px] leading-[20px] text-neutral-600">
-            Memuat data donatur…
+            {idPartner.list.loadingText}
           </span>
           <Skeleton className="h-9 w-56 rounded-sm hidden sm:block" />
         </div>

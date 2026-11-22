@@ -26,6 +26,7 @@ import {
 } from "#/components/ui/table";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idReimburse } from "#/locales";
 import { formatRupiah, REIMBURSE_STATUS_BADGE_TONE } from "./reimburse-data";
 import type { ReimburseDataItem } from "./reimburse-management-data";
 
@@ -69,7 +70,7 @@ export function ReimburseDataTable({
     () => [
       {
         id: "pemohon",
-        header: "Pemohon",
+        header: idReimburse.data.table.columnApplicant,
         meta: {
           className: "min-w-[230px]",
         },
@@ -90,7 +91,7 @@ export function ReimburseDataTable({
       },
       {
         id: "catatan",
-        header: "Catatan",
+        header: idReimburse.data.table.columnNote,
         meta: {
           className: "w-full max-w-[340px]",
         },
@@ -108,7 +109,7 @@ export function ReimburseDataTable({
       },
       {
         id: "jumlah",
-        header: "Jumlah",
+        header: idReimburse.data.table.columnAmount,
         meta: {
           align: "right",
           className: "w-[120px] min-w-[120px]",
@@ -121,7 +122,7 @@ export function ReimburseDataTable({
       },
       {
         id: "bukti",
-        header: "Bukti",
+        header: idReimburse.data.table.columnProof,
         meta: {
           className: "w-[150px] min-w-[150px]",
         },
@@ -137,7 +138,7 @@ export function ReimburseDataTable({
                 onClick={() => onPreviewInvoice(item)}
                 className="h-auto min-h-0 gap-1 rounded-none px-0 py-0 text-xs font-semibold leading-4 text-brand hover:bg-transparent hover:underline"
               >
-                Invoice
+                {idReimburse.data.table.invoiceButton}
               </Button>
               {item.status === "Selesai" ? (
                 <Button
@@ -148,11 +149,11 @@ export function ReimburseDataTable({
                   onClick={() => onPreviewTransferProof(item)}
                   className="h-auto min-h-0 gap-1 rounded-none px-0 py-0 text-xs font-semibold leading-4 text-brand hover:bg-transparent hover:underline"
                 >
-                  Bukti transfer
+                  {idReimburse.data.table.transferProofButton}
                 </Button>
               ) : (
                 <span className="text-xs font-medium leading-4 text-neutral-500">
-                  Transfer: —
+                  {idReimburse.data.table.transferProofEmpty}
                 </span>
               )}
             </div>
@@ -161,7 +162,7 @@ export function ReimburseDataTable({
       },
       {
         id: "status",
-        header: "Status",
+        header: idReimburse.data.table.columnStatus,
         meta: {
           className: "w-[120px] min-w-[120px]",
         },
@@ -190,7 +191,7 @@ export function ReimburseDataTable({
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: idReimburse.data.table.columnAction,
         meta: {
           align: "right",
           className: "w-[150px] min-w-[150px]",
@@ -212,15 +213,17 @@ export function ReimburseDataTable({
                 leftIcon={<Check className="size-4" />}
                 onClick={() => onRequestConfirmPaid(item)}
               >
-                Sudah
+                {idReimburse.data.table.markPaidButton}
               </Button>
               {canCancel && (
                 <IconButton
                   type="button"
                   variant="secondary"
                   size="sm"
-                  tooltip="Tolak pengajuan"
-                  aria-label={`Tolak pengajuan ${item.applicantName}`}
+                  tooltip={idReimburse.data.table.rejectTooltip}
+                  aria-label={idReimburse.data.table.rejectAria(
+                    item.applicantName,
+                  )}
                   onClick={() =>
                     onRequestReject
                       ? onRequestReject(item)
@@ -259,11 +262,11 @@ export function ReimburseDataTable({
         <EmptyState
           visual="illustration"
           illustration={<IllustrationCariKosong className="size-36" />}
-          title="Data reimburse tidak ditemukan"
+          title={idReimburse.data.table.emptyTitle}
           description={
             hasActiveFilter
-              ? "Tidak ada pengajuan reimburse yang cocok dengan kata kunci atau filter status saat ini."
-              : "Belum ada data pengajuan reimburse yang tercatat."
+              ? idReimburse.data.table.emptyFilterDescription
+              : idReimburse.data.table.emptyDefaultDescription
           }
           action={
             hasActiveFilter ? (
@@ -273,7 +276,7 @@ export function ReimburseDataTable({
                 size="sm"
                 onClick={onResetFilters}
               >
-                Hapus pencarian
+                {idReimburse.data.table.resetFilterButton}
               </Button>
             ) : undefined
           }
@@ -284,7 +287,11 @@ export function ReimburseDataTable({
 
   const startRange = totalItems === 0 ? 0 : (currentPage - 1) * perPage + 1;
   const endRange = Math.min(currentPage * perPage, totalItems);
-  const rangeText = `Menampilkan ${startRange} - ${endRange} dari ${totalItems} pengajuan`;
+  const rangeText = idReimburse.data.table.rangeText(
+    startRange,
+    endRange,
+    totalItems,
+  );
 
   return (
     <div className="flex w-full flex-col rounded-2xl border border-neutral-200 bg-surface shadow-xs">

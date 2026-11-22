@@ -25,6 +25,7 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { getHeroAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idDonation } from "#/locales";
 import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type {
   DonationHeroClaimRecord,
@@ -125,7 +126,7 @@ export function DonationDetailHeroesCard({
         return (
           <div className="flex items-center justify-end gap-2">
             <Badge tone="danger" styleVariant="soft" dot>
-              Tidak Jadi Ambil
+              {idDonation.detail.heroesCard.statusNotPickedUp}
             </Badge>
           </div>
         );
@@ -136,7 +137,7 @@ export function DonationDetailHeroesCard({
         <div className="flex items-center justify-end gap-2">
           {isPickedUp ? (
             <Badge tone="success" styleVariant="soft" dot>
-              Sudah Diambil
+              {idDonation.detail.heroesCard.statusAttended}
             </Badge>
           ) : (
             <Button
@@ -145,7 +146,7 @@ export function DonationDetailHeroesCard({
               size="sm"
               onClick={() => onConfirmPickup(hero)}
             >
-              Konfirmasi Ambil
+              {idDonation.detail.heroesCard.confirmPickupButton}
             </Button>
           )}
           <IconButton
@@ -154,13 +155,13 @@ export function DonationDetailHeroesCard({
             size="sm"
             aria-label={
               isPickedUp
-                ? `Keluarkan ${hero.name} (kuota hangus)`
-                : `Keluarkan ${hero.name} dari donasi`
+                ? idDonation.detail.heroesCard.removeTooltipHangus
+                : idDonation.detail.heroesCard.removeTooltipNormal
             }
             tooltip={
               isPickedUp
-                ? "Keluarkan hero (kuota hangus)"
-                : "Keluarkan hero dari donasi"
+                ? idDonation.detail.heroesCard.removeTooltipHangus
+                : idDonation.detail.heroesCard.removeTooltipNormal
             }
             onClick={() => onRemoveHero(hero)}
           >
@@ -228,7 +229,7 @@ export function DonationDetailHeroesCard({
       {
         id: "claimCode",
         accessorKey: "claimCode",
-        header: "Kode",
+        header: idDonation.detail.heroesCard.columnClaimCode,
         meta: {
           className: "w-[110px]",
         },
@@ -240,7 +241,7 @@ export function DonationDetailHeroesCard({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idDonation.detail.heroesCard.columnAction,
         meta: {
           align: "right",
         },
@@ -263,14 +264,18 @@ export function DonationDetailHeroesCard({
       <div className="p-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
           <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-            Daftar Heroes
+            {idDonation.detail.heroesCard.cardTitle}
           </h2>
           <Badge tone="neutral" styleVariant="soft">
-            {heroesSummary.activeHeroesCount} orang
+            {idDonation.detail.heroesCard.heroCountBadge(
+              heroesSummary.activeHeroesCount,
+            )}
           </Badge>
           {heroesSummary.forfeitedCount > 0 && (
             <Badge tone="danger" styleVariant="soft" dot>
-              {heroesSummary.forfeitedCount} kuota hangus
+              {idDonation.detail.heroesCard.quotaBurnedBadge(
+                heroesSummary.forfeitedCount,
+              )}
             </Badge>
           )}
         </div>
@@ -286,14 +291,14 @@ export function DonationDetailHeroesCard({
             aria-expanded={isAddOpen}
             aria-haspopup="menu"
           >
-            Tambah Heroes
+            {idDonation.detail.heroesCard.addHeroButton}
           </Button>
 
           {isAddOpen && (
             <div
               className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[320px] z-40 rounded-md border border-neutral-200 bg-white p-1.5 flex flex-col gap-0.5 shadow-[0px_8px_24px_-4px_rgba(20,32,35,0.1)] animate-in fade-in slide-in-from-top-1 duration-150 motion-reduce:animate-none"
               role="menu"
-              aria-label="Pilih hero untuk ditambahkan"
+              aria-label={idDonation.detail.heroesCard.selectHeroAria}
             >
               <Input
                 ref={searchInputRef}
@@ -302,7 +307,7 @@ export function DonationDetailHeroesCard({
                 showHelper={false}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Cari nama hero..."
+                placeholder={idDonation.detail.heroesCard.searchPlaceholder}
                 leadingIcon={<Search className="size-4 text-neutral-500" />}
                 trailingIcon={
                   searchTerm ? (
@@ -310,8 +315,8 @@ export function DonationDetailHeroesCard({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      aria-label="Hapus pencarian hero"
-                      tooltip="Bersihkan pencarian"
+                      aria-label={idDonation.detail.heroesCard.clearSearchAria}
+                      tooltip={idDonation.detail.heroesCard.clearSearchTooltip}
                       onClick={() => setSearchTerm("")}
                     >
                       <X className="size-3.5" />
@@ -323,15 +328,19 @@ export function DonationDetailHeroesCard({
 
               {isQuotaFull && (
                 <div className="rounded-sm bg-amber-50 border border-amber-200 px-3 py-1.5 font-sans text-xs text-amber-800 font-medium">
-                  Kuota heroes sudah penuh ({heroesSummary.usedQuotaCount} /{" "}
-                  {quotaTotal}).
+                  {idDonation.detail.heroesCard.quotaFullAlert(
+                    heroesSummary.usedQuotaCount,
+                    quotaTotal,
+                  )}
                 </div>
               )}
 
               <div className="max-h-[260px] overflow-y-auto flex flex-col gap-0.5">
                 {filteredCandidates.length === 0 ? (
                   <p className="py-5 text-center font-sans text-xs text-neutral-500">
-                    Tidak ada hero yang cocok dengan "{searchTerm}".
+                    {idDonation.detail.heroesCard.emptySearchCandidates(
+                      searchTerm,
+                    )}
                   </p>
                 ) : (
                   filteredCandidates.map((candidate) => {
@@ -342,7 +351,7 @@ export function DonationDetailHeroesCard({
                       candidate.isBlocked || isAlreadyRegistered || isQuotaFull;
 
                     const subtitleText = isAlreadyRegistered
-                      ? "Sudah terdaftar di donasi ini"
+                      ? idDonation.detail.heroesCard.alreadyRegistered
                       : `${candidate.sectorName} · ${candidate.beneficiaryName}`;
 
                     return (
@@ -385,7 +394,7 @@ export function DonationDetailHeroesCard({
                             dot
                             className="shrink-0 whitespace-nowrap"
                           >
-                            Diblokir
+                            {idDonation.detail.heroesCard.blockedBadge}
                           </Badge>
                         )}
                       </Button>
@@ -405,8 +414,8 @@ export function DonationDetailHeroesCard({
             size="compact"
             visual="illustration"
             illustration={<IllustrationSantaiKosong />}
-            title="Belum ada heroes"
-            description="Tambahkan heroes secara manual atau tunggu heroes melakukan klaim pada aksi donasi ini."
+            title={idDonation.detail.heroesCard.emptyCardTitle}
+            description={idDonation.detail.heroesCard.emptyCardDesc}
             className="max-w-[380px] p-4"
           />
         </div>
@@ -492,8 +501,8 @@ export function DonationDetailHeroesCard({
                 className="text-brand hover:text-brand-hover hover:bg-bondi-50"
               >
                 {isExpanded
-                  ? "Sembunyikan sebagian heroes"
-                  : `Tampilkan ${hiddenCount} heroes lainnya`}
+                  ? idDonation.detail.heroesCard.hideSomeHeroes
+                  : idDonation.detail.heroesCard.showMoreHeroes(hiddenCount)}
               </Button>
             </div>
           )}

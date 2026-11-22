@@ -6,6 +6,7 @@ import { Badge } from "#/components/ui/badge";
 import { Menu, MenuItem } from "#/components/ui/menu";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 
 export interface UserProfileMenuItemConfig {
   id: string;
@@ -108,7 +109,7 @@ export function UserProfileMenu({
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        aria-label={name ? `Menu profil ${name}` : "Menu profil pengguna"}
+        aria-label={idShared.userProfileMenu.menuAria(name)}
         className={cn(
           "flex items-center rounded-full text-left transition-all duration-150 cursor-pointer select-none",
           compactOnMobile
@@ -166,7 +167,7 @@ export function UserProfileMenu({
             <div className="px-3 py-2 border-b border-neutral-100 mb-1">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-label text-xs font-bold uppercase tracking-wider text-neutral-400">
-                  Akun Aktif
+                  {idShared.userProfileMenu.activeAccount}
                 </span>
                 <Badge
                   tone="brand"

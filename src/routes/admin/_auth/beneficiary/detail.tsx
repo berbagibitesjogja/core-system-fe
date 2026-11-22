@@ -21,6 +21,7 @@ import { getCategoryBadgeConfig } from "#/components/shared/beneficiary-card";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { toast } from "#/components/ui/toast";
+import { idBeneficiary } from "#/locales";
 import { cn } from "#/lib/utils";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import {
@@ -89,14 +90,14 @@ function BeneficiaryDetailPage() {
 
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID kategori penerima manfaat tidak ditemukan.");
+      toast.error(idBeneficiary.detail.notFoundId);
       navigate({ to: "/admin/beneficiary" });
     }
   }, [trimmedId, navigate]);
 
   React.useEffect(() => {
     if (beneficiaryQuery.isError) {
-      toast.error("Data kategori penerima manfaat tidak ditemukan.");
+      toast.error(idBeneficiary.detail.notFoundData);
       navigate({ to: "/admin/beneficiary" });
     }
   }, [beneficiaryQuery.isError, navigate]);
@@ -131,7 +132,7 @@ function BeneficiaryDetailPage() {
       title: detail.name,
       subtitle: detail.subtitle,
       onBack: () => navigate({ to: "/admin/beneficiary" }),
-      backLabel: "Kembali",
+      backLabel: idBeneficiary.detail.backLabel,
     });
 
     return () => setHeaderOverride(null);
@@ -223,7 +224,7 @@ function BeneficiaryDetailPage() {
 
   const handleViewSector = React.useCallback(
     (sector: BeneficiarySectorRecord) => {
-      toast.info(`Menampilkan detail sektor ${sector.name}`);
+      toast.info(idBeneficiary.detail.sectorDetailToast(sector.name));
     },
     [],
   );
@@ -241,9 +242,9 @@ function BeneficiaryDetailPage() {
 
       setSectors((prev) => [newSector, ...prev]);
       setIsAddSectorOpen(false);
-      toast.success("Sektor baru berhasil ditambahkan");
+      toast.success(idBeneficiary.detail.addSectorSuccessToast);
     } catch {
-      toast.error("Gagal menambahkan sektor baru. Silakan coba lagi.");
+      toast.error(idBeneficiary.detail.addSectorErrorToast);
     } finally {
       setIsAddingSector(false);
     }
@@ -275,7 +276,7 @@ function BeneficiaryDetailPage() {
               styleVariant="soft"
               className="h-6 px-2.5 text-xs font-medium bg-amber-50 text-amber-800 border-amber-200"
             >
-              Prioritas Penyaluran
+              {idBeneficiary.detail.badgePriority}
             </Badge>
           )}
 
@@ -285,7 +286,7 @@ function BeneficiaryDetailPage() {
               styleVariant="soft"
               className="h-6 px-2.5 text-xs font-medium bg-neutral-100 text-neutral-600 border-neutral-200"
             >
-              Tersembunyi dari Publik
+              {idBeneficiary.detail.badgeHidden}
             </Badge>
           )}
         </div>
@@ -301,7 +302,7 @@ function BeneficiaryDetailPage() {
             })
           }
         >
-          Edit Beneficiary
+          {idBeneficiary.detail.editButton}
         </Button>
       </div>
 
@@ -310,7 +311,9 @@ function BeneficiaryDetailPage() {
         <div className="flex flex-wrap items-center gap-6 p-4 rounded-xl border border-neutral-200 bg-white text-sm text-neutral-700 shadow-2xs">
           {detail.emailDomain && (
             <div className="flex items-center gap-2">
-              <span className="text-neutral-400 font-medium">Domain Hero:</span>
+              <span className="text-neutral-400 font-medium">
+                {idBeneficiary.detail.heroDomainLabel}
+              </span>
               <span className="font-semibold text-bondi-700 inline-flex items-center gap-1.5">
                 <Mail className="size-3.5 text-bondi-600" />@
                 {detail.emailDomain.replace(/^@+/, "")}
@@ -332,7 +335,7 @@ function BeneficiaryDetailPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 font-medium text-bondi-700 hover:underline"
             >
-              <span>Buka Google Maps</span>
+              <span>{idBeneficiary.detail.openMapsLabel}</span>
               <ExternalLink className="size-3.5" />
             </a>
           )}

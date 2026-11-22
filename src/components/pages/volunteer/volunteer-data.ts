@@ -1,6 +1,7 @@
 import charitySharingSvg from "#/assets/illustrations/charity-sharing.svg";
 import lunchBoxSvg from "#/assets/illustrations/lunch-box.svg";
 import volunteerRelaxingSvg from "#/assets/illustrations/volunteer-relaxing.svg";
+import { idVolunteer } from "#/locales";
 
 export type VolunteerDivision =
   | "Operational Manager"
@@ -41,44 +42,8 @@ export interface VolunteerActivityItem {
   timestampLabel: string;
 }
 
-export const defaultVolunteerActivities: readonly VolunteerActivityItem[] = [
-  {
-    id: "act-1",
-    title: "Masuk ke panel admin",
-    category: "Sistem",
-    timestampLabel: "3 jam yang lalu",
-  },
-  {
-    id: "act-2",
-    title: "Memperbarui donasi Holland Bakery",
-    category: "Donasi",
-    timestampLabel: "Kemarin, 16.42",
-  },
-  {
-    id: "act-3",
-    title: "Menambahkan hero Nadia Putri",
-    category: "Heroes",
-    timestampLabel: "6 Nov 2026, 10.15",
-  },
-  {
-    id: "act-4",
-    title: "Mengajukan reimburse Rp85.000",
-    category: "Reimburse",
-    timestampLabel: "4 Nov 2026, 19.03",
-  },
-  {
-    id: "act-5",
-    title: "Menambahkan sektor Kedokteran Gigi",
-    category: "Beneficiary",
-    timestampLabel: "2 Nov 2026, 14.20",
-  },
-  {
-    id: "act-6",
-    title: "Masuk ke panel admin",
-    category: "Sistem",
-    timestampLabel: "2 Nov 2026, 08.11",
-  },
-];
+export const defaultVolunteerActivities: readonly VolunteerActivityItem[] =
+  idVolunteer.detail.activityTab.mockActivities;
 
 export const VOLUNTEER_ROLE_META: Record<
   VolunteerSystemRole,
@@ -90,28 +55,28 @@ export const VOLUNTEER_ROLE_META: Record<
   }
 > = {
   super: {
-    label: "Super Admin",
+    label: idVolunteer.roles.super.label,
     styleVariant: "solid",
     tone: "neutral",
-    helperText: "Akses penuh ke seluruh sistem dan audit log.",
+    helperText: idVolunteer.roles.super.helperText,
   },
   core: {
-    label: "Pengurus Inti",
+    label: idVolunteer.roles.core.label,
     styleVariant: "solid",
     tone: "neutral",
-    helperText: "Bisa kelola dan hapus data.",
+    helperText: idVolunteer.roles.core.helperText,
   },
   staff: {
-    label: "Staff",
+    label: idVolunteer.roles.staff.label,
     styleVariant: "soft",
     tone: "neutral",
-    helperText: "Bisa melihat data internal dan menginput laporan.",
+    helperText: idVolunteer.roles.staff.helperText,
   },
   member: {
-    label: "Volunteer / Anggota",
+    label: idVolunteer.roles.member.label,
     styleVariant: "soft",
     tone: "neutral",
-    helperText: "Hanya akses data publik dan tugas lapangan.",
+    helperText: idVolunteer.roles.member.helperText,
   },
 };
 
@@ -166,23 +131,23 @@ export const defaultEditVolunteerData: VolunteerFormValues = {
 export const VOLUNTEER_ROLE_OPTIONS: VolunteerRoleOption[] = [
   {
     id: "member",
-    title: "Volunteer / Anggota",
-    description: "Ikut kegiatan, tidak bisa masuk panel admin.",
+    title: idVolunteer.roles.member.label,
+    description: idVolunteer.roles.member.description,
   },
   {
     id: "staff",
-    title: "Staff",
-    description: "Kelola data harian, tanpa hapus data.",
+    title: idVolunteer.roles.staff.label,
+    description: idVolunteer.roles.staff.description,
   },
   {
     id: "core",
-    title: "Pengurus Inti",
-    description: "Kelola dan hapus data seluruh modul.",
+    title: idVolunteer.roles.core.label,
+    description: idVolunteer.roles.core.description,
   },
   {
     id: "super",
-    title: "Super Admin",
-    description: "Akses penuh, termasuk log aktivitas.",
+    title: idVolunteer.roles.super.label,
+    description: idVolunteer.roles.super.description,
   },
 ];
 
@@ -317,39 +282,39 @@ export function getVolunteerStats(
   return [
     {
       id: "total-anggota",
-      title: "Total Anggota",
+      title: idVolunteer.list.stats.totalMembersTitle,
       value: formatVolunteerCount(totalCount),
-      unit: "Orang",
+      unit: idVolunteer.list.stats.unitMembers,
       subtext:
         divisionCount > 0
-          ? `Di ${divisionCount} divisi`
-          : "Terdaftar di sistem",
+          ? idVolunteer.list.stats.subtextDivision(divisionCount)
+          : idVolunteer.list.stats.subtextDefault,
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: charitySharingSvg,
-      illustrationAlt: "Ilustrasi Total Anggota",
+      illustrationAlt: idVolunteer.list.stats.altTotalMembers,
     },
     {
       id: "pengurus",
-      title: "Pengurus",
+      title: idVolunteer.list.stats.executivesTitle,
       value: formatVolunteerCount(pengurusCount),
-      unit: "Orang",
-      subtext: "Super, core, dan staff",
+      unit: idVolunteer.list.stats.unitExecutives,
+      subtext: idVolunteer.list.stats.subtextExecutives,
       styleVariant: "default",
       iconName: "grid",
       illustrationSrc: volunteerRelaxingSvg,
-      illustrationAlt: "Ilustrasi Pengurus",
+      illustrationAlt: idVolunteer.list.stats.altExecutives,
     },
     {
       id: "relawan",
-      title: "Relawan",
+      title: idVolunteer.list.stats.volunteersTitle,
       value: formatVolunteerCount(relawanCount),
-      unit: "Orang",
-      subtext: "Tidak bisa masuk panel admin",
+      unit: idVolunteer.list.stats.unitVolunteers,
+      subtext: idVolunteer.list.stats.subtextVolunteers,
       styleVariant: "default",
       iconName: "heart",
       illustrationSrc: lunchBoxSvg,
-      illustrationAlt: "Ilustrasi Relawan",
+      illustrationAlt: idVolunteer.list.stats.altVolunteers,
     },
   ];
 }

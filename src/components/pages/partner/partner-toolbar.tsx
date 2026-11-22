@@ -3,6 +3,7 @@ import { FilterChip } from "#/components/shared/filter-chip";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
+import { idPartner } from "#/locales";
 import type { PartnerCategoryId, PartnerFilterOption } from "./partner-data";
 
 export interface PartnerToolbarProps {
@@ -48,18 +49,21 @@ export function PartnerToolbar({
             showLabel={false}
             showHelper={false}
             className="max-w-none"
-            placeholder="Cari donatur..."
+            placeholder={idPartner.toolbar.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             leadingIcon={<Search className="size-5 text-neutral-400" />}
             trailingIcon={
               searchQuery ? (
-                <Tooltip content="Hapus pencarian" placement="top">
+                <Tooltip
+                  content={idPartner.toolbar.clearSearchTooltip}
+                  placement="top"
+                >
                   <button
                     type="button"
                     onClick={() => onSearchChange("")}
                     className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                    aria-label="Hapus pencarian"
+                    aria-label={idPartner.toolbar.clearSearchTooltip}
                   >
                     <X className="size-4" />
                   </button>
@@ -77,7 +81,7 @@ export function PartnerToolbar({
           className="shrink-0 w-full sm:w-auto"
           onClick={onAddPartner}
         >
-          Tambah Donatur
+          {idPartner.toolbar.addPartnerButton}
         </Button>
       </div>
     </div>

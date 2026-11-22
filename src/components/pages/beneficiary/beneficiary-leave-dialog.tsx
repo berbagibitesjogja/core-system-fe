@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idBeneficiary } from "#/locales";
 import { BeneficiaryIllustrationDialog } from "./beneficiary-illustration-dialog";
 
 export interface BeneficiaryLeaveDialogProps {
@@ -20,16 +21,16 @@ export function BeneficiaryLeaveDialog({
       isOpen={isOpen}
       onClose={onClose}
       titleId="modal-leave-beneficiary-title"
-      title="Tinggalkan halaman ini?"
-      description="Perubahan yang kamu buat belum disimpan dan akan hilang jika keluar sekarang."
-      illustrationAlt="Ilustrasi ragu tinggalkan halaman beneficiary"
+      title={idBeneficiary.dialogs.leaveTitle}
+      description={idBeneficiary.dialogs.leaveDescription}
+      illustrationAlt={idBeneficiary.dialogs.leaveAlt}
       footer={
         <>
           <Button type="button" variant="secondary" size="md" onClick={onClose}>
-            Tetap di sini
+            {idBeneficiary.dialogs.leaveCancel}
           </Button>
           <Button type="button" variant="primary" size="md" onClick={onConfirm}>
-            Keluar tanpa simpan
+            {idBeneficiary.dialogs.leaveConfirm}
           </Button>
         </>
       }

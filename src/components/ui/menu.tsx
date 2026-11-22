@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Check, Search } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales";
 
 export interface MenuItemProps extends React.HTMLAttributes<HTMLDivElement> {
   type?: "plain" | "checkbox";
@@ -90,7 +91,7 @@ export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Menu({
   searchable = false,
-  searchPlaceholder = "Cari menu...",
+  searchPlaceholder = idShared.ui.menu.searchPlaceholder,
   searchValue,
   onSearchChange,
   children,

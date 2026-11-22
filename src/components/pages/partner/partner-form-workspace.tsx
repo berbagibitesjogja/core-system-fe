@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAdminLayout } from "#/routes/admin/_auth";
+import { idPartner } from "#/locales";
 import { PartnerForm } from "./partner-form";
 import { PartnerLeaveDialog } from "./partner-leave-dialog";
 import { PartnerTipsCard } from "./partner-tips-card";
@@ -38,11 +39,10 @@ export function PartnerFormWorkspace({
     navigate({ to: "/admin/partner" });
   };
 
-  const headerTitle = mode === "add" ? "Tambah Donatur" : "Edit Donatur";
+  const headerTitle =
+    mode === "add" ? idPartner.form.addTitle : idPartner.form.editTitle;
   const headerSubtitle =
-    mode === "add"
-      ? "Daftarkan mitra penyumbang makanan baru"
-      : "Perbarui profil mitra penyumbang makanan";
+    mode === "add" ? idPartner.form.addSubtitle : idPartner.form.editSubtitle;
 
   React.useEffect(() => {
     if (!setHeaderOverride) return;
@@ -50,7 +50,7 @@ export function PartnerFormWorkspace({
     setHeaderOverride({
       title: headerTitle,
       subtitle: headerSubtitle,
-      backLabel: "Kembali",
+      backLabel: idPartner.form.backLabel,
       onBack: handleRequestLeave,
     });
 

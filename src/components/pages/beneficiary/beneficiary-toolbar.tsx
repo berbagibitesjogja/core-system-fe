@@ -2,6 +2,7 @@ import { Plus, Search, X } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
+import { idBeneficiary } from "#/locales";
 import { BeneficiarySelectField } from "./beneficiary-select-field";
 import type {
   BeneficiaryCategoryId,
@@ -40,11 +41,11 @@ export function BeneficiaryToolbar({
               label: opt.label,
               count: opt.count,
             }))}
-            placeholder="Semua Kategori"
+            placeholder={idBeneficiary.toolbar.categoryPlaceholder}
             onChange={(val) => onCategoryChange(val)}
             searchable={filterOptions.length > 5}
-            searchPlaceholder="Cari kategori..."
-            emptyText="Kategori tidak ditemukan"
+            searchPlaceholder={idBeneficiary.toolbar.searchCategoryPlaceholder}
+            emptyText={idBeneficiary.toolbar.emptyCategory}
           />
         </div>
 
@@ -54,18 +55,21 @@ export function BeneficiaryToolbar({
             showLabel={false}
             showHelper={false}
             className="max-w-none"
-            placeholder="Cari penerima..."
+            placeholder={idBeneficiary.toolbar.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             leadingIcon={<Search className="size-5 text-neutral-400" />}
             trailingIcon={
               searchQuery ? (
-                <Tooltip content="Hapus pencarian" placement="top">
+                <Tooltip
+                  content={idBeneficiary.toolbar.clearSearchTooltip}
+                  placement="top"
+                >
                   <button
                     type="button"
                     onClick={() => onSearchChange("")}
                     className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                    aria-label="Hapus pencarian"
+                    aria-label={idBeneficiary.toolbar.clearSearchTooltip}
                   >
                     <X className="size-4" />
                   </button>
@@ -83,7 +87,7 @@ export function BeneficiaryToolbar({
           className="shrink-0 w-full sm:w-auto"
           onClick={onAddBeneficiary}
         >
-          Tambah Penerima
+          {idBeneficiary.toolbar.addBeneficiary}
         </Button>
       </div>
     </div>

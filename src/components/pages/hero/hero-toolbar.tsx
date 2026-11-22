@@ -2,6 +2,7 @@ import { Plus, Search, X } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
+import { idHero } from "#/locales/id/hero";
 import { formatHeroCount } from "./hero-data";
 import type { HeroBeneficiaryOption } from "./hero-data";
 import { HeroSelectField } from "./hero-select-field";
@@ -36,11 +37,11 @@ export function HeroToolbar({
   );
 
   const beneficiaryOptions: HeroSelectOption[] = [
-    { id: "all", label: "Semua Beneficiary" },
+    { id: "all", label: idHero.list.toolbar.allBeneficiaries },
     ...beneficiaries.map((item) => ({
       id: item.id,
       label: item.name,
-      meta: `${formatHeroCount(item.totalHeroesCount)} hero`,
+      meta: `${formatHeroCount(item.totalHeroesCount)} ${idHero.list.toolbar.heroUnit}`,
     })),
   ];
 
@@ -48,13 +49,13 @@ export function HeroToolbar({
     ? [
         {
           id: "all",
-          label: "Semua Sektor",
-          meta: `${formatHeroCount(activeBeneficiary.totalHeroesCount)} hero`,
+          label: idHero.list.toolbar.allSectors,
+          meta: `${formatHeroCount(activeBeneficiary.totalHeroesCount)} ${idHero.list.toolbar.heroUnit}`,
         },
         ...activeBeneficiary.sectors.map((sec) => ({
           id: sec.id,
           label: sec.name,
-          meta: `${formatHeroCount(sec.heroesCount)} hero`,
+          meta: `${formatHeroCount(sec.heroesCount)} ${idHero.list.toolbar.heroUnit}`,
         })),
       ]
     : [];
@@ -67,10 +68,10 @@ export function HeroToolbar({
           <HeroSelectField
             value={selectedBeneficiaryId}
             options={beneficiaryOptions}
-            placeholder="Semua Beneficiary"
+            placeholder={idHero.list.toolbar.allBeneficiaries}
             onChange={onBeneficiaryChange}
             searchable={beneficiaries.length > 7}
-            searchPlaceholder="Cari beneficiary..."
+            searchPlaceholder={idHero.list.toolbar.searchBeneficiaryPlaceholder}
             menuClassName="lg:w-[280px]"
           />
         </div>
@@ -80,12 +81,12 @@ export function HeroToolbar({
           <HeroSelectField
             value={activeBeneficiary ? selectedSectorId : ""}
             options={sectorOptions}
-            placeholder="Pilih beneficiary dulu"
+            placeholder={idHero.list.toolbar.selectBeneficiaryFirst}
             onChange={onSectorChange}
             disabled={!activeBeneficiary}
             searchable
-            searchPlaceholder="Cari sektor..."
-            emptyText="Sektor tidak ditemukan"
+            searchPlaceholder={idHero.list.toolbar.searchSectorPlaceholder}
+            emptyText={idHero.list.toolbar.emptySector}
             menuClassName="lg:w-[280px]"
           />
         </div>
@@ -96,18 +97,21 @@ export function HeroToolbar({
             showLabel={false}
             showHelper={false}
             className="max-w-none"
-            placeholder="Cari hero (nama atau no. telp)..."
+            placeholder={idHero.list.toolbar.searchHeroPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             leadingIcon={<Search className="size-5 text-neutral-400" />}
             trailingIcon={
               searchQuery ? (
-                <Tooltip content="Hapus pencarian" placement="top">
+                <Tooltip
+                  content={idHero.list.toolbar.clearSearchTooltip}
+                  placement="top"
+                >
                   <button
                     type="button"
                     onClick={() => onSearchChange("")}
                     className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                    aria-label="Hapus pencarian"
+                    aria-label={idHero.list.toolbar.clearSearchAria}
                   >
                     <X className="size-4" />
                   </button>
@@ -125,7 +129,7 @@ export function HeroToolbar({
           className="shrink-0 w-full sm:w-auto"
           onClick={onAddHero}
         >
-          Tambah Hero
+          {idHero.list.toolbar.addHeroButton}
         </Button>
       </div>
     </div>

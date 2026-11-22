@@ -6,6 +6,7 @@ import {
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
+import { idReimburse } from "#/locales";
 import { REIMBURSE_STATUS_BADGE_TONE, formatRupiah } from "./reimburse-data";
 import type { ReimburseHistoryItem } from "./reimburse-data";
 
@@ -32,16 +33,16 @@ export function ReimburseHistoryCard({
 }: ReimburseHistoryCardProps) {
   return (
     <aside
-      aria-label="Riwayat Pengajuan Reimburse"
+      aria-label={idReimburse.request.history.panelAria}
       className="w-full xl:w-[440px] shrink-0 rounded-lg border border-neutral-200 bg-surface p-6 flex flex-col gap-4 shadow-xs"
     >
       {/* Header Panel Riwayat */}
       <div className="flex flex-col gap-1">
         <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-          Riwayat Pengajuan
+          {idReimburse.request.history.panelTitle}
         </h2>
         <p className="font-body text-xs leading-4 text-neutral-500">
-          Pantau status pengajuan reimburse kamu
+          {idReimburse.request.history.panelSubtitle}
         </p>
       </div>
 
@@ -52,8 +53,8 @@ export function ReimburseHistoryCard({
             size="compact"
             visual="illustration"
             illustration={<IllustrationCariKosong />}
-            title="Belum ada pengajuan"
-            description="Belum ada riwayat pengajuan reimburse. Pengajuan pertamamu akan muncul di sini."
+            title={idReimburse.request.history.emptyTitle}
+            description={idReimburse.request.history.emptyDescription}
             className="max-w-none px-4 py-8"
           />
         </div>
@@ -63,14 +64,14 @@ export function ReimburseHistoryCard({
             const cardActions: HistoryCardAction[] = [
               {
                 id: "invoice",
-                label: "Invoice",
+                label: idReimburse.request.history.invoiceAction,
                 onClick: () => onPreviewFile(item),
               },
               ...(item.status === "Selesai"
                 ? [
                     {
                       id: "transfer-proof",
-                      label: "Bukti transfer",
+                      label: idReimburse.request.history.transferProofAction,
                       onClick: () => onPreviewTransferProof(item),
                     },
                   ]
@@ -119,7 +120,7 @@ export function ReimburseHistoryCard({
                 {item.status === "Ditolak" && item.rejectionReason && (
                   <div className="rounded-md border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
                     <p className="font-semibold text-red-800">
-                      Alasan Penolakan:
+                      {idReimburse.request.history.rejectionReasonLabel}
                     </p>
                     <p className="mt-0.5 leading-relaxed">
                       {item.rejectionReason}

@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idPartner } from "#/locales";
 import type { PartnerRecord } from "./partner-data";
 import { PartnerIllustrationDialog } from "./partner-illustration-dialog";
 
@@ -26,17 +27,11 @@ export function PartnerDeleteDialog({
       onClose={onClose}
       disableDismiss={isLoading}
       titleId="partner-delete-modal-title"
-      title="Hapus Donatur"
-      illustrationAlt="Ilustrasi konfirmasi hapus donatur"
-      description={
-        <>
-          Apakah Anda yakin ingin menghapus data{" "}
-          <span className="font-semibold text-neutral-900">
-            {partner?.name || "donatur ini"}
-          </span>
-          ? Semua data donasi terkait juga akan terpengaruh.
-        </>
-      }
+      title={idPartner.dialogs.deleteTitle}
+      illustrationAlt={idPartner.dialogs.deleteAlt}
+      description={idPartner.dialogs.deleteConfirm(
+        partner?.name || idPartner.dialogs.deleteFallbackTarget,
+      )}
       footer={
         <>
           <Button
@@ -45,16 +40,16 @@ export function PartnerDeleteDialog({
             onClick={onClose}
             disabled={isLoading}
           >
-            Batal
+            {idPartner.form.cancelButton}
           </Button>
           <Button
             variant="danger"
             size="md"
             onClick={onConfirm}
             isLoading={isLoading}
-            loadingText="Menghapus..."
+            loadingText={idPartner.dialogs.deletingButton}
           >
-            Hapus Donatur
+            {idPartner.dialogs.deleteButton}
           </Button>
         </>
       }

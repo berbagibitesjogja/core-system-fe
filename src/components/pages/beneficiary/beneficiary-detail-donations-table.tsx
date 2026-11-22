@@ -27,6 +27,7 @@ import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idBeneficiary } from "#/locales";
 import { DETAIL_DONATIONS_PER_PAGE } from "./beneficiary-detail-data";
 import type { BeneficiaryDonationRecord } from "./beneficiary-detail-data";
 
@@ -72,7 +73,7 @@ export function BeneficiaryDetailDonationsTable({
       {
         id: "date",
         accessorKey: "dateLabel",
-        header: "Tanggal",
+        header: idBeneficiary.detail.donationsColumnDate,
         meta: {
           sort: sortDirection,
           onSort: onSortToggle,
@@ -91,17 +92,18 @@ export function BeneficiaryDetailDonationsTable({
       {
         id: "recipients",
         accessorKey: "recipientCount",
-        header: "Penerima",
+        header: idBeneficiary.detail.donationsColumnRecipients,
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
-            {row.original.recipientCount.toLocaleString("id-ID")} Orang
+            {row.original.recipientCount.toLocaleString("id-ID")}{" "}
+            {idBeneficiary.stats.unitHeroes}
           </span>
         ),
       },
       {
         id: "donor",
         accessorKey: "donorName",
-        header: "Donatur",
+        header: idBeneficiary.detail.donationsColumnDonor,
         cell: ({ row }) => (
           <EntityIdentity
             entityType="partner"
@@ -113,23 +115,27 @@ export function BeneficiaryDetailDonationsTable({
       {
         id: "food",
         accessorKey: "foodKg",
-        header: "Makanan",
+        header: idBeneficiary.detail.donationsColumnFood,
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-900">
-            {row.original.foodKg.toLocaleString("id-ID")} Kg
+            {row.original.foodKg.toLocaleString("id-ID")}{" "}
+            {idBeneficiary.stats.unitKg}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idBeneficiary.detail.donationsColumnAction,
         meta: {
           className: "w-[72px]",
           align: "right",
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <Tooltip content="Lihat detail donasi" placement="top">
+            <Tooltip
+              content={idBeneficiary.detail.donationsViewTooltip}
+              placement="top"
+            >
               <Link
                 to="/admin/donation/detail"
                 search={{ id: row.original.id }}
@@ -165,14 +171,14 @@ export function BeneficiaryDetailDonationsTable({
       {/* Header Kartu Riwayat Donasi */}
       <div className="px-5 py-4 border-b border-neutral-100 rounded-t-2xl flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-['Gabarito'] text-base font-semibold leading-6 text-neutral-900 min-w-0 truncate">
-          Donasi Untuk {beneficiaryName}
+          {idBeneficiary.detail.donationsTitle(beneficiaryName)}
         </h2>
         <Badge
           tone="neutral"
           styleVariant="soft"
           className="shrink-0 bg-neutral-100 text-neutral-600 font-medium"
         >
-          {totalCount.toLocaleString("id-ID")} donasi
+          {idBeneficiary.detail.donationsBadge(totalCount)}
         </Badge>
       </div>
 
@@ -183,8 +189,8 @@ export function BeneficiaryDetailDonationsTable({
             size="compact"
             visual="illustration"
             illustration={<IllustrationSantaiKosong />}
-            title="Belum ada riwayat donasi"
-            description="Belum ada riwayat donasi yang disalurkan ke penerima manfaat ini."
+            title={idBeneficiary.detail.donationsEmptyTitle}
+            description={idBeneficiary.detail.donationsEmptyDescription}
             className="max-w-[380px] p-4"
           />
         </div>
@@ -260,7 +266,11 @@ export function BeneficiaryDetailDonationsTable({
               perPage={perPage}
               onPerPageChange={onPerPageChange}
               perPageOptions={perPageOptions}
-              rangeText={`${startRange} - ${endRange} dari ${totalCount}`}
+              rangeText={idBeneficiary.detail.donationsRangeText(
+                startRange,
+                endRange,
+                totalCount,
+              )}
               className="py-0"
             />
           </TableFooter>

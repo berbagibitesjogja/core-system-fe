@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
+import { idBeneficiary } from "#/locales";
 
 export interface BeneficiaryAddSectorDialogProps {
   isOpen: boolean;
@@ -65,7 +66,7 @@ export function BeneficiaryAddSectorDialog({
     const trimmed = sectorName.trim();
 
     if (!trimmed) {
-      setErrorMessage("Nama sektor wajib diisi.");
+      setErrorMessage(idBeneficiary.dialogs.addSectorNameRequired);
       inputRef.current?.focus();
       return;
     }
@@ -75,9 +76,7 @@ export function BeneficiaryAddSectorDialog({
     );
 
     if (isDuplicate) {
-      setErrorMessage(
-        "Nama sektor sudah terdaftar untuk penerima manfaat ini.",
-      );
+      setErrorMessage(idBeneficiary.dialogs.addSectorNameDuplicate);
       inputRef.current?.focus();
       return;
     }
@@ -105,10 +104,10 @@ export function BeneficiaryAddSectorDialog({
               id="add-sector-modal-title"
               className="font-['Gabarito'] text-xl font-semibold leading-7 text-neutral-900"
             >
-              Tambah Sektor
+              {idBeneficiary.dialogs.addSectorTitle}
             </h2>
             <p className="font-sans text-sm leading-5 text-neutral-600">
-              Tambahkan sektor baru untuk {beneficiaryName}
+              {idBeneficiary.dialogs.addSectorSubtitle(beneficiaryName)}
             </p>
           </div>
 
@@ -116,9 +115,9 @@ export function BeneficiaryAddSectorDialog({
           <Input
             ref={inputRef}
             id="sector-name-input"
-            label="Nama Sektor"
-            placeholder="Contoh: Kedokteran Gigi"
-            helperText="Gunakan nama fakultas atau unit yang resmi."
+            label={idBeneficiary.dialogs.addSectorNameLabel}
+            placeholder={idBeneficiary.dialogs.addSectorNamePlaceholder}
+            helperText={idBeneficiary.dialogs.addSectorNameHelper}
             value={sectorName}
             onChange={(e) => {
               setSectorName(e.target.value);
@@ -140,16 +139,16 @@ export function BeneficiaryAddSectorDialog({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Batal
+              {idBeneficiary.dialogs.cancelButton}
             </Button>
             <Button
               type="submit"
               variant="primary"
               size="md"
               isLoading={isSubmitting}
-              loadingText="Menyimpan..."
+              loadingText={idBeneficiary.dialogs.addSectorSubmitting}
             >
-              Simpan Sektor
+              {idBeneficiary.dialogs.addSectorSubmit}
             </Button>
           </div>
         </form>

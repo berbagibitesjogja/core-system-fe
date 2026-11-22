@@ -3,6 +3,7 @@ import reimburseHeaderTrailSvg from "#/assets/illustrations/reimburse-header-tra
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
+import { idProfile } from "#/locales/id/profile";
 import { PROFILE_ROLE_META, formatWhatsAppHref } from "./profile-data";
 import type { UserProfileRecord } from "./profile-data";
 
@@ -54,7 +55,7 @@ export function ProfileSummaryCard({
   const contactRows: readonly ContactInfoRowConfig[] = [
     {
       id: "email",
-      label: "Email",
+      label: idProfile.summaryCard.emailLabel,
       value: profile.email,
       icon: FileText,
     },
@@ -67,7 +68,7 @@ export function ProfileSummaryCard({
     },
     {
       id: "joined",
-      label: "Bergabung",
+      label: idProfile.summaryCard.joinedLabel,
       value: profile.joinedAtLabel,
       icon: Calendar,
     },
@@ -75,7 +76,7 @@ export function ProfileSummaryCard({
 
   return (
     <aside
-      aria-label="Ringkasan Profil"
+      aria-label={idProfile.summaryCard.cardAriaLabel}
       className={cn(
         "w-full lg:w-[340px] shrink-0 rounded-lg border border-neutral-200 bg-surface overflow-hidden shadow-xs",
         className,
@@ -130,7 +131,7 @@ export function ProfileSummaryCard({
         {/* Bagian Informasi Kontak */}
         <div className="w-full flex flex-col gap-4 items-start">
           <h3 className="font-sans text-base font-semibold leading-6 text-neutral-900">
-            Informasi Kontak
+            {idProfile.summaryCard.contactSectionTitle}
           </h3>
 
           {contactRows.map((row) => {

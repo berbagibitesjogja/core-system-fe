@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idPartner } from "#/locales";
 import { PartnerIllustrationDialog } from "./partner-illustration-dialog";
 
 export interface PartnerCannotDeleteDialogProps {
@@ -18,12 +19,12 @@ export function PartnerCannotDeleteDialog({
       isOpen={isOpen}
       onClose={onClose}
       titleId="partner-cannot-delete-modal-title"
-      title="Donatur tidak dapat dihapus"
-      illustrationAlt="Ilustrasi donatur tidak dapat dihapus"
-      description="Donatur ini masih memiliki riwayat donasi tercatat, jadi datanya perlu disimpan."
+      title={idPartner.dialogs.cannotDeleteTitle}
+      illustrationAlt={idPartner.dialogs.cannotDeleteAlt}
+      description={idPartner.dialogs.cannotDeleteDescription}
       footer={
         <Button variant="secondary" size="md" onClick={onClose}>
-          Mengerti
+          {idPartner.dialogs.cannotDeleteConfirm}
         </Button>
       }
     />

@@ -27,6 +27,7 @@ import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { WhatsappLink } from "#/components/shared/whatsapp-link";
 import { getPresetAvatarSrc } from "#/lib/avatars";
+import { idVolunteer } from "#/locales";
 import {
   formatVolunteerCount,
   getVolunteerDivisionBadgeTone,
@@ -87,7 +88,7 @@ export function VolunteerTable({
       {
         id: "nameAndContact",
         accessorKey: "name",
-        header: "Nama & Kontak",
+        header: idVolunteer.list.table.columnNameContact,
         meta: {
           className: "min-w-[240px]",
         },
@@ -96,7 +97,7 @@ export function VolunteerTable({
       {
         id: "email",
         accessorKey: "email",
-        header: "Email",
+        header: idVolunteer.list.table.columnEmail,
         meta: {
           className: "w-[280px]",
         },
@@ -109,7 +110,7 @@ export function VolunteerTable({
       {
         id: "divisionAndRole",
         accessorKey: "division",
-        header: "Divisi & Role",
+        header: idVolunteer.list.table.columnDivisionRole,
         meta: {
           className: "w-[230px]",
         },
@@ -130,7 +131,7 @@ export function VolunteerTable({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idVolunteer.list.table.columnAction,
         meta: {
           align: "right",
           className: "w-[150px] text-right",
@@ -148,14 +149,14 @@ export function VolunteerTable({
                 })}
               >
                 <Search className="size-4" />
-                Detail
+                {idVolunteer.list.table.detailButton}
               </Link>
               {canDeleteRole && (
                 <IconButton
                   variant="danger"
                   size="sm"
-                  tooltip="Hapus volunteer"
-                  aria-label={`Hapus ${volunteer.name}`}
+                  tooltip={idVolunteer.list.table.deleteTooltip}
+                  aria-label={idVolunteer.list.table.deleteAria(volunteer.name)}
                   className="bg-surface border-neutral-300 hover:border-red-300"
                   onClick={() => onDeleteVolunteer?.(volunteer)}
                 >
@@ -241,8 +242,8 @@ export function VolunteerTable({
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center p-8 sm:p-12 w-full">
           <EmptyState
-            title="Volunteer tidak ditemukan"
-            description="Tidak ada volunteer yang sesuai dengan kata kunci pencarian atau filter divisi."
+            title={idVolunteer.list.table.emptyTitle}
+            description={idVolunteer.list.table.emptyDescription}
             illustration={<IllustrationCariKosong className="size-[200px]" />}
             visual="illustration"
             action={
@@ -253,7 +254,7 @@ export function VolunteerTable({
                   onClick={onResetFilters}
                   className="shadow-2xs"
                 >
-                  Hapus filter
+                  {idVolunteer.list.table.resetFilterButton}
                 </Button>
               ) : undefined
             }
@@ -270,7 +271,11 @@ export function VolunteerTable({
             onPageChange={onPageChange}
             perPage={perPage}
             onPerPageChange={onPerPageChange}
-            rangeText={`Menampilkan ${formatVolunteerCount(startRange)} - ${formatVolunteerCount(endRange)} dari ${formatVolunteerCount(totalCount)} volunteer`}
+            rangeText={idVolunteer.list.table.rangeText(
+              formatVolunteerCount(startRange),
+              formatVolunteerCount(endRange),
+              formatVolunteerCount(totalCount),
+            )}
           />
         </TableFooter>
       )}

@@ -14,6 +14,3 @@ export const Route = createFileRoute("/admin/")({
     });
   },
 });
-// function App() {
-//   return (<div>Hello, Worlds!</div>)
-// }

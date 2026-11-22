@@ -1,5 +1,6 @@
 import dashboardTrailSvg from "#/assets/illustrations/ribbon-trail.svg";
 import dashboardCharitySvg from "#/assets/illustrations/charity-sharing.svg";
+import { idDashboard } from "#/locales/id/dashboard";
 
 export interface DashboardWelcomeBannerProps {
   userName?: string;
@@ -11,14 +12,14 @@ export interface DashboardWelcomeBannerProps {
  */
 export function DashboardWelcomeBanner({
   userName = "Dian",
-  description = "Terima kasih sudah menjaga makanan tetap sampai ke yang membutuhkan. Ini ringkasan dampak kita bersama sejauh ini.",
+  description = idDashboard.welcomeBanner.description,
 }: DashboardWelcomeBannerProps) {
   return (
     <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-bondi-50 p-6 md:p-8 min-h-[180px] md:min-h-[188px] flex items-center justify-between border border-bondi-100">
       {/* Teks Sambutan - Area Aman dengan Pembatasan Lebar agar Tidak Bertabrakan dengan Ilustrasi */}
       <div className="relative z-10 max-w-[62%] sm:max-w-[65%] lg:max-w-xl space-y-2">
         <h2 className="font-heading-h1 text-2xl sm:text-3xl lg:text-[32px] font-bold text-neutral-900 leading-tight tracking-tight">
-          Halo, <span className="text-brand">{userName}!</span>
+          {idDashboard.welcomeBanner.greeting(userName)}
         </h2>
         <p className="font-sans text-sm font-medium text-neutral-800 leading-relaxed">
           {description}

@@ -4,6 +4,7 @@ import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idHero, idShared } from "#/locales";
 
 export interface HeroSelectOption {
   id: string;
@@ -41,8 +42,8 @@ export function HeroSelectField({
   onChange,
   disabled = false,
   searchable = false,
-  searchPlaceholder = "Cari...",
-  emptyText = "Pilihan tidak ditemukan",
+  searchPlaceholder = idHero.list.toolbar.selectSearchPlaceholder,
+  emptyText = idHero.list.toolbar.selectEmpty,
   error,
   className,
   menuClassName,
@@ -191,12 +192,15 @@ export function HeroSelectField({
                 leadingIcon={<Search className="size-4 text-neutral-500" />}
                 trailingIcon={
                   searchQuery ? (
-                    <Tooltip content="Hapus pencarian" placement="top">
+                    <Tooltip
+                      content={idShared.ui.clearSearchTooltip}
+                      placement="top"
+                    >
                       <button
                         type="button"
                         onClick={() => setSearchQuery("")}
                         className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                        aria-label="Hapus pencarian"
+                        aria-label={idShared.ui.clearSearchAria}
                       >
                         <X className="size-3.5" />
                       </button>

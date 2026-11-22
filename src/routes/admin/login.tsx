@@ -214,7 +214,7 @@ function AdminLoginPage() {
         toast.error(fallbackErrorMsg);
         setAlert({
           tone: "danger",
-          title: "Gagal masuk",
+          title: idAuth.login.alerts.loginFailedTitle,
           description: fallbackErrorMsg,
         });
         return;
@@ -225,7 +225,7 @@ function AdminLoginPage() {
       toast.error(nonApiErrorMsg);
       setAlert({
         tone: "danger",
-        title: "Gagal masuk",
+        title: idAuth.login.alerts.loginFailedTitle,
         description: nonApiErrorMsg,
       });
     } finally {
@@ -258,7 +258,7 @@ function AdminLoginPage() {
     <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white font-sans antialiased overflow-x-hidden">
       {/* Formulir Login Admin */}
       <section
-        aria-label="Formulir Masuk Admin"
+        aria-label={idAuth.login.formAria}
         className="w-full lg:w-[480px] xl:w-[540px] 2xl:w-[580px] shrink-0 min-h-screen bg-white flex flex-col justify-between px-6 sm:px-10 lg:px-12 py-8 sm:py-10 relative z-10"
       >
         <div className="w-full max-w-[440px] mx-auto flex-1 flex flex-col justify-between min-h-[580px]">
@@ -290,7 +290,7 @@ function AdminLoginPage() {
 
       {/* Showcase Branding */}
       <section
-        aria-label="Showcase Dampak Komunitas"
+        aria-label={idAuth.login.showcaseAria}
         className="hidden lg:flex flex-1 min-h-screen bg-white p-4 sm:p-5 lg:p-6 overflow-hidden items-center justify-center"
       >
         <div className="w-full h-full max-h-[960px]">

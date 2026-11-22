@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react";
 import { toast as sonnerToast, Toaster as SonnerToaster } from "sonner";
 import type { ToasterProps as SonnerToasterProps } from "sonner";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales";
 
 export type ToastTone = "success" | "error" | "warning" | "info";
 
@@ -77,7 +78,7 @@ export function Toast({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Tutup notifikasi"
+          aria-label={idShared.ui.toast.closeAria}
           className="p-1 -mr-1 rounded-md text-neutral-400 hover:text-white transition-colors cursor-pointer shrink-0"
         >
           <X className="size-4" />

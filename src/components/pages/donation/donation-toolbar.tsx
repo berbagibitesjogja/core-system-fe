@@ -2,6 +2,7 @@ import { Calendar, Plus, Search, X } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { FilterChip } from "#/components/shared/filter-chip";
+import { idDonation } from "#/locales";
 import type { ProgramFilterOption } from "./donation-data";
 
 export interface DonationToolbarProps {
@@ -57,7 +58,7 @@ export function DonationToolbar({
           className="shrink-0 w-full sm:w-auto"
           onClick={onAddDonation}
         >
-          Tambah Donasi
+          {idDonation.list.toolbar.addDonationButton}
         </Button>
       </div>
 
@@ -68,7 +69,7 @@ export function DonationToolbar({
           <Input
             className="w-full max-w-none"
             showLabel={false}
-            placeholder="Cari nama donatur..."
+            placeholder={idDonation.list.toolbar.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             leadingIcon={<Search className="size-5 text-neutral-400" />}
@@ -78,7 +79,7 @@ export function DonationToolbar({
                   type="button"
                   onClick={() => onSearchChange("")}
                   className="p-1 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                  aria-label="Bersihkan pencarian"
+                  aria-label={idDonation.list.toolbar.clearSearchTooltip}
                 >
                   <X className="size-4" />
                 </button>
@@ -92,7 +93,7 @@ export function DonationToolbar({
           <Input
             className="w-full max-w-none"
             showLabel={false}
-            placeholder="Dari Tanggal"
+            placeholder={idDonation.list.toolbar.dateFromPlaceholder}
             type="text"
             onFocus={(e) => (e.target.type = "date")}
             onBlur={(e) => {
@@ -113,7 +114,7 @@ export function DonationToolbar({
           <Input
             className="w-full max-w-none"
             showLabel={false}
-            placeholder="Sampai Tanggal"
+            placeholder={idDonation.list.toolbar.dateToPlaceholder}
             type="text"
             onFocus={(e) => (e.target.type = "date")}
             onBlur={(e) => {

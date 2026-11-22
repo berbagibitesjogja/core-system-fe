@@ -1,5 +1,6 @@
 import { Check, Clock, Wallet } from "lucide-react";
 import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
+import { idReimburse } from "#/locales";
 import type { ReimburseDataStatItem } from "./reimburse-management-data";
 
 export interface ReimburseDataStatsProps {
@@ -15,7 +16,7 @@ const STAT_ICONS = {
 // Grid 3 kartu metrik ringkasan Data Reimburse
 export function ReimburseDataStats({ stats }: ReimburseDataStatsProps) {
   return (
-    <StatCardGrid as="section" aria-label="Ringkasan statistik reimburse">
+    <StatCardGrid as="section" aria-label={idReimburse.data.stats.sectionAria}>
       {stats.map((stat) => (
         <StatCard
           key={stat.id}

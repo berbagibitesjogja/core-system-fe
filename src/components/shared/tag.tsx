@@ -1,6 +1,7 @@
 import * as React from "react";
 import { X } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 
 export interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
   label?: React.ReactNode;
@@ -42,7 +43,7 @@ export function Tag({
             onRemove?.();
           }}
           className="size-[14px] inline-flex items-center justify-center text-bondi-900 hover:text-bondi-950 transition-colors cursor-pointer rounded-xs"
-          aria-label="Hapus tag"
+          aria-label={idShared.tag.deleteAria}
         >
           <X className="size-[14px] stroke-[2.5]" />
         </button>

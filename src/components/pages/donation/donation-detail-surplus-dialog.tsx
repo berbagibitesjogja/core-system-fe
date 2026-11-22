@@ -5,6 +5,7 @@ import { Button } from "#/components/ui/button";
 import { Checkbox } from "#/components/ui/checkbox";
 import { Input } from "#/components/ui/input";
 import { Textarea } from "#/components/ui/textarea";
+import { idDonation } from "#/locales";
 import type {
   DonationSurplusFoodItem,
   DonationSurplusFormValues,
@@ -100,10 +101,11 @@ export function DonationDetailSurplusDialog({
     const parsedWeight = Number(weightText);
 
     if (!trimmedName) {
-      nextErrors.name = "Nama makanan wajib diisi.";
+      nextErrors.name = idDonation.detail.surplusDialog.validationNameRequired;
     }
     if (!weightText.trim() || Number.isNaN(parsedWeight) || parsedWeight <= 0) {
-      nextErrors.weight = "Berat harus lebih besar dari 0.";
+      nextErrors.weight =
+        idDonation.detail.surplusDialog.validationWeightPositive;
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -143,15 +145,17 @@ export function DonationDetailSurplusDialog({
           id="surplus-dialog-title"
           className="font-heading text-xl font-semibold leading-7 text-neutral-900"
         >
-          {mode === "edit" ? "Edit Surplus Food" : "Tambah Surplus Food"}
+          {mode === "edit"
+            ? idDonation.detail.surplusDialog.editTitle
+            : idDonation.detail.surplusDialog.addTitle}
         </h2>
 
         {/* Form Surplus Food */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Input
             ref={nameInputRef}
-            label="Nama Makanan"
-            placeholder="Contoh: Roti Kering"
+            label={idDonation.detail.surplusDialog.foodNameLabel}
+            placeholder={idDonation.detail.surplusDialog.foodNamePlaceholder}
             value={name}
             error={errors.name}
             showHelper={Boolean(errors.name)}
@@ -175,11 +179,11 @@ export function DonationDetailSurplusDialog({
 
           <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-3 items-start">
             <Input
-              label="Jumlah"
+              label={idDonation.detail.surplusDialog.quantityLabel}
               type="number"
               min={1}
-              placeholder="Contoh: 20"
-              helperText="Opsional"
+              placeholder={idDonation.detail.surplusDialog.quantityPlaceholder}
+              helperText={idDonation.detail.surplusDialog.optionalHelper}
               value={quantityText}
               showHelper={true}
               onChange={(e) => setQuantityText(e.target.value)}
@@ -187,10 +191,10 @@ export function DonationDetailSurplusDialog({
             />
 
             <Input
-              label="Berat"
+              label={idDonation.detail.surplusDialog.weightLabel}
               type="number"
               min={1}
-              placeholder="Contoh: 5925"
+              placeholder={idDonation.detail.surplusDialog.weightPlaceholder}
               value={weightText}
               error={errors.weight}
               showHelper={Boolean(errors.weight)}
@@ -205,7 +209,7 @@ export function DonationDetailSurplusDialog({
 
             <div className="flex flex-col gap-[6px] items-start shrink-0">
               <span className="font-sans font-semibold text-sm leading-5 text-neutral-900 select-none">
-                Satuan
+                {idDonation.detail.surplusDialog.unitLabel}
               </span>
               <div className="min-h-[44px] flex items-center gap-2">
                 {SURPLUS_UNITS.map((option) => (
@@ -224,14 +228,14 @@ export function DonationDetailSurplusDialog({
           <Checkbox
             checked={isSpoiled}
             onChange={setIsSpoiled}
-            label="Basi / Tidak Layak"
+            label={idDonation.detail.surplusDialog.spoiledCheckboxLabel}
           />
 
           <Textarea
-            label="Keterangan"
-            helperText="Opsional"
+            label={idDonation.detail.surplusDialog.notesLabel}
+            helperText={idDonation.detail.surplusDialog.optionalHelper}
             rows={4}
-            placeholder="Contoh: Kemasan utuh, simpan di suhu ruang"
+            placeholder={idDonation.detail.surplusDialog.notesPlaceholder}
             value={notes}
             showHelper={true}
             onChange={(e) => setNotes(e.target.value)}
@@ -245,7 +249,7 @@ export function DonationDetailSurplusDialog({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Batal
+              {idDonation.detail.surplusDialog.cancelButton}
             </Button>
             <Button
               type="submit"
@@ -253,7 +257,7 @@ export function DonationDetailSurplusDialog({
               isLoading={isSubmitting}
               disabled={isSubmitting}
             >
-              Simpan Makanan
+              {idDonation.detail.surplusDialog.saveButton}
             </Button>
           </div>
         </form>
@@ -308,7 +312,7 @@ export function DonationSurplusDeleteDialog({
           <div className="shrink-0 size-[136px] flex items-center justify-center">
             <img
               src={raguHapusSvg}
-              alt="Konfirmasi hapus surplus food"
+              alt={idDonation.detail.surplusDialog.deleteConfirmAlt}
               className="size-full object-contain"
               draggable={false}
             />
@@ -318,14 +322,10 @@ export function DonationSurplusDeleteDialog({
               id="delete-surplus-title"
               className="font-heading-h3 text-neutral-900"
             >
-              Hapus Surplus Food?
+              {idDonation.detail.surplusDialog.deleteConfirmTitle}
             </h2>
             <p className="font-sans text-sm leading-relaxed text-neutral-600">
-              Item{" "}
-              <span className="font-semibold text-neutral-900">
-                {food.name}
-              </span>{" "}
-              akan dihapus permanen dari catatan donasi ini.
+              {idDonation.detail.surplusDialog.deleteConfirmDesc(food.name)}
             </p>
           </div>
         </div>
@@ -337,7 +337,7 @@ export function DonationSurplusDeleteDialog({
             onClick={onClose}
             disabled={isDeleting}
           >
-            Batal
+            {idDonation.detail.surplusDialog.cancelButton}
           </Button>
           <Button
             type="button"
@@ -346,7 +346,9 @@ export function DonationSurplusDeleteDialog({
             isLoading={isDeleting}
             disabled={isDeleting}
           >
-            Hapus Makanan
+            {isDeleting
+              ? idDonation.detail.surplusDialog.deletingButton
+              : idDonation.detail.surplusDialog.deleteButton}
           </Button>
         </div>
       </div>

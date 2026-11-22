@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, Plus, Users, Wallet } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idDashboard } from "#/locales/id/dashboard";
 import { DEFAULT_QUICK_ACTIONS } from "./dashboard-data";
 import type { QuickActionItem } from "./dashboard-data";
 
@@ -42,7 +43,7 @@ export function DashboardQuickActions({
       )}
     >
       <h4 className="font-heading-h4 text-base sm:text-lg font-semibold text-neutral-900 leading-tight mb-3">
-        Aksi Cepat
+        {idDashboard.quickActions.title}
       </h4>
 
       <div

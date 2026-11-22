@@ -1,6 +1,7 @@
 import statNewPartnersSvg from "#/assets/illustrations/charity-family.svg";
 import statTotalPartnersSvg from "#/assets/illustrations/food-supplements.svg";
 import statMostActiveSvg from "#/assets/illustrations/ice-cream.svg";
+import { idPartner } from "#/locales";
 
 export type PartnerCategoryId = "all" | "perusahaan" | "individu";
 
@@ -536,38 +537,38 @@ export function computePartnerStats(
   return [
     {
       id: "stat-most-active",
-      title: "Donatur Teraktif",
+      title: idPartner.list.stats.mostActiveTitle,
       value: formatPartnerNumber(mostActive?.donationCount ?? 0),
-      unit: "Aksi",
+      unit: idPartner.list.stats.mostActiveUnit,
       subtext: mostActive
         ? `${mostActive.name} · ${formatPartnerNumber(mostActive.impactKg)} Kg`
-        : "Belum ada donatur",
+        : idPartner.list.stats.mostActiveEmpty,
       styleVariant: "brand",
       iconName: "sparkles",
       illustrationSrc: statMostActiveSvg,
-      illustrationAlt: "Ilustrasi donatur teraktif",
+      illustrationAlt: idPartner.list.stats.mostActiveAlt,
     },
     {
       id: "stat-total-partners",
-      title: "Total Donatur",
+      title: idPartner.list.stats.totalTitle,
       value: formatPartnerNumber(partners.length),
-      unit: "Mitra",
-      subtext: `${formatPartnerNumber(companyCount)} perusahaan · ${formatPartnerNumber(individualCount)} individu`,
+      unit: idPartner.list.stats.totalUnit,
+      subtext: idPartner.list.stats.totalSubtext(companyCount, individualCount),
       styleVariant: "default",
       iconName: "building",
       illustrationSrc: statTotalPartnersSvg,
-      illustrationAlt: "Ilustrasi total donatur",
+      illustrationAlt: idPartner.list.stats.totalAlt,
     },
     {
       id: "stat-new-partners",
-      title: "Donatur Baru",
+      title: idPartner.list.stats.newTitle,
       value: formatPartnerNumber(newThisMonthCount),
-      unit: "Mitra",
-      subtext: "Bergabung bulan ini",
+      unit: idPartner.list.stats.newUnit,
+      subtext: idPartner.list.stats.newSubtext,
       styleVariant: "default",
       iconName: "plus",
       illustrationSrc: statNewPartnersSvg,
-      illustrationAlt: "Ilustrasi donatur baru bulan ini",
+      illustrationAlt: idPartner.list.stats.newAlt,
     },
   ];
 }
@@ -584,9 +585,21 @@ export function computePartnerFilterOptions(
   ).length;
 
   return [
-    { id: "all", label: "Semua", count: partners.length },
-    { id: "perusahaan", label: "Perusahaan", count: companyCount },
-    { id: "individu", label: "Individu", count: individualCount },
+    {
+      id: "all",
+      label: idPartner.list.filterOptions.all,
+      count: partners.length,
+    },
+    {
+      id: "perusahaan",
+      label: idPartner.list.filterOptions.company,
+      count: companyCount,
+    },
+    {
+      id: "individu",
+      label: idPartner.list.filterOptions.individual,
+      count: individualCount,
+    },
   ];
 }
 
@@ -614,13 +627,13 @@ export interface PartnerCategoryOption {
 export const defaultPartnerCategoryOptions: PartnerCategoryOption[] = [
   {
     id: "perusahaan",
-    title: "Perusahaan",
-    description: "Hotel, restoran, bakery, dan bisnis lain",
+    title: idPartner.form.categories.companyTitle,
+    description: idPartner.form.categories.companyDesc,
   },
   {
     id: "individu",
-    title: "Individu",
-    description: "Perorangan atau komunitas",
+    title: idPartner.form.categories.individualTitle,
+    description: idPartner.form.categories.individualDesc,
   },
 ];
 
@@ -633,14 +646,14 @@ export interface PartnerTipItem {
 export const defaultPartnerTips: PartnerTipItem[] = [
   {
     id: "tip-1",
-    text: "Cek dulu daftar Partner supaya donatur yang sama tidak terdaftar dua kali.",
+    text: idPartner.form.tips[0],
   },
   {
     id: "tip-2",
-    text: "Logo persegi tampil paling rapi di poster Impact Report.",
+    text: idPartner.form.tips[1],
   },
   {
     id: "tip-3",
-    text: "Isi nomor WhatsApp agar tim mudah koordinasi penjemputan.",
+    text: idPartner.form.tips[2],
   },
 ];

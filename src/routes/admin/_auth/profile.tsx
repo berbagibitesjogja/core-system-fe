@@ -30,6 +30,7 @@ import type {
 } from "#/components/pages/profile";
 import { toast } from "#/components/ui/toast";
 import { cn } from "#/lib/utils";
+import { idProfile } from "#/locales/id/profile";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
 
 // Skema validasi parameter query URL untuk tab, peran pratinjau, dan state Figma
@@ -178,9 +179,9 @@ function ProfilePage() {
   React.useEffect(() => {
     if (setHeaderOverride) {
       setHeaderOverride({
-        title: "Profil Saya",
-        subtitle: "Kelola data akun yang sedang kamu pakai",
-        backLabel: "Kembali ke Dashboard",
+        title: idProfile.header.title,
+        subtitle: idProfile.header.subtitle,
+        backLabel: idProfile.header.backLabel,
         onBack: handleBackToDashboard,
         user: {
           name: savedProfile.name,
@@ -282,7 +283,7 @@ function ProfilePage() {
         });
       }
     } catch {
-      toast.error("Gagal memperbarui profil. Silakan coba lagi.");
+      toast.error(idProfile.toasts.updateFailed);
     } finally {
       setIsSaving(false);
     }
@@ -324,13 +325,13 @@ function ProfilePage() {
 
       {/* Kolom Kanan: Panel Tab Aktivitas & Pengaturan Profil */}
       <section
-        aria-label="Detail & Pengaturan Akun"
+        aria-label={idProfile.header.detailSectionAria}
         className="flex-1 min-w-0 w-full rounded-lg border border-neutral-200 bg-surface shadow-xs"
       >
         {/* Navigasi Tab */}
         <div
           role="tablist"
-          aria-label="Navigasi Profil"
+          aria-label={idProfile.header.navTablistAria}
           className="flex items-center gap-2 px-5 border-b border-neutral-200"
         >
           {visibleTabs.map((tab) => {

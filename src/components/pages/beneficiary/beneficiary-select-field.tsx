@@ -4,6 +4,7 @@ import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idBeneficiary, idShared } from "#/locales";
 
 export interface BeneficiarySelectOption {
   id: string;
@@ -38,12 +39,12 @@ export function BeneficiarySelectField({
   showLabel = false,
   value,
   options,
-  placeholder = "Pilih kategori...",
+  placeholder = idBeneficiary.toolbar.selectCategoryPlaceholder,
   onChange,
   disabled = false,
   searchable = false,
-  searchPlaceholder = "Cari kategori...",
-  emptyText = "Kategori tidak ditemukan",
+  searchPlaceholder = idBeneficiary.toolbar.searchCategoryPlaceholder,
+  emptyText = idBeneficiary.toolbar.emptyCategory,
   error,
   className,
   menuClassName,
@@ -203,12 +204,15 @@ export function BeneficiarySelectField({
                 leadingIcon={<Search className="size-4 text-neutral-400" />}
                 trailingIcon={
                   searchQuery ? (
-                    <Tooltip content="Hapus pencarian" placement="top">
+                    <Tooltip
+                      content={idShared.ui.clearSearchTooltip}
+                      placement="top"
+                    >
                       <button
                         type="button"
                         onClick={() => setSearchQuery("")}
                         className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                        aria-label="Hapus pencarian"
+                        aria-label={idShared.ui.clearSearchAria}
                       >
                         <X className="size-3.5" />
                       </button>

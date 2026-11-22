@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { idBeneficiary } from "#/locales";
 import { useAdminLayout } from "#/routes/admin/_auth";
 import { BeneficiaryForm } from "./beneficiary-form";
 import { BeneficiaryFormSkeleton } from "./beneficiary-form-skeleton";
@@ -54,7 +55,7 @@ export function BeneficiaryFormWorkspace({
       title: headerTitle,
       subtitle: headerSubtitle,
       onBack: handleBackTrigger,
-      backLabel: "Kembali",
+      backLabel: idBeneficiary.form.backLabel,
     });
 
     return () => setHeaderOverride(null);

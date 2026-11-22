@@ -1,6 +1,7 @@
 import * as React from "react";
 import volunteerThinkingIllustration from "#/assets/illustrations/volunteer-thinking.svg";
 import { Button } from "#/components/ui/button";
+import { idReimburse } from "#/locales";
 import { formatRupiah } from "./reimburse-data";
 import type { ReimburseDataItem } from "./reimburse-management-data";
 
@@ -49,7 +50,7 @@ export function ReimburseCancelDialog({
           <div className="pointer-events-none flex size-[140px] shrink-0 select-none items-center justify-center sm:size-[160px]">
             <img
               src={volunteerThinkingIllustration}
-              alt="Ilustrasi konfirmasi pembatalan pengajuan reimburse"
+              alt={idReimburse.dialogs.cancelAlt}
               className="size-full object-contain"
             />
           </div>
@@ -59,18 +60,18 @@ export function ReimburseCancelDialog({
               id="modal-cancel-reimburse-title"
               className="font-heading-h3 text-xl font-bold leading-tight text-neutral-900"
             >
-              Batalkan Pengajuan Reimburse
+              {idReimburse.dialogs.cancelTitle}
             </h3>
             <p className="font-body-m text-sm leading-relaxed text-neutral-600">
-              Apakah kamu yakin ingin membatalkan pengajuan reimburse dari{" "}
+              {idReimburse.dialogs.cancelConfirmPrefix}
               <span className="font-semibold text-neutral-900">
                 {item.applicantName}
-              </span>{" "}
-              sebesar{" "}
+              </span>
+              {idReimburse.dialogs.cancelConfirmMiddle}
               <span className="font-semibold text-neutral-900">
                 {formatRupiah(item.amount)}
               </span>
-              ?
+              {idReimburse.dialogs.cancelConfirmSuffix}
             </p>
             <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-3.5 py-2.5 text-left">
               <p className="text-xs font-medium text-neutral-500">
@@ -85,10 +86,10 @@ export function ReimburseCancelDialog({
 
         <div className="flex items-center justify-end gap-3">
           <Button type="button" variant="secondary" size="md" onClick={onClose}>
-            Kembali
+            {idReimburse.dialogs.cancelBackButton}
           </Button>
           <Button type="button" variant="danger" size="md" onClick={onConfirm}>
-            Batalkan Pengajuan
+            {idReimburse.dialogs.cancelSubmitButton}
           </Button>
         </div>
       </div>

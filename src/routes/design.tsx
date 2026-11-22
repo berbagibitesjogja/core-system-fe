@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUp, Box } from "lucide-react";
 import { toast } from "#/components/ui/toast";
+import { idShared } from "#/locales/id/shared";
 
 import { Badge } from "#/components/ui/badge";
 import { FilterChip } from "#/components/shared";
@@ -41,7 +42,7 @@ function DesignShowcasePage() {
     navigator.clipboard.writeText(text);
     const key = id || text;
     setCopiedToken(key);
-    toast.success("Kode berhasil disalin!");
+    toast.success(idShared.design.copySuccess);
     setTimeout(() => setCopiedToken(null), 1800);
   };
 
@@ -87,7 +88,7 @@ function DesignShowcasePage() {
           className="inline-flex items-center gap-2 text-xs font-semibold text-brand hover:text-brand-hover transition-colors group cursor-pointer"
         >
           <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform shrink-0" />
-          <span>Kembali ke Beranda Utama</span>
+          <span>{idShared.design.backToHome}</span>
         </Link>
 
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -289,11 +290,11 @@ function DesignShowcasePage() {
           type="button"
           onClick={scrollToTop}
           className="fixed bottom-6 left-6 z-50 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand text-white shadow-pop-md hover:bg-brand-hover active:translate-y-0.5 transition-all duration-200 cursor-pointer font-['Inter'] font-semibold text-xs border-[1.5px] border-neutral-900 animate-in fade-in slide-in-from-bottom-4 select-none"
-          title="Kembali ke atas"
-          aria-label="Kembali ke atas"
+          title={idShared.design.backToTop}
+          aria-label={idShared.design.backToTop}
         >
           <ArrowUp className="size-4 shrink-0" />
-          <span>Ke Atas</span>
+          <span>{idShared.design.toTopButton}</span>
         </button>
       )}
     </div>

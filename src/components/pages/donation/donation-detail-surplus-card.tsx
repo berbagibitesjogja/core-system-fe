@@ -22,6 +22,7 @@ import {
   IllustrationCariKosong,
 } from "#/components/shared/empty-state";
 import { cn } from "#/lib/utils";
+import { idDonation } from "#/locales";
 import type { DonationSurplusFoodItem } from "./donation-detail-data";
 
 export interface DonationDetailSurplusCardProps {
@@ -58,7 +59,7 @@ export function DonationDetailSurplusCard({
       {
         id: "name",
         accessorKey: "name",
-        header: "Nama Makanan",
+        header: idDonation.detail.surplusCard.columnFoodName,
         cell: ({ row }) => {
           const item = row.original;
           return (
@@ -68,7 +69,7 @@ export function DonationDetailSurplusCard({
               </span>
               {item.isSpoiled && (
                 <Badge tone="danger" styleVariant="soft" dot>
-                  Basi / Tidak Layak
+                  {idDonation.detail.surplusCard.badgeSpoiled}
                 </Badge>
               )}
             </div>
@@ -78,7 +79,7 @@ export function DonationDetailSurplusCard({
       {
         id: "quantity",
         accessorKey: "quantity",
-        header: "Jumlah",
+        header: idDonation.detail.surplusCard.columnQuantity,
         cell: ({ row }) => (
           <span className="font-sans text-sm text-neutral-600 tabular-nums">
             {row.original.quantity !== undefined
@@ -90,7 +91,7 @@ export function DonationDetailSurplusCard({
       {
         id: "weight",
         accessorKey: "weight",
-        header: "Berat",
+        header: idDonation.detail.surplusCard.columnWeight,
         meta: {
           className: "whitespace-nowrap",
         },
@@ -103,7 +104,7 @@ export function DonationDetailSurplusCard({
       {
         id: "notes",
         accessorKey: "notes",
-        header: "Keterangan",
+        header: idDonation.detail.surplusCard.columnNotes,
         meta: {
           className: "max-w-[260px]",
         },
@@ -115,7 +116,7 @@ export function DonationDetailSurplusCard({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idDonation.detail.surplusCard.columnAction,
         meta: {
           align: "right",
         },
@@ -128,7 +129,7 @@ export function DonationDetailSurplusCard({
                 variant="ghost"
                 size="sm"
                 aria-label={`Edit ${item.name}`}
-                tooltip="Edit makanan"
+                tooltip={idDonation.detail.surplusCard.editTooltip}
                 onClick={() => onEditFood(item)}
               >
                 <Pencil className="size-[18px]" />
@@ -138,7 +139,7 @@ export function DonationDetailSurplusCard({
                 variant="danger"
                 size="sm"
                 aria-label={`Hapus ${item.name}`}
-                tooltip="Hapus makanan"
+                tooltip={idDonation.detail.surplusCard.deleteTooltip}
                 onClick={() => onDeleteFood(item)}
               >
                 <Trash2 className="size-[18px]" />
@@ -164,10 +165,10 @@ export function DonationDetailSurplusCard({
       <div className="px-5 py-4 flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100">
         <div className="flex items-center gap-2.5 min-w-0">
           <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-            Daftar Surplus Food
+            {idDonation.detail.surplusCard.title}
           </h2>
           <Badge tone="neutral" styleVariant="soft">
-            {foods.length} jenis
+            {foods.length} {idDonation.detail.surplusCard.typesUnit}
           </Badge>
         </div>
 
@@ -178,7 +179,7 @@ export function DonationDetailSurplusCard({
           leftIcon={<Plus className="size-4" />}
           onClick={onAddFood}
         >
-          Tambah Makanan
+          {idDonation.detail.surplusCard.addFoodButton}
         </Button>
       </div>
 
@@ -189,8 +190,8 @@ export function DonationDetailSurplusCard({
             size="compact"
             visual="illustration"
             illustration={<IllustrationCariKosong />}
-            title="Belum ada surplus food"
-            description="Catat jenis makanan, jumlah, serta berat surplus yang diselamatkan pada aksi donasi ini."
+            title={idDonation.detail.surplusCard.emptyTitle}
+            description={idDonation.detail.surplusCard.emptyDesc}
             className="max-w-[380px] p-4"
           />
         </div>

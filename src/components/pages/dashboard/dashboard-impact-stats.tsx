@@ -3,6 +3,7 @@ import { StatCard, StatCardGrid } from "#/components/shared/stat-card";
 import statFastFoodSvg from "#/assets/illustrations/fast-food.svg";
 import statOrganicFoodSvg from "#/assets/illustrations/organic-food.svg";
 import statCharityHeroesSvg from "#/assets/illustrations/charity-family.svg";
+import { idDashboard } from "#/locales/id/dashboard";
 import { DEFAULT_IMPACT_STATS } from "./dashboard-data";
 import type { ImpactStatItem } from "./dashboard-data";
 
@@ -52,10 +53,10 @@ export function DashboardImpactStats({
       {/* Header Bagian */}
       <div className="flex items-center justify-between">
         <h3 className="font-heading-h4 text-lg font-semibold text-neutral-900 leading-tight">
-          Dampak Kami
+          {idDashboard.impactStats.title}
         </h3>
         <span className="font-sans text-xs text-neutral-500">
-          Akumulasi sejak BBJ berdiri
+          {idDashboard.impactStats.subtitle}
         </span>
       </div>
 

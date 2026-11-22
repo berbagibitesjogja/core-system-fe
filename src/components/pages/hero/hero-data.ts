@@ -2,6 +2,7 @@ import { PRESET_AVATARS, getHeroAvatarSrc } from "#/lib/avatars";
 import statHeroBlocked from "#/assets/illustrations/volunteer-thinking.svg";
 import statHeroMonth from "#/assets/illustrations/volunteer-relaxing.svg";
 import statHeroTotal from "#/assets/illustrations/charity-family.svg";
+import { idHero } from "#/locales/id/hero";
 
 export type HeroStatus = "aktif" | "diblokir";
 
@@ -432,36 +433,36 @@ export function buildHeroStats(heroes: HeroRecord[]): HeroStatItem[] {
   return [
     {
       id: "total-heroes",
-      title: "Total Heroes",
+      title: idHero.list.stats.totalHeroesTitle,
       value: formatHeroCount(totalHeroesCount),
-      unit: "Orang",
-      subtext: "Terdaftar di 11 beneficiary",
+      unit: idHero.list.stats.unitPeople,
+      subtext: idHero.list.stats.subtextBeneficiaryCountSample,
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: statHeroTotal,
-      illustrationAlt: "Ilustrasi total heroes",
+      illustrationAlt: idHero.list.stats.altTotalHeroes,
     },
     {
       id: "ambil-bulan-ini",
-      title: "Ambil Bulan Ini",
+      title: idHero.list.stats.pickupThisMonthTitle,
       value: formatHeroCount(HERO_MONTHLY_ACTIVE),
-      unit: "Orang",
-      subtext: "+9,5% dibanding Oktober",
+      unit: idHero.list.stats.unitPeople,
+      subtext: idHero.list.stats.subtextMonthlyGrowth,
       styleVariant: "default",
       iconName: "check",
       illustrationSrc: statHeroMonth,
-      illustrationAlt: "Ilustrasi heroes ambil bulan ini",
+      illustrationAlt: idHero.list.stats.altPickupThisMonth,
     },
     {
       id: "diblokir",
-      title: "Diblokir",
+      title: idHero.list.stats.blockedHeroesTitle,
       value: formatHeroCount(blockedHeroesCount),
-      unit: "Orang",
-      subtext: "Tidak bisa menerima donasi baru",
+      unit: idHero.list.stats.unitPeople,
+      subtext: idHero.list.stats.subtextBlocked,
       styleVariant: "default",
       iconName: "x-circle",
       illustrationSrc: statHeroBlocked,
-      illustrationAlt: "Ilustrasi heroes diblokir",
+      illustrationAlt: idHero.list.stats.altBlockedHeroes,
     },
   ];
 }

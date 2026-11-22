@@ -18,6 +18,7 @@ import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Switch } from "#/components/ui/switch";
 import { OptionCard } from "#/components/shared/option-card";
+import { idBeneficiary } from "#/locales";
 import {
   defaultBeneficiaryCategoryOptions,
   defaultEmptyBeneficiaryForm,
@@ -57,25 +58,25 @@ const CATEGORY_ICON_MAP = {
 // Membangun pesan ringkasan alert berdasarkan field yang belum lengkap
 function buildValidationAlertCopy(errors: BeneficiaryFormErrors) {
   const count = Object.values(errors).filter(Boolean).length;
-  const title = `Ada ${count} data yang perlu dilengkapi`;
+  const title = idBeneficiary.form.validationSummary(count);
 
   if (errors.categoryId && errors.name) {
     return {
       title,
-      description: "Pilih jenis penerima dan isi namanya, lalu simpan lagi.",
+      description: idBeneficiary.form.validationCategoryAndName,
     };
   }
 
   if (errors.categoryId) {
     return {
       title,
-      description: "Pilih jenis penerima terlebih dahulu, lalu simpan lagi.",
+      description: idBeneficiary.form.validationCategoryOnly,
     };
   }
 
   return {
     title,
-    description: "Isi nama beneficiary terlebih dahulu, lalu simpan lagi.",
+    description: idBeneficiary.form.validationNameOnly,
   };
 }
 
@@ -110,10 +111,10 @@ export function BeneficiaryForm({
   const validateForm = (data: BeneficiaryFormData): BeneficiaryFormErrors => {
     const nextErrors: BeneficiaryFormErrors = {};
     if (!data.categoryId) {
-      nextErrors.categoryId = "Pilih salah satu jenis beneficiary.";
+      nextErrors.categoryId = idBeneficiary.form.validationCategoryRequired;
     }
     if (!data.name.trim()) {
-      nextErrors.name = "Nama beneficiary wajib diisi.";
+      nextErrors.name = idBeneficiary.form.validationNameRequired;
     }
     return nextErrors;
   };
@@ -138,7 +139,7 @@ export function BeneficiaryForm({
         if (nextName.trim()) {
           delete next.name;
         } else {
-          next.name = "Nama beneficiary wajib diisi.";
+          next.name = idBeneficiary.form.validationNameRequired;
         }
         return next;
       });
@@ -213,10 +214,10 @@ export function BeneficiaryForm({
         {/* Judul Bagian Formulir */}
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-[18px] leading-[24px] font-semibold text-neutral-900">
-            Data Penerima
+            {idBeneficiary.form.sectionTitle}
           </h2>
           <p className="font-body text-[12px] leading-[16px] text-neutral-500">
-            Pilih jenis kelompok, lalu tulis nama dan informasi pelengkapnya.
+            {idBeneficiary.form.sectionSubtitle}
           </p>
         </div>
 
@@ -226,7 +227,7 @@ export function BeneficiaryForm({
             id="beneficiary-category-label"
             className="font-sans text-[14px] leading-[20px] font-semibold text-neutral-900"
           >
-            Pilih Jenis
+            {idBeneficiary.form.categoryLabel}
           </label>
 
           <div
@@ -257,16 +258,16 @@ export function BeneficiaryForm({
 
           <FieldHelper
             error={errors.categoryId}
-            helperText="Jenis menentukan kategori di laporan dampak."
+            helperText={idBeneficiary.form.categoryHelper}
           />
         </div>
 
         {/* Field 2: Nama Beneficiary */}
         <Input
           id="beneficiary-name"
-          label="Nama Beneficiary"
-          placeholder="Contoh: Universitas Gadjah Mada"
-          helperText="Gunakan nama resmi lembaga agar mudah dicari."
+          label={idBeneficiary.form.nameLabel}
+          placeholder={idBeneficiary.form.namePlaceholder}
+          helperText={idBeneficiary.form.nameHelper}
           value={formData.name}
           onChange={handleNameChange}
           error={errors.name}
@@ -278,9 +279,9 @@ export function BeneficiaryForm({
         {isUniversity && (
           <Input
             id="beneficiary-email-domain"
-            label="Domain Email Hero (Opsional)"
-            placeholder="Contoh: @ugm.ac.id atau mail.ugm.ac.id"
-            helperText="Hero yang mendaftar dengan akhiran email ini otomatis terhubung ke kelompok ini."
+            label={idBeneficiary.form.emailDomainLabel}
+            placeholder={idBeneficiary.form.emailDomainPlaceholder}
+            helperText={idBeneficiary.form.emailDomainHelper}
             value={formData.emailDomain ?? ""}
             onChange={handleEmailDomainChange}
             leftIcon={<Mail className="size-4 text-neutral-400" />}
@@ -292,9 +293,9 @@ export function BeneficiaryForm({
         {/* Field 4: Alamat Fisik */}
         <Input
           id="beneficiary-address"
-          label="Alamat Fisik (Opsional)"
-          placeholder="Contoh: Bulaksumur, Caturtunggal, Sleman, DI Yogyakarta"
-          helperText="Alamat atau lokasi fisik entitas untuk keperluan operasional."
+          label={idBeneficiary.form.addressLabel}
+          placeholder={idBeneficiary.form.addressPlaceholder}
+          helperText={idBeneficiary.form.addressHelper}
           value={formData.address ?? ""}
           onChange={handleAddressChange}
           leftIcon={<Building className="size-4 text-neutral-400" />}
@@ -305,9 +306,9 @@ export function BeneficiaryForm({
         {/* Field 5: Tautan Google Maps */}
         <Input
           id="beneficiary-maps"
-          label="Tautan Google Maps (Opsional)"
-          placeholder="Contoh: https://maps.app.goo.gl/..."
-          helperText="Tautan Google Maps untuk memudahkan relawan membuka rute peta lokasi penyaluran."
+          label={idBeneficiary.form.mapsLabel}
+          placeholder={idBeneficiary.form.mapsPlaceholder}
+          helperText={idBeneficiary.form.mapsHelper}
           value={formData.maps ?? ""}
           onChange={handleMapsChange}
           leftIcon={<MapPin className="size-4 text-neutral-400" />}
@@ -318,17 +319,16 @@ export function BeneficiaryForm({
         {/* Bagian Konfigurasi Operasional & Visibilitas */}
         <div className="border-t border-neutral-200 pt-5 flex flex-col gap-4">
           <h3 className="font-heading text-[16px] leading-[22px] font-semibold text-neutral-900">
-            Pengaturan Operasional
+            {idBeneficiary.form.settingsSectionTitle}
           </h3>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-neutral-50/50">
             <div className="flex flex-col gap-0.5">
               <span className="font-sans text-[14px] font-semibold text-neutral-900">
-                Prioritas Penyaluran Makanan
+                {idBeneficiary.form.priorityTitle}
               </span>
               <span className="font-sans text-[12px] text-neutral-500">
-                Tandai kelompok ini sebagai penerima prioritas tinggi saat
-                alokasi surplus makanan darurat/rutin.
+                {idBeneficiary.form.priorityDescription}
               </span>
             </div>
             <Switch
@@ -343,11 +343,10 @@ export function BeneficiaryForm({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-neutral-50/50">
             <div className="flex flex-col gap-0.5">
               <span className="font-sans text-[14px] font-semibold text-neutral-900">
-                Sembunyikan dari Direktori Publik
+                {idBeneficiary.form.hiddenTitle}
               </span>
               <span className="font-sans text-[12px] text-neutral-500">
-                Jika diaktifkan, kelompok ini hanya dapat dilihat dan dikelola
-                oleh staf admin BBJ.
+                {idBeneficiary.form.hiddenDescription}
               </span>
             </div>
             <Switch
@@ -370,7 +369,7 @@ export function BeneficiaryForm({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          Batal
+          {idBeneficiary.form.cancelButton}
         </Button>
 
         <Button
@@ -378,9 +377,11 @@ export function BeneficiaryForm({
           variant="primary"
           size="md"
           isLoading={isSubmitting}
-          loadingText="Menyimpan..."
+          loadingText={idBeneficiary.form.savingButton}
         >
-          {mode === "edit" ? "Simpan Perubahan" : "Simpan Beneficiary"}
+          {mode === "edit"
+            ? idBeneficiary.form.saveChangesButton
+            : idBeneficiary.form.submitButton}
         </Button>
       </footer>
     </form>

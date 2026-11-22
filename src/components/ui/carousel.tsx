@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales";
 import { Button } from "./button";
 
 export interface CarouselApi {
@@ -466,11 +467,11 @@ export const CarouselPrevious = React.forwardRef<
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      aria-label="Slide sebelumnya"
+      aria-label={idShared.ui.carousel.previousAria}
       {...props}
     >
       <ArrowLeft className="size-4" />
-      <span className="sr-only">Slide sebelumnya</span>
+      <span className="sr-only">{idShared.ui.carousel.previousAria}</span>
     </Button>
   );
 });
@@ -496,11 +497,11 @@ export const CarouselNext = React.forwardRef<
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
-      aria-label="Slide selanjutnya"
+      aria-label={idShared.ui.carousel.nextAria}
       {...props}
     >
       <ArrowRight className="size-4" />
-      <span className="sr-only">Slide selanjutnya</span>
+      <span className="sr-only">{idShared.ui.carousel.nextAria}</span>
     </Button>
   );
 });
@@ -525,7 +526,7 @@ export function CarouselDots({
     <div
       className={cn("flex items-center justify-center gap-1.5 pt-2", className)}
       role="tablist"
-      aria-label="Navigasi slide carousel"
+      aria-label={idShared.ui.carousel.paginationAria}
       {...props}
     >
       {Array.from({ length: slideCount }).map((_, index) => {
@@ -536,7 +537,7 @@ export function CarouselDots({
             type="button"
             role="tab"
             aria-selected={isActive}
-            aria-label={`Buka slide ${index + 1}`}
+            aria-label={idShared.ui.carousel.slideAria(index + 1)}
             onClick={() => scrollTo(index)}
             className={cn(
               "h-2 rounded-full transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bondi-600",

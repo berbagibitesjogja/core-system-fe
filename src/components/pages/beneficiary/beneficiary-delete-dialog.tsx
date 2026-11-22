@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idBeneficiary } from "#/locales";
 import type { BeneficiaryItem } from "./beneficiary-data";
 import { BeneficiaryIllustrationDialog } from "./beneficiary-illustration-dialog";
 
@@ -26,15 +27,15 @@ export function BeneficiaryDeleteDialog({
       onClose={onClose}
       disableDismiss={isLoading}
       titleId="beneficiary-delete-modal-title"
-      title="Konfirmasi Tindakan"
-      illustrationAlt="Ilustrasi konfirmasi hapus"
+      title={idBeneficiary.dialogs.deleteTitle}
+      illustrationAlt={idBeneficiary.dialogs.deleteAlt}
       description={
         <>
-          Apakah Anda yakin ingin menghapus penerima manfaat{" "}
+          {idBeneficiary.dialogs.deleteConfirmPrefix}
           <span className="font-semibold text-neutral-900">
-            {beneficiary?.name || "ini"}
+            {beneficiary?.name || idBeneficiary.dialogs.deleteFallbackTarget}
           </span>
-          ? Tindakan ini tidak dapat dibatalkan.
+          {idBeneficiary.dialogs.deleteConfirmSuffix}
         </>
       }
       footer={
@@ -45,16 +46,16 @@ export function BeneficiaryDeleteDialog({
             onClick={onClose}
             disabled={isLoading}
           >
-            Batal
+            {idBeneficiary.dialogs.cancelButton}
           </Button>
           <Button
             variant="danger"
             size="md"
             onClick={onConfirm}
             isLoading={isLoading}
-            loadingText="Menghapus..."
+            loadingText={idBeneficiary.dialogs.deletingButton}
           >
-            Hapus Penerima
+            {idBeneficiary.dialogs.deleteButton}
           </Button>
         </>
       }

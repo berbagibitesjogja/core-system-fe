@@ -4,6 +4,7 @@ import avatar3Svg from "#/assets/illustrations/avatars/avatar-3.svg";
 import avatar4Svg from "#/assets/illustrations/avatars/avatar-4.svg";
 import avatar5Svg from "#/assets/illustrations/avatars/avatar-5.svg";
 import avatar6Svg from "#/assets/illustrations/avatars/avatar-6.svg";
+import { idAuth } from "#/locales/id/auth";
 
 export type LoginState =
   | "default"
@@ -52,9 +53,9 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
     badgeTop: {
       iconType: "leaf",
       bgClass: "bg-brand",
-      label: "Makanan terselamatkan",
+      label: idAuth.login.showcase.slide1BadgeTopLabel,
       value: "3.000+ Kg",
-      ariaLabel: "Statistik makanan terselamatkan: lebih dari 3.000 kilogram",
+      ariaLabel: idAuth.login.showcase.slide1BadgeTopAria,
     },
     badgeBottom: {
       avatars: [
@@ -62,23 +63,22 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
         { src: avatar2Svg, name: "Anisa Nurul", alt: "Ilustrasi Relawan 2" },
         { src: avatar3Svg, name: "Dimas Saputra", alt: "Ilustrasi Relawan 3" },
       ],
-      label: "Heroes terbantu",
+      label: idAuth.login.showcase.slide1BadgeBottomLabel,
       value: "15.400",
-      ariaLabel: "Statistik heroes terbantu: 14.933 orang",
+      ariaLabel: idAuth.login.showcase.slide1BadgeBottomAria,
     },
-    titlePart1: "Bersama, kita selamatkan",
-    titlePart2: "lebih banyak makanan",
-    description:
-      "Setiap login membawamu lebih dekat dengan aksi berbagi di Jogja.",
+    titlePart1: idAuth.login.showcase.slide1TitlePart1,
+    titlePart2: idAuth.login.showcase.slide1TitlePart2,
+    description: idAuth.login.showcase.slide1Description,
   },
   {
     id: "slide-distribution",
     badgeTop: {
       iconType: "calendar",
       bgClass: "bg-amber-600",
-      label: "Perjalanan Aksi",
+      label: idAuth.login.showcase.slide2BadgeTopLabel,
       value: "> 2 Tahun",
-      ariaLabel: "Statistik perjalanan aksi: lebih dari 2 tahun",
+      ariaLabel: idAuth.login.showcase.slide2BadgeTopAria,
     },
     badgeBottom: {
       avatars: [
@@ -86,23 +86,22 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
         { src: avatar5Svg, name: "Made Tirta", alt: "Ilustrasi Mitra 2" },
         { src: avatar6Svg, name: "Kevin Pratama", alt: "Ilustrasi Mitra 3" },
       ],
-      label: "Mitra Donatur",
+      label: idAuth.login.showcase.slide2BadgeBottomLabel,
       value: "20+ Mitra",
-      ariaLabel: "Statistik mitra donatur: lebih dari 20 mitra",
+      ariaLabel: idAuth.login.showcase.slide2BadgeBottomAria,
     },
-    titlePart1: "Distribusi Cepat &",
-    titlePart2: "Tepat Sasaran",
-    description:
-      "Menjangkau panti asuhan, kaum dhuafa, dan pejuang nafkah di seluruh Yogyakarta.",
+    titlePart1: idAuth.login.showcase.slide2TitlePart1,
+    titlePart2: idAuth.login.showcase.slide2TitlePart2,
+    description: idAuth.login.showcase.slide2Description,
   },
   {
     id: "slide-collaboration",
     badgeTop: {
       iconType: "heart",
       bgClass: "bg-emerald-600",
-      label: "Dampak Sosial",
+      label: idAuth.login.showcase.slide3BadgeTopLabel,
       value: "100% Nyata",
-      ariaLabel: "Statistik dampak sosial: 100% nyata",
+      ariaLabel: idAuth.login.showcase.slide3BadgeTopAria,
     },
     badgeBottom: {
       avatars: [
@@ -110,14 +109,13 @@ export const DEFAULT_LOGIN_SLIDES: ShowcaseSlideConfig[] = [
         { src: avatar1Svg, name: "Yoga Kurnia", alt: "Ilustrasi Relawan 2" },
         { src: avatar3Svg, name: "Intan Dewi", alt: "Ilustrasi Relawan 3" },
       ],
-      label: "Relawan Aktif",
+      label: idAuth.login.showcase.slide3BadgeBottomLabel,
       value: "100+ Relawan",
-      ariaLabel: "Statistik relawan aktif: lebih dari 100 relawan",
+      ariaLabel: idAuth.login.showcase.slide3BadgeBottomAria,
     },
-    titlePart1: "Kolaborasi Komunitas &",
-    titlePart2: "Mitra Makanan",
-    description:
-      "Bersama kurangi food waste dan tebarkan senyum kebaikan setiap hari.",
+    titlePart1: idAuth.login.showcase.slide3TitlePart1,
+    titlePart2: idAuth.login.showcase.slide3TitlePart2,
+    description: idAuth.login.showcase.slide3Description,
   },
 ];
 
@@ -126,29 +124,27 @@ export const LOGIN_STATE_ALERTS: Partial<Record<LoginState, LoginAlertConfig>> =
   {
     "salah-kata-sandi": {
       tone: "danger",
-      title: "Email atau kata sandi salah",
-      description: "Periksa lagi penulisannya, lalu coba masuk.",
+      title: idAuth.login.alerts.invalidCredentialsTitle,
+      description: idAuth.login.alerts.invalidCredentialsDescription,
     },
     "belum-terdaftar": {
       tone: "danger",
-      title: "Akun belum terdaftar",
-      description:
-        "Akun ini belum terdaftar di database Berbagi Bites Jogja, jadi akses ditolak. Hubungi Administrator BBJ untuk didaftarkan.",
+      title: idAuth.login.alerts.unregisteredAccountTitle,
+      description: idAuth.login.alerts.unregisteredAccountDescription,
     },
     "role-tidak-berwenang": {
       tone: "warning",
-      title: "Belum punya akses admin",
-      description:
-        "Akunmu terdaftar, tapi tidak memiliki hak akses sebagai admin. Minta pengurus inti untuk mengubah peranmu.",
+      title: idAuth.login.alerts.unauthorizedRoleTitle,
+      description: idAuth.login.alerts.unauthorizedRoleDescription,
     },
     "sesi-habis": {
       tone: "info",
-      title: "Sesi kamu sudah berakhir",
-      description: "Demi keamanan, kamu perlu masuk lagi untuk melanjutkan.",
+      title: idAuth.login.alerts.sessionExpiredTitle,
+      description: idAuth.login.alerts.sessionExpiredDescription,
     },
     "verifikasi-google-gagal": {
       tone: "danger",
-      title: "Verifikasi akun Google gagal",
-      description: "Silakan coba masuk dengan Google sekali lagi.",
+      title: idAuth.login.alerts.googleFailedTitle,
+      description: idAuth.login.alerts.googleFailedDescription,
     },
   };

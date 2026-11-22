@@ -1,6 +1,7 @@
 import charityFamilyIllustration from "#/assets/illustrations/charity-family.svg";
 import foodSupplementsIllustration from "#/assets/illustrations/food-supplements.svg";
 import lunchBoxIllustration from "#/assets/illustrations/lunch-box.svg";
+import { idReimburse } from "#/locales";
 import { formatRupiah } from "./reimburse-data";
 import type {
   ReimburseHistoryItem,
@@ -86,38 +87,42 @@ export function buildReimburseDataStats(
 
   const averageClaimSubtext =
     totalClaimsCount > 0
-      ? `Rata-rata ${formatRupiah((pendingAmount + completedAmount) / totalClaimsCount)} per klaim`
-      : "Belum ada klaim";
+      ? idReimburse.data.stats.averageClaimSubtext(
+          formatRupiah((pendingAmount + completedAmount) / totalClaimsCount),
+        )
+      : idReimburse.data.stats.noClaims;
+
+  const currentYear = new Date().getFullYear();
 
   return [
     {
       id: "pending",
-      title: "Menunggu Diproses",
+      title: idReimburse.data.stats.pendingTitle,
       value: formatRupiah(pendingAmount),
-      subtext: `${pendingItems.length} pengajuan perlu dicek`,
+      subtext: idReimburse.data.stats.pendingSubtext(pendingItems.length),
       illustrationSrc: charityFamilyIllustration,
-      illustrationAlt: "Ilustrasi pengajuan reimburse menunggu diproses",
+      illustrationAlt: idReimburse.data.stats.pendingAlt,
       iconKey: "clock",
       styleVariant: "brand",
     },
     {
       id: "disbursed",
-      title: "Dicairkan Bulan Ini",
+      title: idReimburse.data.stats.disbursedTitle,
       value: formatRupiah(totalDisbursedMonth),
-      subtext: `${totalDisbursedCount} pengajuan selesai`,
+      subtext: idReimburse.data.stats.disbursedSubtext(totalDisbursedCount),
       illustrationSrc: lunchBoxIllustration,
-      illustrationAlt: "Ilustrasi reimburse yang sudah dicairkan",
+      illustrationAlt: idReimburse.data.stats.disbursedAlt,
       iconKey: "check",
       styleVariant: "default",
     },
     {
       id: "total-claims",
-      title: `Total Pengajuan ${new Date().getFullYear()}`,
+      title: idReimburse.data.stats.totalClaimsYearTitle(currentYear),
       value: String(totalClaimsCount),
-      unit: "Klaim",
+      unit: idReimburse.data.stats.totalClaimsUnit,
       subtext: averageClaimSubtext,
       illustrationSrc: foodSupplementsIllustration,
-      illustrationAlt: `Ilustrasi total pengajuan reimburse ${new Date().getFullYear()}`,
+      illustrationAlt: idReimburse.data.stats.totalClaimsAlt(currentYear),
       iconKey: "wallet",
       styleVariant: "default",
     },

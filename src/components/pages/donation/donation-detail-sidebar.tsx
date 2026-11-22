@@ -3,6 +3,7 @@ import { Building, Check, Clock, MapPin } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Textarea } from "#/components/ui/textarea";
 import { ProgressBar } from "#/components/shared/progress-bar";
+import { idDonation } from "#/locales";
 import { calculateHeroesQuotaSummary } from "./donation-detail-data";
 import type { DonationDetailRecord } from "./donation-detail-data";
 
@@ -41,7 +42,7 @@ export function DonationDetailSidebar({
     );
     return uniqueNames.length > 0
       ? uniqueNames.join(", ")
-      : "Belum ada penerima terdaftar";
+      : idDonation.detail.sidebar.noBeneficiaries;
   }, [detail.heroes]);
 
   const infoItems = React.useMemo(
@@ -49,21 +50,21 @@ export function DonationDetailSidebar({
       {
         id: "schedule",
         icon: Clock,
-        label: "Jadwal pengambilan",
+        label: idDonation.detail.sidebar.scheduleLabel,
         value: detail.pickupSchedule,
       },
       {
         id: "location",
         icon: MapPin,
-        label: "Lokasi",
+        label: idDonation.detail.sidebar.locationLabel,
         value: detail.location,
-        linkLabel: "Buka di Google Maps",
+        linkLabel: idDonation.detail.sidebar.mapsLinkLabel,
         href: detail.mapsUrl,
       },
       {
         id: "beneficiaries",
         icon: Building,
-        label: "Beneficiaries",
+        label: idDonation.detail.sidebar.beneficiariesLabel,
         value: beneficiariesText,
       },
     ],
@@ -83,15 +84,18 @@ export function DonationDetailSidebar({
       {/* Card / Ringkasan */}
       <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs flex flex-col gap-4">
         <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-          Ringkasan Donasi
+          {idDonation.detail.sidebar.summaryTitle}
         </h2>
 
         {/* Kuota terisi */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2 font-sans text-sm font-semibold leading-5">
-            <span className="text-neutral-600">Kuota terisi</span>
+            <span className="text-neutral-600">
+              {idDonation.detail.sidebar.filledQuotaLabel}
+            </span>
             <span className="text-neutral-900 tabular-nums">
-              {heroesSummary.usedQuotaCount} / {detail.quotaTotal} heroes
+              {heroesSummary.usedQuotaCount} / {detail.quotaTotal}{" "}
+              {idDonation.detail.sidebar.heroesUnit}
             </span>
           </div>
 
@@ -103,7 +107,9 @@ export function DonationDetailSidebar({
 
           {heroesSummary.forfeitedCount > 0 && (
             <p className="font-sans text-xs font-medium text-red-700">
-              {heroesSummary.forfeitedCount} kuota hangus (tidak jadi ambil)
+              {idDonation.detail.heroesCard.quotaBurnedBadge(
+                heroesSummary.forfeitedCount,
+              )}
             </p>
           )}
         </div>
@@ -144,9 +150,9 @@ export function DonationDetailSidebar({
       {/* Card / Catatan */}
       <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs flex flex-col gap-4">
         <Textarea
-          label="Catatan"
-          helperText="Hanya terlihat oleh pengurus."
-          placeholder="Catatan...."
+          label={idDonation.detail.sidebar.notesTitle}
+          helperText={idDonation.detail.sidebar.notesHelper}
+          placeholder={idDonation.detail.sidebar.notesPlaceholder}
           value={noteDraft}
           onChange={(e) => setNoteDraft(e.target.value)}
           className="max-w-none"
@@ -160,7 +166,7 @@ export function DonationDetailSidebar({
           isLoading={isSaving}
           onClick={handleSave}
         >
-          Simpan Catatan
+          {idDonation.detail.sidebar.saveNotesButton}
         </Button>
       </section>
     </aside>

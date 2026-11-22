@@ -1,6 +1,7 @@
 import * as React from "react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
 import { Button } from "#/components/ui/button";
+import { idVolunteer } from "#/locales";
 
 export interface VolunteerLeaveDialogProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export function VolunteerLeaveDialog({
           <div className="size-[130px] sm:size-[150px] shrink-0 flex items-center justify-center select-none pointer-events-none">
             <img
               src={raguHapusSvg}
-              alt="Ilustrasi ragu tinggalkan halaman"
+              alt={idVolunteer.dialogs.leaveAlt}
               className="size-full object-contain"
             />
           </div>
@@ -61,11 +62,10 @@ export function VolunteerLeaveDialog({
               id="volunteer-leave-modal-title"
               className="font-heading text-xl font-bold text-neutral-900 leading-tight"
             >
-              Tinggalkan halaman ini?
+              {idVolunteer.dialogs.leaveTitle}
             </h3>
             <p className="font-sans text-sm text-neutral-600 leading-relaxed">
-              Perubahan data formulir volunteer belum disimpan dan akan hilang
-              jika keluar sekarang.
+              {idVolunteer.dialogs.leaveDescription}
             </p>
           </div>
         </div>
@@ -73,10 +73,10 @@ export function VolunteerLeaveDialog({
         {/* Tombol Aksi Modal */}
         <div className="flex items-center justify-end gap-3 pt-1">
           <Button type="button" variant="secondary" size="md" onClick={onClose}>
-            Tetap di sini
+            {idVolunteer.dialogs.leaveCancelButton}
           </Button>
           <Button type="button" variant="primary" size="md" onClick={onConfirm}>
-            Keluar tanpa simpan
+            {idVolunteer.dialogs.leaveSubmitButton}
           </Button>
         </div>
       </div>

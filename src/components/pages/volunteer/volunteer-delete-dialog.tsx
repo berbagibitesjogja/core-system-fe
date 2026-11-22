@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idVolunteer } from "#/locales";
 import type { VolunteerRecord } from "./volunteer-data";
 import { VolunteerIllustrationDialog } from "./volunteer-illustration-dialog";
 
@@ -28,9 +29,9 @@ export function VolunteerDeleteDialog({
       onClose={onClose}
       disableDismiss={isLoading}
       titleId="volunteer-delete-modal-title"
-      title="Hapus Volunteer"
-      illustrationAlt="Ilustrasi konfirmasi hapus volunteer"
-      description={`Apakah Anda yakin ingin menghapus ${displayName} dari sistem? Akun yang dihapus tidak dapat lagi mengakses panel admin.`}
+      title={idVolunteer.dialogs.deleteTitle}
+      illustrationAlt={idVolunteer.dialogs.deleteAlt}
+      description={idVolunteer.dialogs.deleteDescription(displayName)}
       footer={
         <>
           <Button
@@ -39,16 +40,16 @@ export function VolunteerDeleteDialog({
             onClick={onClose}
             disabled={isLoading}
           >
-            Batal
+            {idVolunteer.dialogs.deleteCancelButton}
           </Button>
           <Button
             variant="danger"
             size="md"
             onClick={onConfirm}
             isLoading={isLoading}
-            loadingText="Menghapus..."
+            loadingText={idVolunteer.dialogs.deletingButton}
           >
-            Hapus Volunteer
+            {idVolunteer.dialogs.deleteSubmitButton}
           </Button>
         </>
       }

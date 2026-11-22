@@ -29,6 +29,7 @@ import {
 } from "#/components/ui/table";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idPartner } from "#/locales";
 import { calculatePartnerProgress, formatPartnerNumber } from "./partner-data";
 import type { PartnerRecord, PartnerUserRole } from "./partner-data";
 
@@ -94,7 +95,7 @@ export function PartnerTable({
       {
         id: "donor",
         accessorKey: "name",
-        header: "Donatur",
+        header: idPartner.table.donorHeader,
         meta: {
           className: "min-w-[240px]",
         },
@@ -117,7 +118,7 @@ export function PartnerTable({
                         styleVariant="soft"
                         className="text-[10px] leading-none px-1.5 py-0 h-[18px] font-medium"
                       >
-                        Tersembunyi
+                        {idPartner.table.hiddenBadge}
                       </Badge>
                     )}
                     {partner.hide_donations && (
@@ -126,7 +127,7 @@ export function PartnerTable({
                         styleVariant="soft"
                         className="text-[10px] leading-none px-1.5 py-0 h-[18px] font-medium"
                       >
-                        Donasi Privat
+                        {idPartner.table.privateDonationBadge}
                       </Badge>
                     )}
                   </>
@@ -143,8 +144,8 @@ export function PartnerTable({
           <Tooltip
             content={
               sortDirection === "desc"
-                ? "Urutkan donasi paling sedikit"
-                : "Urutkan donasi paling banyak"
+                ? idPartner.table.sortFewestTooltip
+                : idPartner.table.sortMostTooltip
             }
             placement="top"
           >
@@ -154,11 +155,11 @@ export function PartnerTable({
               className="inline-flex items-center gap-1 font-bold text-[11px] leading-[16px] tracking-[0.66px] uppercase text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
               aria-label={
                 sortDirection === "desc"
-                  ? "Urutkan donasi paling sedikit"
-                  : "Urutkan donasi paling banyak"
+                  ? idPartner.table.sortFewestTooltip
+                  : idPartner.table.sortMostTooltip
               }
             >
-              <span>Donasi</span>
+              <span>{idPartner.table.donationHeader}</span>
               <ArrowDown
                 className={cn(
                   "size-3.5 transition-transform duration-150",
@@ -180,7 +181,8 @@ export function PartnerTable({
           return (
             <div className="flex items-center gap-3 w-full">
               <span className="w-[64px] shrink-0 font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
-                {formatPartnerNumber(partner.donationCount)} Aksi
+                {formatPartnerNumber(partner.donationCount)}{" "}
+                {idPartner.table.actionsUnit}
               </span>
               <ProgressBar value={progress} className="flex-1 min-w-0" />
             </div>
@@ -190,20 +192,21 @@ export function PartnerTable({
       {
         id: "impactKg",
         accessorKey: "impactKg",
-        header: "Impact",
+        header: idPartner.table.impactHeader,
         meta: {
           className: "w-[110px]",
         },
         cell: ({ row }) => (
           <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
-            {formatPartnerNumber(row.original.impactKg)} Kg
+            {formatPartnerNumber(row.original.impactKg)}{" "}
+            {idPartner.table.impactUnit}
           </span>
         ),
       },
       {
         id: "lastDonationDate",
         accessorKey: "lastDonationDate",
-        header: "Terakhir Donasi",
+        header: idPartner.table.lastDonationHeader,
         meta: {
           className: "w-[140px]",
         },
@@ -215,7 +218,7 @@ export function PartnerTable({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idPartner.table.actionsHeader,
         meta: {
           align: "right",
           className: "w-[224px] text-right",
@@ -233,13 +236,16 @@ export function PartnerTable({
                 })}
               >
                 <Search className="size-4" />
-                Detail
+                {idPartner.table.detailButton}
               </Link>
-              <Tooltip content="Edit data donatur" placement="top">
+              <Tooltip
+                content={idPartner.table.editTooltip(partner.name)}
+                placement="top"
+              >
                 <Link
                   to="/admin/partner/edit"
                   search={{ id: partner.id }}
-                  aria-label={`Edit data ${partner.name}`}
+                  aria-label={idPartner.table.editTooltip(partner.name)}
                   className={getIconButtonClasses({
                     variant: "secondary",
                     size: "sm",
@@ -252,8 +258,8 @@ export function PartnerTable({
                 <IconButton
                   variant="danger"
                   size="sm"
-                  tooltip="Hapus donatur"
-                  aria-label={`Hapus ${partner.name}`}
+                  tooltip={idPartner.table.deleteTooltip(partner.name)}
+                  aria-label={idPartner.table.deleteTooltip(partner.name)}
                   className="bg-white border-neutral-300 hover:border-red-300"
                   onClick={() => onDeletePartner?.(partner)}
                 >
@@ -349,8 +355,8 @@ export function PartnerTable({
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center p-8 sm:p-10 w-full">
           <EmptyState
-            title="Donatur tidak ditemukan"
-            description="Tidak ada donatur yang cocok dengan kata kunci pencarian."
+            title={idPartner.table.emptyTitle}
+            description={idPartner.table.emptyDescription}
             illustration={<IllustrationCariKosong className="size-[200px]" />}
             visual="illustration"
             action={
@@ -361,7 +367,7 @@ export function PartnerTable({
                   onClick={onResetFilters}
                   className="shadow-2xs"
                 >
-                  Hapus pencarian
+                  {idPartner.table.resetFiltersButton}
                 </Button>
               ) : undefined
             }

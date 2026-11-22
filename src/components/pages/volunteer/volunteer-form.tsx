@@ -13,8 +13,9 @@ import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
-import { isApiError } from "#/services/errorService";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
+import { isApiError } from "#/services/errorService";
 import {
   VOLUNTEER_DIVISION_OPTIONS,
   VOLUNTEER_ROLE_OPTIONS,
@@ -122,24 +123,23 @@ export function VolunteerForm({
     const trimmedPhone = formValues.phone.trim();
 
     if (!formValues.division) {
-      nextErrors.division = "Pilih salah satu divisi.";
+      nextErrors.division = idVolunteer.form.validationDivisionRequired;
     }
 
     if (!trimmedName) {
-      nextErrors.name = "Nama lengkap wajib diisi.";
+      nextErrors.name = idVolunteer.form.validationNameRequired;
     }
 
     if (!trimmedEmail) {
-      nextErrors.email = "Email wajib diisi untuk akses Google.";
+      nextErrors.email = idVolunteer.form.validationEmailRequired;
     } else if (!EMAIL_PATTERN.test(trimmedEmail)) {
-      nextErrors.email = "Format email belum sesuai (contoh: nama@gmail.com).";
+      nextErrors.email = idVolunteer.form.validationEmailInvalid;
     }
 
     if (!trimmedPhone) {
-      nextErrors.phone = "Nomor WhatsApp wajib diisi.";
+      nextErrors.phone = idVolunteer.form.validationPhoneRequired;
     } else if (!PHONE_PATTERN.test(trimmedPhone)) {
-      nextErrors.phone =
-        "Nomor WhatsApp belum valid (contoh: 08xx atau 628xx).";
+      nextErrors.phone = idVolunteer.form.validationPhoneInvalid;
     }
 
     return nextErrors;
@@ -164,8 +164,7 @@ export function VolunteerForm({
     if (isDivisionFailed) {
       setErrors((prev) => ({
         ...prev,
-        division:
-          "Daftar divisi gagal dimuat. Muat ulang divisi terlebih dahulu.",
+        division: idVolunteer.form.validationDivisionLoadFailed,
       }));
       return;
     }
@@ -217,10 +216,10 @@ export function VolunteerForm({
       <div className="p-6 border-b border-neutral-200 flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-lg font-semibold text-neutral-900 leading-6">
-            Penempatan
+            {idVolunteer.form.placementSectionTitle}
           </h2>
           <p className="font-sans text-sm text-neutral-500 leading-5">
-            Divisi dan role menentukan apa saja yang bisa dibuka anggota ini.
+            {idVolunteer.form.placementSectionSubtitle}
           </p>
         </div>
 
@@ -233,7 +232,7 @@ export function VolunteerForm({
             id="volunteer-division-label"
             className="font-sans text-sm font-semibold text-neutral-900 leading-5"
           >
-            Pilih Divisi
+            {idVolunteer.form.divisionLabel}
           </label>
 
           {isDivisionFailed ? (
@@ -241,7 +240,7 @@ export function VolunteerForm({
             <div className="flex flex-col gap-1.5 w-full">
               <div className="flex items-center justify-between w-full h-[44px] px-3.5 rounded-lg border border-red-500 bg-surface shadow-focus-ring-danger">
                 <span className="font-sans text-sm font-medium text-red-600">
-                  Daftar divisi gagal dimuat
+                  {idVolunteer.form.divisionFailed}
                 </span>
                 <Button
                   type="button"
@@ -257,11 +256,11 @@ export function VolunteerForm({
                       isRetryingDivision && "animate-spin",
                     )}
                   />
-                  <span>Coba lagi</span>
+                  <span>{idVolunteer.form.retryButton}</span>
                 </Button>
               </div>
               <p className="font-sans text-xs font-medium text-red-600">
-                Periksa koneksi, lalu coba lagi.
+                {idVolunteer.form.divisionFailedHelper}
               </p>
             </div>
           ) : (
@@ -288,7 +287,7 @@ export function VolunteerForm({
                     !values.division && "text-neutral-400 font-normal",
                   )}
                 >
-                  {values.division || "Pilih divisi untuk volunteer ini"}
+                  {values.division || idVolunteer.form.divisionPlaceholder}
                 </span>
                 <ChevronDown
                   className={cn(
@@ -303,7 +302,7 @@ export function VolunteerForm({
               {divisionDropdownOpen && (
                 <div
                   role="listbox"
-                  aria-label="Daftar Divisi"
+                  aria-label={idVolunteer.form.divisionListboxAria}
                   className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100 max-h-60 overflow-y-auto"
                 >
                   {divisionOptions.map((opt) => {
@@ -341,7 +340,7 @@ export function VolunteerForm({
         {/* Pilihan Role (2x2 OptionCard) */}
         <div className="flex flex-col gap-2">
           <label className="font-sans text-sm font-semibold text-neutral-900 leading-5">
-            Pilih Role
+            {idVolunteer.form.roleLabel}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             {VOLUNTEER_ROLE_OPTIONS.map((opt: VolunteerRoleOption) => {
@@ -360,7 +359,7 @@ export function VolunteerForm({
             })}
           </div>
           <p className="font-sans text-xs font-medium text-neutral-500 pt-1">
-            Bisa diubah nanti di halaman detail volunteer.
+            {idVolunteer.form.roleHelper}
           </p>
         </div>
       </div>
@@ -369,10 +368,10 @@ export function VolunteerForm({
       <div className="p-6 flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-lg font-semibold text-neutral-900 leading-6">
-            Identitas & Kontak
+            {idVolunteer.form.identitySectionTitle}
           </h2>
           <p className="font-sans text-sm text-neutral-500 leading-5">
-            Email dipakai untuk masuk dengan akun Google.
+            {idVolunteer.form.identitySectionSubtitle}
           </p>
         </div>
 
@@ -380,16 +379,16 @@ export function VolunteerForm({
         {duplicateConflict && (
           <Alert
             tone="danger"
-            title="Email atau nomor WhatsApp ini sudah terdaftar."
-            description="Cek daftar Volunteer. Kalau orangnya sama, ubah datanya di halaman detail."
+            title={idVolunteer.form.duplicateConflictTitle}
+            description={idVolunteer.form.duplicateConflictDescription}
           />
         )}
 
         {/* Field: Nama Lengkap */}
         <div className="flex flex-col gap-1.5 w-full">
           <Input
-            label="Nama Lengkap"
-            placeholder="Contoh: Fauzan Trisuladana"
+            label={idVolunteer.form.nameLabel}
+            placeholder={idVolunteer.form.namePlaceholder}
             value={values.name}
             onChange={(e) => handleFieldChange("name", e.target.value)}
             error={errors.name}
@@ -405,12 +404,12 @@ export function VolunteerForm({
           <div className="flex flex-col gap-1.5 w-full">
             <Input
               type="email"
-              label="Email"
-              placeholder="nama@gmail.com"
+              label={idVolunteer.form.emailLabel}
+              placeholder={idVolunteer.form.emailPlaceholder}
               value={values.email}
               onChange={(e) => handleFieldChange("email", e.target.value)}
               error={errors.email}
-              helperText="Harus sama dengan akun Google untuk masuk."
+              helperText={idVolunteer.form.emailHelper}
               disabled={isSubmitting}
               required
               className="w-full max-w-none"
@@ -421,12 +420,12 @@ export function VolunteerForm({
           <div className="flex flex-col gap-1.5 w-full">
             <Input
               type="tel"
-              label="Nomor WhatsApp"
-              placeholder="08xx atau 628xx"
+              label={idVolunteer.form.phoneLabel}
+              placeholder={idVolunteer.form.phonePlaceholder}
               value={values.phone}
               onChange={(e) => handleFieldChange("phone", e.target.value)}
               error={errors.phone}
-              helperText="Nomor aktif untuk koordinasi kegiatan."
+              helperText={idVolunteer.form.phoneHelper}
               disabled={isSubmitting}
               required
               className="w-full max-w-none"
@@ -444,7 +443,7 @@ export function VolunteerForm({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Batal
+          {idVolunteer.form.cancelButton}
         </Button>
         <Button
           type="submit"
@@ -453,10 +452,10 @@ export function VolunteerForm({
           disabled={isSubmitting}
         >
           {isSubmitting
-            ? "Menyimpan..."
+            ? idVolunteer.form.savingButton
             : mode === "add"
-              ? "Simpan Volunteer"
-              : "Simpan Perubahan"}
+              ? idVolunteer.form.addButton
+              : idVolunteer.form.saveChangesButton}
         </Button>
       </div>
     </form>

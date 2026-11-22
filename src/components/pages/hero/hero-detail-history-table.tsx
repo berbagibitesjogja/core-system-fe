@@ -26,6 +26,7 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
+import { idHero } from "#/locales/id/hero";
 import { formatHeroCount } from "./hero-data";
 import { HERO_DETAIL_PER_PAGE_OPTIONS } from "./hero-detail-data";
 import type { HeroDonationHistoryRecord } from "./hero-detail-data";
@@ -45,11 +46,11 @@ export interface HeroDetailHistoryTableProps {
 
 const HISTORY_STATUS_BADGE = {
   berjalan: {
-    label: "Berjalan",
+    label: idHero.detail.historyTable.statusOngoing,
     tone: "warning" as const,
   },
   selesai: {
-    label: "Selesai",
+    label: idHero.detail.historyTable.statusCompleted,
     tone: "success" as const,
   },
 };
@@ -77,7 +78,7 @@ export function HeroDetailHistoryTable({
       {
         id: "date",
         accessorKey: "dateIso",
-        header: "Tanggal",
+        header: idHero.detail.historyTable.columnDate,
         meta: {
           className: "w-[200px]",
           sort: sortDirection,
@@ -97,7 +98,7 @@ export function HeroDetailHistoryTable({
       {
         id: "donorName",
         accessorKey: "donorName",
-        header: "Sponsor",
+        header: idHero.detail.historyTable.columnDonor,
         meta: {
           className: "min-w-[180px]",
         },
@@ -112,7 +113,7 @@ export function HeroDetailHistoryTable({
       {
         id: "locationName",
         accessorKey: "locationName",
-        header: "Lokasi",
+        header: idHero.detail.historyTable.columnLocation,
         meta: {
           className: "w-[230px]",
         },
@@ -124,21 +125,23 @@ export function HeroDetailHistoryTable({
       },
       {
         id: "portionsAndWeight",
-        header: "Porsi & Bobot",
+        header: idHero.detail.historyTable.columnPortionsWeight,
         meta: {
           className: "w-[150px]",
         },
         cell: ({ row }) => (
           <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
-            {row.original.portions} Porsi (
-            {formatHeroCount(row.original.weightGrams)} gr)
+            {idHero.detail.historyTable.portionWeightUnit(
+              row.original.portions,
+              formatHeroCount(row.original.weightGrams),
+            )}
           </span>
         ),
       },
       {
         id: "claimCode",
         accessorKey: "claimCode",
-        header: "Kode Klaim",
+        header: idHero.detail.historyTable.columnClaimCode,
         meta: {
           className: "w-[120px]",
         },
@@ -151,7 +154,7 @@ export function HeroDetailHistoryTable({
       {
         id: "status",
         accessorKey: "status",
-        header: "Status",
+        header: idHero.detail.historyTable.columnStatus,
         meta: {
           className: "w-[130px]",
         },
@@ -166,18 +169,23 @@ export function HeroDetailHistoryTable({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idHero.detail.historyTable.columnAction,
         meta: {
           align: "right",
           className: "w-[72px] text-right",
         },
         cell: ({ row }) => (
           <div className="flex items-center justify-end">
-            <Tooltip content="Lihat detail donasi" placement="top">
+            <Tooltip
+              content={idHero.detail.historyTable.detailTooltip}
+              placement="top"
+            >
               <Link
                 to="/admin/donation/detail"
                 search={{ id: row.original.id }}
-                aria-label={`Lihat detail donasi ${row.original.donorName}`}
+                aria-label={idHero.detail.historyTable.detailAria(
+                  row.original.donorName,
+                )}
                 className={getIconButtonClasses({
                   variant: "ghost",
                   size: "sm",
@@ -205,23 +213,25 @@ export function HeroDetailHistoryTable({
       {/* Header Kartu Tabel */}
       <div className="p-5 flex items-center justify-between gap-3 w-full">
         <h2 className="font-['Gabarito'] font-semibold text-[18px] leading-[24px] text-neutral-900">
-          Riwayat Donasi Yang Diterima
+          {idHero.detail.historyTable.title}
         </h2>
         <Badge tone="neutral" styleVariant="soft">
-          {formatHeroCount(totalCount)} aksi
+          {idHero.detail.historyTable.badgeActionCount(
+            formatHeroCount(totalCount),
+          )}
         </Badge>
       </div>
 
       {totalCount === 0 ? (
         <div className="flex flex-col items-center justify-center px-6 py-10 w-full">
           <EmptyState
-            title="Belum ada riwayat"
-            description="Hero ini belum memiliki riwayat pengambilan donasi."
+            title={idHero.detail.historyTable.emptyTitle}
+            description={idHero.detail.historyTable.emptyDescription}
             visual="illustration"
             illustration={
               <IllustrationSantaiKosong
                 className="size-[200px]"
-                alt="Ilustrasi belum ada riwayat"
+                alt={idHero.detail.historyTable.emptyAlt}
               />
             }
           />
@@ -295,7 +305,11 @@ export function HeroDetailHistoryTable({
               perPage={perPage}
               onPerPageChange={onPerPageChange}
               perPageOptions={HERO_DETAIL_PER_PAGE_OPTIONS}
-              rangeText={`${formatHeroCount(startRange)} - ${formatHeroCount(endRange)} dari ${formatHeroCount(totalCount)}`}
+              rangeText={idHero.detail.historyTable.rangeText(
+                formatHeroCount(startRange),
+                formatHeroCount(endRange),
+                formatHeroCount(totalCount),
+              )}
             />
           </TableFooter>
         </>

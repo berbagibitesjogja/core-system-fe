@@ -9,6 +9,7 @@ import {
   CarouselItem,
   CarouselDots,
 } from "#/components/ui";
+import { idAuth } from "#/locales";
 import { DEFAULT_LOGIN_SLIDES } from "./login-data";
 import type { ShowcaseSlideConfig } from "./login-data";
 
@@ -43,7 +44,7 @@ export function LoginShowcase({
     <aside
       data-node-id="95:429"
       data-name="Showcase"
-      aria-label="Informasi Komunitas BBJ"
+      aria-label={idAuth.login.communityInfoAria}
       className="relative size-full min-h-[580px] xl:min-h-[720px] rounded-[32px] bg-bondi-50 overflow-hidden flex flex-col justify-between py-6 sm:py-8 xl:py-10 select-none shadow-sm animate-showcase-enter"
     >
       {/* Decorative Vector Loop dengan Path Tunggal Kontinu (Mulai dari Bawah ke Atas) */}
@@ -123,7 +124,7 @@ export function LoginShowcase({
                   >
                     <img
                       src={heroImg}
-                      alt="Relawan Berbagi Bites Jogja sedang berbagi makanan"
+                      alt={idAuth.login.volunteerPhotoAlt}
                       className="size-full object-contain drop-shadow-md animate-hero-illustration"
                     />
                   </div>

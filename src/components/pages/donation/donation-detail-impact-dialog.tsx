@@ -4,6 +4,7 @@ import { toast } from "#/components/ui/toast";
 import ribbonTrailLoopSvg from "#/assets/illustrations/ribbon-trail-loop.svg";
 import volunteerHighFivePng from "#/assets/illustrations/volunteer-high-five.png";
 import { Button } from "#/components/ui/button";
+import { idDonation } from "#/locales";
 import {
   calculateHeroesQuotaSummary,
   calculateSurplusSummary,
@@ -88,20 +89,24 @@ export function DonationDetailImpactDialog({
     () => [
       {
         id: "heroes",
-        label: "Heroes",
-        value: `${heroesSummary.activeHeroesCount} orang`,
+        label: idDonation.detail.impactDialog.heroesLabel,
+        value: `${heroesSummary.activeHeroesCount} ${idDonation.detail.impactDialog.heroesUnit}`,
       },
       {
         id: "weight",
-        label: "Surplus food",
+        label: idDonation.detail.impactDialog.surplusFoodLabel,
         value: surplusSummary.totalWeightFormatted,
       },
       {
         id: "types",
-        label: "Jenis makanan",
-        value: `${detail.surplusFoods.length} jenis`,
+        label: idDonation.detail.impactDialog.foodTypesLabel,
+        value: `${detail.surplusFoods.length} ${idDonation.detail.impactDialog.foodTypesUnit}`,
       },
-      { id: "date", label: "Tanggal", value: shortDate },
+      {
+        id: "date",
+        label: idDonation.detail.impactDialog.dateLabel,
+        value: shortDate,
+      },
     ],
     [
       heroesSummary.activeHeroesCount,
@@ -223,11 +228,11 @@ export function DonationDetailImpactDialog({
       // Teks ajakan footer
       ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
       ctx.font = "500 28px Inter, sans-serif";
-      ctx.fillText("Join the mission", 84, 1720);
+      ctx.fillText(idDonation.detail.impactDialog.footerTagline, 84, 1720);
 
       ctx.fillStyle = "#ffffff";
       ctx.font = "700 40px Gabarito, sans-serif";
-      ctx.fillText("berbagibitesjogja.com", 84, 1780);
+      ctx.fillText(idDonation.detail.impactDialog.footerDomain, 84, 1780);
 
       // Kotak QR di pojok kanan bawah
       ctx.fillStyle = "#ffffff";
@@ -242,9 +247,9 @@ export function DonationDetailImpactDialog({
       anchor.href = dataUrl;
       anchor.download = "BBJ-Impact-Report.png";
       anchor.click();
-      toast.success("Poster Impact berhasil diunduh (BBJ-Impact-Report.png).");
+      toast.success(idDonation.detail.toasts.posterSuccess);
     } catch {
-      toast.error("Gagal membuat poster impact. Silakan coba lagi.");
+      toast.error(idDonation.detail.toasts.posterFailed);
     } finally {
       setIsExporting(false);
     }
@@ -278,15 +283,18 @@ export function DonationDetailImpactDialog({
               {/* Bagian Atas Poster */}
               <div className="relative z-10 space-y-2.5">
                 <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 font-sans text-[10px] font-bold tracking-wider uppercase text-white">
-                  {detail.program === "CSR" ? "AKSI CSR" : "AKSI FOOD RESCUE"}
+                  {detail.program === "CSR"
+                    ? idDonation.detail.impactDialog.badgeCsr
+                    : idDonation.detail.impactDialog.badgeFoodRescue}
                 </span>
 
                 <div className="space-y-1.5">
                   <h3 className="font-heading font-bold text-[26px] leading-[1.1] tracking-tight">
-                    Impact Report
+                    {idDonation.detail.impactDialog.posterTitle}
                   </h3>
                   <span className="inline-flex items-center rounded-full bg-sunny-500 px-3 py-1 font-sans text-[11px] font-bold text-neutral-900 max-w-full truncate">
-                    bersama {detail.donorName}
+                    {idDonation.detail.impactDialog.togetherWithPrefix}{" "}
+                    {detail.donorName}
                   </span>
                 </div>
 
@@ -312,7 +320,7 @@ export function DonationDetailImpactDialog({
               <div className="relative z-10 flex items-center justify-center py-1">
                 <img
                   src={volunteerHighFivePng}
-                  alt="Ilustrasi relawan Berbagi Bites Jogja"
+                  alt={idDonation.detail.impactDialog.altHeroVolunteer}
                   className="w-full max-h-[155px] object-contain drop-shadow-sm"
                   draggable={false}
                 />
@@ -322,15 +330,15 @@ export function DonationDetailImpactDialog({
               <div className="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/25">
                 <div className="min-w-0">
                   <p className="font-sans text-[10px] text-white/85">
-                    Join the mission
+                    {idDonation.detail.impactDialog.footerTagline}
                   </p>
                   <p className="font-heading font-bold text-[13px] truncate">
-                    berbagibitesjogja.com
+                    {idDonation.detail.impactDialog.footerDomain}
                   </p>
                 </div>
                 <div
                   className="size-10 shrink-0 rounded-sm bg-white text-neutral-900 flex items-center justify-center shadow-xs"
-                  aria-label="QR Code berbagibitesjogja.com"
+                  aria-label={idDonation.detail.impactDialog.qrAria}
                 >
                   <QrCode className="size-7" />
                 </div>
@@ -346,42 +354,51 @@ export function DonationDetailImpactDialog({
                   id="impact-dialog-title"
                   className="font-heading-h3 text-neutral-900"
                 >
-                  Bagikan Impact
+                  {idDonation.detail.impactDialog.shareTitle}
                 </h2>
                 <p className="font-sans text-sm text-neutral-600 mt-1">
-                  Unduh poster laporan dampak siap unggah untuk Instagram Story
-                  maupun laporan kepada mitra donatur.
+                  {idDonation.detail.impactDialog.shareDesc}
                 </p>
               </div>
 
               <div className="rounded-lg bg-neutral-50 border border-neutral-200 p-4 space-y-2.5">
                 <p className="font-label text-xs font-semibold uppercase tracking-wide text-neutral-500">
-                  Ringkasan Data Poster
+                  {idDonation.detail.impactDialog.summaryHeading}
                 </p>
                 <div className="grid grid-cols-2 gap-3 font-sans text-sm">
                   <div>
-                    <p className="text-xs text-neutral-500">Mitra Donatur</p>
+                    <p className="text-xs text-neutral-500">
+                      {idDonation.detail.impactDialog.donorLabel}
+                    </p>
                     <p className="font-semibold text-neutral-900">
                       {detail.donorName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Program</p>
+                    <p className="text-xs text-neutral-500">
+                      {idDonation.detail.impactDialog.programLabel}
+                    </p>
                     <p className="font-semibold text-neutral-900">
                       {detail.program}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Total Heroes</p>
+                    <p className="text-xs text-neutral-500">
+                      {idDonation.detail.impactDialog.totalHeroesLabel}
+                    </p>
                     <p className="font-semibold text-neutral-900">
-                      {heroesSummary.activeHeroesCount} orang
+                      {heroesSummary.activeHeroesCount}{" "}
+                      {idDonation.detail.impactDialog.heroesUnit}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Surplus Tercatat</p>
+                    <p className="text-xs text-neutral-500">
+                      {idDonation.detail.impactDialog.surplusRecordedLabel}
+                    </p>
                     <p className="font-semibold text-neutral-900">
                       {surplusSummary.totalWeightFormatted} (
-                      {detail.surplusFoods.length} jenis)
+                      {detail.surplusFoods.length}{" "}
+                      {idDonation.detail.impactDialog.foodTypesUnit})
                     </p>
                   </div>
                 </div>
@@ -397,7 +414,7 @@ export function DonationDetailImpactDialog({
                 isLoading={isExporting}
                 onClick={handleDownloadPoster}
               >
-                Download Poster Impact
+                {idDonation.detail.impactDialog.downloadPosterButton}
               </Button>
               <Button
                 type="button"
@@ -405,10 +422,10 @@ export function DonationDetailImpactDialog({
                 className="w-full"
                 onClick={onClose}
               >
-                Tutup
+                {idDonation.detail.impactDialog.closeButton}
               </Button>
               <p className="font-sans text-xs text-neutral-500 text-center">
-                Format PNG 1080 × 1920 px · BBJ-Impact-Report.png
+                {idDonation.detail.impactDialog.formatInfo}
               </p>
             </div>
           </div>

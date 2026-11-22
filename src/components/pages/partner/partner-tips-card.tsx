@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import volunteerChecklistIllustration from "#/assets/illustrations/volunteer-checklist-idea.png";
 import { cn } from "#/lib/utils";
+import { idPartner } from "#/locales";
 import { defaultPartnerTips } from "./partner-data";
 import type { PartnerTipItem } from "./partner-data";
 
@@ -27,14 +28,14 @@ export function PartnerTipsCard({
       <div className="h-[204px] w-full rounded-2xl overflow-hidden shrink-0">
         <img
           src={volunteerChecklistIllustration}
-          alt="Ilustrasi tips mendaftarkan donatur"
+          alt={idPartner.form.tipsAlt}
           className="size-full object-cover pointer-events-none select-none"
         />
       </div>
 
       {/* Judul Panel Tips */}
       <h3 className="font-heading text-[18px] leading-[24px] font-semibold text-neutral-900">
-        Tips mendaftarkan donatur
+        {idPartner.form.tipsTitle}
       </h3>
 
       {/* Daftar Butir Panduan */}

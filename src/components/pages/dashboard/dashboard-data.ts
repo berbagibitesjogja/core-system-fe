@@ -1,4 +1,5 @@
 import { getPresetAvatarByIndex } from "#/lib/avatars";
+import { idDashboard } from "#/locales/id/dashboard";
 
 export interface DashboardMetric {
   title: string;
@@ -28,14 +29,14 @@ export interface ImpactStatItem {
 export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
   {
     id: "stat-food-rescue",
-    title: "Food Rescue",
+    title: idDashboard.impactStats.foodRescueTitle,
     value: "372",
-    unit: "Aksi",
+    unit: idDashboard.impactStats.foodRescueUnit,
     styleVariant: "brand",
     iconName: "package",
     trend: {
       value: "+18 aksi",
-      label: "bulan ini",
+      label: idDashboard.impactStats.trendMonth,
       isPositive: true,
     },
     illustrationKey: "fast-food",
@@ -43,14 +44,14 @@ export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
   },
   {
     id: "stat-food-saved",
-    title: "Makanan Diselamatkan",
+    title: idDashboard.impactStats.foodSavedTitle,
     value: "3.077",
-    unit: "Kg",
+    unit: idDashboard.impactStats.foodSavedUnit,
     styleVariant: "default",
     iconName: "leaf",
     trend: {
       value: "+624 Kg",
-      label: "bulan ini",
+      label: idDashboard.impactStats.trendMonth,
       isPositive: true,
     },
     illustrationKey: "organic-food",
@@ -58,14 +59,14 @@ export const DEFAULT_IMPACT_STATS: ImpactStatItem[] = [
   },
   {
     id: "stat-total-heroes",
-    title: "Total Heroes",
+    title: idDashboard.impactStats.totalHeroesTitle,
     value: "14.933",
-    unit: "Orang",
+    unit: idDashboard.impactStats.totalHeroesUnit,
     styleVariant: "default",
     iconName: "users",
     trend: {
       value: "+3.020 orang",
-      label: "bulan ini",
+      label: idDashboard.impactStats.trendMonth,
       isPositive: true,
     },
     illustrationKey: "charity-heroes",
@@ -84,22 +85,22 @@ export interface QuickActionItem {
 export const DEFAULT_QUICK_ACTIONS: QuickActionItem[] = [
   {
     id: "add-donation",
-    title: "Tambah Donasi",
-    subtitle: "Catat aksi food rescue baru",
+    title: idDashboard.quickActions.addDonation,
+    subtitle: idDashboard.quickActions.addDonationSubtitle,
     iconName: "plus",
     href: "/admin/donation/add",
   },
   {
     id: "request-reimburse",
-    title: "Ajukan Reimburse",
-    subtitle: "Klaim biaya operasional",
+    title: idDashboard.quickActions.requestReimburse,
+    subtitle: idDashboard.quickActions.requestReimburseSubtitle,
     iconName: "wallet",
     href: "/admin/reimburse/request",
   },
   {
     id: "add-volunteer",
-    title: "Tambah Volunteer",
-    subtitle: "Daftarkan relawan baru",
+    title: idDashboard.quickActions.addVolunteer,
+    subtitle: idDashboard.quickActions.addVolunteerSubtitle,
     iconName: "users",
     href: "/admin/volunteer",
   },

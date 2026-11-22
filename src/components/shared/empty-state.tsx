@@ -3,6 +3,7 @@ import { Inbox } from "lucide-react";
 import { cn } from "#/lib/utils";
 import cariKosongSvg from "#/assets/illustrations/magnifying-empty-box.svg";
 import santaiKosongSvg from "#/assets/illustrations/volunteer-relaxing.svg";
+import { idShared } from "#/locales/id/shared";
 
 export interface IllustrationCariKosongProps {
   className?: string;
@@ -14,7 +15,7 @@ export interface IllustrationCariKosongProps {
  */
 export function IllustrationCariKosong({
   className,
-  alt = "Ilustrasi data kosong",
+  alt = idShared.emptyState.defaultEmptyDataAlt,
 }: IllustrationCariKosongProps) {
   return (
     <img
@@ -33,7 +34,7 @@ export function IllustrationCariKosong({
  */
 export function IllustrationSantaiKosong({
   className,
-  alt = "Ilustrasi belum ada riwayat",
+  alt = idShared.emptyState.defaultNoHistoryAlt,
 }: IllustrationCariKosongProps) {
   return (
     <img

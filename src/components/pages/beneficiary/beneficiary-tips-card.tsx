@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import beneficiaryTipsImg from "#/assets/illustrations/volunteer-checklist-idea.png";
+import { idBeneficiary } from "#/locales";
 import { defaultBeneficiaryTips } from "./beneficiary-data";
 import type { BeneficiaryTipItem } from "./beneficiary-data";
 import { cn } from "#/lib/utils";
@@ -27,14 +28,14 @@ export function BeneficiaryTipsCard({
       <div className="h-[204px] w-full rounded-2xl overflow-hidden bg-bondi-100/50 shrink-0">
         <img
           src={beneficiaryTipsImg}
-          alt="Tips mendaftarkan penerima manfaat Berbagi Bites Jogja"
+          alt={idBeneficiary.form.tipsImageAlt}
           className="size-full object-cover pointer-events-none select-none"
         />
       </div>
 
       {/* Judul Panel Tips */}
       <h3 className="font-heading text-[18px] leading-[24px] font-semibold text-neutral-900">
-        Tips mendaftarkan penerima
+        {idBeneficiary.form.tipsPanelTitle}
       </h3>
 
       {/* Daftar Butir Panduan */}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { AlertTriangle, CheckCircle2, Info, X, XCircle } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales";
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   tone?: "info" | "success" | "warning" | "danger";
@@ -76,7 +77,7 @@ export function Alert({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Tutup alert"
+          aria-label={idShared.ui.alert.closeAria}
           className="size-6 -mr-1 -mt-0.5 rounded-md inline-flex items-center justify-center text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
         >
           <X className="size-4" />

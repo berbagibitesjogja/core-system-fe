@@ -1,6 +1,7 @@
 import statActionsSvg from "#/assets/illustrations/ice-cream.svg";
 import statFoodSvg from "#/assets/illustrations/organic-food.svg";
 import statRecipientsSvg from "#/assets/illustrations/charity-sharing.svg";
+import { idPartner } from "#/locales";
 import { defaultPartners, formatPartnerNumber } from "./partner-data";
 import type {
   PartnerRecord,
@@ -234,7 +235,7 @@ export function getPartnerDetailById(
       name: "Warung Makan Bu Tini",
       type: "Perusahaan",
       rank: null,
-      subtitle: "Donatur baru · belum ada aksi",
+      subtitle: idPartner.detail.subtitles.newDonor,
       totalRecipients: 0,
       totalFoodKg: 0,
       avgFoodKgPerAction: 0,
@@ -256,7 +257,7 @@ export function getPartnerDetailById(
       avatarSrc: target.avatarSrc,
       type: target.type,
       rank: null,
-      subtitle: "Donatur baru · belum ada aksi",
+      subtitle: idPartner.detail.subtitles.newDonor,
       totalRecipients: 0,
       totalFoodKg: 0,
       avgFoodKgPerAction: 0,
@@ -288,8 +289,8 @@ export function getPartnerDetailById(
     rank,
     subtitle:
       rank === 1
-        ? `Donatur teraktif · peringkat #1 dari ${defaultPartners.length} mitra`
-        : `Mitra donatur · peringkat #${rank} dari ${defaultPartners.length} mitra`,
+        ? idPartner.detail.subtitles.rankOne(defaultPartners.length)
+        : idPartner.detail.subtitles.rankN(rank, defaultPartners.length),
     totalRecipients,
     totalFoodKg: target.impactKg,
     avgFoodKgPerAction,
@@ -313,40 +314,44 @@ export function buildPartnerDetailStats(
   return [
     {
       id: "partner-stat-recipients",
-      title: "Penerima",
+      title: idPartner.detail.stats.recipientsTitle,
       value: formatPartnerNumber(detail.totalRecipients),
-      unit: "Orang",
-      subtext: isEmpty ? "Belum ada heroes" : "Heroes dari seluruh aksi",
+      unit: idPartner.detail.stats.recipientsUnit,
+      subtext: isEmpty
+        ? idPartner.detail.stats.recipientsEmpty
+        : idPartner.detail.stats.recipientsSubtext,
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: statRecipientsSvg,
-      illustrationAlt: "Ilustrasi penerima manfaat",
+      illustrationAlt: idPartner.detail.stats.recipientsAlt,
     },
     {
       id: "partner-stat-food",
-      title: "Makanan",
+      title: idPartner.detail.stats.foodTitle,
       value: formatPartnerNumber(detail.totalFoodKg),
-      unit: "Kg",
+      unit: idPartner.detail.stats.foodUnit,
       subtext: isEmpty
-        ? "Belum ada makanan tersalurkan"
-        : `Rata-rata ${formatPartnerNumber(detail.avgFoodKgPerAction)} Kg per aksi`,
+        ? idPartner.detail.stats.foodEmpty
+        : idPartner.detail.stats.foodAvg(
+            formatPartnerNumber(detail.avgFoodKgPerAction) as unknown as number,
+          ),
       styleVariant: "default",
       iconName: "leaf",
       illustrationSrc: statFoodSvg,
-      illustrationAlt: "Ilustrasi makanan diselamatkan",
+      illustrationAlt: idPartner.detail.stats.foodAlt,
     },
     {
       id: "partner-stat-actions",
-      title: "Total Aksi",
+      title: idPartner.detail.stats.actionsTitle,
       value: formatPartnerNumber(detail.totalActions),
-      unit: "Aksi",
+      unit: idPartner.detail.stats.actionsUnit,
       subtext: isEmpty
-        ? "Belum pernah berdonasi"
-        : `Terakhir: ${detail.lastActionLabel}`,
+        ? idPartner.detail.stats.actionsEmpty
+        : idPartner.detail.stats.actionsLast(detail.lastActionLabel),
       styleVariant: "default",
       iconName: "package",
       illustrationSrc: statActionsSvg,
-      illustrationAlt: "Ilustrasi total aksi donasi",
+      illustrationAlt: idPartner.detail.stats.actionsAlt,
     },
   ];
 }

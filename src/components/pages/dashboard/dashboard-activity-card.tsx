@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { Avatar } from "#/components/ui/avatar";
 import { Badge } from "#/components/ui/badge";
 import { getPresetAvatarSrc } from "#/lib/avatars";
+import { idDashboard } from "#/locales/id/dashboard";
 import { RECENT_ACTIVITIES } from "./dashboard-data";
 import type { ActivityItem } from "./dashboard-data";
 import cariKosongSvg from "#/assets/illustrations/magnifying-empty-box.svg";
@@ -31,14 +32,14 @@ export function DashboardActivityCard({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <h4 className="font-heading-h4 text-base sm:text-lg font-semibold text-neutral-900 leading-tight">
-              Aktivitas Terbaru
+              {idDashboard.recentActivity.title}
             </h4>
             <Badge
               tone="brand"
               styleVariant="soft"
               className="h-5 px-2 text-[10px]"
             >
-              Khusus Super Admin
+              {idDashboard.recentActivity.superAdminBadge}
             </Badge>
           </div>
 
@@ -48,7 +49,7 @@ export function DashboardActivityCard({
               onClick={onSeeAll}
               className="inline-flex items-center gap-1 font-label text-xs sm:text-sm font-semibold text-brand hover:text-brand-hover transition-colors cursor-pointer"
             >
-              <span>Lihat Semua</span>
+              <span>{idDashboard.recentActivity.seeAll}</span>
               <ChevronRight className="size-4" />
             </button>
           )}
@@ -93,16 +94,16 @@ export function DashboardActivityCard({
             <div className="size-32 select-none pointer-events-none">
               <img
                 src={cariKosongSvg}
-                alt="Belum ada aktivitas"
+                alt={idDashboard.recentActivity.emptyAlt}
                 className="size-full object-contain pointer-events-none select-none"
               />
             </div>
             <div className="space-y-1">
               <h5 className="font-heading-h4 text-base font-semibold text-neutral-900">
-                Belum ada aktivitas
+                {idDashboard.recentActivity.emptyTitle}
               </h5>
               <p className="font-sans text-xs text-neutral-500 max-w-xs">
-                Belum ada aktivitas tercatat hari ini.
+                {idDashboard.recentActivity.emptyDescription}
               </p>
             </div>
           </div>

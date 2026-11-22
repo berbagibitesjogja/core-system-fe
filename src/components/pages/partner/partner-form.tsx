@@ -9,6 +9,7 @@ import { Input } from "#/components/ui/input";
 import { Switch } from "#/components/ui/switch";
 import { Textarea } from "#/components/ui/textarea";
 import { cn } from "#/lib/utils";
+import { idPartner } from "#/locales";
 import { defaultPartnerCategoryOptions, defaultPartners } from "./partner-data";
 import type {
   PartnerCategory,
@@ -102,11 +103,11 @@ export function PartnerForm({
       const trimmedEmail = currentValues.email.trim();
 
       if (!currentValues.category) {
-        nextErrors.category = "Pilih salah satu jenis donatur.";
+        nextErrors.category = idPartner.form.categoryRequired;
       }
 
       if (!trimmedName) {
-        nextErrors.name = "Nama donatur wajib diisi.";
+        nextErrors.name = idPartner.form.nameRequired;
       } else {
         const isDuplicate = existingPartners.some(
           (partner) =>
@@ -114,13 +115,12 @@ export function PartnerForm({
             partner.name.trim().toLowerCase() === trimmedName.toLowerCase(),
         );
         if (isDuplicate) {
-          nextErrors.name = `Nama donatur sudah terdaftar. Cari di daftar Partner atau pakai nama cabang, mis. "${trimmedName} Kaliurang".`;
+          nextErrors.name = idPartner.form.nameDuplicate(trimmedName);
         }
       }
 
       if (trimmedEmail && !EMAIL_PATTERN.test(trimmedEmail)) {
-        nextErrors.email =
-          "Format email belum sesuai (contoh: nama@perusahaan.com).";
+        nextErrors.email = idPartner.form.emailFormatError;
       }
 
       return nextErrors;
@@ -154,7 +154,7 @@ export function PartnerForm({
 
   const handleFileSelect = (file: File) => {
     if (file.size > MAX_LOGO_SIZE_BYTES) {
-      setLogoUploadError("Ukuran berkas melebihi batas maksimal 2 MB.");
+      setLogoUploadError(idPartner.form.logoSizeError);
       return;
     }
 
@@ -223,8 +223,8 @@ export function PartnerForm({
         {hasErrors && (
           <Alert
             tone="danger"
-            title="Donatur belum bisa disimpan"
-            description="Periksa kolom yang ditandai merah, lalu simpan lagi."
+            title={idPartner.form.errorAlertTitle}
+            description={idPartner.form.errorAlertDescription}
             onClose={() => setHasSubmitted(false)}
           />
         )}
@@ -232,10 +232,10 @@ export function PartnerForm({
         {/* Header Seksi Identitas */}
         <div className="flex flex-col gap-1">
           <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
-            Identitas Donatur
+            {idPartner.form.identityTitle}
           </h2>
           <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
-            Jenis, nama, dan logo yang tampil di laporan dampak.
+            {idPartner.form.identitySubtitle}
           </p>
         </div>
 
@@ -245,7 +245,7 @@ export function PartnerForm({
             id="partner-category-label"
             className="font-heading font-semibold text-sm leading-5 text-neutral-900"
           >
-            Pilih Jenis
+            {idPartner.form.categoryLabel}
           </label>
 
           <div
@@ -277,28 +277,28 @@ export function PartnerForm({
 
           <FieldHelper
             error={errors.category}
-            helperText="Jenis menentukan cara donatur dikelompokkan."
+            helperText={idPartner.form.categoryHelper}
           />
         </div>
 
         {/* Field 2: Nama Donatur */}
         <Input
           id="partner-name"
-          label="Nama Donatur"
-          placeholder="Contoh: Holland Bakery"
+          label={idPartner.form.nameLabel}
+          placeholder={idPartner.form.namePlaceholder}
           value={values.name}
           onChange={handleNameChange}
           error={errors.name}
-          helperText="Tulis nama yang dikenal publik, sama seperti di papan nama."
+          helperText={idPartner.form.nameHelper}
           disabled={isSubmitting}
           className="max-w-none"
         />
 
         {/* Field 3: Logo Donatur (opsional) */}
         <FileUpload
-          label="Logo Donatur (opsional)"
+          label={idPartner.form.logoLabel}
           accept="image/png,image/jpeg"
-          description="PNG atau JPG, persegi, maks. 2 MB. Tanpa logo, inisial nama yang dipakai."
+          description={idPartner.form.logoDescription}
           state={
             logoUploadError
               ? "error"
@@ -320,23 +320,23 @@ export function PartnerForm({
         {/* Header Seksi Kontak */}
         <div className="flex flex-col gap-1">
           <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
-            Kontak
+            {idPartner.form.contactTitle}
           </h2>
           <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
-            Opsional. Dipakai tim untuk koordinasi penjemputan makanan.
+            {idPartner.form.contactSubtitle}
           </p>
         </div>
 
         {/* Field 4: Alamat */}
         <Textarea
           id="partner-address"
-          label="Alamat"
-          placeholder="Contoh: Jl. Malioboro No. 52, Yogyakarta"
+          label={idPartner.form.addressLabel}
+          placeholder={idPartner.form.addressPlaceholder}
           value={values.address}
           onChange={(e) =>
             setValues((prev) => ({ ...prev, address: e.target.value }))
           }
-          helperText="Opsional"
+          helperText={idPartner.form.addressHelper}
           disabled={isSubmitting}
           className="max-w-none"
         />
@@ -345,27 +345,27 @@ export function PartnerForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           <Input
             id="partner-email"
-            label="Email"
+            label={idPartner.form.emailLabel}
             type="email"
-            placeholder="contoh@perusahaan.com"
+            placeholder={idPartner.form.emailPlaceholder}
             value={values.email}
             onChange={handleEmailChange}
             error={errors.email}
-            helperText="Opsional"
+            helperText={idPartner.form.emailHelper}
             disabled={isSubmitting}
             className="max-w-none"
           />
 
           <Input
             id="partner-phone"
-            label="Nomor Telepon"
+            label={idPartner.form.phoneLabel}
             type="tel"
-            placeholder="0812-xxxx-xxxx"
+            placeholder={idPartner.form.phonePlaceholder}
             value={values.phone}
             onChange={(e) =>
               setValues((prev) => ({ ...prev, phone: e.target.value }))
             }
-            helperText="Opsional. Boleh nomor WhatsApp."
+            helperText={idPartner.form.phoneHelper}
             disabled={isSubmitting}
             className="max-w-none"
           />
@@ -376,11 +376,10 @@ export function PartnerForm({
       <div className="p-6 border-t border-neutral-200 flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading font-semibold text-[18px] leading-[24px] text-neutral-900">
-            Pengaturan Privasi Publik
+            {idPartner.form.privacyTitle}
           </h2>
           <p className="font-body font-normal text-[12px] leading-[16px] text-neutral-500">
-            Atur keterlihatan profil mitra dan data donasi pada portal publik
-            dan hero.
+            {idPartner.form.privacySubtitle}
           </p>
         </div>
 
@@ -391,11 +390,10 @@ export function PartnerForm({
                 htmlFor="partner-hidden"
                 className="font-heading font-medium text-sm text-neutral-900 cursor-pointer"
               >
-                Sembunyikan dari Direktori Publik
+                {idPartner.form.hiddenLabel}
               </label>
               <p className="font-body text-xs text-neutral-500">
-                Mitra tetap dapat dikelola oleh staf di portal admin, namun
-                disembunyikan dari daftar mitra publik.
+                {idPartner.form.hiddenDescription}
               </p>
             </div>
             <Switch
@@ -412,11 +410,10 @@ export function PartnerForm({
                 htmlFor="partner-hide-donations"
                 className="font-heading font-medium text-sm text-neutral-900 cursor-pointer"
               >
-                Sembunyikan Jumlah Donasi di Publik
+                {idPartner.form.hideDonationsLabel}
               </label>
               <p className="font-body text-xs text-neutral-500">
-                Nama dan profil mitra tetap tampil di direktori publik, tetapi
-                nominal dan jumlah donasi dirahasiakan.
+                {idPartner.form.hideDonationsDescription}
               </p>
             </div>
             <Switch
@@ -438,7 +435,7 @@ export function PartnerForm({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Batal
+          {idPartner.form.cancelButton}
         </Button>
 
         <Button
@@ -446,9 +443,11 @@ export function PartnerForm({
           variant="primary"
           size="md"
           isLoading={isSubmitting}
-          loadingText="Menyimpan..."
+          loadingText={idPartner.form.submittingButton}
         >
-          {mode === "add" ? "Simpan Donatur" : "Simpan Perubahan"}
+          {mode === "add"
+            ? idPartner.form.submitAddButton
+            : idPartner.form.submitEditButton}
         </Button>
       </footer>
     </form>

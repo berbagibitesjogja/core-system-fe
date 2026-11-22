@@ -1,5 +1,6 @@
 import { FileText } from "lucide-react";
 import { Dialog } from "#/components/ui/dialog";
+import { idReimburse } from "#/locales";
 import { formatRupiah } from "./reimburse-data";
 import type { ReimburseHistoryItem } from "./reimburse-data";
 import {
@@ -25,22 +26,22 @@ export function ReimburseFilePreviewDialog({
   const metaItems: ReimbursePreviewMetaItem[] = [
     {
       id: "method",
-      label: "Tujuan Transfer",
+      label: idReimburse.dialogs.filePreviewDestinationLabel,
       value: `${item.method} · ${item.destinationNumber}`,
     },
     {
       id: "date",
-      label: "Tanggal Pengajuan",
+      label: idReimburse.dialogs.filePreviewDateLabel,
       value: item.dateLabel,
     },
     {
       id: "amount",
-      label: "Nominal Terdeteksi",
+      label: idReimburse.dialogs.filePreviewAmountLabel,
       value: formatRupiah(item.amount),
     },
     {
       id: "size",
-      label: "Ukuran Berkas",
+      label: idReimburse.dialogs.filePreviewSizeLabel,
       value: item.fileSize,
     },
   ];
@@ -50,10 +51,14 @@ export function ReimburseFilePreviewDialog({
       isOpen={Boolean(item)}
       onClose={onClose}
       title={item.fileName}
-      description="Pratinjau dokumen bukti transaksi reimburse."
+      description={idReimburse.dialogs.filePreviewDescription}
       icon={<FileText className="size-6" />}
-      cancelText="Tutup"
-      confirmText={item.filePreviewUrl ? "Buka Berkas" : undefined}
+      cancelText={idReimburse.dialogs.filePreviewCloseButton}
+      confirmText={
+        item.filePreviewUrl
+          ? idReimburse.dialogs.filePreviewOpenButton
+          : undefined
+      }
       onConfirm={
         item.filePreviewUrl
           ? () => openReimburseDocumentInNewTab(item.filePreviewUrl)
@@ -68,7 +73,7 @@ export function ReimburseFilePreviewDialog({
         fileType={item.fileType}
         filePreviewUrl={item.filePreviewUrl}
         emptyPreviewTitle={item.fileName}
-        emptyPreviewDescription="Berkas contoh bawaan tersimpan untuk keperluan pratinjau UI. Unggah berkas baru melalui form untuk melihat pratinjau gambar langsung."
+        emptyPreviewDescription={idReimburse.dialogs.filePreviewEmptyDesc}
       />
     </Dialog>
   );

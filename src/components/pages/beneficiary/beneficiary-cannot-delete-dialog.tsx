@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idBeneficiary } from "#/locales";
 import { BeneficiaryIllustrationDialog } from "./beneficiary-illustration-dialog";
 
 export interface BeneficiaryCannotDeleteDialogProps {
@@ -18,12 +19,12 @@ export function BeneficiaryCannotDeleteDialog({
       isOpen={isOpen}
       onClose={onClose}
       titleId="beneficiary-cannot-delete-modal-title"
-      title="Penerima tidak dapat dihapus"
-      illustrationAlt="Ilustrasi penerima tidak dapat dihapus"
-      description="Penerima manfaat ini masih memiliki riwayat distribusi donasi tercatat, jadi datanya perlu disimpan."
+      title={idBeneficiary.dialogs.cannotDeleteTitle}
+      illustrationAlt={idBeneficiary.dialogs.cannotDeleteAlt}
+      description={idBeneficiary.dialogs.cannotDeleteDescription}
       footer={
         <Button variant="secondary" size="md" onClick={onClose}>
-          Mengerti
+          {idBeneficiary.dialogs.cannotDeleteButton}
         </Button>
       }
     />

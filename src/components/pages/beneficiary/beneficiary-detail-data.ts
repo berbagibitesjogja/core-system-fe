@@ -1,6 +1,7 @@
 import statCharityHeroes from "#/assets/illustrations/charity-family.svg";
 import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
 import statOrganicFood from "#/assets/illustrations/organic-food.svg";
+import { idBeneficiary } from "#/locales";
 import { defaultBeneficiaries } from "./beneficiary-data";
 import type { BeneficiaryStatItem, BeneficiaryType } from "./beneficiary-data";
 
@@ -208,50 +209,55 @@ export function buildBeneficiaryDetailStats(
 
   const sectorSubtext =
     sectors.length === 0
-      ? "Tambahkan sektor pertama"
+      ? idBeneficiary.detail.statsSectorsSubtextEmpty
       : topSector && topSector.heroesCount > 0
-        ? `Terbanyak: ${topSector.name}`
-        : `Terdaftar ${sectors.length} sektor`;
+        ? idBeneficiary.detail.statsSectorsSubtextTop(topSector.name)
+        : idBeneficiary.detail.statsSectorsSubtextCount(sectors.length);
 
   return [
     {
       id: "jumlah-penerima",
-      title: "Jumlah Penerima",
+      title: idBeneficiary.detail.statsRecipientsTitle,
       value: detail.heroesCount.toLocaleString("id-ID"),
-      unit: "Orang",
+      unit: idBeneficiary.detail.statsRecipientsUnit,
       subtext:
         detail.heroesCount > 0
-          ? `${detail.heroesSharePercent}% dari seluruh heroes BBJ`
-          : "Belum ada heroes",
+          ? idBeneficiary.detail.statsRecipientsSubtext(
+              detail.heroesSharePercent,
+            )
+          : idBeneficiary.detail.statsRecipientsEmpty,
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: statCharityHeroes,
-      illustrationAlt: "Ilustrasi jumlah penerima manfaat",
+      illustrationAlt: idBeneficiary.detail.statsRecipientsAlt,
     },
     {
       id: "makanan-diterima",
-      title: "Makanan Diterima",
+      title: idBeneficiary.detail.statsImpactTitle,
       value: detail.impactKg.toLocaleString("id-ID"),
-      unit: "Kg",
+      unit: idBeneficiary.detail.statsImpactUnit,
       subtext:
         detail.impactKg > 0
-          ? `${detail.impactSharePercent}% dari makanan tersalurkan`
-          : "Belum ada makanan tersalurkan",
+          ? idBeneficiary.detail.statsImpactSubtext(detail.impactSharePercent)
+          : idBeneficiary.detail.statsImpactSubtextEmpty,
       styleVariant: "default",
       iconName: "leaf",
       illustrationSrc: statOrganicFood,
-      illustrationAlt: "Ilustrasi makanan diterima",
+      illustrationAlt: idBeneficiary.detail.statsImpactAlt,
     },
     {
       id: "sektor-terdaftar",
-      title: "Sektor Terdaftar",
+      title: idBeneficiary.detail.statsSectorsTitle,
       value: sectors.length.toLocaleString("id-ID"),
-      unit: sectors.length > 0 ? detail.sectorUnitLabel : "Sektor",
+      unit:
+        sectors.length > 0
+          ? detail.sectorUnitLabel
+          : idBeneficiary.detail.statsSectorsUnitDefault,
       subtext: sectorSubtext,
       styleVariant: "default",
       iconName: "building",
       illustrationSrc: statDonationNearest,
-      illustrationAlt: "Ilustrasi sektor terdaftar",
+      illustrationAlt: idBeneficiary.detail.statsSectorsAlt,
     },
   ];
 }
@@ -272,7 +278,7 @@ export function getBeneficiaryDetailById(
       name: emptyName,
       type: emptyType,
       rank: null,
-      subtitle: "Penerima manfaat · baru didaftarkan",
+      subtitle: idBeneficiary.detail.subtitleNew,
       heroesCount: 0,
       heroesSharePercent: 0,
       impactKg: 0,
@@ -289,7 +295,10 @@ export function getBeneficiaryDetailById(
       name: existing.name,
       type: existing.type,
       rank: existing.rank,
-      subtitle: `Penerima manfaat · peringkat #${existing.rank} dari ${defaultBeneficiaries.length} kelompok`,
+      subtitle: idBeneficiary.detail.subtitleRank(
+        existing.rank,
+        defaultBeneficiaries.length,
+      ),
       heroesCount: existing.heroesCount,
       heroesSharePercent: 32,
       impactKg: existing.impactKg,
@@ -356,7 +365,10 @@ export function getBeneficiaryDetailById(
     name: existing.name,
     type: existing.type,
     rank: existing.rank,
-    subtitle: `Penerima manfaat · peringkat #${existing.rank} dari ${defaultBeneficiaries.length} kelompok`,
+    subtitle: idBeneficiary.detail.subtitleRank(
+      existing.rank,
+      defaultBeneficiaries.length,
+    ),
     heroesCount: existing.heroesCount,
     heroesSharePercent: Math.max(
       1,

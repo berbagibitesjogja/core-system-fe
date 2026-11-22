@@ -16,6 +16,7 @@ import { Input } from "#/components/ui/input";
 import { Switch } from "#/components/ui/switch";
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Tag } from "#/components/shared/tag";
+import { idDonation } from "#/locales";
 import {
   defaultBeneficiaryOptions,
   defaultEmptyDonationForm,
@@ -147,16 +148,16 @@ export function DonationForm({
     const newErrors: FormErrors = {};
 
     if (!formData.donorName.trim()) {
-      newErrors.donorName = "Pilih donatur / sponsor wajib diisi.";
+      newErrors.donorName = idDonation.validation.donorRequired;
     }
 
     const quotaNum = Number(formData.quota);
     if (!formData.quota || isNaN(quotaNum) || quotaNum <= 0) {
-      newErrors.quota = "Kuota harus berupa angka positif minimal 1.";
+      newErrors.quota = idDonation.validation.quotaPositive;
     }
 
     if (!formData.pickupDate.trim()) {
-      newErrors.pickupDate = "Tanggal pengambilan wajib diisi.";
+      newErrors.pickupDate = idDonation.validation.pickupDateRequired;
     }
 
     const hourNum = Number(formData.pickupHour);
@@ -166,7 +167,7 @@ export function DonationForm({
       hourNum < 0 ||
       hourNum > 23
     ) {
-      newErrors.pickupHour = "Jam tidak valid (00-23).";
+      newErrors.pickupHour = idDonation.validation.pickupHourInvalid;
     }
 
     const minNum = Number(formData.pickupMinute);
@@ -176,19 +177,19 @@ export function DonationForm({
       minNum < 0 ||
       minNum > 59
     ) {
-      newErrors.pickupMinute = "Menit tidak valid (00-59).";
+      newErrors.pickupMinute = idDonation.validation.pickupMinuteInvalid;
     }
 
     if (!formData.location.trim()) {
-      newErrors.location = "Lokasi pengambilan wajib diisi.";
+      newErrors.location = idDonation.validation.locationRequired;
     }
 
     if (!formData.mapsUrl.trim()) {
-      newErrors.mapsUrl = "Link Google Maps wajib diisi.";
+      newErrors.mapsUrl = idDonation.validation.mapsUrlRequired;
     }
 
     if (formData.beneficiaryIds.length === 0) {
-      newErrors.beneficiaries = "Pilih minimal satu kelompok beneficiaries.";
+      newErrors.beneficiaries = idDonation.validation.beneficiaryRequired;
     }
 
     return newErrors;
@@ -230,7 +231,7 @@ export function DonationForm({
           ...prevErr,
           beneficiaries:
             updated.length === 0
-              ? "Pilih minimal satu kelompok beneficiaries."
+              ? idDonation.validation.beneficiaryRequired
               : undefined,
         }));
       }
@@ -245,7 +246,7 @@ export function DonationForm({
       if (hasSubmitted && updated.length === 0) {
         setErrors((prevErr) => ({
           ...prevErr,
-          beneficiaries: "Pilih minimal satu kelompok beneficiaries.",
+          beneficiaries: idDonation.validation.beneficiaryRequired,
         }));
       }
       return { ...prev, beneficiaryIds: updated };
@@ -268,8 +269,8 @@ export function DonationForm({
         <div className="p-6 pb-0">
           <Alert
             tone="danger"
-            title="Ada kesalahan pada formulir"
-            description="Mohon periksa kembali kolom yang bertanda merah di bawah ini sebelum menyimpan."
+            title={idDonation.form.errorAlertTitle}
+            description={idDonation.form.errorAlertDescription}
             onClose={() => setHasSubmitted(false)}
           />
         </div>
@@ -281,10 +282,10 @@ export function DonationForm({
       <section className="p-6 sm:p-7 flex flex-col gap-5">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-lg font-semibold text-neutral-900">
-            Informasi Donasi
+            {idDonation.form.section1Title}
           </h2>
           <p className="font-caption text-xs text-neutral-500">
-            Siapa donaturnya dan berapa heroes yang bisa mengambil.
+            {idDonation.form.section1Subtitle}
           </p>
         </div>
 
@@ -298,7 +299,7 @@ export function DonationForm({
               htmlFor="sponsor-select-trigger"
               className="font-label text-sm font-semibold text-neutral-900"
             >
-              Pilih Sponsor
+              {idDonation.form.donorLabel}
             </label>
 
             <button
@@ -330,7 +331,7 @@ export function DonationForm({
                   />
                 )}
                 <span className="truncate">
-                  {formData.donorName || "Donatur / Sponsor"}
+                  {formData.donorName || idDonation.form.donorPlaceholder}
                 </span>
               </div>
               <ChevronDown
@@ -350,7 +351,7 @@ export function DonationForm({
                   <Search className="size-4 text-neutral-400 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Cari sponsor..."
+                    placeholder={idDonation.form.donorSearchPlaceholder}
                     value={sponsorSearch}
                     onChange={(e) => setSponsorSearch(e.target.value)}
                     className="w-full text-xs font-sans focus:outline-none placeholder:text-neutral-400"
@@ -393,7 +394,7 @@ export function DonationForm({
                   })}
                   {filteredSponsors.length === 0 && (
                     <p className="p-3 text-xs text-neutral-500 text-center">
-                      Sponsor tidak ditemukan
+                      {idDonation.form.donorEmpty}
                     </p>
                   )}
                 </div>
@@ -405,13 +406,13 @@ export function DonationForm({
           <div className="sm:col-span-4 flex flex-col gap-1.5 w-full">
             <Input
               className="w-full max-w-none"
-              label="Kuota"
+              label={idDonation.form.quotaLabel}
               type="number"
               min={1}
-              placeholder="Contoh: 30"
+              placeholder={idDonation.form.quotaPlaceholder}
               value={formData.quota}
               error={errors.quota}
-              helperText="Jumlah heroes maksimal."
+              helperText={idDonation.form.quotaHelper}
               disabled={isSubmitting}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, quota: e.target.value }));
@@ -430,10 +431,10 @@ export function DonationForm({
       <section className="p-6 sm:p-7 flex flex-col gap-5">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-lg font-semibold text-neutral-900">
-            Jadwal & Lokasi
+            {idDonation.form.section2Title}
           </h2>
           <p className="font-caption text-xs text-neutral-500">
-            Kapan dan di mana heroes mengambil makanan.
+            {idDonation.form.section2Subtitle}
           </p>
         </div>
 
@@ -443,7 +444,7 @@ export function DonationForm({
           <div className="sm:col-span-5 flex flex-col gap-1.5 w-full">
             <Input
               className="w-full max-w-none"
-              label="Tanggal Pengambilan"
+              label={idDonation.form.pickupDateLabel}
               type="date"
               leadingIcon={<Calendar className="size-4.5 text-neutral-500" />}
               value={formData.pickupDate}
@@ -464,14 +465,14 @@ export function DonationForm({
           {/* Waktu Pengambilan: Jam & Menit */}
           <div className="sm:col-span-4 flex flex-col gap-1.5">
             <span className="font-label text-sm font-semibold text-neutral-900">
-              Waktu Pengambilan
+              {idDonation.form.pickupTimeLabel}
             </span>
             <div className="flex items-center gap-2">
               <div className="flex-1">
                 <input
                   type="text"
                   maxLength={2}
-                  placeholder="HH"
+                  placeholder={idDonation.form.pickupHourPlaceholder}
                   value={formData.pickupHour}
                   disabled={isSubmitting}
                   onChange={(e) => {
@@ -487,7 +488,7 @@ export function DonationForm({
                       ? "border-[1.5px] border-red-500 shadow-focus-ring-danger text-red-900"
                       : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
                   )}
-                  aria-label="Jam pengambilan"
+                  aria-label={idDonation.form.pickupHourAria}
                 />
               </div>
 
@@ -499,7 +500,7 @@ export function DonationForm({
                 <input
                   type="text"
                   maxLength={2}
-                  placeholder="00"
+                  placeholder={idDonation.form.pickupMinutePlaceholder}
                   value={formData.pickupMinute}
                   disabled={isSubmitting}
                   onChange={(e) => {
@@ -518,7 +519,7 @@ export function DonationForm({
                       ? "border-[1.5px] border-red-500 shadow-focus-ring-danger text-red-900"
                       : "border border-border-input hover:border-neutral-900 focus:border-[1.5px] focus:border-bondi-500 focus:shadow-focus-ring",
                   )}
-                  aria-label="Menit pengambilan"
+                  aria-label={idDonation.form.pickupMinuteAria}
                 />
               </div>
             </div>
@@ -529,11 +530,11 @@ export function DonationForm({
           <div className="sm:col-span-3 flex flex-col gap-1.5 w-full">
             <Input
               className="w-full max-w-none"
-              label="Durasi (menit)"
+              label={idDonation.form.durationLabel}
               type="number"
-              placeholder="Contoh: 60"
+              placeholder={idDonation.form.durationPlaceholder}
               value={formData.duration}
-              helperText="Opsional"
+              helperText={idDonation.form.durationHelper}
               disabled={isSubmitting}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, duration: e.target.value }))
@@ -546,8 +547,8 @@ export function DonationForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start w-full">
           <Input
             className="w-full max-w-none"
-            label="Lokasi"
-            placeholder="Pusat Studi Pancasila UGM"
+            label={idDonation.form.locationLabel}
+            placeholder={idDonation.form.locationPlaceholder}
             leadingIcon={<MapPin className="size-4.5 text-neutral-500" />}
             value={formData.location}
             error={errors.location}
@@ -562,8 +563,8 @@ export function DonationForm({
 
           <Input
             className="w-full max-w-none"
-            label="Link Maps"
-            placeholder="maps.app.goo.gl/..."
+            label={idDonation.form.mapsUrlLabel}
+            placeholder={idDonation.form.mapsUrlPlaceholder}
             leadingIcon={<ExternalLink className="size-4.5 text-neutral-500" />}
             value={formData.mapsUrl}
             error={errors.mapsUrl}
@@ -584,10 +585,10 @@ export function DonationForm({
       <section className="p-6 sm:p-7 flex flex-col gap-5">
         <div className="flex flex-col gap-1">
           <h2 className="font-heading text-lg font-semibold text-neutral-900">
-            Penerima & Pengumuman
+            {idDonation.form.section3Title}
           </h2>
           <p className="font-caption text-xs text-neutral-500">
-            Tentukan kelompok penerima dan cara donasi diumumkan.
+            {idDonation.form.section3Subtitle}
           </p>
         </div>
 
@@ -600,7 +601,7 @@ export function DonationForm({
             htmlFor="beneficiary-select-trigger"
             className="font-label text-sm font-semibold text-neutral-900"
           >
-            Beneficiaries
+            {idDonation.form.beneficiaryLabel}
           </label>
 
           <div
@@ -627,7 +628,7 @@ export function DonationForm({
           >
             {formData.beneficiaryIds.length === 0 ? (
               <span className="text-sm font-sans text-neutral-500 select-none">
-                Pilih / Tambah Beneficiary...
+                {idDonation.form.beneficiaryPlaceholder}
               </span>
             ) : (
               <>
@@ -645,7 +646,7 @@ export function DonationForm({
                   );
                 })}
                 <span className="text-sm font-sans text-neutral-500 select-none">
-                  Tambah lagi...
+                  {idDonation.form.beneficiaryAddMore}
                 </span>
               </>
             )}
@@ -660,7 +661,7 @@ export function DonationForm({
 
           <FieldHelper
             error={errors.beneficiaries}
-            helperText="Pilih satu atau lebih kelompok penerima manfaat."
+            helperText={idDonation.form.beneficiaryHelper}
           />
 
           {/* Menu Dropdown Checklist Beneficiaries dengan Fitur Pencarian sesuai Figma Node 122:4132 */}
@@ -674,7 +675,7 @@ export function DonationForm({
                 <Search className="size-4 text-neutral-500 shrink-0" />
                 <input
                   type="text"
-                  placeholder="Cari beneficiary..."
+                  placeholder={idDonation.form.beneficiarySearchPlaceholder}
                   value={beneficiarySearchQuery}
                   onChange={(e) => setBeneficiarySearchQuery(e.target.value)}
                   className="w-full bg-transparent text-sm font-sans text-neutral-900 placeholder:text-neutral-500 outline-none"
@@ -685,7 +686,7 @@ export function DonationForm({
                     type="button"
                     onClick={() => setBeneficiarySearchQuery("")}
                     className="text-neutral-400 hover:text-neutral-600 cursor-pointer p-0.5"
-                    aria-label="Bersihkan pencarian"
+                    aria-label={idDonation.form.beneficiaryClearSearchAria}
                   >
                     <X className="size-3.5" />
                   </button>
@@ -737,7 +738,7 @@ export function DonationForm({
 
                 {filteredBeneficiaries.length === 0 && (
                   <div className="p-3 text-center text-xs text-neutral-500 font-sans">
-                    Tidak ada beneficiary yang cocok
+                    {idDonation.form.beneficiaryEmpty}
                   </div>
                 )}
               </div>
@@ -749,10 +750,10 @@ export function DonationForm({
         <div className="flex flex-col gap-1.5 w-full">
           <Input
             className="w-full max-w-none"
-            label="Pesan Khusus"
-            placeholder="Contoh: Bawa wadah sendiri ya!"
+            label={idDonation.form.notesLabel}
+            placeholder={idDonation.form.notesPlaceholder}
             value={formData.notes}
-            helperText="Opsional. Ditampilkan ke heroes saat klaim voucher."
+            helperText={idDonation.form.notesHelper}
             disabled={isSubmitting}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, notes: e.target.value }))
@@ -766,10 +767,10 @@ export function DonationForm({
           <div className="p-4 rounded-md border border-neutral-200 flex items-center justify-between gap-4 bg-white hover:border-neutral-300 transition-colors">
             <div className="flex flex-col min-w-0">
               <span className="font-label text-sm font-semibold text-neutral-900">
-                Donasi
+                {idDonation.form.csrToggleTitle}
               </span>
               <span className="font-caption text-xs text-neutral-500">
-                Tandai sebagai program CSR / charity.
+                {idDonation.form.csrToggleSubtitle}
               </span>
             </div>
             <Switch
@@ -779,7 +780,7 @@ export function DonationForm({
               }
               disabled={isSubmitting}
               showLabel={false}
-              aria-label="Tandai sebagai program CSR"
+              aria-label={idDonation.form.csrAria}
             />
           </div>
 
@@ -787,10 +788,10 @@ export function DonationForm({
           <div className="p-4 rounded-md border border-neutral-200 flex items-center justify-between gap-4 bg-white hover:border-neutral-300 transition-colors">
             <div className="flex flex-col min-w-0">
               <span className="font-label text-sm font-semibold text-neutral-900">
-                Umumkan
+                {idDonation.form.announceToggleTitle}
               </span>
               <span className="font-caption text-xs text-neutral-500">
-                Kirim notifikasi donasi ini ke semua relawan.
+                {idDonation.form.announceToggleSubtitle}
               </span>
             </div>
             <Switch
@@ -800,7 +801,7 @@ export function DonationForm({
               }
               disabled={isSubmitting}
               showLabel={false}
-              aria-label="Kirim notifikasi ke relawan"
+              aria-label={idDonation.form.announceAria}
             />
           </div>
         </div>
@@ -817,7 +818,7 @@ export function DonationForm({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          Batal
+          {idDonation.form.cancelButton}
         </Button>
 
         <Button
@@ -829,10 +830,10 @@ export function DonationForm({
           className="shadow-pop-sm"
         >
           {isSubmitting
-            ? "Menyimpan..."
+            ? idDonation.form.submittingButton
             : mode === "add"
-              ? "Simpan Donasi"
-              : "Simpan Perubahan"}
+              ? idDonation.form.submitAddButton
+              : idDonation.form.submitEditButton}
         </Button>
       </footer>
     </form>

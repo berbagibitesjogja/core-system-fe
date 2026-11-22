@@ -183,36 +183,38 @@ export function buildBeneficiaryStats(
   return [
     {
       id: "total-heroes",
-      title: "Total Heroes",
+      title: idBeneficiary.stats.totalHeroes,
       value: totalHeroes.toLocaleString("id-ID"),
-      unit: "Orang",
-      subtext: `Dari ${totalGroups} kelompok penerima`,
+      unit: idBeneficiary.stats.unitHeroes,
+      subtext: idBeneficiary.stats.subtextHeroes(totalGroups),
       styleVariant: "brand",
       iconName: "users",
       illustrationSrc: statCharityHeroes,
-      illustrationAlt: "Ilustrasi komunitas penerima manfaat",
+      illustrationAlt: idBeneficiary.stats.altHeroes,
     },
     {
       id: "makanan-tersalurkan",
-      title: "Makanan Tersalurkan",
+      title: idBeneficiary.stats.foodDistributed,
       value: totalImpactKg.toLocaleString("id-ID"),
-      unit: "Kg",
-      subtext: `+${MONTHLY_IMPACT_DELTA_KG.toLocaleString("id-ID")} Kg bulan ini`,
+      unit: idBeneficiary.stats.unitKg,
+      subtext: idBeneficiary.stats.subtextFood(
+        MONTHLY_IMPACT_DELTA_KG.toLocaleString("id-ID"),
+      ),
       styleVariant: "default",
       iconName: "leaf",
       illustrationSrc: statOrganicFood,
-      illustrationAlt: "Ilustrasi makanan tersalurkan",
+      illustrationAlt: idBeneficiary.stats.altFood,
     },
     {
       id: "kelompok-penerima",
-      title: "Kelompok Penerima",
+      title: idBeneficiary.stats.recipientGroups,
       value: totalGroups.toLocaleString("id-ID"),
-      unit: "Kelompok",
-      subtext: `Dari ${distinctTypes} jenis penerima`,
+      unit: idBeneficiary.stats.unitGroups,
+      subtext: idBeneficiary.stats.subtextGroups(distinctTypes),
       styleVariant: "default",
       iconName: "building",
       illustrationSrc: statDonationNearest,
-      illustrationAlt: "Ilustrasi kelompok penerima",
+      illustrationAlt: idBeneficiary.stats.altGroups,
     },
   ];
 }
@@ -266,7 +268,11 @@ export function buildBeneficiaryFilterOptions(
     }));
 
   return [
-    { id: "all", label: "Semua Kategori", count: items.length },
+    {
+      id: "all",
+      label: idBeneficiary.toolbar.categoryPlaceholder,
+      count: items.length,
+    },
     ...orderedEntries,
     ...extraEntries,
   ];
@@ -386,17 +392,5 @@ export const defaultBeneficiaryCategoryOptions: BeneficiaryCategoryOption[] = [
   },
 ];
 
-export const defaultBeneficiaryTips: BeneficiaryTipItem[] = [
-  {
-    id: "tip-1",
-    text: "Satu kampus cukup didaftarkan sekali. Fakultas ditambahkan sebagai sektor di halaman detail.",
-  },
-  {
-    id: "tip-2",
-    text: "Pakai nama resmi supaya mudah dicari saat membuat donasi.",
-  },
-  {
-    id: "tip-3",
-    text: "Jenis penerima menentukan pengelompokan di laporan dampak.",
-  },
-];
+export const defaultBeneficiaryTips: BeneficiaryTipItem[] =
+  idBeneficiary.form.tips;

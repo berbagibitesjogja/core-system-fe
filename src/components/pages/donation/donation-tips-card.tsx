@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import donationTipsImg from "#/assets/illustrations/volunteer-checklist-idea.png";
+import { idDonation } from "#/locales";
 import { defaultDonationTips } from "./donation-data";
 import type { DonationTipItem } from "./donation-data";
 import { cn } from "#/lib/utils";
@@ -28,14 +29,14 @@ export function DonationTipsCard({
       <div className="h-[204px] w-full rounded-xl overflow-hidden bg-bondi-100/50 shrink-0">
         <img
           src={donationTipsImg}
-          alt="Tips mengisi donasi Berbagi Bites Jogja"
+          alt={idDonation.add.tips.alt}
           className="size-full object-cover pointer-events-none select-none"
         />
       </div>
 
       {/* Judul Bagian Tips */}
       <h3 className="font-heading text-lg font-semibold text-neutral-900">
-        Tips mengisi donasi
+        {idDonation.add.tips.title}
       </h3>
 
       {/* Daftar Butir Poin Tips */}

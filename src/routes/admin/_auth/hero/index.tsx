@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "#/components/ui/toast";
+import { idHero } from "#/locales/id/hero";
 import {
   HERO_DEFAULT_PER_PAGE,
   HeroCannotDeleteDialog,
@@ -271,7 +272,7 @@ function HeroPage() {
             : item,
         ),
       );
-      toast.success(`Profil ${values.name} berhasil diperbarui.`);
+      toast.success(idHero.list.toasts.updateSuccess(values.name));
     } else {
       const newHero: HeroRecord = {
         id: `hero-${Date.now()}`,
@@ -286,7 +287,7 @@ function HeroPage() {
         canDelete: true,
       };
       setHeroes((prev) => [newHero, ...prev]);
-      toast.success(`Hero ${values.name} berhasil ditambahkan.`);
+      toast.success(idHero.list.toasts.createSuccess(values.name));
     }
 
     setIsSubmittingForm(false);
@@ -319,7 +320,7 @@ function HeroPage() {
     await new Promise((resolve) => setTimeout(resolve, 400));
 
     setHeroes((prev) => prev.filter((item) => item.id !== deleteTarget.id));
-    toast.success(`Data hero ${deleteTarget.name} berhasil dihapus.`);
+    toast.success(idHero.list.toasts.deleteSuccess(deleteTarget.name));
 
     setIsDeleting(false);
     setIsDeleteDialogOpen(false);

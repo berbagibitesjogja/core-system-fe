@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
+import { idReimburse } from "#/locales/id/reimburse";
 import { REIMBURSE_STATUS_BADGE_TONE } from "./reimburse-data";
 import type { ReimburseHistoryStatus } from "./reimburse-data";
 
@@ -59,7 +60,7 @@ export function ReimburseDocumentPreviewBody({
       <div className="rounded-md border border-neutral-200 bg-neutral-50 p-3.5 space-y-3">
         <div className="flex items-center justify-between gap-2">
           <span className="font-label text-xs font-semibold text-neutral-600">
-            Status Pengajuan
+            {idReimburse.dialogs.submissionStatusLabel}
           </span>
           <Badge
             tone={REIMBURSE_STATUS_BADGE_TONE[status]}
@@ -89,7 +90,7 @@ export function ReimburseDocumentPreviewBody({
         <div className="rounded-md border border-neutral-200 bg-neutral-50 p-2 flex items-center justify-center max-h-[320px] overflow-hidden">
           <img
             src={filePreviewUrl}
-            alt={`Pratinjau ${fileName || emptyPreviewTitle}`}
+            alt={idReimburse.dialogs.previewAlt(fileName || emptyPreviewTitle)}
             className="max-h-[300px] w-auto rounded-sm object-contain"
           />
         </div>
@@ -132,7 +133,7 @@ export function ReimburseDocumentPreviewBody({
           {filePreviewUrl && (
             <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand">
               <ExternalLink className="size-3.5" />
-              Siap dibuka di tab baru
+              {idReimburse.dialogs.readyOpenTab}
             </span>
           )}
         </div>

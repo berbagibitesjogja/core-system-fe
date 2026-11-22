@@ -1,4 +1,5 @@
 import { Button } from "#/components/ui/button";
+import { idHero } from "#/locales/id/hero";
 import { HeroIllustrationDialog } from "./hero-illustration-dialog";
 
 export interface HeroCannotDeleteDialogProps {
@@ -18,12 +19,12 @@ export function HeroCannotDeleteDialog({
       isOpen={isOpen}
       onClose={onClose}
       titleId="hero-cannot-delete-modal-title"
-      title="Hero tidak dapat dihapus"
-      illustrationAlt="Ilustrasi hero tidak dapat dihapus"
-      description="Hero ini memiliki riwayat pengambilan donasi tercatat. Jika tidak boleh menerima donasi lagi, blokir hero ini saja."
+      title={idHero.dialogs.cannotDeleteTitle}
+      illustrationAlt={idHero.dialogs.cannotDeleteAlt}
+      description={idHero.dialogs.cannotDeleteDescription}
       footer={
         <Button variant="secondary" size="md" onClick={onClose}>
-          Mengerti
+          {idHero.dialogs.cannotDeleteButton}
         </Button>
       }
     />

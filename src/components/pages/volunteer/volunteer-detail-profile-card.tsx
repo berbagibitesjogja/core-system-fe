@@ -2,6 +2,7 @@ import { Calendar, FileText, MessageCircle } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 import {
   getVolunteerDivisionBadgeTone,
   VOLUNTEER_ROLE_META,
@@ -40,7 +41,7 @@ export function VolunteerDetailProfileCard({
 
   return (
     <aside
-      aria-label="Profil Volunteer"
+      aria-label={idVolunteer.detail.profileCard.ariaLabel}
       className={cn(
         "bg-surface border border-neutral-200 rounded-2xl p-6 flex flex-col gap-5 items-center w-full lg:w-[340px] shrink-0 shadow-xs",
         className,
@@ -84,7 +85,7 @@ export function VolunteerDetailProfileCard({
           />
           <div className="flex flex-col min-w-0">
             <span className="font-sans text-xs font-medium text-neutral-500 leading-4">
-              Email
+              {idVolunteer.detail.profileCard.emailLabel}
             </span>
             <span className="font-sans text-sm font-normal text-neutral-900 leading-5 break-all">
               {volunteer.email}
@@ -100,7 +101,7 @@ export function VolunteerDetailProfileCard({
           />
           <div className="flex flex-col min-w-0">
             <span className="font-sans text-xs font-medium text-neutral-500 leading-4">
-              WhatsApp
+              {idVolunteer.detail.profileCard.phoneLabel}
             </span>
             <a
               href={waUrl}
@@ -121,7 +122,7 @@ export function VolunteerDetailProfileCard({
           />
           <div className="flex flex-col min-w-0">
             <span className="font-sans text-xs font-medium text-neutral-500 leading-4">
-              Bergabung
+              {idVolunteer.detail.profileCard.joinedLabel}
             </span>
             <span className="font-sans text-sm font-normal text-neutral-900 leading-5">
               {volunteer.joinedDate || "-"}
@@ -142,7 +143,7 @@ export function VolunteerDetailProfileCard({
           className="size-5 shrink-0 text-brand"
           aria-hidden="true"
         />
-        <span>Chat di WhatsApp</span>
+        <span>{idVolunteer.detail.profileCard.chatWhatsAppButton}</span>
       </Button>
     </aside>
   );

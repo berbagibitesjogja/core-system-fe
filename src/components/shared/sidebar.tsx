@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Badge } from "#/components/ui/badge";
 import { cn } from "#/lib/utils";
+import { idNavigation, idShared } from "#/locales";
 import bbjLogoSvg from "#/assets/illustrations/bbj-logo.svg";
 import { NavItem } from "./nav-item";
 
@@ -48,49 +49,49 @@ export interface SidebarGroupConfig {
 export const defaultSidebarGroups: SidebarGroupConfig[] = [
   {
     id: "utama",
-    title: "UTAMA",
+    title: idNavigation.sidebar.groups.utama,
     items: [
       {
         id: "home",
-        label: "Home",
+        label: idNavigation.sidebar.items.home,
         to: "/admin/dashboard",
         icon: Home,
         exactMatch: true,
       },
       {
         id: "gallery",
-        label: "Gallery",
+        label: idNavigation.sidebar.items.gallery,
         icon: ImageIcon,
         disabled: true,
-        badge: "Segera",
+        badge: idNavigation.sidebar.badges.comingSoon,
       },
     ],
   },
   {
     id: "data",
-    title: "DATA",
+    title: idNavigation.sidebar.groups.data,
     items: [
       {
         id: "donation",
-        label: "Donasi",
+        label: idNavigation.sidebar.items.donation,
         to: "/admin/donation",
         icon: Package,
       },
       {
         id: "beneficiary",
-        label: "Beneficiaries",
+        label: idNavigation.sidebar.items.beneficiary,
         to: "/admin/beneficiary",
         icon: Building,
       },
       {
         id: "hero",
-        label: "Heroes",
+        label: idNavigation.sidebar.items.hero,
         to: "/admin/hero",
         icon: Heart,
       },
       {
         id: "partner",
-        label: "Partner",
+        label: idNavigation.sidebar.items.partner,
         to: "/admin/partner",
         icon: Utensils,
       },
@@ -98,30 +99,30 @@ export const defaultSidebarGroups: SidebarGroupConfig[] = [
   },
   {
     id: "tim",
-    title: "TIM",
+    title: idNavigation.sidebar.groups.tim,
     items: [
       {
         id: "reimburse-request",
-        label: "Ajukan Reimburse",
+        label: idNavigation.sidebar.items.reimburseRequest,
         to: "/admin/reimburse/request",
         icon: Upload,
       },
       {
         id: "reimburse-data",
-        label: "Data Reimburse",
+        label: idNavigation.sidebar.items.reimburseData,
         to: "/admin/reimburse/data",
         icon: ClipboardCheck,
       },
       {
         id: "presensi",
-        label: "Presensi",
+        label: idNavigation.sidebar.items.presensi,
         icon: MapPin,
         disabled: true,
-        badge: "Segera",
+        badge: idNavigation.sidebar.badges.comingSoon,
       },
       {
         id: "volunteer",
-        label: "Volunteer",
+        label: idNavigation.sidebar.items.volunteer,
         to: "/admin/volunteer",
         icon: Users,
       },
@@ -129,12 +130,12 @@ export const defaultSidebarGroups: SidebarGroupConfig[] = [
   },
   {
     id: "sistem",
-    title: "SISTEM",
+    title: idNavigation.sidebar.groups.sistem,
     requiredRole: "super_admin",
     items: [
       {
         id: "logs",
-        label: "Logs",
+        label: idNavigation.sidebar.items.logs,
         to: "/admin/logs",
         icon: FileText,
         hasChildren: true,
@@ -206,12 +207,12 @@ export function Sidebar({
             <div className="flex size-11 items-center justify-center rounded-md bg-bondi-50/70 p-1.5 transition-transform group-hover:scale-105 shrink-0">
               <img
                 src={bbjLogoSvg}
-                alt="Logo Berbagi Bites Jogja"
+                alt={idShared.logoAlt}
                 className="size-full object-contain pointer-events-none select-none"
               />
             </div>
             <span className="font-heading-h4 text-lg font-semibold text-brand-strong tracking-tight truncate">
-              Berbagi Bites Jogja
+              {idShared.brandName}
             </span>
           </Link>
         </div>
@@ -323,7 +324,7 @@ export function Sidebar({
       {/* Footer Nav / Keluar (Lucide: LogOut) */}
       <div className="pt-4 border-t border-neutral-100">
         <NavItem
-          label="Keluar"
+          label={idNavigation.sidebar.logout}
           icon={<LogOut className="size-5" />}
           variant="danger"
           onClick={onLogout}

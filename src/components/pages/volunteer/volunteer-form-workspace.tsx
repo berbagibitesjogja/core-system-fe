@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAdminLayout } from "#/components/shared/admin-layout-context";
+import { idVolunteer } from "#/locales";
 import { VolunteerForm } from "./volunteer-form";
 import { VolunteerLeaveDialog } from "./volunteer-leave-dialog";
 import { VolunteerTipsCard } from "./volunteer-tips-card";
@@ -50,11 +51,10 @@ export function VolunteerFormWorkspace({
     navigate({ to: "/admin/volunteer" });
   };
 
-  const headerTitle = mode === "add" ? "Tambah Volunteer" : "Edit Volunteer";
+  const headerTitle =
+    mode === "add" ? idVolunteer.add.title : idVolunteer.edit.title;
   const headerSubtitle =
-    mode === "add"
-      ? "Daftarkan anggota baru ke dalam sistem BBJ"
-      : "Perbarui informasi akun volunteer";
+    mode === "add" ? idVolunteer.add.subtitle : idVolunteer.edit.subtitle;
 
   React.useEffect(() => {
     if (!setHeaderOverride) return;
@@ -62,7 +62,7 @@ export function VolunteerFormWorkspace({
     setHeaderOverride({
       title: headerTitle,
       subtitle: headerSubtitle,
-      backLabel: "Kembali",
+      backLabel: idVolunteer.edit.backLabel,
       onBack: handleRequestLeave,
     });
 

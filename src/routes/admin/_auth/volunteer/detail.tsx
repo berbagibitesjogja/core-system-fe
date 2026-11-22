@@ -87,14 +87,14 @@ function VolunteerDetailPage() {
 
   React.useEffect(() => {
     if (!targetId && !profile.isLoading) {
-      toast.error("ID anggota tidak ditemukan.");
+      toast.error(idVolunteer.detail.toasts.missingId);
       navigate({ to: "/admin/volunteer" });
     }
   }, [targetId, profile.isLoading, navigate]);
 
   React.useEffect(() => {
     if (volunteerDetailQuery.isError) {
-      toast.error("Data anggota staf tidak ditemukan.");
+      toast.error(idVolunteer.detail.toasts.notFound);
       navigate({ to: "/admin/volunteer" });
     }
   }, [volunteerDetailQuery.isError, navigate]);

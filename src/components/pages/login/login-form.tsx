@@ -2,6 +2,7 @@ import * as React from "react";
 import { Eye, EyeOff, Info } from "lucide-react";
 import { Alert, Button, Input } from "#/components/ui";
 import { GoogleSignInButton } from "#/components/shared";
+import { idAuth } from "#/locales/id/auth";
 import type { LoginAlertConfig } from "./login-data";
 
 export interface LoginFormProps {
@@ -42,16 +43,17 @@ export function LoginForm({
       {/* Headline */}
       <div className="flex flex-col gap-0 w-full animate-headline-enter">
         <h2 className="font-heading font-bold text-[32px] sm:text-[40px] lg:text-[44px] xl:text-[48px] leading-[38px] sm:leading-[46px] lg:leading-[52px] xl:leading-[56px] tracking-[-0.48px] text-neutral-900">
-          Selamat datang
+          {idAuth.login.welcomeTitlePart1}
           <br />
-          <span className="text-bondi-700">kembali!</span>
+          <span className="text-bondi-700">
+            {idAuth.login.welcomeTitlePart2}
+          </span>
         </h2>
       </div>
 
       {/* Deskripsi */}
       <p className="font-body text-sm sm:text-base leading-5 sm:leading-6 text-neutral-600 animate-lead-enter">
-        Masuk pakai email atau akun Google yang sudah terdaftar sebagai pengurus
-        untuk melanjutkan aksi berbagimu bersama komunitas BBJ.
+        {idAuth.login.leadDescription}
       </p>
 
       {/* Alert Status (Kondisional: 401, 403, Sesi Habis, dll) */}
@@ -73,12 +75,12 @@ export function LoginForm({
       >
         {/* Field Email menggunakan Input UI Component */}
         <Input
-          label="Email"
+          label={idAuth.login.fields.emailLabel}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isAnyLoading}
-          placeholder="nama@email.com"
+          placeholder={idAuth.login.fields.emailPlaceholder}
           required
           autoComplete="email"
           error={emailError}
@@ -87,12 +89,12 @@ export function LoginForm({
 
         {/* Field Kata Sandi menggunakan Input UI Component dengan Trailing Icon */}
         <Input
-          label="Kata sandi"
+          label={idAuth.login.fields.passwordLabel}
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isAnyLoading}
-          placeholder="Masukkan kata sandi"
+          placeholder={idAuth.login.fields.passwordPlaceholder}
           required
           autoComplete="current-password"
           error={passwordError}
@@ -103,7 +105,9 @@ export function LoginForm({
               onClick={() => setShowPassword((prev) => !prev)}
               disabled={isAnyLoading}
               aria-label={
-                showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"
+                showPassword
+                  ? idAuth.login.fields.hidePassword
+                  : idAuth.login.fields.showPassword
               }
               className="size-5 flex items-center justify-center text-neutral-500 hover:text-neutral-900 focus-visible:outline-none cursor-pointer disabled:cursor-not-allowed transition-colors"
             >
@@ -121,13 +125,11 @@ export function LoginForm({
           <button
             type="button"
             onClick={() => {
-              window.alert(
-                "Untuk reset kata sandi, silakan hubungi Administrator BBJ di pengurus@berbagibitesjogja.com",
-              );
+              window.alert(idAuth.login.fields.forgotPasswordAlert);
             }}
             className="font-sans text-sm font-normal text-bondi-600 hover:text-bondi-700 hover:underline cursor-pointer transition-colors"
           >
-            Lupa kata sandi?
+            {idAuth.login.fields.forgotPassword}
           </button>
         </div>
 
@@ -137,11 +139,11 @@ export function LoginForm({
           variant="primary"
           size="md"
           isLoading={isLoading}
-          loadingText="Sedang masuk…"
+          loadingText={idAuth.login.fields.submittingButton}
           disabled={isAnyLoading}
           className="w-full h-11"
         >
-          Masuk
+          {idAuth.login.fields.submitButton}
         </Button>
       </form>
 
@@ -159,7 +161,7 @@ export function LoginForm({
       <div className="flex items-center gap-2 pt-1 text-neutral-600 animate-helper-enter">
         <Info className="size-4 shrink-0 text-neutral-600" />
         <p className="font-body text-xs leading-4 text-neutral-600">
-          Belum terdaftar? Hubungi Administrator BBJ.
+          {idAuth.login.registrationHelper}
         </p>
       </div>
     </div>

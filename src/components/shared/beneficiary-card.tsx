@@ -11,6 +11,7 @@ import { Badge } from "#/components/ui/badge";
 import type { BadgeProps } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import { IconButton } from "#/components/ui/icon-button";
+import { idBeneficiary } from "#/locales/id/beneficiary";
 import { cn } from "#/lib/utils";
 import { ProgressBar } from "./progress-bar";
 
@@ -212,7 +213,7 @@ export function BeneficiaryCard({
                 styleVariant="soft"
                 className="bg-amber-50 text-amber-800 border-amber-200 px-1.5 py-0 text-[10px]"
               >
-                Prioritas
+                {idBeneficiary.grid.priorityBadge}
               </Badge>
             )}
 
@@ -222,7 +223,7 @@ export function BeneficiaryCard({
                 styleVariant="soft"
                 className="bg-neutral-100 text-neutral-600 border-neutral-200 px-1.5 py-0 text-[10px]"
               >
-                Tersembunyi
+                {idBeneficiary.grid.hiddenBadge}
               </Badge>
             )}
           </div>
@@ -268,7 +269,9 @@ export function BeneficiaryCard({
               className="hover:underline hover:text-bondi-700 truncate inline-flex items-center gap-1"
               title={address || maps}
             >
-              <span className="truncate">{address || "Buka Peta Lokasi"}</span>
+              <span className="truncate">
+                {address || idBeneficiary.grid.openMapsLink}
+              </span>
               <ExternalLink className="size-3 shrink-0 opacity-70" />
             </a>
           ) : address ? (
@@ -285,14 +288,14 @@ export function BeneficiaryCard({
       <div className="flex gap-4 items-start w-full">
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
-            Heroes
+            {idBeneficiary.grid.heroesLabel}
           </p>
           <div className="flex gap-1 items-baseline">
             <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-neutral-900">
               {heroesCount}
             </span>
             <span className="font-['Inter'] font-semibold text-[14px] text-neutral-600">
-              Orang
+              {idBeneficiary.grid.heroesUnit}
             </span>
           </div>
         </div>
@@ -301,7 +304,7 @@ export function BeneficiaryCard({
 
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
-            Impact
+            {idBeneficiary.grid.impactLabel}
           </p>
           <div className="flex gap-1 items-baseline">
             <span className="font-['Gabarito'] font-bold text-[20px] leading-[24px] text-neutral-900">
@@ -318,7 +321,7 @@ export function BeneficiaryCard({
       <div className="flex flex-col gap-2 w-full">
         <ProgressBar value={progressValue} color="brand" />
         <p className="font-['Inter'] font-medium text-[12px] leading-[16px] text-neutral-500">
-          {shareText || `${sharePercent}% dari total heroes BBJ`}
+          {shareText || idBeneficiary.grid.shareText(sharePercent)}
         </p>
       </div>
 
@@ -331,14 +334,14 @@ export function BeneficiaryCard({
           onClick={onDetail}
           className="flex-1"
         >
-          Detail
+          {idBeneficiary.grid.detailButton}
         </Button>
 
         <IconButton
           variant="secondary"
           size="sm"
-          tooltip="Edit penerima"
-          aria-label="Edit penerima"
+          tooltip={idBeneficiary.grid.editTooltip}
+          aria-label={idBeneficiary.grid.editTooltip}
           onClick={onEdit}
         >
           <Pencil />
@@ -348,8 +351,8 @@ export function BeneficiaryCard({
           <IconButton
             variant="secondary"
             size="sm"
-            tooltip="Hapus penerima"
-            aria-label="Hapus penerima"
+            tooltip={idBeneficiary.grid.deleteTooltip}
+            aria-label={idBeneficiary.grid.deleteTooltip}
             onClick={onDelete}
             className="text-red-600 hover:bg-red-50 hover:border-red-200 hover:text-red-700"
           >

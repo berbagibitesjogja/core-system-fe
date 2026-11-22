@@ -4,11 +4,9 @@ import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { cn } from "#/lib/utils";
+import { idProfile } from "#/locales/id/profile";
 import {
   PROFILE_DIVISION_OPTIONS,
-  PROFILE_EMAIL_LOCKED_HELPER,
-  PROFILE_ROLE_EDITABLE_HELPER,
-  PROFILE_ROLE_LOCKED_HELPER,
   PROFILE_ROLE_META,
   PROFILE_ROLE_OPTIONS,
 } from "./profile-data";
@@ -111,7 +109,7 @@ export function ProfileSettingsTab({
             htmlFor="profile-division-trigger"
             className="font-sans text-sm font-semibold text-neutral-900"
           >
-            Divisi
+            {idProfile.settingsTab.divisionLabel}
           </label>
 
           <button
@@ -151,7 +149,7 @@ export function ProfileSettingsTab({
           {divisionDropdownOpen && !isSaving && (
             <div
               role="listbox"
-              aria-label="Pilihan Divisi"
+              aria-label={idProfile.settingsTab.divisionListboxAria}
               className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
             >
               {PROFILE_DIVISION_OPTIONS.map((opt) => {
@@ -194,7 +192,7 @@ export function ProfileSettingsTab({
               htmlFor="profile-role-trigger"
               className="font-sans text-sm font-semibold text-neutral-900"
             >
-              Role Sistem
+              {idProfile.settingsTab.roleLabel}
             </label>
 
             <button
@@ -231,13 +229,13 @@ export function ProfileSettingsTab({
 
             <FieldHelper
               error={errors.role}
-              helperText={PROFILE_ROLE_EDITABLE_HELPER}
+              helperText={idProfile.settingsTab.roleEditableHelper}
             />
 
             {roleDropdownOpen && !isSaving && (
               <div
                 role="listbox"
-                aria-label="Pilihan Role Sistem"
+                aria-label={idProfile.settingsTab.roleListboxAria}
                 className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-surface border border-neutral-200 rounded-md shadow-lg flex flex-col p-1.5 gap-0.5 animate-in fade-in zoom-in-95 duration-100"
               >
                 {PROFILE_ROLE_OPTIONS.map((opt) => {
@@ -272,10 +270,10 @@ export function ProfileSettingsTab({
         ) : (
           <Input
             id="profile-role-locked"
-            label="Role Sistem"
+            label={idProfile.settingsTab.roleLabel}
             value={currentRoleLabel}
             disabled
-            helperText={PROFILE_ROLE_LOCKED_HELPER}
+            helperText={idProfile.settingsTab.roleLockedHelper}
             className="w-full max-w-none"
           />
         )}
@@ -284,8 +282,8 @@ export function ProfileSettingsTab({
       {/* Baris Nama Lengkap */}
       <Input
         id="profile-name"
-        label="Nama Lengkap"
-        placeholder="Masukkan nama lengkap"
+        label={idProfile.settingsTab.nameLabel}
+        placeholder={idProfile.settingsTab.namePlaceholder}
         value={values.name}
         disabled={isSaving}
         error={errors.name}
@@ -297,19 +295,19 @@ export function ProfileSettingsTab({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <Input
           id="profile-email"
-          label="Email"
+          label={idProfile.settingsTab.emailLabel}
           type="email"
           value={email}
           disabled
-          helperText={PROFILE_EMAIL_LOCKED_HELPER}
+          helperText={idProfile.settingsTab.emailLockedHelper}
           className="w-full max-w-none"
         />
 
         <Input
           id="profile-whatsapp"
-          label="Nomor WhatsApp"
+          label={idProfile.settingsTab.whatsappLabel}
           type="tel"
-          placeholder="Contoh: 0812-6620-1145"
+          placeholder={idProfile.settingsTab.whatsappPlaceholder}
           value={values.whatsapp}
           disabled={isSaving}
           error={errors.whatsapp}
@@ -325,10 +323,10 @@ export function ProfileSettingsTab({
           variant="primary"
           size="md"
           isLoading={isSaving}
-          loadingText="Menyimpan..."
+          loadingText={idProfile.settingsTab.savingButton}
           leftIcon={<Check className="size-5" aria-hidden="true" />}
         >
-          Simpan Data Profil
+          {idProfile.settingsTab.saveButton}
         </Button>
       </div>
     </form>

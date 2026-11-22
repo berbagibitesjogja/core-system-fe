@@ -1,4 +1,5 @@
 import type { SidebarProps } from "#/components/shared/sidebar";
+import { idProfile } from "#/locales/id/profile";
 
 export type ProfileSystemRole = "super" | "core" | "staff";
 
@@ -63,15 +64,15 @@ export interface ProfileFormErrors {
   whatsapp?: string;
 }
 
-export const PROFILE_SUCCESS_TOAST = "Data profil berhasil diperbarui";
+export const PROFILE_SUCCESS_TOAST = idProfile.toasts.updateSuccess;
 export const PROFILE_DUPLICATE_PHONE_ERROR =
-  "Nomor WhatsApp ini sudah terdaftar pada akun lain.";
+  idProfile.validation.duplicatePhone;
 export const PROFILE_ROLE_EDITABLE_HELPER =
-  "Hati-hati: menurunkan role akan membatasi aksesmu.";
+  idProfile.settingsTab.roleEditableHelper;
 export const PROFILE_ROLE_LOCKED_HELPER =
-  "Hanya Super Admin yang bisa mengubah role.";
+  idProfile.settingsTab.roleLockedHelper;
 export const PROFILE_EMAIL_LOCKED_HELPER =
-  "Terhubung dengan akun Google, tidak bisa diubah.";
+  idProfile.settingsTab.emailLockedHelper;
 export const PROFILE_DUPLICATE_DEMO_PHONE = "0857-4412-9031";
 export const PROFILE_LEAVE_DEMO_NAME = "Dian Pratiwi Putri";
 
@@ -131,12 +132,12 @@ export const PROFILE_ROLE_OPTIONS: readonly ProfileOption[] = [
 export const PROFILE_TABS: readonly ProfileTabConfig[] = [
   {
     id: "activity",
-    label: "Aktivitas",
+    label: idProfile.tabs.activityLabel,
     requiresSuperAdmin: true,
   },
   {
     id: "settings",
-    label: "Pengaturan Profil",
+    label: idProfile.tabs.settingsLabel,
   },
 ];
 
@@ -299,18 +300,18 @@ export function validateProfileSettings(
   const errors: ProfileFormErrors = {};
 
   if (!values.name.trim()) {
-    errors.name = "Nama lengkap wajib diisi.";
+    errors.name = idProfile.validation.nameRequired;
   }
 
   if (!values.division.trim()) {
-    errors.division = "Divisi wajib dipilih.";
+    errors.division = idProfile.validation.divisionRequired;
   }
 
   const digits = normalizePhoneDigits(values.whatsapp);
   if (!digits) {
-    errors.whatsapp = "Nomor WhatsApp wajib diisi.";
+    errors.whatsapp = idProfile.validation.whatsappRequired;
   } else if (digits.length < 10 || digits.length > 14) {
-    errors.whatsapp = "Masukkan nomor WhatsApp yang valid (10-14 digit).";
+    errors.whatsapp = idProfile.validation.whatsappInvalid;
   } else if (isDuplicatePhoneNumber(values.whatsapp, savedPhone)) {
     errors.whatsapp = PROFILE_DUPLICATE_PHONE_ERROR;
   }

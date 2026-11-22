@@ -1,6 +1,7 @@
 import statHeroFood from "#/assets/illustrations/lunch-box.svg";
 import statHeroPortions from "#/assets/illustrations/ice-cream.svg";
 import statHeroTotal from "#/assets/illustrations/charity-family.svg";
+import { idHero } from "#/locales/id/hero";
 import { defaultHeroes } from "./hero-data";
 import type { HeroStatus } from "./hero-data";
 
@@ -117,7 +118,7 @@ function formatHistoryDateParts(dateIso: string): {
 // Memformat nomor telepon hero ke format tampilan +62 atau keterangan belum ada nomor
 export function formatDisplayHeroPhone(phone?: string): string {
   const trimmed = phone?.trim();
-  if (!trimmed) return "Belum ada nomor";
+  if (!trimmed) return idHero.detail.stats.noPhoneNumber;
   if (trimmed.startsWith("+")) return trimmed;
   if (trimmed.startsWith("0")) return `+62 ${trimmed.slice(1)}`;
   return `+62 ${trimmed}`;
@@ -284,42 +285,44 @@ export function buildHeroDetailStats(
   return [
     {
       id: "total-aksi",
-      title: "Total Aksi",
+      title: idHero.detail.stats.totalActionsTitle,
       value: detail.actionCount.toLocaleString("id-ID"),
-      unit: "Aksi",
+      unit: idHero.detail.stats.unitActions,
       subtext: hasActions
-        ? `Terakhir: ${detail.lastActionLabel ?? "-"}`
-        : "Belum pernah mengambil",
+        ? idHero.detail.stats.subtextLastAction(detail.lastActionLabel ?? "-")
+        : idHero.detail.stats.subtextNever,
       styleVariant: "brand",
       iconName: "package",
       illustrationSrc: statHeroTotal,
-      illustrationAlt: "Ilustrasi total aksi hero",
+      illustrationAlt: idHero.detail.stats.altTotalActions,
     },
     {
       id: "makanan-diterima",
-      title: "Makanan Diterima",
+      title: idHero.detail.stats.foodReceivedTitle,
       value: hasActions ? formatIndonesianDecimal(detail.totalWeightKg) : "0",
-      unit: "Kg",
+      unit: idHero.detail.stats.unitKg,
       subtext: hasActions
-        ? `Rata-rata ${formatIndonesianDecimal(detail.avgWeightPerActionKg)} Kg per aksi`
-        : "Belum ada makanan diterima",
+        ? idHero.detail.stats.subtextAvgPerAction(
+            formatIndonesianDecimal(detail.avgWeightPerActionKg),
+          )
+        : idHero.detail.stats.subtextNoFood,
       styleVariant: "default",
       iconName: "leaf",
       illustrationSrc: statHeroFood,
-      illustrationAlt: "Ilustrasi makanan diterima",
+      illustrationAlt: idHero.detail.stats.altFoodReceived,
     },
     {
       id: "porsi-diterima",
-      title: "Porsi Diterima",
+      title: idHero.detail.stats.portionsReceivedTitle,
       value: detail.totalPortions.toLocaleString("id-ID"),
-      unit: "Porsi",
+      unit: idHero.detail.stats.unitPortion,
       subtext: hasActions
-        ? `Dari ${detail.distinctDonorsCount} donatur berbeda`
-        : "Belum ada porsi diterima",
+        ? idHero.detail.stats.subtextDistinctDonors(detail.distinctDonorsCount)
+        : idHero.detail.stats.subtextNoPortion,
       styleVariant: "default",
       iconName: "utensils",
       illustrationSrc: statHeroPortions,
-      illustrationAlt: "Ilustrasi porsi diterima",
+      illustrationAlt: idHero.detail.stats.altPortionsReceived,
     },
   ];
 }

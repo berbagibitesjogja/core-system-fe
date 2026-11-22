@@ -6,8 +6,8 @@ import type { FileUploadState } from "#/components/shared/file-upload";
 import { Alert } from "#/components/ui/alert";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
+import { idReimburse } from "#/locales";
 import {
-  REIMBURSE_UPLOAD_DEFAULT_DESC,
   reimburseDestinationFields,
   reimburseNoteField,
 } from "./reimburse-data";
@@ -75,17 +75,17 @@ export function ReimburseRequestForm({
 
   return (
     <section
-      aria-label="Form Ajukan Reimburse"
+      aria-label={idReimburse.request.form.formAria}
       className="flex-1 min-w-0 w-full rounded-lg border border-neutral-200 bg-surface overflow-hidden shadow-xs"
     >
       {/* Card Header Teal dengan Dekorasi Pita */}
       <div className="bg-brand px-6 py-6 relative overflow-hidden">
         <div className="relative z-10 flex flex-col gap-1">
           <h2 className="font-heading text-xl font-semibold leading-7 text-white">
-            Ajukan Reimburse
+            {idReimburse.request.form.headerTitle}
           </h2>
           <p className="font-body text-xs leading-4 text-white/95">
-            Lengkapi form untuk mengajukan penggantian biaya
+            {idReimburse.request.form.headerSubtitle}
           </p>
         </div>
 
@@ -123,11 +123,10 @@ export function ReimburseRequestForm({
             />
             <div className="flex-1 min-w-0">
               <p className="font-label text-sm font-semibold leading-5 text-neutral-900">
-                Nominal dibaca otomatis dari invoice
+                {idReimburse.request.form.aiBannerTitle}
               </p>
               <p className="font-body text-xs leading-4 text-neutral-600">
-                Tidak perlu mengetik jumlah uang. AI akan membaca total dari
-                struk yang kamu unggah.
+                {idReimburse.request.form.aiBannerDesc}
               </p>
             </div>
           </div>
@@ -142,8 +141,8 @@ export function ReimburseRequestForm({
 
           {/* Unggah Berkas Invoice */}
           <FileUpload
-            label="Upload Invoice"
-            description={REIMBURSE_UPLOAD_DEFAULT_DESC}
+            label={idReimburse.request.form.fileUploadLabel}
+            description={idReimburse.request.form.fileUploadDesc}
             accept=".jpg,.jpeg,.png,.pdf"
             state={effectiveUploadState}
             analyzingProgress={analyzingProgress}
@@ -165,9 +164,9 @@ export function ReimburseRequestForm({
             className="w-full"
             leftIcon={<Upload className="size-5" />}
             isLoading={isAnalyzing}
-            loadingText="Menganalisis invoice via AI..."
+            loadingText={idReimburse.request.form.submittingButton}
           >
-            Ajukan Reimburse
+            {idReimburse.request.form.submitButton}
           </Button>
         </div>
       </form>

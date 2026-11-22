@@ -4,6 +4,7 @@ import { Avatar } from "#/components/ui/avatar";
 import { Button } from "#/components/ui/button";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idReimburse } from "#/locales";
 import {
   detectUploadedFileType,
   formatFileSize,
@@ -121,8 +122,8 @@ export function ReimburseConfirmPaidDialog({
           fileSize: uploadedFile.sizeLabel,
           fileType: uploadedFile.fileType,
           filePreviewUrl: uploadedFile.previewUrl,
-          transferredAtLabel: "Baru saja dicatat",
-          transferredBy: "Bendahara BBJ",
+          transferredAtLabel: idReimburse.dialogs.transferProofJustRecorded,
+          transferredBy: idReimburse.dialogs.transferProofDefaultProcessor,
           referenceNumber: `TRF-BBJ-${item.id.toUpperCase()}`,
         }
       : undefined;
@@ -150,11 +151,10 @@ export function ReimburseConfirmPaidDialog({
             id="modal-confirm-paid-title"
             className="font-heading-h3 text-xl font-bold leading-tight text-neutral-900"
           >
-            Tandai sudah dibayar?
+            {idReimburse.dialogs.confirmPaidTitle}
           </h3>
           <p className="font-body-m text-sm leading-relaxed text-neutral-600">
-            Pastikan dana reimburse telah ditransfer ke rekening atau e-wallet
-            tujuan sebelum menandai pengajuan ini selesai.
+            {idReimburse.dialogs.confirmPaidDescription}
           </p>
         </div>
 
@@ -201,7 +201,7 @@ export function ReimburseConfirmPaidDialog({
 
         {/* Unggah bukti transfer opsional */}
         <FileUpload
-          label="Bukti Transfer (Opsional)"
+          label={idReimburse.dialogs.confirmPaidProofLabel}
           description={REIMBURSE_UPLOAD_DEFAULT_DESC}
           accept=".jpg,.jpeg,.png,.pdf"
           state={uploadError ? "error" : uploadedFile ? "uploaded" : "default"}
@@ -215,7 +215,7 @@ export function ReimburseConfirmPaidDialog({
 
         <div className="flex items-center justify-end gap-3 pt-1">
           <Button type="button" variant="secondary" size="md" onClick={onClose}>
-            Kembali
+            {idReimburse.dialogs.confirmPaidBackButton}
           </Button>
           <Button
             type="button"
@@ -224,7 +224,7 @@ export function ReimburseConfirmPaidDialog({
             onClick={handleConfirm}
             className="shadow-pop-xs"
           >
-            Konfirmasi Selesai
+            {idReimburse.dialogs.confirmPaidSubmitButton}
           </Button>
         </div>
       </div>

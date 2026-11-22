@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button } from "#/components/ui/button";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { idDonation } from "#/locales";
 
 export interface DonationCannotDeleteDialogProps {
   isOpen: boolean;
@@ -51,7 +52,7 @@ export function DonationCannotDeleteDialog({
           <div className="size-[140px] sm:size-[160px] shrink-0 flex items-center justify-center select-none pointer-events-none">
             <img
               src={raguHapusSvg}
-              alt="Ilustrasi donasi tidak dapat dihapus"
+              alt={idDonation.dialogs.cannotDeleteAlt}
               className="size-full object-contain"
             />
           </div>
@@ -61,11 +62,10 @@ export function DonationCannotDeleteDialog({
               id="modal-cannot-delete-title"
               className="font-heading-h3 text-xl font-semibold text-neutral-900 leading-7"
             >
-              Donasi tidak dapat dihapus
+              {idDonation.dialogs.cannotDeleteTitle}
             </h3>
             <p className="font-sans text-sm text-neutral-600 leading-relaxed">
-              Donasi ini sudah memiliki data klaim heroes atau surplus food.
-              Hapus data terkait terlebih dahulu, lalu coba lagi.
+              {idDonation.dialogs.cannotDeleteDescription}
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ export function DonationCannotDeleteDialog({
             onClick={onClose}
             className="rounded-full shadow-2xs"
           >
-            Mengerti
+            {idDonation.dialogs.cannotDeleteButton}
           </Button>
         </div>
       </div>

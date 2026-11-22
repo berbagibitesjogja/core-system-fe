@@ -5,6 +5,7 @@ import type { UserProfileMenuProps } from "./user-profile-menu";
 import { Avatar } from "#/components/ui/avatar";
 import type { AvatarShape } from "#/components/ui/avatar";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 
 export interface HeaderAvatarProps {
   src?: string;
@@ -90,7 +91,7 @@ export function Header({
           <button
             type="button"
             onClick={onMenuToggle}
-            aria-label="Buka menu navigasi"
+            aria-label={idShared.header.openNavAria}
             className="flex size-10 items-center justify-center rounded-md border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand/30 lg:hidden cursor-pointer shrink-0 shadow-2xs"
           >
             <MenuIcon className="size-5" />

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 
 export interface PerPageSelectorProps {
   perPage: number;
@@ -24,7 +25,7 @@ export function PerPageSelector({
   options = [10, 20, 50, 100],
   min = 1,
   max = 500,
-  label = "Per halaman:",
+  label = idShared.perPageSelector.label,
   direction = "up",
   className,
 }: PerPageSelectorProps) {
@@ -125,17 +126,17 @@ export function PerPageSelector({
           }}
           style={{ width: `${Math.max(2, inputVal.length)}ch` }}
           className="text-center font-bold text-xs text-neutral-900 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0 cursor-text leading-tight"
-          title="Ketik angka per halaman lalu tekan Enter"
-          aria-label="Jumlah baris per halaman"
+          title={idShared.perPageSelector.inputTitle}
+          aria-label={idShared.perPageSelector.inputAria}
         />
 
         {/* Tombol Pembuka Dropdown Menu */}
-        <Tooltip content="Pilih opsi per halaman">
+        <Tooltip content={idShared.perPageSelector.buttonTooltip}>
           <button
             type="button"
             onClick={() => setIsOpen((prev) => !prev)}
             className="p-0.5 text-neutral-600 hover:text-neutral-900 cursor-pointer focus:outline-none flex items-center justify-center transition-colors"
-            aria-label="Buka opsi jumlah baris per halaman"
+            aria-label={idShared.perPageSelector.buttonAria}
             aria-expanded={isOpen}
             aria-haspopup="listbox"
           >

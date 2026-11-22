@@ -196,18 +196,14 @@ function ReimburseRequestPage() {
 
     if (!isValidExtension && !isValidMime) {
       setUploadState("error");
-      setUploadErrorMessage(
-        "Format berkas tidak didukung. Unggah berkas JPG, PNG, atau PDF.",
-      );
+      setUploadErrorMessage(idReimburse.validation.fileUnsupported);
       setFieldErrors((prev) => ({ ...prev, file: undefined }));
       return;
     }
 
     if (file.size > REIMBURSE_MAX_FILE_SIZE_BYTES) {
       setUploadState("error");
-      setUploadErrorMessage(
-        "Ukuran berkas melebihi 5MB. Kompres atau unggah berkas lain.",
-      );
+      setUploadErrorMessage(idReimburse.validation.fileTooLarge);
       setFieldErrors((prev) => ({ ...prev, file: undefined }));
       return;
     }

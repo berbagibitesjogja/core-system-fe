@@ -58,14 +58,14 @@ function PartnerEditPage() {
 
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID mitra donatur tidak ditemukan.");
+      toast.error(idPartner.detail.notFoundIdToast);
       navigate({ to: "/admin/partner" });
     }
   }, [trimmedId, navigate]);
 
   React.useEffect(() => {
     if (partnerQuery.isError) {
-      toast.error("Data mitra donatur tidak ditemukan.");
+      toast.error(idPartner.detail.notFoundDataToast);
       navigate({ to: "/admin/partner" });
     }
   }, [partnerQuery.isError, navigate]);
@@ -85,9 +85,9 @@ function PartnerEditPage() {
     if (!isLoading || !setHeaderOverride) return;
 
     setHeaderOverride({
-      title: "Edit Donatur",
-      subtitle: "Perbarui profil mitra penyumbang makanan",
-      backLabel: "Kembali",
+      title: idPartner.edit.title,
+      subtitle: idPartner.edit.subtitle,
+      backLabel: idPartner.detail.backLabel,
       onBack: () => navigate({ to: "/admin/partner" }),
     });
 

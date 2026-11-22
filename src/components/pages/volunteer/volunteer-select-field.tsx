@@ -4,6 +4,7 @@ import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 
 export interface VolunteerSelectOption {
   id: string;
@@ -42,7 +43,7 @@ export function VolunteerSelectField({
   disabled = false,
   searchable = false,
   searchPlaceholder = "Cari...",
-  emptyText = "Pilihan tidak ditemukan",
+  emptyText = idVolunteer.list.toolbar.emptyDivision,
   error,
   className,
   menuClassName,
@@ -191,12 +192,15 @@ export function VolunteerSelectField({
                 leadingIcon={<Search className="size-4 text-neutral-500" />}
                 trailingIcon={
                   searchQuery ? (
-                    <Tooltip content="Hapus pencarian" placement="top">
+                    <Tooltip
+                      content={idVolunteer.list.toolbar.clearSearchTooltip}
+                      placement="top"
+                    >
                       <button
                         type="button"
                         onClick={() => setSearchQuery("")}
                         className="p-0.5 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer"
-                        aria-label="Hapus pencarian"
+                        aria-label={idVolunteer.list.toolbar.clearSearchTooltip}
                       >
                         <X className="size-3.5" />
                       </button>

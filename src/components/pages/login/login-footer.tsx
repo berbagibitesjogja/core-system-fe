@@ -1,7 +1,9 @@
+import { idAuth } from "#/locales";
+
 export function LoginFooter() {
   return (
     <footer className="font-sans text-xs font-medium leading-4 text-neutral-500 flex items-center gap-2 select-none animate-footer-enter pt-4">
-      <span>© 2026 Berbagi Bites Jogja</span>
+      <span>{idAuth.login.footerCopyright}</span>
       <span>·</span>
       <a
         href="https://berbagibitesjogja.com"

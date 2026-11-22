@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "#/lib/utils";
+import { idShared } from "#/locales/id/shared";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -37,7 +38,7 @@ export function GoogleSignInButton({
   isLoading = false,
   forcedState,
   disabled,
-  label = "Masuk dengan Google",
+  label = idShared.googleSignIn.defaultLabel,
   className,
   ...props
 }: GoogleSignInButtonProps) {
@@ -78,7 +79,9 @@ export function GoogleSignInButton({
           />
         )}
       </div>
-      <span>{isCurrentlyLoading ? "Memverifikasi akun..." : label}</span>
+      <span>
+        {isCurrentlyLoading ? idShared.googleSignIn.verifying : label}
+      </span>
     </button>
   );
 }

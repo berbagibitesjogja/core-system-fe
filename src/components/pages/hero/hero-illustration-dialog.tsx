@@ -1,5 +1,6 @@
 import * as React from "react";
 import raguHapusSvg from "#/assets/illustrations/volunteer-thinking.svg";
+import { idHero } from "#/locales/id/hero";
 
 export interface HeroIllustrationDialogProps {
   isOpen: boolean;
@@ -22,7 +23,7 @@ export function HeroIllustrationDialog({
   title,
   description,
   footer,
-  illustrationAlt = "Ilustrasi konfirmasi tindakan",
+  illustrationAlt = idHero.dialogs.defaultAlt,
   disableDismiss = false,
 }: HeroIllustrationDialogProps) {
   React.useEffect(() => {

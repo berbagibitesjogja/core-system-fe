@@ -1,3 +1,4 @@
+import { idReimburse } from "#/locales";
 import type { SanitizedReimbursementRecord } from "#/services/reimburseService";
 import { formatReimburseDate } from "#/services/reimburseService";
 
@@ -90,23 +91,23 @@ export const REIMBURSE_ANALYZE_COMPLETE_HOLD_MS = 250;
 export const reimburseDestinationFields: readonly ReimburseTextFieldConfig[] = [
   {
     id: "paymentMethod",
-    label: "Metode Pembayaran",
-    placeholder: "Contoh: BCA/BNI/ShopeePay/GoPay",
+    label: idReimburse.request.form.paymentMethodLabel,
+    placeholder: idReimburse.request.form.paymentMethodPlaceholder,
   },
   {
     id: "destinationNumber",
-    label: "Nomor Tujuan",
-    placeholder: "Contoh: 08912134452/1110003333",
-    helperText: "No. rekening atau no. e-wallet.",
+    label: idReimburse.request.form.destinationNumberLabel,
+    placeholder: idReimburse.request.form.destinationNumberPlaceholder,
+    helperText: idReimburse.request.form.destinationNumberHelper,
   },
 ];
 
 // Konfigurasi field catatan wajib
 export const reimburseNoteField: ReimburseTextFieldConfig = {
   id: "note",
-  label: "Catatan (Wajib)",
-  placeholder: "Contoh: Pemesanan GoCar untuk aksi 10 Sept 2026 Hotel IT",
-  helperText: "Tulis keperluan, tanggal, dan kegiatan terkait.",
+  label: idReimburse.request.form.noteLabel,
+  placeholder: idReimburse.request.form.notePlaceholder,
+  helperText: idReimburse.request.form.noteHelper,
 };
 
 // Pesan error terpusat sesuai status backend (422 & 504)

@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { Toaster } from "#/components/ui/toast";
 import { HydrationFixScript } from "#/components/ui/hydration-fix";
+import { idShared } from "#/locales/id/shared";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import "../styles.css";
@@ -55,11 +56,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background text-foreground font-sans">
         <h1 className="text-4xl font-bold">404</h1>
-        <p className="text-muted-foreground">
-          Halaman yang Anda cari tidak ditemukan.
-        </p>
+        <p className="text-muted-foreground">{idShared.notFound.description}</p>
         <Link to="/" className="text-primary hover:underline">
-          Kembali ke Beranda
+          {idShared.notFound.backToHome}
         </Link>
       </div>
     );

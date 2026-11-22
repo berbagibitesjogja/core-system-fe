@@ -3,6 +3,7 @@ import { MapPin, MessageCircle } from "lucide-react";
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Badge } from "#/components/ui/badge";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
+import { idPartner } from "#/locales";
 import { formatPartnerNumber } from "./partner-data";
 import { buildPartnerProfileContactItems } from "./partner-detail-data";
 import type {
@@ -37,17 +38,17 @@ export function PartnerDetailProfileCard({
 
   const identitySubtitle =
     detail.totalActions === 0
-      ? "Baru didaftarkan"
-      : `${detail.type} · ${formatPartnerNumber(detail.totalActions)} aksi`;
+      ? idPartner.detail.justRegistered
+      : `${detail.type} · ${formatPartnerNumber(detail.totalActions)} ${idPartner.detail.actionsUnit}`;
 
   return (
     <aside
-      aria-label="Profil Donatur"
+      aria-label={idPartner.detail.profileTitle}
       className="w-full xl:w-[380px] shrink-0 rounded-2xl border border-neutral-200 bg-white p-5 shadow-xs flex flex-col gap-4"
     >
       {/* Judul Kartu */}
       <h2 className="font-heading text-lg font-semibold leading-6 text-neutral-900">
-        Profil Donatur
+        {idPartner.detail.profileTitle}
       </h2>
 
       {/* Identitas Utama Donatur */}
@@ -66,7 +67,7 @@ export function PartnerDetailProfileCard({
                   styleVariant="soft"
                   className="text-[11px] leading-none px-1.5 py-0 h-5 font-normal"
                 >
-                  Tersembunyi dari Publik
+                  {idPartner.detail.hiddenBadge}
                 </Badge>
               )}
               {detail.hide_donations && (
@@ -75,7 +76,7 @@ export function PartnerDetailProfileCard({
                   styleVariant="soft"
                   className="text-[11px] leading-none px-1.5 py-0 h-5 font-normal"
                 >
-                  Donasi Privat
+                  {idPartner.detail.privateDonationBadge}
                 </Badge>
               )}
             </>

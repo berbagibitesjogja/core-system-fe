@@ -27,6 +27,7 @@ import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { WhatsappLink } from "#/components/shared/whatsapp-link";
 import { getHeroAvatarSrc } from "#/lib/avatars";
+import { idHero } from "#/locales/id/hero";
 import { formatHeroCount } from "./hero-data";
 import type { HeroRecord, HeroUserRole } from "./hero-data";
 
@@ -48,11 +49,11 @@ export interface HeroTableProps {
 
 const HERO_STATUS_BADGE = {
   aktif: {
-    label: "Aktif",
+    label: idHero.list.table.statusActive,
     tone: "success" as const,
   },
   diblokir: {
-    label: "Diblokir",
+    label: idHero.list.table.statusBlocked,
     tone: "danger" as const,
   },
 };
@@ -97,7 +98,7 @@ export function HeroTable({
       {
         id: "name",
         accessorKey: "name",
-        header: "Nama Hero",
+        header: idHero.list.table.columnName,
         meta: {
           className: "min-w-[240px]",
         },
@@ -106,7 +107,7 @@ export function HeroTable({
       {
         id: "sectorBeneficiary",
         accessorKey: "sectorName",
-        header: "Sektor / Beneficiary",
+        header: idHero.list.table.columnSectorBeneficiary,
         meta: {
           className: "w-[300px] min-w-[240px]",
         },
@@ -127,7 +128,7 @@ export function HeroTable({
       {
         id: "status",
         accessorKey: "status",
-        header: "Status",
+        header: idHero.list.table.columnStatus,
         meta: {
           className: "w-[130px]",
         },
@@ -143,19 +144,20 @@ export function HeroTable({
       {
         id: "actionCount",
         accessorKey: "actionCount",
-        header: "Jumlah Aksi",
+        header: idHero.list.table.columnActionCount,
         meta: {
           className: "w-[130px]",
         },
         cell: ({ row }) => (
           <span className="font-['Inter'] font-normal text-[14px] leading-[20px] text-neutral-900 whitespace-nowrap">
-            {formatHeroCount(row.original.actionCount)} Aksi
+            {formatHeroCount(row.original.actionCount)}{" "}
+            {idHero.list.table.actionUnit}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idHero.list.table.columnAction,
         meta: {
           align: "right",
           className: "w-[224px] text-right",
@@ -173,13 +175,13 @@ export function HeroTable({
                 })}
               >
                 <Search className="size-4" />
-                Detail
+                {idHero.list.table.detailButton}
               </Link>
               <IconButton
                 variant="secondary"
                 size="sm"
-                tooltip="Edit data hero"
-                aria-label={`Edit data ${hero.name}`}
+                tooltip={idHero.list.table.editTooltip}
+                aria-label={idHero.list.table.editAria(hero.name)}
                 onClick={() => onEditHero?.(hero)}
               >
                 <Pencil className="size-[18px]" />
@@ -188,8 +190,8 @@ export function HeroTable({
                 <IconButton
                   variant="danger"
                   size="sm"
-                  tooltip="Hapus hero"
-                  aria-label={`Hapus ${hero.name}`}
+                  tooltip={idHero.list.table.deleteTooltip}
+                  aria-label={idHero.list.table.deleteAria(hero.name)}
                   className="bg-white border-neutral-300 hover:border-red-300"
                   onClick={() => onDeleteHero?.(hero)}
                 >
@@ -275,8 +277,8 @@ export function HeroTable({
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center p-8 sm:p-12 w-full">
           <EmptyState
-            title="Hero tidak ditemukan"
-            description="Tidak ada hero yang sesuai dengan kata kunci pencarian atau filter."
+            title={idHero.list.table.emptyTitle}
+            description={idHero.list.table.emptyDescription}
             illustration={<IllustrationCariKosong className="size-[200px]" />}
             visual="illustration"
             action={
@@ -287,7 +289,7 @@ export function HeroTable({
                   onClick={onResetFilters}
                   className="shadow-2xs"
                 >
-                  Hapus pencarian
+                  {idHero.list.table.resetFilterButton}
                 </Button>
               ) : undefined
             }
@@ -304,7 +306,11 @@ export function HeroTable({
             onPageChange={onPageChange}
             perPage={perPage}
             onPerPageChange={onPerPageChange}
-            rangeText={`Menampilkan ${formatHeroCount(startRange)} - ${formatHeroCount(endRange)} dari ${formatHeroCount(totalCount)} hero`}
+            rangeText={idHero.list.table.rangeText(
+              formatHeroCount(startRange),
+              formatHeroCount(endRange),
+              formatHeroCount(totalCount),
+            )}
           />
         </TableFooter>
       )}

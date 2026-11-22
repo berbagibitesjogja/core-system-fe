@@ -2,6 +2,7 @@ import { Plus, Search, X } from "lucide-react";
 import { Button } from "#/components/ui/button";
 import { Input } from "#/components/ui/input";
 import { Tooltip } from "#/components/ui/tooltip";
+import { idVolunteer } from "#/locales";
 import { VOLUNTEER_DIVISION_OPTIONS } from "./volunteer-data";
 import type { VolunteerDivisionOption } from "./volunteer-data";
 import { VolunteerSelectField } from "./volunteer-select-field";
@@ -34,11 +35,13 @@ export function VolunteerToolbar({
           <VolunteerSelectField
             value={selectedDivision}
             options={divisionOptions}
-            placeholder="Semua Divisi"
+            placeholder={idVolunteer.list.toolbar.divisionPlaceholder}
             onChange={onDivisionChange}
             searchable={divisionOptions.length > 7}
-            searchPlaceholder="Cari divisi..."
-            emptyText="Divisi tidak ditemukan"
+            searchPlaceholder={
+              idVolunteer.list.toolbar.searchDivisionPlaceholder
+            }
+            emptyText={idVolunteer.list.toolbar.emptyDivision}
             menuClassName="sm:w-[280px]"
           />
         </div>
@@ -49,17 +52,20 @@ export function VolunteerToolbar({
             showLabel={false}
             showHelper={false}
             className="max-w-none"
-            placeholder="Cari volunteer (nama, email, atau no. wa)..."
+            placeholder={idVolunteer.list.toolbar.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             leftIcon={<Search className="size-[18px]" />}
             rightIcon={
               searchQuery ? (
-                <Tooltip content="Bersihkan pencarian" placement="top">
+                <Tooltip
+                  content={idVolunteer.list.toolbar.clearSearchTooltip}
+                  placement="top"
+                >
                   <button
                     type="button"
                     onClick={() => onSearchChange("")}
-                    aria-label="Bersihkan pencarian"
+                    aria-label={idVolunteer.list.toolbar.clearSearchTooltip}
                     className="pointer-events-auto text-neutral-400 hover:text-neutral-700 transition-colors cursor-pointer"
                   >
                     <X className="size-4" />
@@ -79,7 +85,7 @@ export function VolunteerToolbar({
             onClick={onAddVolunteer}
             className="w-full sm:w-auto"
           >
-            Tambah Volunteer
+            {idVolunteer.list.toolbar.addVolunteerButton}
           </Button>
         </div>
       </div>

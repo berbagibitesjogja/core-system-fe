@@ -4,6 +4,7 @@ import { Button } from "#/components/ui/button";
 import { FieldHelper } from "#/components/ui/field-helper";
 import { Input } from "#/components/ui/input";
 import { cn } from "#/lib/utils";
+import { idVolunteer } from "#/locales";
 import {
   VOLUNTEER_DIVISION_OPTIONS,
   VOLUNTEER_ROLE_META,
@@ -86,20 +87,21 @@ export function VolunteerDetailSettingsTab({
     const nextErrors: Partial<Record<keyof VolunteerFormValues, string>> = {};
 
     if (!values.division) {
-      nextErrors.division = "Divisi wajib dipilih.";
+      nextErrors.division =
+        idVolunteer.detail.settingsTab.validationDivisionRequired;
     }
     if (!values.name.trim()) {
-      nextErrors.name = "Nama lengkap wajib diisi.";
+      nextErrors.name = idVolunteer.detail.settingsTab.validationNameRequired;
     }
     if (!values.email.trim()) {
-      nextErrors.email = "Email wajib diisi.";
+      nextErrors.email = idVolunteer.detail.settingsTab.validationEmailRequired;
     } else if (!EMAIL_PATTERN.test(values.email.trim())) {
-      nextErrors.email = "Format email tidak valid.";
+      nextErrors.email = idVolunteer.detail.settingsTab.validationEmailInvalid;
     }
     if (!values.phone.trim()) {
-      nextErrors.phone = "Nomor WhatsApp wajib diisi.";
+      nextErrors.phone = idVolunteer.detail.settingsTab.validationPhoneRequired;
     } else if (!PHONE_PATTERN.test(values.phone.trim())) {
-      nextErrors.phone = "Nomor WhatsApp tidak valid.";
+      nextErrors.phone = idVolunteer.detail.settingsTab.validationPhoneInvalid;
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -134,7 +136,7 @@ export function VolunteerDetailSettingsTab({
           className="flex flex-col gap-1.5 relative w-full"
         >
           <label className="font-sans text-sm font-semibold text-neutral-900 leading-5">
-            Divisi
+            {idVolunteer.detail.settingsTab.divisionLabel}
           </label>
           <button
             type="button"
@@ -154,7 +156,8 @@ export function VolunteerDetailSettingsTab({
             )}
           >
             <span className="truncate">
-              {values.division || "Pilih divisi"}
+              {values.division ||
+                idVolunteer.detail.settingsTab.divisionPlaceholder}
             </span>
             <ChevronDown
               className={cn(
@@ -203,7 +206,7 @@ export function VolunteerDetailSettingsTab({
         {/* Dropdown Role Sistem */}
         <div ref={roleRef} className="flex flex-col gap-1.5 relative w-full">
           <label className="font-sans text-sm font-semibold text-neutral-900 leading-5">
-            Role Sistem
+            {idVolunteer.detail.settingsTab.roleLabel}
           </label>
           <button
             type="button"
@@ -286,8 +289,8 @@ export function VolunteerDetailSettingsTab({
       {/* Field: Nama Lengkap */}
       <div className="flex flex-col gap-1.5 w-full">
         <Input
-          label="Nama Lengkap"
-          placeholder="Contoh: Fauzan Trisuladana"
+          label={idVolunteer.detail.settingsTab.nameLabel}
+          placeholder={idVolunteer.detail.settingsTab.namePlaceholder}
           value={values.name}
           onChange={(e) => handleFieldChange("name", e.target.value)}
           error={errors.name}
@@ -302,12 +305,12 @@ export function VolunteerDetailSettingsTab({
         <div className="flex flex-col gap-1.5 w-full">
           <Input
             type="email"
-            label="Email"
-            placeholder="nama@gmail.com"
+            label={idVolunteer.detail.settingsTab.emailLabel}
+            placeholder={idVolunteer.detail.settingsTab.emailPlaceholder}
             value={values.email}
             onChange={(e) => handleFieldChange("email", e.target.value)}
             error={errors.email}
-            helperText="Harus sama dengan akun Google untuk masuk."
+            helperText={idVolunteer.detail.settingsTab.emailHelper}
             disabled={isSaving}
             required
             className="w-full max-w-none"
@@ -317,8 +320,8 @@ export function VolunteerDetailSettingsTab({
         <div className="flex flex-col gap-1.5 w-full">
           <Input
             type="tel"
-            label="Nomor WhatsApp"
-            placeholder="08xx atau 628xx"
+            label={idVolunteer.detail.settingsTab.phoneLabel}
+            placeholder={idVolunteer.detail.settingsTab.phonePlaceholder}
             value={values.phone}
             onChange={(e) => handleFieldChange("phone", e.target.value)}
             error={errors.phone}
@@ -339,7 +342,11 @@ export function VolunteerDetailSettingsTab({
           className="gap-2"
         >
           <Check className="size-4 shrink-0" aria-hidden="true" />
-          <span>{isSaving ? "Menyimpan..." : "Simpan Data Profil"}</span>
+          <span>
+            {isSaving
+              ? idVolunteer.detail.settingsTab.savingButton
+              : idVolunteer.detail.settingsTab.saveButton}
+          </span>
         </Button>
       </div>
     </form>

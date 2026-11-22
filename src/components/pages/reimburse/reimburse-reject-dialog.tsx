@@ -4,6 +4,7 @@ import { Button } from "#/components/ui/button";
 import { Textarea } from "#/components/ui/textarea";
 import { getPresetAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idReimburse } from "#/locales";
 import { formatRupiah } from "./reimburse-data";
 import type { ReimburseDataItem } from "./reimburse-management-data";
 
@@ -69,11 +70,11 @@ export function ReimburseRejectDialog({
     e.preventDefault();
     const trimmed = reason.trim();
     if (!trimmed) {
-      setError("Alasan penolakan wajib diisi.");
+      setError(idReimburse.dialogs.rejectReasonRequired);
       return;
     }
     if (trimmed.length < 5) {
-      setError("Alasan penolakan minimal 5 karakter.");
+      setError(idReimburse.dialogs.rejectReasonMinLength);
       return;
     }
     setError(null);
@@ -100,11 +101,10 @@ export function ReimburseRejectDialog({
             id="modal-reject-reimburse-title"
             className="font-heading-h3 text-xl font-bold leading-tight text-neutral-900"
           >
-            Tolak Pengajuan Reimburse?
+            {idReimburse.dialogs.rejectTitle}
           </h3>
           <p className="font-body-m text-sm leading-relaxed text-neutral-600">
-            Tuliskan alasan penolakan agar staf pemohon mengetahui kendala pada
-            bukti nota atau dokumen pengajuan ini.
+            {idReimburse.dialogs.rejectDescription}
           </p>
         </div>
 
@@ -153,15 +153,15 @@ export function ReimburseRejectDialog({
         {/* Formulir alasan penolakan */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Textarea
-            label="Alasan Penolakan (Wajib)"
-            placeholder="Contoh: Bukti nota buram dan tidak terbaca, nominal pada invoice tidak sesuai, atau nota pengeluaran duplikat..."
+            label={idReimburse.dialogs.rejectReasonLabel}
+            placeholder={idReimburse.dialogs.rejectReasonPlaceholder}
             value={reason}
             onChange={(e) => {
               setReason(e.target.value);
               if (error) setError(null);
             }}
             error={error ?? undefined}
-            helperText="Alasan ini akan dicatat di sistem dan dapat dilihat oleh pemohon."
+            helperText={idReimburse.dialogs.rejectReasonHelper}
             disabled={isSubmitting}
             className="w-full"
             rows={3}
@@ -176,7 +176,7 @@ export function ReimburseRejectDialog({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Kembali
+              {idReimburse.dialogs.rejectBackButton}
             </Button>
             <Button
               type="submit"
@@ -185,7 +185,9 @@ export function ReimburseRejectDialog({
               disabled={isSubmitting || !reason.trim()}
               className="shadow-pop-xs"
             >
-              {isSubmitting ? "Menolak..." : "Tolak Pengajuan"}
+              {isSubmitting
+                ? idReimburse.dialogs.rejectSubmittingButton
+                : idReimburse.dialogs.rejectSubmitButton}
             </Button>
           </div>
         </form>

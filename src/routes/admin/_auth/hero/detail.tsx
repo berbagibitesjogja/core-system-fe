@@ -27,6 +27,7 @@ import { Button } from "#/components/ui/button";
 import { toast } from "#/components/ui/toast";
 import { getHeroAvatarSrc } from "#/lib/avatars";
 import { cn } from "#/lib/utils";
+import { idHero } from "#/locales/id/hero";
 import { useAdminLayout } from "#/routes/admin/_auth";
 
 // Skema validasi parameter query URL untuk halaman detail hero
@@ -111,7 +112,7 @@ function HeroDetailPage() {
 
     setHeaderOverride({
       title: detail.name,
-      subtitle: `Hero sejak ${detail.joinedLongLabel}`,
+      subtitle: idHero.detail.subtitleJoined(detail.joinedLongLabel),
       avatar: {
         src: getHeroAvatarSrc({
           id: detail.id,
@@ -122,7 +123,7 @@ function HeroDetailPage() {
         shape: "circle",
       },
       onBack: () => navigate({ to: "/admin/hero" }),
-      backLabel: "Kembali",
+      backLabel: idHero.detail.backLabel,
     });
 
     return () => setHeaderOverride(null);
@@ -265,7 +266,7 @@ function HeroDetailPage() {
       status: values.isBlocked ? "diblokir" : "aktif",
     }));
 
-    toast.success(`Profil ${values.name} berhasil diperbarui.`);
+    toast.success(idHero.list.toasts.updateSuccess(values.name));
     setIsSubmittingEdit(false);
     setIsEditOpen(false);
   };
@@ -287,7 +288,9 @@ function HeroDetailPage() {
             styleVariant="soft"
             dot
           >
-            {isBlocked ? "Diblokir" : "Aktif"}
+            {isBlocked
+              ? idHero.list.table.statusBlocked
+              : idHero.list.table.statusActive}
           </Badge>
 
           <div className="inline-flex items-center gap-1.5 text-sm font-medium text-neutral-800">
@@ -309,7 +312,7 @@ function HeroDetailPage() {
 
           <div className="inline-flex items-center gap-1.5 text-sm text-neutral-500">
             <Calendar className="size-4 text-neutral-500 shrink-0" />
-            <span>Bergabung {detail.joinedShortLabel}</span>
+            <span>{idHero.detail.joinedLabel(detail.joinedShortLabel)}</span>
           </div>
         </div>
 
@@ -319,7 +322,7 @@ function HeroDetailPage() {
           leftIcon={<Pencil className="size-4" />}
           onClick={() => setIsEditOpen(true)}
         >
-          Edit Hero
+          {idHero.detail.editButton}
         </Button>
       </div>
 
@@ -327,8 +330,8 @@ function HeroDetailPage() {
       {isBlocked ? (
         <Alert
           tone="warning"
-          title="Hero ini sedang diblokir"
-          description={`${firstName} tidak bisa ditambahkan ke donasi baru. Riwayat pengambilannya tetap tersimpan. Ubah lewat Edit Data jika blokir sudah tidak diperlukan.`}
+          title={idHero.detail.blockedAlert.title}
+          description={idHero.detail.blockedAlert.description(firstName)}
         />
       ) : null}
 

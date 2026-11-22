@@ -27,6 +27,7 @@ import {
 import { EntityIdentity } from "#/components/shared/entity-identity";
 import { Pagination } from "#/components/shared/pagination";
 import { getPartnerAvatarSrc } from "#/lib/avatars";
+import { idDonation } from "#/locales";
 import { DONATION_STATUS_BADGE_TONE } from "./donation-data";
 import type { DonationItem } from "./donation-data";
 
@@ -97,7 +98,7 @@ export function DonationTable({
       {
         id: "date",
         accessorKey: "date",
-        header: "Tanggal",
+        header: idDonation.list.table.columnDate,
         meta: {
           className: "min-w-[200px] w-[200px]",
           sort: sortDirection,
@@ -117,7 +118,7 @@ export function DonationTable({
       {
         id: "donorName",
         accessorKey: "donorName",
-        header: "Nama Donatur",
+        header: idDonation.list.table.columnDonorName,
         meta: {
           className: "min-w-[260px]",
         },
@@ -132,7 +133,7 @@ export function DonationTable({
       },
       {
         id: "quota",
-        header: "Kuota",
+        header: idDonation.list.table.columnQuota,
         meta: {
           className: "min-w-[130px] w-[130px]",
         },
@@ -145,7 +146,7 @@ export function DonationTable({
       {
         id: "status",
         accessorKey: "status",
-        header: "Status",
+        header: idDonation.list.table.columnStatus,
         meta: {
           className: "min-w-[140px] w-[140px]",
         },
@@ -161,7 +162,7 @@ export function DonationTable({
       },
       {
         id: "actions",
-        header: "Aksi",
+        header: idDonation.list.table.columnAction,
         meta: {
           className: "min-w-[140px] w-[140px]",
           align: "right",
@@ -170,11 +171,14 @@ export function DonationTable({
           const item = row.original;
           return (
             <div className="flex items-center justify-end gap-1">
-              <Tooltip content="Lihat detail donasi" placement="top">
+              <Tooltip
+                content={idDonation.list.table.detailTooltip}
+                placement="top"
+              >
                 <Link
                   to="/admin/donation/detail"
                   search={{ id: item.id }}
-                  aria-label={`Lihat detail donasi ${item.donorName}`}
+                  aria-label={idDonation.list.table.detailAria(item.donorName)}
                   className={getIconButtonClasses({
                     size: "sm",
                     variant: "ghost",
@@ -184,11 +188,14 @@ export function DonationTable({
                 </Link>
               </Tooltip>
 
-              <Tooltip content="Edit data donasi" placement="top">
+              <Tooltip
+                content={idDonation.list.table.editTooltip}
+                placement="top"
+              >
                 <Link
                   to="/admin/donation/edit"
                   search={{ id: item.id }}
-                  aria-label={`Edit data donasi ${item.donorName}`}
+                  aria-label={idDonation.list.table.editAria(item.donorName)}
                   className={getIconButtonClasses({
                     size: "sm",
                     variant: "ghost",
@@ -202,8 +209,8 @@ export function DonationTable({
                 <IconButton
                   size="sm"
                   variant="danger"
-                  tooltip="Hapus donasi"
-                  aria-label={`Hapus donasi ${item.donorName}`}
+                  tooltip={idDonation.list.table.deleteTooltip}
+                  aria-label={idDonation.list.table.deleteAria(item.donorName)}
                   onClick={() => onDeleteItem?.(item)}
                 >
                   <Trash2 className="size-[18px]" />
@@ -298,11 +305,11 @@ export function DonationTable({
       {data.length === 0 && (
         <div className="flex flex-col items-center justify-center p-8 sm:p-12 w-full">
           <EmptyState
-            title="Donasi tidak ditemukan"
+            title={idDonation.list.table.emptyTitle}
             description={
               searchQuery
-                ? `Tidak ada donatur dengan nama "${searchQuery}". Coba kata kunci lain atau ubah filter.`
-                : "Belum ada donasi yang sesuai dengan kriteria penyaringan saat ini."
+                ? idDonation.list.table.emptySearchDesc(searchQuery)
+                : idDonation.list.table.emptyDefaultDesc
             }
             illustration={<IllustrationCariKosong className="size-[200px]" />}
             visual="illustration"
@@ -314,7 +321,7 @@ export function DonationTable({
                   onClick={onClearSearch}
                   className="rounded-full shadow-2xs"
                 >
-                  Hapus pencarian
+                  {idDonation.list.table.clearSearchButton}
                 </Button>
               ) : undefined
             }
@@ -331,7 +338,11 @@ export function DonationTable({
             onPageChange={onPageChange}
             perPage={perPage}
             onPerPageChange={onPerPageChange}
-            rangeText={`${startRange} - ${endRange} dari ${totalCount}`}
+            rangeText={idDonation.list.table.rangeText(
+              startRange,
+              endRange,
+              totalCount,
+            )}
           />
         </TableFooter>
       )}

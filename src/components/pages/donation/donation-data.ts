@@ -1,6 +1,7 @@
 import statDonationNearest from "#/assets/illustrations/charity-sharing.svg";
 import statDonationQuota from "#/assets/illustrations/charity-family.svg";
 import statDonationActive from "#/assets/illustrations/lunch-box.svg";
+import { idDonation } from "#/locales";
 
 export type DonationProgram = "Food Rescue" | "CSR";
 export type DonationStatus = "Aktif" | "Selesai";
@@ -73,46 +74,46 @@ export function computeDonationStats(
   const nearestDay = nearestItem ? nearestItem.day : "-";
   const nearestSubtext = nearestItem
     ? `${nearestItem.donorName} · ${nearestItem.status}`
-    : "Belum ada jadwal penjemputan";
+    : idDonation.list.stats.subtextEmpty;
 
   return [
     {
       id: "pengambilan-terdekat",
-      title: "Pengambilan Terdekat",
+      title: idDonation.list.stats.nearestPickupTitle,
       value: nearestDate,
       unit: nearestDay,
       subtext: nearestSubtext,
       styleVariant: "brand",
       iconName: "clock",
       illustrationSrc: statDonationNearest,
-      illustrationAlt: "Ilustrasi jam dan kalender pengambilan terdekat",
+      illustrationAlt: idDonation.list.stats.altNearestPickup,
     },
     {
       id: "kuota-terbanyak",
-      title: "Kuota Terbanyak",
+      title: idDonation.list.stats.mostQuotaTitle,
       value: maxQuotaItem ? String(maxQuotaItem.quotaTotal) : "0",
-      unit: "Heroes",
+      unit: idDonation.detail.sidebar.heroesUnit,
       subtext: maxQuotaItem
         ? `${maxQuotaItem.donorName} · ${maxQuotaItem.date}`
-        : "Belum ada kuota",
+        : idDonation.list.stats.subtextEmpty,
       styleVariant: "default",
       iconName: "users",
       illustrationSrc: statDonationQuota,
-      illustrationAlt: "Ilustrasi piala kuota terbanyak",
+      illustrationAlt: idDonation.list.stats.altMostQuota,
     },
     {
       id: "donasi-aktif",
-      title: "Donasi Aktif",
+      title: idDonation.list.stats.activeDonationsTitle,
       value: String(activeDonations.length),
-      unit: "Donasi",
+      unit: idDonation.list.stats.unitAction,
       subtext:
         activeDonations.length > 0
           ? `Sisa ${totalQuotaRemaining} kuota heroes`
-          : "Tidak ada aksi aktif",
+          : idDonation.list.stats.subtextEmpty,
       styleVariant: "default",
       iconName: "package",
       illustrationSrc: statDonationActive,
-      illustrationAlt: "Ilustrasi donasi aktif",
+      illustrationAlt: idDonation.list.stats.altActiveDonations,
     },
   ];
 }
@@ -129,14 +130,24 @@ export function computeProgramFilterOptions(
   const totalCount = totalMetaCount ?? donations.length;
 
   return [
-    { id: "all", label: "Semua", count: totalCount, programValue: "ALL" },
+    {
+      id: "all",
+      label: idDonation.list.filters.all,
+      count: totalCount,
+      programValue: "ALL",
+    },
     {
       id: "food-rescue",
-      label: "Food Rescue",
+      label: idDonation.list.filters.foodRescue,
       count: foodRescueCount,
       programValue: "Food Rescue",
     },
-    { id: "csr", label: "CSR", count: csrCount, programValue: "CSR" },
+    {
+      id: "csr",
+      label: idDonation.list.filters.csr,
+      count: csrCount,
+      programValue: "CSR",
+    },
   ];
 }
 
@@ -419,20 +430,11 @@ export interface DonationTipItem {
   text: string;
 }
 
-export const defaultDonationTips: DonationTipItem[] = [
-  {
-    id: "tip-1",
-    text: "Kuota menentukan berapa voucher yang bisa diklaim heroes.",
-  },
-  {
-    id: "tip-2",
-    text: 'Aktifkan "Umumkan" agar relawan langsung dapat notifikasi.',
-  },
-  {
-    id: "tip-3",
-    text: "Pastikan link Maps sesuai titik temu supaya heroes tidak tersesat.",
-  },
-];
+export const defaultDonationTips: DonationTipItem[] =
+  idDonation.add.tips.items.map((text, idx) => ({
+    id: `tip-${idx + 1}`,
+    text,
+  }));
 
 export const defaultEmptyDonationForm: DonationFormData = {
   donorName: "",

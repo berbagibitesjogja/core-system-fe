@@ -1,5 +1,6 @@
 import { FileText } from "lucide-react";
 import { Dialog } from "#/components/ui/dialog";
+import { idReimburse } from "#/locales";
 import { formatRupiah } from "./reimburse-data";
 import type { ReimburseHistoryItem } from "./reimburse-data";
 import {
@@ -27,29 +28,31 @@ export function ReimburseTransferProofDialog({
   const metaItems: ReimbursePreviewMetaItem[] = [
     {
       id: "destination",
-      label: "Tujuan Transfer",
+      label: idReimburse.dialogs.transferProofDestinationLabel,
       value: `${item.method} · ${item.destinationNumber}`,
     },
     {
       id: "amount",
-      label: "Nominal Ditransfer",
+      label: idReimburse.dialogs.transferProofAmountLabel,
       value: formatRupiah(item.amount),
     },
     {
       id: "transferredAt",
-      label: "Tanggal Transfer",
+      label: idReimburse.dialogs.transferProofDateLabel,
       value: proof?.transferredAtLabel ?? item.dateLabel,
     },
     {
       id: "transferredBy",
-      label: "Diproses Oleh",
-      value: proof?.transferredBy ?? "Bendahara BBJ",
+      label: idReimburse.dialogs.transferProofProcessedByLabel,
+      value:
+        proof?.transferredBy ??
+        idReimburse.dialogs.transferProofDefaultProcessor,
     },
     ...(proof?.referenceNumber
       ? [
           {
             id: "reference",
-            label: "No. Referensi",
+            label: idReimburse.dialogs.transferProofReferenceLabel,
             value: proof.referenceNumber,
           },
         ]
@@ -58,7 +61,7 @@ export function ReimburseTransferProofDialog({
       ? [
           {
             id: "size",
-            label: "Ukuran Berkas",
+            label: idReimburse.dialogs.transferProofSizeLabel,
             value: proof.fileSize,
           },
         ]
@@ -69,12 +72,16 @@ export function ReimburseTransferProofDialog({
     <Dialog
       isOpen={Boolean(item)}
       onClose={onClose}
-      title="Bukti Transfer Reimburse"
-      description="Rincian pembayaran dan lampiran bukti transfer yang telah diproses."
+      title={idReimburse.dialogs.transferProofTitle}
+      description={idReimburse.dialogs.transferProofDescription}
       icon={<FileText className="size-6" />}
       iconTone="success"
-      cancelText="Tutup"
-      confirmText={proof?.filePreviewUrl ? "Buka Bukti Transfer" : undefined}
+      cancelText={idReimburse.dialogs.transferProofClose}
+      confirmText={
+        proof?.filePreviewUrl
+          ? idReimburse.dialogs.transferProofOpen
+          : undefined
+      }
       onConfirm={
         proof?.filePreviewUrl
           ? () => openReimburseDocumentInNewTab(proof.filePreviewUrl)
@@ -89,12 +96,20 @@ export function ReimburseTransferProofDialog({
         fileType={proof?.fileType}
         filePreviewUrl={proof?.filePreviewUrl}
         placeholderTone="success"
-        placeholderBadgeLabel={proof ? "Transfer Terkonfirmasi" : undefined}
-        emptyPreviewTitle={proof?.fileName ?? "Belum ada berkas bukti transfer"}
+        placeholderBadgeLabel={
+          proof ? idReimburse.dialogs.transferProofConfirmedBadge : undefined
+        }
+        emptyPreviewTitle={
+          proof?.fileName ?? idReimburse.dialogs.transferProofEmptyTitle
+        }
         emptyPreviewDescription={
           proof
-            ? `Dana sebesar ${formatRupiah(item.amount)} telah dikirim ke ${item.method} (${item.destinationNumber}). Berkas contoh ini tersimpan untuk pratinjau UI.`
-            : "Pengajuan telah ditandai selesai oleh bendahara tanpa lampiran berkas bukti transfer."
+            ? idReimburse.dialogs.transferProofEmptyDescWithProof(
+                formatRupiah(item.amount),
+                item.method,
+                item.destinationNumber,
+              )
+            : idReimburse.dialogs.transferProofEmptyDescNoProof
         }
       />
     </Dialog>

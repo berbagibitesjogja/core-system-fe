@@ -1,10 +1,14 @@
 import type { idAuth } from "./id/auth";
 import type { idBeneficiary } from "./id/beneficiary";
+import type { idDashboard } from "./id/dashboard";
 import type { idDonation } from "./id/donation";
 import type { idCommonErrors } from "./id/errors";
+import type { idHero } from "./id/hero";
 import type { idNavigation } from "./id/navigation";
 import type { idPartner } from "./id/partner";
+import type { idProfile } from "./id/profile";
 import type { idReimburse } from "./id/reimburse";
+import type { idShared } from "./id/shared";
 import type { idVolunteer } from "./id/volunteer";
 import type { idErrors, idLocale } from "./id";
 
@@ -15,8 +19,12 @@ export type ErrorDictionary = typeof idErrors;
 export type CommonErrorDictionary = typeof idCommonErrors;
 export type AuthDictionary = typeof idAuth;
 export type BeneficiaryDictionary = typeof idBeneficiary;
+export type DashboardDictionary = typeof idDashboard;
 export type DonationDictionary = typeof idDonation;
+export type HeroDictionary = typeof idHero;
 export type NavigationDictionary = typeof idNavigation;
 export type PartnerDictionary = typeof idPartner;
+export type ProfileDictionary = typeof idProfile;
 export type ReimburseDictionary = typeof idReimburse;
+export type SharedDictionary = typeof idShared;
 export type VolunteerDictionary = typeof idVolunteer;

@@ -82,7 +82,7 @@ function DonationDetailPage() {
   // Redirect jika parameter ID tidak valid
   React.useEffect(() => {
     if (!trimmedId) {
-      toast.error("ID donasi tidak ditemukan.");
+      toast.error(idDonation.detail.toasts.missingId);
       navigate({ to: "/admin/donation" });
     }
   }, [trimmedId, navigate]);
@@ -117,7 +117,7 @@ function DonationDetailPage() {
 
   React.useEffect(() => {
     if (donationQuery.isError) {
-      toast.error("Data donasi tidak ditemukan di server.");
+      toast.error(idDonation.detail.toasts.notFound);
       navigate({ to: "/admin/donation" });
     }
   }, [donationQuery.isError, navigate]);
@@ -403,7 +403,7 @@ function DonationDetailPage() {
         }
 
         if (!targetFoodItemId) {
-          toast.error("Gagal memproses jenis makanan.");
+          toast.error(idDonation.detail.toasts.surplusProcessFailed);
           return;
         }
 
@@ -491,7 +491,7 @@ function DonationDetailPage() {
         if (isApiError(err) && err.message) {
           toast.error(err.message);
         } else {
-          toast.error("Gagal menyimpan data makanan.");
+          toast.error(idDonation.detail.toasts.surplusSaveFailed);
         }
       } finally {
         setIsSubmittingFood(false);
@@ -551,7 +551,7 @@ function DonationDetailPage() {
       if (isApiError(err) && err.message) {
         toast.error(err.message);
       } else {
-        toast.error("Gagal menghapus makanan dari donasi.");
+        toast.error(idDonation.detail.toasts.surplusDeleteFailed);
       }
     } finally {
       setIsDeletingFood(false);
@@ -577,12 +577,12 @@ function DonationDetailPage() {
         await queryClient.invalidateQueries({
           queryKey: ["donation-detail", trimmedId],
         });
-        toast.success("Catatan aksi donasi berhasil disimpan.");
+        toast.success(idDonation.detail.toasts.notesSuccess);
       } catch (err: unknown) {
         if (isApiError(err) && err.message) {
           toast.error(err.message);
         } else {
-          toast.error("Gagal menyimpan catatan.");
+          toast.error(idDonation.detail.toasts.notesFailed);
         }
       }
     },
@@ -593,7 +593,7 @@ function DonationDetailPage() {
     if (detail?.documentationUrl) {
       window.open(detail.documentationUrl, "_blank", "noopener,noreferrer");
     } else {
-      toast.info("Tautan dokumentasi belum dikonfigurasi.");
+      toast.info(idDonation.detail.toasts.documentationMissing);
     }
   }, [detail?.documentationUrl]);
 
@@ -625,7 +625,7 @@ function DonationDetailPage() {
             leftIcon={<Camera className="size-4" />}
             onClick={handleOpenDocumentation}
           >
-            Dokumentasi
+            {idDonation.detail.actionBar.documentationButton}
           </Button>
           <Button
             variant="primary"
@@ -633,7 +633,7 @@ function DonationDetailPage() {
             leftIcon={<Sparkles className="size-4" />}
             onClick={() => setIsImpactDialogOpen(true)}
           >
-            Bagikan Impact
+            {idDonation.detail.actionBar.impactPosterButton}
           </Button>
         </div>
       </div>
@@ -672,14 +672,17 @@ function DonationDetailPage() {
       <Dialog
         isOpen={Boolean(pickupTargetHero)}
         onClose={() => setPickupTargetHero(null)}
-        title="Konfirmasi Pengambilan Donasi"
+        title={idDonation.detail.heroesCard.verifyPickupModalTitle}
         description={
           pickupTargetHero
-            ? `Pastikan voucher ${pickupTargetHero.claimCode} milik ${pickupTargetHero.name} telah diverifikasi di lokasi.`
+            ? idDonation.detail.heroesCard.verifyPickupModalDesc(
+                pickupTargetHero.claimCode,
+                pickupTargetHero.name,
+              )
             : ""
         }
-        confirmText="Konfirmasi Ambil"
-        cancelText="Batal"
+        confirmText={idDonation.detail.heroesCard.verifyPickupConfirmButton}
+        cancelText={idDonation.detail.heroesCard.verifyPickupCancelButton}
         isConfirmLoading={isConfirmingPickup}
         onConfirm={handleConfirmPickupAction}
       />
@@ -690,21 +693,27 @@ function DonationDetailPage() {
         onClose={() => setRemoveTargetHero(null)}
         title={
           isRemovingConfirmedHero
-            ? "Tandai Hero Tidak Jadi Ambil?"
-            : "Keluarkan Hero dari Donasi?"
+            ? idDonation.detail.heroesCard.removeHeroModalConfirmedTitle
+            : idDonation.detail.heroesCard.removeHeroModalTitle
         }
         description={
           removeTargetHero
             ? isRemovingConfirmedHero
-              ? `${removeTargetHero.name} sebelumnya telah dikonfirmasi. Menandai tidak hadir akan membatalkan status pengambilan.`
-              : `Apakah kamu yakin ingin mengeluarkan ${removeTargetHero.name} dari aksi donasi ini?`
+              ? idDonation.detail.heroesCard.removeHeroModalConfirmedDesc(
+                  removeTargetHero.name,
+                )
+              : idDonation.detail.heroesCard.removeHeroModalDesc(
+                  removeTargetHero.name,
+                )
             : ""
         }
         tone={isRemovingConfirmedHero ? "danger" : "default"}
         confirmText={
-          isRemovingConfirmedHero ? "Tandai Tidak Jadi" : "Keluarkan"
+          isRemovingConfirmedHero
+            ? idDonation.detail.heroesCard.removeHeroConfirmedButton
+            : idDonation.detail.heroesCard.removeHeroConfirmButton
         }
-        cancelText="Batal"
+        cancelText={idDonation.detail.heroesCard.removeHeroCancelButton}
         isConfirmLoading={isRemovingHero}
         onConfirm={handleConfirmRemoveHero}
       />
